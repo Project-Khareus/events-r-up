@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Star, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../../utils";
+import { useQuery } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
 
 const CATEGORY_LABELS = {
   venue: "Venue",
@@ -22,6 +24,16 @@ const CATEGORY_LABELS = {
 };
 
 export default function VendorCard({ vendor }) {
+  const { data: reviews = [] } = useQuery({
+    queryKey: ['reviews', vendor.id],
+    queryFn: () => base44.entities.Review.filter({ vendor_id: vendor.id }),
+    staleTime: 60000,
+  });
+
+  const averageRating = reviews.length > 0
+    ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
+    : vendor.rating;
+
   return (
     <Link to={createPageUrl(`VendorDetail?id=${vendor.id}`)}>
       <Card className="group overflow-hidden border-slate-200 hover:border-indigo-300 transition-all duration-500 hover:shadow-xl hover:-translate-y-1 bg-white rounded-2xl">
@@ -74,10 +86,15 @@ export default function VendorCard({ vendor }) {
               </div>
             )}
 
-            {vendor.rating && (
+            {(averageRating || reviews.length > 0) && (
               <div className="flex items-center gap-1.5">
                 <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                <span className="text-sm font-medium text-slate-700">{vendor.rating.toFixed(1)}</span>
+                <span className="text-sm font-medium text-slate-700">
+                  {averageRating ? averageRating.toFixed(1) : 'New'}
+                </span>
+                {reviews.length > 0 && (
+                  <span className="text-xs text-slate-500">({reviews.length})</span>
+                )}
               </div>
             )}
           </div>

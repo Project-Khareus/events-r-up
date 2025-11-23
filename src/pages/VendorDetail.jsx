@@ -8,6 +8,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, MapPin, Star, Mail, Phone, Globe, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
+import RatingStats from "../components/reviews/RatingStats";
+import ReviewForm from "../components/reviews/ReviewForm";
+import ReviewsList from "../components/reviews/ReviewsList";
 
 const CATEGORY_LABELS = {
   venue: "Venue",
@@ -32,6 +35,12 @@ export default function VendorDetail() {
   const { data: vendors = [], isLoading } = useQuery({
     queryKey: ['vendors'],
     queryFn: () => base44.entities.Vendor.list(),
+  });
+
+  const { data: reviews = [] } = useQuery({
+    queryKey: ['reviews', vendorId],
+    queryFn: () => base44.entities.Review.filter({ vendor_id: vendorId }, '-created_date', 50),
+    enabled: !!vendorId,
   });
 
   const vendor = vendors.find(v => v.id === vendorId);
@@ -159,18 +168,8 @@ export default function VendorDetail() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Rating */}
-            {vendor.rating && (
-              <Card className="p-6 rounded-2xl border-slate-200 shadow-sm">
-                <div className="flex items-center gap-3 mb-2">
-                  <Star className="h-8 w-8 fill-amber-400 text-amber-400" />
-                  <span className="text-4xl font-bold text-slate-900">
-                    {vendor.rating.toFixed(1)}
-                  </span>
-                </div>
-                <p className="text-slate-600">Customer Rating</p>
-              </Card>
-            )}
+            {/* Rating Stats */}
+            <RatingStats reviews={reviews} />
 
             {/* Contact Card */}
             <Card className="p-6 rounded-2xl border-slate-200 shadow-sm bg-gradient-to-br from-indigo-50 to-white">
