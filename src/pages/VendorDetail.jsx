@@ -12,6 +12,7 @@ import RatingStats from "../components/reviews/RatingStats";
 import ReviewForm from "../components/reviews/ReviewForm";
 import ReviewsList from "../components/reviews/ReviewsList";
 import StartConversationButton from "../components/messaging/StartConversationButton";
+import BookingForm from "../components/bookings/BookingForm";
 
 const CATEGORY_LABELS = {
   venue: "Venue",
@@ -266,10 +267,14 @@ export default function VendorDetail() {
           </div>
         </div>
 
-        {/* Reviews Section */}
-        <div className="mt-12 grid lg:grid-cols-2 gap-8">
-          <ReviewForm vendorId={vendor.id} vendorName={vendor.business_name} />
-          <ReviewsList vendorId={vendor.id} />
+        {/* Booking & Reviews Section */}
+        <div className="mt-12 space-y-8">
+          <BookingForm vendorId={vendor.id} vendorName={vendor.business_name} />
+          
+          <div className="grid lg:grid-cols-2 gap-8">
+            <ReviewForm vendorId={vendor.id} vendorName={vendor.business_name} />
+            <ReviewsList vendorId={vendor.id} />
+          </div>
         </div>
       </div>
     </div>
