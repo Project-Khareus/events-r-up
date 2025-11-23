@@ -220,6 +220,12 @@ export default function VendorDetail() {
             </Card>
           </div>
         </div>
+
+        {/* Reviews Section */}
+        <div className="mt-12 grid lg:grid-cols-2 gap-8">
+          <ReviewForm vendorId={vendor.id} vendorName={vendor.business_name} />
+          <ReviewsList vendorId={vendor.id} />
+        </div>
       </div>
     </div>
   );
