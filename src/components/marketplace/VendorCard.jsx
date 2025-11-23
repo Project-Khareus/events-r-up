@@ -46,9 +46,13 @@ export default function VendorCard({ vendor }) {
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-50 to-slate-100">
-              <span className="text-6xl text-indigo-200">
-                {vendor.business_name?.[0]?.toUpperCase()}
-              </span>
+              {vendor.logo_url ? (
+                <img src={vendor.logo_url} alt={vendor.business_name} className="max-h-32 max-w-[80%] object-contain" />
+              ) : (
+                <span className="text-6xl text-indigo-200">
+                  {vendor.business_name?.[0]?.toUpperCase()}
+                </span>
+              )}
             </div>
           )}
           
@@ -63,10 +67,15 @@ export default function VendorCard({ vendor }) {
         </div>
 
         <div className="p-6">
-          <div className="flex items-start justify-between gap-3 mb-3">
-            <h3 className="font-semibold text-xl text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">
-              {vendor.business_name}
-            </h3>
+          <div className="flex items-start justify-between gap-3 mb-2">
+            <div className="min-w-0 flex-1">
+              <h3 className="font-semibold text-xl text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">
+                {vendor.business_name}
+              </h3>
+              {vendor.slogan && (
+                <p className="text-sm text-slate-500 italic line-clamp-1 mt-0.5">"{vendor.slogan}"</p>
+              )}
+            </div>
             {vendor.price_range && (
               <Badge variant="secondary" className="bg-amber-50 text-amber-700 border-amber-200 font-medium shrink-0">
                 {vendor.price_range}
@@ -75,9 +84,16 @@ export default function VendorCard({ vendor }) {
           </div>
 
           <div className="space-y-2.5 mb-4">
-            <Badge variant="outline" className="border-indigo-200 text-indigo-700 bg-indigo-50">
-              {CATEGORY_LABELS[vendor.category]}
-            </Badge>
+            <div className="flex items-center gap-2 flex-wrap">
+              <Badge variant="outline" className="border-indigo-200 text-indigo-700 bg-indigo-50">
+                {CATEGORY_LABELS[vendor.category]}
+              </Badge>
+              {vendor.years_in_business && (
+                <Badge variant="outline" className="border-slate-200 text-slate-600">
+                  {vendor.years_in_business}+ years
+                </Badge>
+              )}
+            </div>
 
             {vendor.location && (
               <div className="flex items-center gap-1.5 text-slate-500 text-sm">

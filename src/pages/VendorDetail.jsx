@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, MapPin, Star, Mail, Phone, Globe, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, MapPin, Star, Mail, Phone, Globe, CheckCircle2, Award, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import RatingStats from "../components/reviews/RatingStats";
@@ -99,7 +99,7 @@ export default function VendorDetail() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent" />
             <div className="absolute bottom-8 left-8 right-8">
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center gap-3 mb-4 flex-wrap">
                 <Badge variant="secondary" className="bg-white/90 text-slate-900 backdrop-blur-sm">
                   {CATEGORY_LABELS[vendor.category]}
                 </Badge>
@@ -108,10 +108,18 @@ export default function VendorDetail() {
                     {vendor.price_range}
                   </Badge>
                 )}
+                {vendor.years_in_business && (
+                  <Badge variant="secondary" className="bg-white/90 text-slate-900 backdrop-blur-sm">
+                    {vendor.years_in_business}+ years in business
+                  </Badge>
+                )}
               </div>
               <h1 className="text-4xl lg:text-5xl font-bold text-white mb-3">
                 {vendor.business_name}
               </h1>
+              {vendor.slogan && (
+                <p className="text-xl text-white/90 italic mb-2">"{vendor.slogan}"</p>
+              )}
               {vendor.location && (
                 <div className="flex items-center gap-2 text-white/90 text-lg">
                   <MapPin className="h-5 w-5" />
@@ -142,6 +150,42 @@ export default function VendorDetail() {
                     <div key={index} className="flex items-center gap-3 text-slate-700">
                       <CheckCircle2 className="h-5 w-5 text-indigo-600 shrink-0" />
                       <span>{service}</span>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            )}
+
+            {/* Awards */}
+            {vendor.awards && vendor.awards.length > 0 && (
+              <Card className="p-8 rounded-2xl border-slate-200 shadow-sm bg-gradient-to-br from-amber-50 to-white">
+                <div className="flex items-center gap-3 mb-6">
+                  <Award className="h-6 w-6 text-amber-600" />
+                  <h2 className="text-2xl font-bold text-slate-900">Awards & Recognition</h2>
+                </div>
+                <div className="space-y-2">
+                  {vendor.awards.map((award, index) => (
+                    <div key={index} className="flex items-start gap-3">
+                      <Star className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
+                      <span className="text-slate-700">{award}</span>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            )}
+
+            {/* Certifications */}
+            {vendor.certifications && vendor.certifications.length > 0 && (
+              <Card className="p-8 rounded-2xl border-slate-200 shadow-sm">
+                <div className="flex items-center gap-3 mb-6">
+                  <Shield className="h-6 w-6 text-indigo-600" />
+                  <h2 className="text-2xl font-bold text-slate-900">Certifications</h2>
+                </div>
+                <div className="grid md:grid-cols-2 gap-3">
+                  {vendor.certifications.map((cert, index) => (
+                    <div key={index} className="flex items-center gap-3 text-slate-700">
+                      <CheckCircle2 className="h-5 w-5 text-indigo-600 shrink-0" />
+                      <span>{cert}</span>
                     </div>
                   ))}
                 </div>
