@@ -11,6 +11,7 @@ import { createPageUrl } from "../utils";
 import RatingStats from "../components/reviews/RatingStats";
 import ReviewForm from "../components/reviews/ReviewForm";
 import ReviewsList from "../components/reviews/ReviewsList";
+import StartConversationButton from "../components/messaging/StartConversationButton";
 
 const CATEGORY_LABELS = {
   venue: "Venue",
@@ -214,9 +215,9 @@ export default function VendorDetail() {
                 )}
               </div>
 
-              <Button className="w-full mt-6 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 rounded-xl h-12 text-base font-medium shadow-lg shadow-indigo-200">
-                Contact Vendor
-              </Button>
+              <div className="mt-6">
+                <StartConversationButton vendorId={vendor.id} vendorName={vendor.business_name} />
+              </div>
             </Card>
           </div>
         </div>
