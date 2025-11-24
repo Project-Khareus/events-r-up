@@ -54,7 +54,7 @@ function parseLocation(locationStr) {
   return null;
 }
 
-export default function VendorResults({ eventType, location, budget, onBack }) {
+export default function VendorResults({ eventType, location, budget, selectedCategories, onBack }) {
   const [prioritize, setPrioritize] = useState("budget");
 
   const { data: vendors = [], isLoading } = useQuery({
@@ -63,7 +63,7 @@ export default function VendorResults({ eventType, location, budget, onBack }) {
   });
 
   const filteredAndSortedVendors = useMemo(() => {
-    const relevantCategories = EVENT_CATEGORY_MAP[eventType] || [];
+    const relevantCategories = selectedCategories || [];
     const budgetValue = parseFloat(budget);
     
     let filtered = vendors.filter(vendor => {
@@ -114,7 +114,7 @@ export default function VendorResults({ eventType, location, budget, onBack }) {
     }
 
     return filtered;
-  }, [vendors, eventType, location, budget, prioritize]);
+  }, [vendors, selectedCategories, location, budget, prioritize]);
 
   return (
     <div className="space-y-6">

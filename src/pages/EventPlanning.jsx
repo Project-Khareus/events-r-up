@@ -6,12 +6,14 @@ import EventTypeSelector from "../components/event-planning/EventTypeSelector";
 import LocationSelector from "../components/event-planning/LocationSelector";
 import BudgetSelector from "../components/event-planning/BudgetSelector";
 import VendorResults from "../components/event-planning/VendorResults";
+import CategorySelector from "../components/event-planning/CategorySelector";
 
 export default function EventPlanning() {
   const [step, setStep] = useState(1);
   const [eventType, setEventType] = useState("");
   const [location, setLocation] = useState(null);
   const [budget, setBudget] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState([]);
 
   const handleNext = () => setStep(step + 1);
   const handleBack = () => setStep(step - 1);
@@ -20,8 +22,18 @@ export default function EventPlanning() {
     { number: 1, title: "Event Type" },
     { number: 2, title: "Location" },
     { number: 3, title: "Budget" },
-    { number: 4, title: "Find Vendors" }
+    { number: 4, title: "Select Vendors" },
+    { number: 5, title: "Results" }
   ];
+
+  const canNavigateToStep = (stepNumber) => {
+    if (stepNumber === 1) return true;
+    if (stepNumber === 2) return eventType !== "";
+    if (stepNumber === 3) return eventType !== "" && location !== null;
+    if (stepNumber === 4) return eventType !== "" && location !== null && budget !== "";
+    if (stepNumber === 5) return eventType !== "" && location !== null && budget !== "" && selectedCategories.length > 0;
+    return false;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
@@ -44,13 +56,17 @@ export default function EventPlanning() {
           <div className="flex items-center justify-center gap-4">
             {steps.map((s, idx) => (
               <React.Fragment key={s.number}>
-                <div className="flex flex-col items-center">
+                <button
+                  onClick={() => canNavigateToStep(s.number) && setStep(s.number)}
+                  disabled={!canNavigateToStep(s.number)}
+                  className="flex flex-col items-center"
+                >
                   <div
                     className={`w-12 h-12 rounded-full flex items-center justify-center font-bold transition-all ${
                       step >= s.number
                         ? "bg-indigo-600 text-white"
                         : "bg-slate-200 text-slate-500"
-                    }`}
+                    } ${canNavigateToStep(s.number) ? "cursor-pointer hover:scale-110" : "cursor-not-allowed"}`}
                   >
                     {s.number}
                   </div>
@@ -61,10 +77,10 @@ export default function EventPlanning() {
                   >
                     {s.title}
                   </span>
-                </div>
+                </button>
                 {idx < steps.length - 1 && (
                   <div
-                    className={`w-16 h-1 rounded-full transition-all ${
+                    className={`w-12 h-1 rounded-full transition-all ${
                       step > s.number ? "bg-indigo-600" : "bg-slate-200"
                     }`}
                   />
@@ -103,10 +119,22 @@ export default function EventPlanning() {
           )}
 
           {step === 4 && (
+            <CategorySelector
+              eventType={eventType}
+              budget={budget}
+              selectedCategories={selectedCategories}
+              onChange={setSelectedCategories}
+              onNext={handleNext}
+              onBack={handleBack}
+            />
+          )}
+
+          {step === 5 && (
             <VendorResults
               eventType={eventType}
               location={location}
               budget={budget}
+              selectedCategories={selectedCategories}
               onBack={handleBack}
             />
           )}
