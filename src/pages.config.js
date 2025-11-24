@@ -2,6 +2,7 @@ import VendorMarketplace from './pages/VendorMarketplace';
 import VendorDetail from './pages/VendorDetail';
 import Messages from './pages/Messages';
 import Bookings from './pages/Bookings';
+import EventPlanning from './pages/EventPlanning';
 
 
 export const PAGES = {
@@ -9,6 +10,7 @@ export const PAGES = {
     "VendorDetail": VendorDetail,
     "Messages": Messages,
     "Bookings": Bookings,
+    "EventPlanning": EventPlanning,
 }
 
 export const pagesConfig = {
