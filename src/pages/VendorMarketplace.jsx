@@ -50,7 +50,7 @@ export default function VendorMarketplace() {
           <div className="max-w-3xl">
             <div className="flex items-center gap-2 mb-6">
               <Sparkles className="h-6 w-6 text-amber-400" />
-              <span className="text-amber-400 font-medium tracking-wide">Premium Marketplace</span>
+              <span className="text-amber-400 font-medium tracking-wide">Omnievents, lasting memories</span>
             </div>
             <h1 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
               Find Your Perfect
@@ -127,7 +127,7 @@ export default function VendorMarketplace() {
                   <TrendingUp className="h-5 w-5 text-amber-500" />
                   <h2 className="text-2xl font-bold text-slate-900">Featured Vendors</h2>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                   {featuredVendors.map((vendor) => (
                     <VendorCard key={vendor.id} vendor={vendor} />
                   ))}
@@ -141,7 +141,7 @@ export default function VendorMarketplace() {
                 {featuredVendors.length > 0 && (
                   <h2 className="text-2xl font-bold text-slate-900 mb-6">All Vendors</h2>
                 )}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                   {regularVendors.map((vendor) => (
                     <VendorCard key={vendor.id} vendor={vendor} />
                   ))}
