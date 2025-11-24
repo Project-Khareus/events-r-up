@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
-import { Sparkles, TrendingUp } from "lucide-react";
+import { Sparkles, TrendingUp, Wand2 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "../utils";
 import SearchBar from "../components/marketplace/SearchBar";
 import FilterControls from "../components/marketplace/FilterControls";
 import VendorCard from "../components/marketplace/VendorCard";
@@ -67,7 +69,17 @@ export default function VendorMarketplace() {
       <div className="max-w-7xl mx-auto px-6 -mt-8">
         <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-8">
           <div className="flex flex-col gap-6">
-            <SearchBar value={searchQuery} onChange={setSearchQuery} />
+            <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center">
+              <div className="flex-1">
+                <SearchBar value={searchQuery} onChange={setSearchQuery} />
+              </div>
+              <Link to={createPageUrl("EventPlanning")}>
+                <button className="h-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white rounded-xl font-medium shadow-lg shadow-indigo-200 transition-all hover:scale-105 flex items-center gap-2 justify-center whitespace-nowrap">
+                  <Wand2 className="h-5 w-5" />
+                  Plan an Event
+                </button>
+              </Link>
+            </div>
             <FilterControls
               category={category}
               priceRange={priceRange}
