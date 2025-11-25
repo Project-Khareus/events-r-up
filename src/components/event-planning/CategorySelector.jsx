@@ -4,64 +4,50 @@ import { Card } from "@/components/ui/card";
 import { ChevronLeft, Check } from "lucide-react";
 
 const EVENT_CATEGORY_MAP = {
-  birthday: [
+  weddings: [
+    { value: "bridal_fashion", label: "Bridal Fashion & Accessories", description: "Wedding dresses, veils, suits" },
+    { value: "makeup_artistes", label: "Make-Up Artistes", description: "Bridal makeup & hair" },
+    { value: "decor_logistics", label: "Décor & Logistics Setup", description: "Venue decoration & setup" },
+    { value: "event_grounds", label: "Event Grounds", description: "Wedding venues" },
+    { value: "photography_videography", label: "Photography & Videography", description: "Photos & video coverage" },
+    { value: "design_creatives", label: "Design & Creatives", description: "Invitations & stationery" },
     { value: "catering", label: "Catering", description: "Food & beverages" },
-    { value: "bakery", label: "Bakery", description: "Cakes & desserts" },
-    { value: "dj_music", label: "DJ & Music", description: "Entertainment" },
-    { value: "entertainment", label: "Entertainment", description: "Performers & activities" },
-    { value: "decorator", label: "Decorator", description: "Venue decoration" },
-    { value: "photography", label: "Photography", description: "Photo services" },
-    { value: "videography", label: "Videography", description: "Video services" }
+    { value: "jewellery", label: "Jewellery", description: "Rings & accessories" },
+    { value: "honeymoon_packages", label: "Honeymoon / Destination Packages", description: "Travel & honeymoon" },
+    { value: "music_karaoke_mc", label: "Music / Karaoke / MCs", description: "DJ, band, MC services" },
+    { value: "car_rentals", label: "Car Rentals", description: "Wedding transportation" },
+    { value: "social_media_support", label: "Social Media Support", description: "Live coverage & content" },
+    { value: "ushers", label: "Ushers", description: "Guest management" },
+    { value: "dance_tutorials", label: "Couple's First Dance Tutorials", description: "Dance lessons" },
+    { value: "rent_a_team", label: "Rent-a-Team", description: "Bridal train, groomsmen" },
   ],
-  anniversary: [
-    { value: "venue", label: "Venue", description: "Event space" },
+  parties: [
+    { value: "event_grounds", label: "Event Grounds", description: "Party venues" },
+    { value: "makeup_artistes", label: "Make-Up Artistes", description: "Party makeup & styling" },
+    { value: "decor_logistics", label: "Décor & Logistics Setup", description: "Party decorations" },
+    { value: "photography_videography", label: "Photography & Videography", description: "Event coverage" },
+    { value: "design_creatives", label: "Design & Creatives", description: "Invitations & graphics" },
     { value: "catering", label: "Catering", description: "Food & beverages" },
-    { value: "florist", label: "Florist", description: "Flowers & arrangements" },
-    { value: "photography", label: "Photography", description: "Photo services" },
-    { value: "videography", label: "Videography", description: "Video services" },
-    { value: "dj_music", label: "DJ & Music", description: "Entertainment" }
+    { value: "jewellery", label: "Jewellery", description: "Accessories" },
+    { value: "music_karaoke_mc", label: "Music / Karaoke", description: "DJ & entertainment" },
+    { value: "car_rentals", label: "Car Rentals", description: "Transportation" },
   ],
-  wedding: [
-    { value: "venue", label: "Venue", description: "Wedding venue" },
-    { value: "catering", label: "Catering", description: "Food & beverages" },
-    { value: "florist", label: "Florist", description: "Flowers & arrangements" },
-    { value: "decorator", label: "Decorator", description: "Venue decoration" },
-    { value: "photography", label: "Photography", description: "Photo services" },
-    { value: "videography", label: "Videography", description: "Video services" },
-    { value: "dj_music", label: "DJ & Music", description: "Entertainment" },
-    { value: "planning", label: "Event Planning", description: "Wedding planner" },
-    { value: "lighting", label: "Lighting", description: "Event lighting" },
-    { value: "transportation", label: "Transportation", description: "Guest transport" },
-    { value: "bakery", label: "Bakery", description: "Wedding cake" }
+  conference: [
+    { value: "conference_facilities", label: "Conference Facilities", description: "Meeting rooms & venues" },
+    { value: "catering", label: "Catering", description: "Corporate catering" },
+    { value: "car_rentals", label: "Car Rentals", description: "Executive transport" },
+    { value: "rapporteur_services", label: "Rapporteur Services", description: "Note-taking & documentation" },
+    { value: "music_karaoke_mc", label: "Music / MC", description: "Speakers & entertainment" },
+    { value: "decor_logistics", label: "Décor & Logistics Setup", description: "Event branding & setup" },
   ],
   funeral: [
-    { value: "florist", label: "Florist", description: "Funeral flowers" },
-    { value: "catering", label: "Catering", description: "Reception food" },
-    { value: "venue", label: "Venue", description: "Reception venue" }
+    { value: "caskets", label: "Caskets", description: "Burial caskets" },
+    { value: "catering_drinks", label: "Catering & Drinks", description: "Reception catering" },
+    { value: "decor_logistics", label: "Décor & Logistics Setup", description: "Memorial decorations" },
+    { value: "fashion_wreaths", label: "Fashion / Wreaths", description: "Attire & floral tributes" },
+    { value: "car_rentals", label: "Car Rentals", description: "Funeral transportation" },
+    { value: "others", label: "Others", description: "Additional services" },
   ],
-  graduation: [
-    { value: "venue", label: "Venue", description: "Party venue" },
-    { value: "catering", label: "Catering", description: "Food & beverages" },
-    { value: "photography", label: "Photography", description: "Photo services" },
-    { value: "videography", label: "Videography", description: "Video services" },
-    { value: "decorator", label: "Decorator", description: "Venue decoration" },
-    { value: "bakery", label: "Bakery", description: "Cakes & desserts" }
-  ],
-  other: [
-    { value: "venue", label: "Venue", description: "Event space" },
-    { value: "catering", label: "Catering", description: "Food & beverages" },
-    { value: "photography", label: "Photography", description: "Photo services" },
-    { value: "videography", label: "Videography", description: "Video services" },
-    { value: "dj_music", label: "DJ & Music", description: "Entertainment" },
-    { value: "florist", label: "Florist", description: "Flowers" },
-    { value: "decorator", label: "Decorator", description: "Decoration" },
-    { value: "planning", label: "Event Planning", description: "Event planner" },
-    { value: "lighting", label: "Lighting", description: "Event lighting" },
-    { value: "entertainment", label: "Entertainment", description: "Performers" },
-    { value: "transportation", label: "Transportation", description: "Transport" },
-    { value: "rentals", label: "Rentals", description: "Equipment rental" },
-    { value: "bakery", label: "Bakery", description: "Desserts" }
-  ]
 };
 
 export default function CategorySelector({ eventType, budget, selectedCategories, onChange, onNext, onBack }) {

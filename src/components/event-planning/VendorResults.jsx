@@ -7,22 +7,6 @@ import { ChevronLeft, SlidersHorizontal } from "lucide-react";
 import VendorCard from "../marketplace/VendorCard";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const EVENT_CATEGORY_MAP = {
-  birthday: ["catering", "bakery", "dj_music", "entertainment", "decorator", "photography", "videography"],
-  anniversary: ["venue", "catering", "florist", "photography", "videography", "dj_music"],
-  wedding: ["venue", "catering", "florist", "decorator", "photography", "videography", "dj_music", "planning", "lighting", "transportation", "bakery"],
-  funeral: ["florist", "catering", "venue"],
-  graduation: ["venue", "catering", "photography", "videography", "decorator", "bakery"],
-  other: ["venue", "catering", "photography", "videography", "dj_music", "florist", "decorator", "planning", "lighting", "entertainment", "transportation", "rentals", "bakery"]
-};
-
-const PRICE_VALUES = {
-  "$": 1,
-  "$$": 2,
-  "$$$": 3,
-  "$$$$": 4
-};
-
 function calculateDistance(lat1, lon1, lat2, lon2) {
   const R = 3959; // Earth's radius in miles
   const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -36,13 +20,14 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 }
 
 function parseLocation(locationStr) {
-  // Simple geocoding fallback - you'd use a real geocoding service in production
   const locationMap = {
     "San Francisco": { lat: 37.7749, lng: -122.4194 },
+    "Oakland": { lat: 37.8044, lng: -122.2712 },
+    "San Jose": { lat: 37.3382, lng: -121.8863 },
+    "Berkeley": { lat: 37.8716, lng: -122.2727 },
+    "Napa": { lat: 38.2975, lng: -122.2869 },
     "Los Angeles": { lat: 34.0522, lng: -118.2437 },
     "New York": { lat: 40.7128, lng: -74.0060 },
-    "Chicago": { lat: 41.8781, lng: -87.6298 },
-    "Miami": { lat: 25.7617, lng: -80.1918 }
   };
   
   for (const [city, coords] of Object.entries(locationMap)) {
@@ -67,26 +52,27 @@ export default function VendorResults({ eventType, location, budget, selectedCat
     const budgetValue = parseFloat(budget);
     
     let filtered = vendors.filter(vendor => {
+      // Filter by event type
+      if (vendor.event_type !== eventType) return false;
+      
       // Filter by category
       if (!relevantCategories.includes(vendor.category)) return false;
       
-      // Filter by budget (allow vendors within budget or slightly above)
-      if (vendor.price_range) {
-        const priceValue = PRICE_VALUES[vendor.price_range];
-        const budgetTier = budgetValue < 5000 ? 1 : 
-                          budgetValue < 15000 ? 2 : 
-                          budgetValue < 35000 ? 3 : 4;
-        if (priceValue > budgetTier + 1) return false;
+      // Filter by budget using starting_price
+      if (vendor.starting_price && vendor.starting_price > budgetValue) {
+        return false;
       }
       
       // Filter by location radius
-      const vendorCoords = parseLocation(vendor.location);
-      if (vendorCoords) {
-        const distance = calculateDistance(
-          location.lat, location.lng,
-          vendorCoords.lat, vendorCoords.lng
-        );
-        if (distance > location.radius) return false;
+      if (location?.lat && location?.lng) {
+        const vendorCoords = parseLocation(vendor.location);
+        if (vendorCoords) {
+          const distance = calculateDistance(
+            location.lat, location.lng,
+            vendorCoords.lat, vendorCoords.lng
+          );
+          if (distance > (location.radius || 50)) return false;
+        }
       }
       
       return true;
@@ -95,7 +81,7 @@ export default function VendorResults({ eventType, location, budget, selectedCat
     // Add distance to each vendor
     filtered = filtered.map(vendor => {
       const vendorCoords = parseLocation(vendor.location);
-      const distance = vendorCoords 
+      const distance = vendorCoords && location?.lat && location?.lng
         ? calculateDistance(location.lat, location.lng, vendorCoords.lat, vendorCoords.lng)
         : 999;
       return { ...vendor, distance };
@@ -105,23 +91,59 @@ export default function VendorResults({ eventType, location, budget, selectedCat
     if (prioritize === "proximity") {
       filtered.sort((a, b) => a.distance - b.distance);
     } else {
-      // Sort by budget compatibility
+      // Sort by starting price (budget-friendly first)
       filtered.sort((a, b) => {
-        const priceA = PRICE_VALUES[a.price_range] || 2;
-        const priceB = PRICE_VALUES[b.price_range] || 2;
+        const priceA = a.starting_price || 0;
+        const priceB = b.starting_price || 0;
         return priceA - priceB;
       });
     }
 
     return filtered;
-  }, [vendors, selectedCategories, location, budget, prioritize]);
+  }, [vendors, eventType, selectedCategories, location, budget, prioritize]);
+
+  // Group vendors by category for better display
+  const vendorsByCategory = useMemo(() => {
+    const grouped = {};
+    filteredAndSortedVendors.forEach(vendor => {
+      if (!grouped[vendor.category]) {
+        grouped[vendor.category] = [];
+      }
+      grouped[vendor.category].push(vendor);
+    });
+    return grouped;
+  }, [filteredAndSortedVendors]);
+
+  const categoryLabels = {
+    bridal_fashion: "Bridal Fashion & Accessories",
+    makeup_artistes: "Make-Up Artistes",
+    decor_logistics: "Décor & Logistics Setup",
+    event_grounds: "Event Grounds",
+    photography_videography: "Photography & Videography",
+    design_creatives: "Design & Creatives",
+    catering: "Catering",
+    jewellery: "Jewellery",
+    honeymoon_packages: "Honeymoon / Destination Packages",
+    music_karaoke_mc: "Music / Karaoke / MCs",
+    car_rentals: "Car Rentals",
+    social_media_support: "Social Media Support",
+    ushers: "Ushers",
+    dance_tutorials: "Dance Tutorials",
+    rent_a_team: "Rent-a-Team",
+    conference_facilities: "Conference Facilities",
+    rapporteur_services: "Rapporteur Services",
+    caskets: "Caskets",
+    catering_drinks: "Catering & Drinks",
+    fashion_wreaths: "Fashion / Wreaths",
+    others: "Other Services",
+  };
 
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
         <h2 className="text-2xl font-bold text-slate-900 mb-2">Perfect Vendors for Your Event</h2>
         <p className="text-slate-600">
-          Found {filteredAndSortedVendors.length} vendors matching your criteria
+          Found {filteredAndSortedVendors.length} vendors within your ${parseInt(budget).toLocaleString()} budget
         </p>
       </div>
 
@@ -160,19 +182,38 @@ export default function VendorResults({ eventType, location, budget, selectedCat
             No vendors found matching your criteria
           </p>
           <p className="text-sm text-slate-500">
-            Try adjusting your budget or location radius
+            Try increasing your budget or expanding your location radius
           </p>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredAndSortedVendors.map((vendor) => (
-            <div key={vendor.id} className="relative">
-              <VendorCard vendor={vendor} />
-              {vendor.distance < 999 && (
-                <Badge className="absolute top-4 right-4 bg-indigo-600">
-                  {vendor.distance.toFixed(1)} mi away
-                </Badge>
-              )}
+        <div className="space-y-10">
+          {Object.entries(vendorsByCategory).map(([category, categoryVendors]) => (
+            <div key={category}>
+              <h3 className="text-xl font-bold text-slate-900 mb-4 border-b pb-2">
+                {categoryLabels[category] || category}
+                <span className="text-sm font-normal text-slate-500 ml-2">
+                  ({categoryVendors.length} options)
+                </span>
+              </h3>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {categoryVendors.map((vendor) => (
+                  <div key={vendor.id} className="relative">
+                    <VendorCard vendor={vendor} />
+                    <div className="absolute top-4 right-4 flex flex-col gap-1">
+                      {vendor.starting_price && (
+                        <Badge className="bg-green-600">
+                          From ${vendor.starting_price.toLocaleString()}
+                        </Badge>
+                      )}
+                      {vendor.distance < 999 && (
+                        <Badge className="bg-indigo-600">
+                          {vendor.distance.toFixed(1)} mi
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
         </div>
