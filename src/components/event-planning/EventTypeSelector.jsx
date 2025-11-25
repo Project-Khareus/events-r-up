@@ -2,15 +2,13 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Cake, Heart, Flower2, Music, GraduationCap, MoreHorizontal } from "lucide-react";
+import { Heart, PartyPopper, Building2, Flower2 } from "lucide-react";
 
 const EVENT_TYPES = [
-  { value: "birthday", label: "Birthday", icon: Cake },
-  { value: "anniversary", label: "Anniversary", icon: Heart },
-  { value: "wedding", label: "Wedding/Nuptials", icon: Flower2 },
+  { value: "weddings", label: "Weddings", icon: Heart },
+  { value: "parties", label: "Parties", icon: PartyPopper },
+  { value: "conference", label: "Conference", icon: Building2 },
   { value: "funeral", label: "Funeral", icon: Flower2 },
-  { value: "graduation", label: "Graduation", icon: GraduationCap },
-  { value: "other", label: "Other", icon: MoreHorizontal }
 ];
 
 export default function EventTypeSelector({ value, onChange, onNext }) {
