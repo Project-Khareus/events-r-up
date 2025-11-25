@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Sparkles, TrendingUp, Wand2 } from "lucide-react";
@@ -10,9 +10,19 @@ import VendorCard from "../components/marketplace/VendorCard";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function VendorMarketplace() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const eventParam = urlParams.get("event") || "all";
+  const categoryParam = urlParams.get("category") || "all";
+
   const [searchQuery, setSearchQuery] = useState("");
-  const [category, setCategory] = useState("all");
+  const [eventType, setEventType] = useState(eventParam);
+  const [category, setCategory] = useState(categoryParam);
   const [priceRange, setPriceRange] = useState("all");
+
+  useEffect(() => {
+    setEventType(eventParam);
+    setCategory(categoryParam);
+  }, [eventParam, categoryParam]);
 
   const { data: vendors = [], isLoading } = useQuery({
     queryKey: ['vendors'],
@@ -26,17 +36,19 @@ export default function VendorMarketplace() {
         vendor.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         vendor.services?.some(s => s.toLowerCase().includes(searchQuery.toLowerCase()));
       
+      const matchesEvent = eventType === "all" || vendor.event_type === eventType;
       const matchesCategory = category === "all" || vendor.category === category;
       const matchesPrice = priceRange === "all" || vendor.price_range === priceRange;
 
-      return matchesSearch && matchesCategory && matchesPrice;
+      return matchesSearch && matchesEvent && matchesCategory && matchesPrice;
     });
-  }, [vendors, searchQuery, category, priceRange]);
+  }, [vendors, searchQuery, eventType, category, priceRange]);
 
   const featuredVendors = filteredVendors.filter(v => v.featured);
   const regularVendors = filteredVendors.filter(v => !v.featured);
 
   const handleClearFilters = () => {
+    setEventType("all");
     setCategory("all");
     setPriceRange("all");
     setSearchQuery("");
@@ -81,12 +93,14 @@ export default function VendorMarketplace() {
               </Link>
             </div>
             <FilterControls
-              category={category}
-              priceRange={priceRange}
-              onCategoryChange={setCategory}
-              onPriceChange={setPriceRange}
-              onClearFilters={handleClearFilters}
-            />
+                eventType={eventType}
+                category={category}
+                priceRange={priceRange}
+                onEventChange={setEventType}
+                onCategoryChange={setCategory}
+                onPriceChange={setPriceRange}
+                onClearFilters={handleClearFilters}
+              />
           </div>
         </div>
       </div>
