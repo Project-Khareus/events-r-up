@@ -150,6 +150,9 @@ export default function Navbar() {
                   <DropdownMenuItem asChild>
                     <Link to={createPageUrl("Messages")}>Messages</Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to={createPageUrl("VendorSignup")}>List Your Business</Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                     <LogOut className="h-4 w-4 mr-2" />
                     Sign Out
@@ -165,12 +168,11 @@ export default function Navbar() {
                 >
                   Sign In
                 </Button>
-                <Button 
-                  onClick={() => base44.auth.redirectToLogin()}
-                  className="bg-indigo-600 hover:bg-indigo-700 font-medium"
-                >
-                  Sign Up
-                </Button>
+                <Link to={createPageUrl("VendorSignup")}>
+                  <Button className="bg-indigo-600 hover:bg-indigo-700 font-medium">
+                    List Your Business
+                  </Button>
+                </Link>
               </>
             )}
           </div>
@@ -213,6 +215,9 @@ export default function Navbar() {
                   <Link to={createPageUrl("Messages")} className="block py-2 text-slate-700">
                     Messages
                   </Link>
+                  <Link to={createPageUrl("VendorSignup")} className="block py-2 text-slate-700">
+                    List Your Business
+                  </Link>
                   <button onClick={handleLogout} className="block py-2 text-red-600">
                     Sign Out
                   </button>
@@ -226,12 +231,11 @@ export default function Navbar() {
                   >
                     Sign In
                   </Button>
-                  <Button 
-                    className="w-full bg-indigo-600 hover:bg-indigo-700" 
-                    onClick={() => base44.auth.redirectToLogin()}
-                  >
-                    Sign Up
-                  </Button>
+                  <Link to={createPageUrl("VendorSignup")} className="w-full">
+                    <Button className="w-full bg-indigo-600 hover:bg-indigo-700">
+                      List Your Business
+                    </Button>
+                  </Link>
                 </>
               )}
             </div>

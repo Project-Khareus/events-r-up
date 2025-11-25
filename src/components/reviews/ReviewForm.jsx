@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Star } from "lucide-react";
+import { Star, ShieldCheck, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 
 export default function ReviewForm({ vendorId, vendorName }) {
@@ -15,8 +15,37 @@ export default function ReviewForm({ vendorId, vendorName }) {
   const [reviewText, setReviewText] = useState("");
   const [reviewerName, setReviewerName] = useState("");
   const [eventType, setEventType] = useState("");
+  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const authenticated = await base44.auth.isAuthenticated();
+      setIsAuthenticated(authenticated);
+      if (authenticated) {
+        const currentUser = await base44.auth.me();
+        setUser(currentUser);
+        setReviewerName(currentUser.full_name || "");
+      }
+    };
+    checkAuth();
+  }, []);
+
+  // Check if user has a completed booking with this vendor
+  const { data: bookings = [] } = useQuery({
+    queryKey: ['user-bookings', vendorId, user?.id],
+    queryFn: () => base44.entities.Booking.filter({ 
+      vendor_id: vendorId, 
+      status: "completed" 
+    }),
+    enabled: !!user?.id,
+  });
+
+  const hasCompletedBooking = bookings.some(
+    booking => booking.user_id === user?.id || booking.created_by === user?.email
+  );
 
   const createReviewMutation = useMutation({
     mutationFn: (reviewData) => base44.entities.Review.create(reviewData),
@@ -24,7 +53,6 @@ export default function ReviewForm({ vendorId, vendorName }) {
       queryClient.invalidateQueries({ queryKey: ['reviews', vendorId] });
       setRating(0);
       setReviewText("");
-      setReviewerName("");
       setEventType("");
       toast.success("Review submitted successfully!");
     },
@@ -50,13 +78,54 @@ export default function ReviewForm({ vendorId, vendorName }) {
       vendor_id: vendorId,
       rating,
       review_text: reviewText,
-      reviewer_name: reviewerName || "Anonymous",
+      reviewer_name: reviewerName || user?.full_name || "Anonymous",
       event_type: eventType
     });
   };
 
+  // Not authenticated
+  if (!isAuthenticated) {
+    return (
+      <Card className="p-8 rounded-2xl border-slate-200 shadow-sm">
+        <div className="text-center">
+          <AlertCircle className="h-12 w-12 text-slate-400 mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-slate-900 mb-2">Sign In to Review</h2>
+          <p className="text-slate-600 mb-4">
+            You must be signed in to leave a review.
+          </p>
+          <Button 
+            onClick={() => base44.auth.redirectToLogin(window.location.href)}
+            className="bg-indigo-600 hover:bg-indigo-700"
+          >
+            Sign In
+          </Button>
+        </div>
+      </Card>
+    );
+  }
+
+  // No completed booking
+  if (!hasCompletedBooking) {
+    return (
+      <Card className="p-8 rounded-2xl border-slate-200 shadow-sm">
+        <div className="text-center">
+          <ShieldCheck className="h-12 w-12 text-slate-400 mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-slate-900 mb-2">Verified Reviews Only</h2>
+          <p className="text-slate-600">
+            Only customers who have completed a booking with this vendor can leave a review.
+            This ensures all reviews are from genuine customers.
+          </p>
+        </div>
+      </Card>
+    );
+  }
+
   return (
     <Card className="p-8 rounded-2xl border-slate-200 shadow-sm">
+      <div className="flex items-center gap-2 mb-6">
+        <ShieldCheck className="h-5 w-5 text-green-600" />
+        <span className="text-sm text-green-600 font-medium">Verified Purchase</span>
+      </div>
       <h2 className="text-2xl font-bold text-slate-900 mb-6">Write a Review</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Star Rating */}
@@ -111,7 +180,7 @@ export default function ReviewForm({ vendorId, vendorName }) {
         {/* Reviewer Name */}
         <div>
           <Label htmlFor="reviewer-name" className="text-base mb-3 block">
-            Your Name (optional)
+            Your Name
           </Label>
           <Input
             id="reviewer-name"
