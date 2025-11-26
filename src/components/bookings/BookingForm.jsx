@@ -9,7 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Calendar as CalendarIcon, Users } from "lucide-react";
 import { toast } from "sonner";
 
-export default function BookingForm({ vendorId, vendorName }) {
+export default function BookingForm({ vendorId, vendorName, compact = false }) {
   const [eventDate, setEventDate] = useState("");
   const [guestCount, setGuestCount] = useState("");
   const [message, setMessage] = useState("");
@@ -59,6 +59,66 @@ export default function BookingForm({ vendorId, vendorName }) {
       message: message.trim()
     });
   };
+
+  if (compact) {
+    return (
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <Label htmlFor="event-date-compact" className="text-sm mb-2 block flex items-center gap-2">
+            <CalendarIcon className="h-4 w-4 text-slate-500" />
+            Event Date *
+          </Label>
+          <Input
+            id="event-date-compact"
+            type="date"
+            value={eventDate}
+            onChange={(e) => setEventDate(e.target.value)}
+            min={new Date().toISOString().split('T')[0]}
+            className="rounded-xl"
+            required
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="guest-count-compact" className="text-sm mb-2 block flex items-center gap-2">
+            <Users className="h-4 w-4 text-slate-500" />
+            Number of Guests *
+          </Label>
+          <Input
+            id="guest-count-compact"
+            type="number"
+            min="1"
+            placeholder="e.g., 50"
+            value={guestCount}
+            onChange={(e) => setGuestCount(e.target.value)}
+            className="rounded-xl"
+            required
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="message-compact" className="text-sm mb-2 block">
+            Additional Details
+          </Label>
+          <Textarea
+            id="message-compact"
+            placeholder="Tell us about your event..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            className="min-h-20 resize-none rounded-xl"
+          />
+        </div>
+
+        <Button
+          type="submit"
+          disabled={createBookingMutation.isPending}
+          className="w-full bg-indigo-600 hover:bg-indigo-700 rounded-xl h-11"
+        >
+          {createBookingMutation.isPending ? "Submitting..." : "Submit Request"}
+        </Button>
+      </form>
+    );
+  }
 
   return (
     <Card className="p-8 rounded-2xl border-slate-200 shadow-sm">
