@@ -57,9 +57,15 @@ export default function VendorCard({ vendor }) {
           )}
           
           {vendor.featured && (
-            <div className="absolute top-4 right-4 bg-amber-400 text-slate-900 px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg font-medium text-sm">
+            <div className="absolute top-4 left-4 bg-amber-400 text-slate-900 px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg font-medium text-sm">
               <Crown className="h-3.5 w-3.5" />
               Featured
+            </div>
+          )}
+
+          {vendor.starting_price && (
+            <div className="absolute bottom-4 right-4 bg-amber-400 text-slate-900 px-3 py-1.5 rounded-lg shadow-lg font-semibold text-sm">
+              From ${vendor.starting_price.toLocaleString()}
             </div>
           )}
 
@@ -76,11 +82,6 @@ export default function VendorCard({ vendor }) {
                 <p className="text-sm text-slate-500 italic line-clamp-1 mt-0.5">"{vendor.slogan}"</p>
               )}
             </div>
-            {vendor.price_range && (
-              <Badge variant="secondary" className="bg-amber-50 text-amber-700 border-amber-200 font-medium shrink-0">
-                {vendor.price_range}
-              </Badge>
-            )}
           </div>
 
           <div className="space-y-2.5 mb-4">
