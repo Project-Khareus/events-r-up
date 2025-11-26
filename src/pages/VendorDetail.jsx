@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, MapPin, Star, Mail, Phone, Globe, CheckCircle2, Award, Shield } from "lucide-react";
+import { ArrowLeft, MapPin, Star, Mail, Phone, Globe, CheckCircle2, Award, Shield, Instagram, Facebook, Twitter, Linkedin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import RatingStats from "../components/reviews/RatingStats";
@@ -13,6 +13,8 @@ import ReviewForm from "../components/reviews/ReviewForm";
 import ReviewsList from "../components/reviews/ReviewsList";
 import StartConversationButton from "../components/messaging/StartConversationButton";
 import BookingForm from "../components/bookings/BookingForm";
+import ImageGallery from "../components/vendor/ImageGallery";
+import RelatedVendors from "../components/vendor/RelatedVendors";
 
 const CATEGORY_LABELS = {
   venue: "Venue",
@@ -90,39 +92,34 @@ export default function VendorDetail() {
           </Button>
         </Link>
 
-        {/* Hero Image */}
-        {vendor.image_url && (
-          <div className="relative h-96 lg:h-[500px] rounded-3xl overflow-hidden mb-12 shadow-2xl">
-            <img
-              src={vendor.image_url}
-              alt={vendor.business_name}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent" />
-            <div className="absolute bottom-8 left-8 right-8">
+        {/* Image Gallery */}
+        {allImages.length > 0 && (
+          <div className="relative">
+            <ImageGallery images={allImages} businessName={vendor.business_name} />
+            <div className="mb-8">
               <div className="flex items-center gap-3 mb-4 flex-wrap">
-                <Badge variant="secondary" className="bg-white/90 text-slate-900 backdrop-blur-sm">
-                  {CATEGORY_LABELS[vendor.category]}
+                <Badge variant="secondary" className="bg-indigo-100 text-indigo-700 border-indigo-200">
+                  {CATEGORY_LABELS[vendor.category] || vendor.category}
                 </Badge>
-                {vendor.price_range && (
-                  <Badge variant="secondary" className="bg-amber-400/90 text-slate-900 backdrop-blur-sm font-medium">
-                    {vendor.price_range}
+                {vendor.starting_price && (
+                  <Badge variant="secondary" className="bg-amber-400 text-slate-900 font-semibold">
+                    From ${vendor.starting_price.toLocaleString()}
                   </Badge>
                 )}
                 {vendor.years_in_business && (
-                  <Badge variant="secondary" className="bg-white/90 text-slate-900 backdrop-blur-sm">
+                  <Badge variant="secondary" className="bg-slate-100 text-slate-700">
                     {vendor.years_in_business}+ years in business
                   </Badge>
                 )}
               </div>
-              <h1 className="text-4xl lg:text-5xl font-bold text-white mb-3">
+              <h1 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-3">
                 {vendor.business_name}
               </h1>
               {vendor.slogan && (
-                <p className="text-xl text-white/90 italic mb-2">"{vendor.slogan}"</p>
+                <p className="text-xl text-slate-600 italic mb-2">"{vendor.slogan}"</p>
               )}
               {vendor.location && (
-                <div className="flex items-center gap-2 text-white/90 text-lg">
+                <div className="flex items-center gap-2 text-slate-600 text-lg">
                   <MapPin className="h-5 w-5" />
                   <span>{vendor.location}</span>
                 </div>
@@ -193,23 +190,6 @@ export default function VendorDetail() {
               </Card>
             )}
 
-            {/* Gallery */}
-            {allImages.length > 1 && (
-              <Card className="p-8 rounded-2xl border-slate-200 shadow-sm">
-                <h2 className="text-2xl font-bold text-slate-900 mb-6">Gallery</h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {allImages.slice(1).map((imageUrl, index) => (
-                    <div key={index} className="relative h-48 rounded-xl overflow-hidden group">
-                      <img
-                        src={imageUrl}
-                        alt={`Gallery ${index + 1}`}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            )}
           </div>
 
           {/* Sidebar */}
@@ -263,6 +243,42 @@ export default function VendorDetail() {
               <div className="mt-6">
                 <StartConversationButton vendorId={vendor.id} vendorName={vendor.business_name} />
               </div>
+
+              {/* Social Media Links */}
+              {(vendor.instagram || vendor.facebook || vendor.twitter || vendor.linkedin || vendor.tiktok) && (
+                <div className="mt-6 pt-6 border-t border-slate-200">
+                  <h4 className="text-sm font-semibold text-slate-700 mb-3">Follow Us</h4>
+                  <div className="flex gap-3">
+                    {vendor.instagram && (
+                      <a href={`https://instagram.com/${vendor.instagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white hover:opacity-80 transition-opacity">
+                        <Instagram className="h-5 w-5" />
+                      </a>
+                    )}
+                    {vendor.facebook && (
+                      <a href={vendor.facebook.startsWith('http') ? vendor.facebook : `https://facebook.com/${vendor.facebook}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white hover:opacity-80 transition-opacity">
+                        <Facebook className="h-5 w-5" />
+                      </a>
+                    )}
+                    {vendor.twitter && (
+                      <a href={`https://twitter.com/${vendor.twitter.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-sky-500 flex items-center justify-center text-white hover:opacity-80 transition-opacity">
+                        <Twitter className="h-5 w-5" />
+                      </a>
+                    )}
+                    {vendor.linkedin && (
+                      <a href={vendor.linkedin.startsWith('http') ? vendor.linkedin : `https://linkedin.com/in/${vendor.linkedin}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-blue-700 flex items-center justify-center text-white hover:opacity-80 transition-opacity">
+                        <Linkedin className="h-5 w-5" />
+                      </a>
+                    )}
+                    {vendor.tiktok && (
+                      <a href={`https://tiktok.com/@${vendor.tiktok.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-black flex items-center justify-center text-white hover:opacity-80 transition-opacity">
+                        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
+                        </svg>
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
             </Card>
           </div>
         </div>
@@ -276,6 +292,13 @@ export default function VendorDetail() {
             <ReviewsList vendorId={vendor.id} />
           </div>
         </div>
+
+        {/* Related Vendors */}
+        <RelatedVendors 
+          currentVendorId={vendor.id} 
+          category={vendor.category} 
+          eventType={vendor.event_type} 
+        />
       </div>
     </div>
   );
