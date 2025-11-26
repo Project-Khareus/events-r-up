@@ -186,58 +186,68 @@ export default function Navbar() {
           </button>
         </div>
 
+        {/* Mobile Menu Overlay */}
+        {isOpen && (
+          <div 
+            className="md:hidden fixed inset-0 top-16 bg-black/50 z-40"
+            onClick={() => setIsOpen(false)}
+          />
+        )}
+
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="md:hidden py-4 border-t border-slate-200">
-            {EVENT_MENUS.map((menu) => (
-              <div key={menu.value} className="py-2">
-                <p className="font-semibold text-slate-900 px-2 mb-2">{menu.name}</p>
-                <div className="space-y-1">
-                  {menu.categories.map((cat) => (
-                    <Link
-                      key={cat.value}
-                      to={createPageUrl(`VendorMarketplace?event=${menu.value}&category=${cat.value}`)}
-                      className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 rounded-lg"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {cat.label}
-                    </Link>
-                  ))}
+          <div className="md:hidden fixed top-16 left-0 right-0 bottom-0 bg-white z-50 overflow-y-auto">
+            <div className="py-4 px-4">
+              {EVENT_MENUS.map((menu) => (
+                <div key={menu.value} className="py-2">
+                  <p className="font-semibold text-slate-900 px-2 mb-2">{menu.name}</p>
+                  <div className="space-y-1">
+                    {menu.categories.map((cat) => (
+                      <Link
+                        key={cat.value}
+                        to={createPageUrl(`VendorMarketplace?event=${menu.value}&category=${cat.value}`)}
+                        className="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 rounded-lg"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        {cat.label}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-            <div className="border-t border-slate-200 mt-4 pt-4 px-2 space-y-2">
-              {isAuthenticated ? (
-                <>
-                  <Link to={createPageUrl("Bookings")} className="block py-2 text-slate-700">
-                    My Bookings
-                  </Link>
-                  <Link to={createPageUrl("Messages")} className="block py-2 text-slate-700">
-                    Messages
-                  </Link>
-                  <Link to={createPageUrl("VendorSignup")} className="block py-2 text-slate-700">
-                    List Your Business
-                  </Link>
-                  <button onClick={handleLogout} className="block py-2 text-red-600">
-                    Sign Out
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Button 
-                    variant="outline" 
-                    className="w-full" 
-                    onClick={() => base44.auth.redirectToLogin()}
-                  >
-                    Sign In
-                  </Button>
-                  <Link to={createPageUrl("VendorSignup")} className="w-full">
-                    <Button className="w-full bg-indigo-600 hover:bg-indigo-700">
+              ))}
+              <div className="border-t border-slate-200 mt-4 pt-4 px-2 space-y-2">
+                {isAuthenticated ? (
+                  <>
+                    <Link to={createPageUrl("Bookings")} className="block py-2 text-slate-700" onClick={() => setIsOpen(false)}>
+                      My Bookings
+                    </Link>
+                    <Link to={createPageUrl("Messages")} className="block py-2 text-slate-700" onClick={() => setIsOpen(false)}>
+                      Messages
+                    </Link>
+                    <Link to={createPageUrl("VendorSignup")} className="block py-2 text-slate-700" onClick={() => setIsOpen(false)}>
                       List Your Business
+                    </Link>
+                    <button onClick={handleLogout} className="block py-2 text-red-600">
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Button 
+                      variant="outline" 
+                      className="w-full" 
+                      onClick={() => base44.auth.redirectToLogin()}
+                    >
+                      Sign In
                     </Button>
-                  </Link>
-                </>
-              )}
+                    <Link to={createPageUrl("VendorSignup")} className="w-full" onClick={() => setIsOpen(false)}>
+                      <Button className="w-full bg-indigo-600 hover:bg-indigo-700">
+                        List Your Business
+                      </Button>
+                    </Link>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         )}
