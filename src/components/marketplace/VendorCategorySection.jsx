@@ -23,7 +23,12 @@ export default function VendorCategorySection({ title, eventType, category, vend
     <div className="mb-10">
       {/* Header */}
       <div className="flex items-center justify-between mb-4 px-1">
-        <h2 className="text-xl font-bold text-slate-900">{title}</h2>
+        <Link 
+          to={createPageUrl(`VendorMarketplace?event=${eventType}&category=${category}`)}
+          className="text-xl font-bold text-slate-900 hover:text-indigo-600 transition-colors"
+        >
+          {title}
+        </Link>
         <Link 
           to={createPageUrl(`VendorMarketplace?event=${eventType}&category=${category}`)}
           className="text-sm font-medium text-indigo-600 hover:text-indigo-700"

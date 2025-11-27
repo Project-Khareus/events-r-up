@@ -102,7 +102,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link to={createPageUrl("VendorMarketplace")} className="flex items-center gap-2">
             <span className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              Omnievents
+              Events R' Up
             </span>
           </Link>
 
