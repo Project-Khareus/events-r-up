@@ -7,7 +7,32 @@ import { createPageUrl } from "../utils";
 import SearchBar from "../components/marketplace/SearchBar";
 import FilterControls from "../components/marketplace/FilterControls";
 import VendorCard from "../components/marketplace/VendorCard";
+import VendorCategorySection from "../components/marketplace/VendorCategorySection";
 import { Skeleton } from "@/components/ui/skeleton";
+
+const CATEGORY_LABELS = {
+  bridal_fashion: "Bridal Fashion & Accessories",
+  makeup_artistes: "Make-Up Artistes",
+  decor_logistics: "Décor & Logistics Setup",
+  event_grounds: "Event Grounds",
+  photography_videography: "Photography & Videography",
+  design_creatives: "Design & Creatives",
+  catering: "Catering",
+  jewellery: "Jewellery",
+  honeymoon_packages: "Honeymoon / Destination Packages",
+  music_karaoke_mc: "Music / Karaoke / MCs",
+  car_rentals: "Car Rentals",
+  social_media_support: "Social Media Support",
+  ushers: "Ushers",
+  dance_tutorials: "Couple's First Dance Tutorials",
+  rent_a_team: "Rent-a-Team",
+  conference_facilities: "Conference Facilities",
+  rapporteur_services: "Rapporteur Services",
+  caskets: "Caskets",
+  catering_drinks: "Catering & Drinks",
+  fashion_wreaths: "Fashion / Wreaths",
+  others: "Others"
+};
 
 export default function VendorMarketplace() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -46,6 +71,20 @@ export default function VendorMarketplace() {
 
   const featuredVendors = filteredVendors.filter(v => v.featured);
   const regularVendors = filteredVendors.filter(v => !v.featured);
+
+  // Group vendors by category for homepage display
+  const isHomepage = eventType === "all" && category === "all" && !searchQuery;
+  const vendorsByCategory = useMemo(() => {
+    if (!isHomepage) return {};
+    const grouped = {};
+    vendors.forEach((vendor) => {
+      if (!grouped[vendor.category]) {
+        grouped[vendor.category] = [];
+      }
+      grouped[vendor.category].push(vendor);
+    });
+    return grouped;
+  }, [vendors, isHomepage]);
 
   const handleClearFilters = () => {
     setEventType("all");
@@ -132,7 +171,44 @@ export default function VendorMarketplace() {
             <h3 className="text-xl font-semibold text-slate-900 mb-2">No vendors found</h3>
             <p className="text-slate-600">Try adjusting your filters or search terms</p>
           </div>
+        ) : isHomepage ? (
+          /* Homepage - Grouped by Category with Carousels */
+          <div className="space-y-8">
+            {/* Featured Section */}
+            {featuredVendors.length > 0 && (
+              <div className="mb-10">
+                <div className="flex items-center gap-2 mb-4 px-1">
+                  <TrendingUp className="h-5 w-5 text-amber-500" />
+                  <h2 className="text-xl font-bold text-slate-900">Featured Vendors</h2>
+                </div>
+                <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {featuredVendors.slice(0, 4).map((vendor) => (
+                    <VendorCard key={vendor.id} vendor={vendor} />
+                  ))}
+                </div>
+                <div className="md:hidden flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-1 pb-2" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+                  {featuredVendors.map((vendor) => (
+                    <div key={vendor.id} className="flex-shrink-0 w-72 snap-start">
+                      <VendorCard vendor={vendor} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Category Sections */}
+            {Object.entries(vendorsByCategory).map(([cat, catVendors]) => (
+              <VendorCategorySection
+                key={cat}
+                title={CATEGORY_LABELS[cat] || cat}
+                eventType={catVendors[0]?.event_type || "all"}
+                category={cat}
+                vendors={catVendors}
+              />
+            ))}
+          </div>
         ) : (
+          /* Filtered View - Grid Layout */
           <div className="space-y-12">
             {/* Featured Vendors */}
             {featuredVendors.length > 0 && (
