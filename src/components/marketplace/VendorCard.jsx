@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Star, Crown } from "lucide-react";
@@ -34,6 +34,16 @@ export default function VendorCard({ vendor }) {
     ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
     : vendor.rating;
 
+  // Featured is determined by high ratings (4.5+) and having at least 3 reviews
+  const isFeatured = useMemo(() => {
+    if (reviews.length >= 3 && averageRating >= 4.5) {
+      // Add some randomness - 70% chance to show featured badge for qualifying vendors
+      const hash = vendor.id.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+      return hash % 10 < 7;
+    }
+    return false;
+  }, [reviews.length, averageRating, vendor.id]);
+
   return (
     <Link to={createPageUrl(`VendorDetail?id=${vendor.id}`)}>
       <Card className="group overflow-hidden border-slate-200 hover:border-indigo-300 transition-all duration-500 hover:shadow-xl hover:-translate-y-1 bg-white rounded-2xl">
@@ -56,10 +66,10 @@ export default function VendorCard({ vendor }) {
             </div>
           )}
           
-          {vendor.featured && (
+          {isFeatured && (
             <div className="absolute top-4 left-4 bg-amber-400 text-slate-900 px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg font-medium text-sm">
               <Crown className="h-3.5 w-3.5" />
-              Featured
+              Top Rated
             </div>
           )}
 
