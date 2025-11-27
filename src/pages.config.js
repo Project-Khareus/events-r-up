@@ -4,6 +4,8 @@ import Messages from './pages/Messages';
 import Bookings from './pages/Bookings';
 import EventPlanning from './pages/EventPlanning';
 import VendorSignup from './pages/VendorSignup';
+import MyPicks from './pages/MyPicks';
+import Notifications from './pages/Notifications';
 import __Layout from './Layout.jsx';
 
 
@@ -14,6 +16,8 @@ export const PAGES = {
     "Bookings": Bookings,
     "EventPlanning": EventPlanning,
     "VendorSignup": VendorSignup,
+    "MyPicks": MyPicks,
+    "Notifications": Notifications,
 }
 
 export const pagesConfig = {
