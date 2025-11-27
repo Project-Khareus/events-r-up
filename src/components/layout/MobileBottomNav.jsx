@@ -16,8 +16,8 @@ export default function MobileBottomNav() {
   const currentPath = location.pathname;
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 pb-safe">
-      <div className="flex justify-around items-center h-16">
+    <nav className="md:hidden fixed bottom-4 left-3 right-3 bg-white border border-slate-200 z-50 rounded-2xl shadow-lg">
+      <div className="flex justify-around items-center h-14">
         {NAV_ITEMS.map((item) => {
           const pageUrl = createPageUrl(item.page);
           const isActive = currentPath.includes(item.page) || 
@@ -27,10 +27,10 @@ export default function MobileBottomNav() {
             <Link
               key={item.name}
               to={pageUrl}
-              className={`flex flex-col items-center justify-center flex-1 py-2 transition-colors ${
+              className={`flex flex-col items-center justify-center flex-1 py-2 mx-1 rounded-xl transition-all ${
                 isActive 
-                  ? "text-indigo-600" 
-                  : "text-slate-500 hover:text-slate-700"
+                  ? "text-white bg-indigo-600" 
+                  : "text-slate-500 hover:text-white hover:bg-slate-800"
               }`}
             >
               <item.icon className={`h-5 w-5 ${isActive ? "stroke-[2.5]" : ""}`} />
