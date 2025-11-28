@@ -8,6 +8,8 @@ import SearchBar from "../components/marketplace/SearchBar";
 import FilterControls from "../components/marketplace/FilterControls";
 import VendorCard from "../components/marketplace/VendorCard";
 import VendorCategorySection from "../components/marketplace/VendorCategorySection";
+import PromoAdBanner from "../components/marketplace/PromoAdBanner";
+import AdPlaceholderCard from "../components/marketplace/AdPlaceholderCard";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const CATEGORY_LABELS = {
@@ -69,8 +71,13 @@ export default function VendorMarketplace() {
     });
   }, [vendors, searchQuery, eventType, category, priceRange]);
 
-  const featuredVendors = filteredVendors.filter(v => v.featured);
-  const regularVendors = filteredVendors.filter(v => !v.featured);
+  // Pick a random vendor for promo (vendors with high ratings)
+  const promoVendor = useMemo(() => {
+    const eligibleVendors = vendors.filter(v => v.rating >= 4 && v.image_url);
+    if (eligibleVendors.length === 0) return null;
+    const randomIndex = Math.floor(Date.now() / 86400000) % eligibleVendors.length; // Changes daily
+    return eligibleVendors[randomIndex];
+  }, [vendors]);
 
   // Group vendors by category for homepage display
   const isHomepage = eventType === "all" && category === "all" && !searchQuery;
@@ -174,30 +181,51 @@ export default function VendorMarketplace() {
         ) : isHomepage ? (
           /* Homepage - Grouped by Category with Carousels */
           <div className="space-y-8">
-            {/* Featured Section */}
-            {featuredVendors.length > 0 && (
-              <div className="mb-10">
-                <div className="flex items-center gap-2 mb-4 px-1">
-                  <TrendingUp className="h-5 w-5 text-amber-500" />
-                  <h2 className="text-xl font-bold text-slate-900">Featured Vendors</h2>
-                </div>
-                <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {featuredVendors.slice(0, 4).map((vendor) => (
-                    <VendorCard key={vendor.id} vendor={vendor} />
-                  ))}
-                </div>
-                <div className="md:hidden flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-1 pb-2" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
-                  {featuredVendors.map((vendor) => (
-                    <div key={vendor.id} className="flex-shrink-0 w-72 snap-start">
-                      <VendorCard vendor={vendor} />
-                    </div>
-                  ))}
-                </div>
+            {/* Promo Ad Banner */}
+            <PromoAdBanner vendor={promoVendor} />
+
+            {/* Category Sections with Ad Placeholders */}
+            {Object.entries(vendorsByCategory).slice(0, 2).map(([cat, catVendors]) => (
+              <VendorCategorySection
+                key={cat}
+                title={CATEGORY_LABELS[cat] || cat}
+                eventType={catVendors[0]?.event_type || "all"}
+                category={cat}
+                vendors={catVendors}
+              />
+            ))}
+
+            {/* Ad Placeholder Row */}
+            <div className="hidden md:grid md:grid-cols-4 gap-6">
+              <AdPlaceholderCard />
+              {vendors.slice(0, 3).map((vendor) => (
+                <VendorCard key={`ad-row-${vendor.id}`} vendor={vendor} />
+              ))}
+            </div>
+
+            {/* Remaining Category Sections */}
+            {Object.entries(vendorsByCategory).slice(2, 5).map(([cat, catVendors]) => (
+              <VendorCategorySection
+                key={cat}
+                title={CATEGORY_LABELS[cat] || cat}
+                eventType={catVendors[0]?.event_type || "all"}
+                category={cat}
+                vendors={catVendors}
+              />
+            ))}
+
+            {/* Another Ad Row */}
+            {Object.keys(vendorsByCategory).length > 5 && (
+              <div className="hidden md:grid md:grid-cols-4 gap-6">
+                {vendors.slice(3, 6).map((vendor) => (
+                  <VendorCard key={`ad-row2-${vendor.id}`} vendor={vendor} />
+                ))}
+                <AdPlaceholderCard />
               </div>
             )}
 
-            {/* Category Sections */}
-            {Object.entries(vendorsByCategory).map(([cat, catVendors]) => (
+            {/* Rest of Categories */}
+            {Object.entries(vendorsByCategory).slice(5).map(([cat, catVendors]) => (
               <VendorCategorySection
                 key={cat}
                 title={CATEGORY_LABELS[cat] || cat}
