@@ -6,6 +6,7 @@ import EventPlanning from './pages/EventPlanning';
 import VendorSignup from './pages/VendorSignup';
 import MyPicks from './pages/MyPicks';
 import Notifications from './pages/Notifications';
+import CategoryPage from './pages/CategoryPage';
 import __Layout from './Layout.jsx';
 
 
@@ -18,6 +19,7 @@ export const PAGES = {
     "VendorSignup": VendorSignup,
     "MyPicks": MyPicks,
     "Notifications": Notifications,
+    "CategoryPage": CategoryPage,
 }
 
 export const pagesConfig = {
