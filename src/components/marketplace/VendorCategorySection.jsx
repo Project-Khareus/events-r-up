@@ -40,7 +40,7 @@ export default function VendorCategorySection({ title, eventType, category, vend
 
       {/* Desktop Grid */}
       <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {displayVendors.slice(0, 4).map((vendor) => (
+        {vendors.slice(0, 4).map((vendor) => (
           <VendorCard key={vendor.id} vendor={vendor} />
         ))}
       </div>
