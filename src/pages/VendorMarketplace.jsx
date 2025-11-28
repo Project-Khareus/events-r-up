@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
@@ -54,7 +53,7 @@ export default function VendorMarketplace() {
 
   const { data: vendors = [], isLoading } = useQuery({
     queryKey: ['vendors'],
-    queryFn: () => base44.entities.Vendor.list('-featured', 100),
+    queryFn: () => base44.entities.Vendor.list('-created_date', 100),
   });
 
   const filteredVendors = useMemo(() => {
