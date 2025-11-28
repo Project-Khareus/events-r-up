@@ -88,24 +88,32 @@ export default function VendorMarketplace() {
     return eligibleVendors[randomIndex];
   }, [vendors]);
 
-  // Group vendors by category for homepage display
+  // Group vendors by event type then category for homepage display
   const isHomepage = eventType === "all" && category === "all" && !searchQuery;
-  const vendorsByCategory = useMemo(() => {
-    if (!isHomepage) return {};
+  const vendorsByEventAndCategory = useMemo(() => {
+    if (!isHomepage) return [];
+    const eventOrder = ["weddings", "parties", "conference", "funeral"];
     const grouped = {};
+    
     vendors.forEach((vendor) => {
-      if (!grouped[vendor.category]) {
-        grouped[vendor.category] = [];
+      const key = `${vendor.event_type}_${vendor.category}`;
+      if (!grouped[key]) {
+        grouped[key] = {
+          eventType: vendor.event_type,
+          category: vendor.category,
+          vendors: []
+        };
       }
-      grouped[vendor.category].push(vendor);
+      grouped[key].vendors.push(vendor);
     });
-    // Only include categories with 4+ vendors (this logic is present in the current code, but was not in the outline, so I am preserving it as part of "preserving all other features")
-    Object.keys(grouped).forEach(cat => {
-      if (grouped[cat].length < 4) {
-        delete grouped[cat];
-      }
+    
+    // Sort by event order, then by category
+    return Object.values(grouped).sort((a, b) => {
+      const eventA = eventOrder.indexOf(a.eventType);
+      const eventB = eventOrder.indexOf(b.eventType);
+      if (eventA !== eventB) return eventA - eventB;
+      return (a.category || "").localeCompare(b.category || "");
     });
-    return grouped;
   }, [vendors, isHomepage]);
 
   const handleClearFilters = () => {
