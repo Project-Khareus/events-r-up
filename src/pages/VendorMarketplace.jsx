@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
@@ -70,6 +71,15 @@ export default function VendorMarketplace() {
       return matchesSearch && matchesEvent && matchesCategory && matchesPrice;
     });
   }, [vendors, searchQuery, eventType, category, priceRange]);
+
+  const featuredVendors = useMemo(() => {
+    return filteredVendors.filter(v => v.rating >= 4).slice(0, 4); // Display up to 4 featured
+  }, [filteredVendors]);
+
+  const regularVendors = useMemo(() => {
+    const featuredIds = new Set(featuredVendors.map(v => v.id));
+    return filteredVendors.filter(v => !featuredIds.has(v.id));
+  }, [filteredVendors, featuredVendors]);
 
   // Pick a random vendor for promo (vendors with high ratings)
   const promoVendor = useMemo(() => {
@@ -182,7 +192,9 @@ export default function VendorMarketplace() {
           /* Homepage - Grouped by Category with Carousels */
           <div className="space-y-8">
             {/* Promo Ad Banner */}
-            <PromoAdBanner vendor={promoVendor} />
+            <div className="-mx-6">
+              <PromoAdBanner vendor={promoVendor} />
+            </div>
 
             {/* Category Sections with Ad Placeholders */}
             {Object.entries(vendorsByCategory).slice(0, 2).map(([cat, catVendors]) => (
