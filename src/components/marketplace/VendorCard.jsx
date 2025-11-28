@@ -47,7 +47,7 @@ export default function VendorCard({ vendor }) {
   return (
     <Link to={createPageUrl(`VendorDetail?id=${vendor.id}`)}>
       <Card className="group overflow-hidden border-slate-200 hover:border-indigo-300 transition-all duration-500 hover:shadow-xl hover:-translate-y-1 bg-white rounded-2xl">
-        <div className="relative h-64 overflow-hidden bg-slate-100">
+        <div className="relative h-48 overflow-hidden bg-slate-100">
           {vendor.image_url ? (
             <img
               src={vendor.image_url}
@@ -92,8 +92,8 @@ export default function VendorCard({ vendor }) {
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         </div>
 
-        <div className="p-6">
-          <div className="flex items-start justify-between gap-3 mb-2">
+        <div className="p-4">
+          <div className="flex items-start justify-between gap-2 mb-1.5">
             <div className="min-w-0 flex-1">
               <h3 className="font-semibold text-xl text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">
                 {vendor.business_name}
@@ -104,7 +104,7 @@ export default function VendorCard({ vendor }) {
             </div>
           </div>
 
-          <div className="space-y-2.5 mb-4">
+          <div className="space-y-1.5 mb-3">
             <div className="flex items-center gap-2 flex-wrap">
               <Badge variant="outline" className="border-indigo-200 text-indigo-700 bg-indigo-50">
                 {CATEGORY_LABELS[vendor.category]}
