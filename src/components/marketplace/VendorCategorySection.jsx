@@ -17,16 +17,8 @@ export default function VendorCategorySection({ title, eventType, category, vend
     }
   };
 
-  if (vendors.length === 0) return null;
-
-  // Calculate how many vendors to show to fill complete rows
-  // lg: 4 cols, md: 2 cols
-  const getCompleteRowCount = (total, cols) => Math.floor(total / cols) * cols || cols;
-  const displayCount = Math.min(
-    vendors.length,
-    Math.max(getCompleteRowCount(vendors.length, 4), 4)
-  );
-  const displayVendors = vendors.slice(0, displayCount > vendors.length ? vendors.length - (vendors.length % 2) || 2 : displayCount);
+  // Hide category if less than 4 vendors (can't fill a complete row on desktop)
+  if (vendors.length < 4) return null;
 
   return (
     <div className="mb-10">
