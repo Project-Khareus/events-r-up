@@ -192,8 +192,8 @@ export default function VendorMarketplace() {
           /* Homepage - Grouped by Category with Carousels */
           <div className="space-y-8">
             {/* Promo Ad Banner */}
-            <div className="-mx-6">
-              <PromoAdBanner vendor={promoVendor} />
+            <div className="-mx-6 lg:mx-auto">
+              <PromoAdBanner vendor={promoVendor} className="lg:max-w-7xl lg:mx-auto lg:rounded-2xl lg:mb-8" />
             </div>
 
             {/* Category Sections with Ad Placeholders */}
