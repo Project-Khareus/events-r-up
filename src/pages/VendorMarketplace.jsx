@@ -99,6 +99,12 @@ export default function VendorMarketplace() {
       }
       grouped[vendor.category].push(vendor);
     });
+    // Only include categories with 4+ vendors
+    Object.keys(grouped).forEach(cat => {
+      if (grouped[cat].length < 4) {
+        delete grouped[cat];
+      }
+    });
     return grouped;
   }, [vendors, isHomepage]);
 
