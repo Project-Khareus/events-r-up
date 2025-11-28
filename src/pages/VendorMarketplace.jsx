@@ -243,7 +243,7 @@ export default function VendorMarketplace() {
 
             {/* Another Ad Row */}
             {vendorsByEventAndCategory.length > 5 && (
-              <div className="hidden md:grid md:grid-cols-4 gap-6">
+              <div className="hidden md:grid md:grid-cols-4 gap-6 items-start">
                 {vendors.slice(3, 6).map((vendor) => (
                   <VendorCard key={`ad-row2-${vendor.id}`} vendor={vendor} />
                 ))}
