@@ -210,13 +210,13 @@ export default function VendorMarketplace() {
             </div>
 
             {/* Category Sections with Ad Placeholders */}
-            {Object.entries(vendorsByCategory).slice(0, 2).map(([cat, catVendors]) => (
+            {vendorsByEventAndCategory.slice(0, 2).map((group) => (
               <VendorCategorySection
-                key={cat}
-                title={CATEGORY_LABELS[cat] || cat}
-                eventType={catVendors[0]?.event_type || "all"}
-                category={cat}
-                vendors={catVendors}
+                key={`${group.eventType}_${group.category}`}
+                title={CATEGORY_LABELS[group.category] || group.category}
+                eventType={group.eventType}
+                category={group.category}
+                vendors={group.vendors}
               />
             ))}
 
@@ -229,18 +229,18 @@ export default function VendorMarketplace() {
             </div>
 
             {/* Remaining Category Sections */}
-            {Object.entries(vendorsByCategory).slice(2, 5).map(([cat, catVendors]) => (
+            {vendorsByEventAndCategory.slice(2, 5).map((group) => (
               <VendorCategorySection
-                key={cat}
-                title={CATEGORY_LABELS[cat] || cat}
-                eventType={catVendors[0]?.event_type || "all"}
-                category={cat}
-                vendors={catVendors}
+                key={`${group.eventType}_${group.category}`}
+                title={CATEGORY_LABELS[group.category] || group.category}
+                eventType={group.eventType}
+                category={group.category}
+                vendors={group.vendors}
               />
             ))}
 
             {/* Another Ad Row */}
-            {Object.keys(vendorsByCategory).length > 5 && (
+            {vendorsByEventAndCategory.length > 5 && (
               <div className="hidden md:grid md:grid-cols-4 gap-6">
                 {vendors.slice(3, 6).map((vendor) => (
                   <VendorCard key={`ad-row2-${vendor.id}`} vendor={vendor} />
@@ -250,13 +250,13 @@ export default function VendorMarketplace() {
             )}
 
             {/* Rest of Categories */}
-            {Object.entries(vendorsByCategory).slice(5).map(([cat, catVendors]) => (
+            {vendorsByEventAndCategory.slice(5).map((group) => (
               <VendorCategorySection
-                key={cat}
-                title={CATEGORY_LABELS[cat] || cat}
-                eventType={catVendors[0]?.event_type || "all"}
-                category={cat}
-                vendors={catVendors}
+                key={`${group.eventType}_${group.category}`}
+                title={CATEGORY_LABELS[group.category] || group.category}
+                eventType={group.eventType}
+                category={group.category}
+                vendors={group.vendors}
               />
             ))}
           </div>
