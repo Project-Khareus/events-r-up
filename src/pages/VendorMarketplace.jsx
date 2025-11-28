@@ -223,7 +223,7 @@ export default function VendorMarketplace() {
             ))}
 
             {/* Ad Placeholder Row */}
-            <div className="hidden md:grid md:grid-cols-4 gap-6">
+            <div className="hidden md:grid md:grid-cols-4 gap-6 items-start">
               <AdPlaceholderCard />
               {vendors.slice(0, 3).map((vendor) => (
                 <VendorCard key={`ad-row-${vendor.id}`} vendor={vendor} />
