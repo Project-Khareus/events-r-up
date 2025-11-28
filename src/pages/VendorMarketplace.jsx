@@ -175,12 +175,14 @@ export default function VendorMarketplace() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-12">
-        {/* Results Count */}
-        <div className="mb-8">
-          <p className="text-slate-600">
-            <span className="font-semibold text-slate-900">{filteredVendors.length}</span> vendors found
-          </p>
-        </div>
+        {/* Results Count - only show when searching */}
+        {searchQuery && (
+          <div className="mb-8">
+            <p className="text-slate-600">
+              <span className="font-semibold text-slate-900">{filteredVendors.length}</span> vendors found
+            </p>
+          </div>
+        )}
 
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
