@@ -9,9 +9,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Menu, X, ChevronDown, User, LogOut, Sun, Moon, ShoppingCart } from "lucide-react";
+import { Menu, X, ChevronDown, User, LogOut, Sun, Moon } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
-import { useCart } from "../shopping/CartContext";
 
 const EVENT_MENUS = [
   { 
@@ -79,7 +78,6 @@ const EVENT_MENUS = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState(null);
-  const { cartCount } = useCart();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [darkMode, setDarkMode] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -120,16 +118,13 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to={createPageUrl("VendorMarketplace")} className="flex items-center gap-2">
-                            <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69224d81efa2f499554b5019/75b8299d5_logo.png" alt="Events R'Up" className="h-8 w-auto object-contain" />
+                            <span className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                              Events R'Up
+                            </span>
                           </Link>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-1">
-           <Link to={createPageUrl("Shop")}>
-             <Button variant="ghost" className="font-medium">
-               Shop
-             </Button>
-           </Link>
           {EVENT_MENUS.map((menu) => (
               <DropdownMenu key={menu.value}>
                 <DropdownMenuTrigger asChild>
@@ -156,16 +151,6 @@ export default function Navbar() {
 
           {/* Dark Mode Toggle & Auth Buttons */}
           <div className="hidden md:flex items-center gap-3">
-          <Link to={createPageUrl("Cart")}>
-            <Button variant="ghost" size="icon" className="relative">
-              <ShoppingCart className="h-5 w-5 text-slate-600" />
-              {cartCount > 0 && (
-                <span className="absolute top-0 right-0 h-4 w-4 rounded-full bg-indigo-600 text-white text-[10px] font-bold flex items-center justify-center">
-                  {cartCount}
-                </span>
-              )}
-            </Button>
-          </Link>
           <div className="flex items-center gap-2 mr-2">
               <Sun className="h-4 w-4 text-slate-500" />
               <Switch 

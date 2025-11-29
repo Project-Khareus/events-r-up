@@ -2,14 +2,10 @@ import React from "react";
 import Navbar from "./components/layout/Navbar";
 import MobileBottomNav from "./components/layout/MobileBottomNav";
 import Footer from "./components/layout/Footer";
-import { CartProvider } from "./components/shopping/CartContext";
-import { Toaster } from "@/components/ui/sonner";
 
 export default function Layout({ children }) {
   return (
-    <CartProvider>
-      <div className="min-h-screen bg-slate-50 flex flex-col">
-        <Toaster />
+    <div className="min-h-screen bg-slate-50 flex flex-col">
       <style>{`
                     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&display=swap');
                     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -54,7 +50,6 @@ export default function Layout({ children }) {
       <main className="pb-20 md:pb-0 flex-1">{children}</main>
       <Footer />
       <MobileBottomNav />
-      </div>
-    </CartProvider>
+    </div>
   );
 }

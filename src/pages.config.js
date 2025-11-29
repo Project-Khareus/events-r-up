@@ -8,8 +8,6 @@ import MyPicks from './pages/MyPicks';
 import Notifications from './pages/Notifications';
 import CategoryPage from './pages/CategoryPage';
 import LegalPage from './pages/LegalPage';
-import Shop from './pages/Shop';
-import ProductDetail from './pages/ProductDetail';
 import __Layout from './Layout.jsx';
 
 
@@ -24,8 +22,6 @@ export const PAGES = {
     "Notifications": Notifications,
     "CategoryPage": CategoryPage,
     "LegalPage": LegalPage,
-    "Shop": Shop,
-    "ProductDetail": ProductDetail,
 }
 
 export const pagesConfig = {
