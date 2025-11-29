@@ -116,9 +116,9 @@ export default function Navbar() {
                     <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-64 max-h-96 overflow-y-auto">
+                <DropdownMenuContent align="start" className="w-64 max-h-96 overflow-y-auto rounded-none border-slate-200">
                   {menu.categories.map((cat) => (
-                    <DropdownMenuItem key={cat.value} asChild>
+                    <DropdownMenuItem key={cat.value} asChild className="rounded-none hover:bg-slate-900 hover:text-white focus:bg-slate-900 focus:text-white">
                       <Link 
                         to={createPageUrl(`VendorMarketplace?event=${menu.value}&category=${cat.value}`)}
                         className="cursor-pointer"
