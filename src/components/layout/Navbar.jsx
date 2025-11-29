@@ -13,7 +13,7 @@ import { Menu, X, ChevronDown, User, LogOut } from "lucide-react";
 
 const EVENT_MENUS = [
   { 
-    name: "Weddings", 
+    name: "WEDDINGS", 
     value: "weddings",
     categories: [
       { label: "Bridal Fashion & Accessories", value: "bridal_fashion" },
@@ -34,7 +34,7 @@ const EVENT_MENUS = [
     ]
   },
   { 
-    name: "Parties", 
+    name: "PARTIES", 
     value: "parties",
     categories: [
       { label: "Event Grounds", value: "event_grounds" },
@@ -49,7 +49,7 @@ const EVENT_MENUS = [
     ]
   },
   { 
-    name: "Conference", 
+    name: "CONFERENCE", 
     value: "conference",
     categories: [
       { label: "Conference Facilities", value: "conference_facilities" },
@@ -61,7 +61,7 @@ const EVENT_MENUS = [
     ]
   },
   { 
-    name: "Funeral", 
+    name: "FUNERAL", 
     value: "funeral",
     categories: [
       { label: "Caskets", value: "caskets" },
