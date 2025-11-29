@@ -87,32 +87,40 @@ export default function VendorMarketplace() {
     return eligibleVendors[randomIndex];
   }, [vendors]);
 
-  // Group vendors by event type then category for homepage display
+  // Group vendors by event type for homepage display
   const isHomepage = eventType === "all" && category === "all" && !searchQuery;
-  const vendorsByEventAndCategory = useMemo(() => {
+  
+  const EVENT_LABELS = {
+    weddings: "Weddings",
+    parties: "Parties",
+    conference: "Conference",
+    funeral: "Funeral"
+  };
+  
+  const vendorsByEvent = useMemo(() => {
     if (!isHomepage) return [];
     const eventOrder = ["weddings", "parties", "conference", "funeral"];
     const grouped = {};
     
     vendors.forEach((vendor) => {
-      const key = `${vendor.event_type}_${vendor.category}`;
+      const key = vendor.event_type;
       if (!grouped[key]) {
         grouped[key] = {
           eventType: vendor.event_type,
-          category: vendor.category,
           vendors: []
         };
       }
       grouped[key].vendors.push(vendor);
     });
     
-    // Sort by event order, then by category
-    return Object.values(grouped).sort((a, b) => {
-      const eventA = eventOrder.indexOf(a.eventType);
-      const eventB = eventOrder.indexOf(b.eventType);
-      if (eventA !== eventB) return eventA - eventB;
-      return (a.category || "").localeCompare(b.category || "");
-    });
+    // Sort by event order, filter out groups with less than 4 vendors
+    return Object.values(grouped)
+      .filter(group => group.vendors.length >= 4)
+      .sort((a, b) => {
+        const eventA = eventOrder.indexOf(a.eventType);
+        const eventB = eventOrder.indexOf(b.eventType);
+        return eventA - eventB;
+      });
   }, [vendors, isHomepage]);
 
   const handleClearFilters = () => {
