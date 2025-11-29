@@ -41,10 +41,10 @@ export default function VendorCategorySection({ title, eventType, category, vend
         </Link>
       </div>
 
-      {/* Desktop Masonry */}
-      <div className="hidden md:block md:columns-2 lg:columns-4 gap-3 space-y-3">
-        {vendors.slice(0, 4).map((vendor) => (
-          <div key={vendor.id} className="break-inside-avoid">
+      {/* Desktop Grid - 4 columns, only show multiples of 4 */}
+      <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-3">
+        {vendors.slice(0, displayCount).map((vendor) => (
+          <div key={vendor.id}>
             <VendorCard vendor={vendor} />
           </div>
         ))}
