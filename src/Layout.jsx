@@ -12,6 +12,39 @@ export default function Layout({ children }) {
                     .font-serif {
                       font-family: 'Playfair Display', Georgia, serif;
                     }
+
+                    /* Dark mode styles */
+                    .dark {
+                      color-scheme: dark;
+                    }
+                    .dark body,
+                    .dark .bg-slate-50,
+                    .dark .bg-white {
+                      background-color: #0f172a !important;
+                      color: #e2e8f0 !important;
+                    }
+                    .dark .bg-gradient-to-br {
+                      background: linear-gradient(to bottom right, #0f172a, #1e293b) !important;
+                    }
+                    .dark .text-slate-900 {
+                      color: #f1f5f9 !important;
+                    }
+                    .dark .text-slate-600,
+                    .dark .text-slate-500 {
+                      color: #94a3b8 !important;
+                    }
+                    .dark .border-slate-200 {
+                      border-color: #334155 !important;
+                    }
+                    .dark .bg-white {
+                      background-color: #1e293b !important;
+                    }
+                    .dark nav.bg-white {
+                      background-color: #0f172a !important;
+                    }
+                    .dark .shadow-xl {
+                      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.3) !important;
+                    }
                   `}</style>
       <Navbar />
       <main className="pb-20 md:pb-0 flex-1">{children}</main>

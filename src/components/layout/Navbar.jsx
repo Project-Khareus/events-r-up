@@ -9,7 +9,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Menu, X, ChevronDown, User, LogOut } from "lucide-react";
+import { Menu, X, ChevronDown, User, LogOut, Sun, Moon } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 
 const EVENT_MENUS = [
   { 
@@ -78,6 +79,22 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('darkMode') === 'true';
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('darkMode', 'true');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('darkMode', 'false');
+    }
+  }, [darkMode]);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -132,8 +149,17 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Auth Buttons */}
+          {/* Dark Mode Toggle & Auth Buttons */}
           <div className="hidden md:flex items-center gap-3">
+            <div className="flex items-center gap-2 mr-2">
+              <Sun className="h-4 w-4 text-slate-500" />
+              <Switch 
+                checked={darkMode} 
+                onCheckedChange={setDarkMode}
+                className="data-[state=checked]:bg-slate-800"
+              />
+              <Moon className="h-4 w-4 text-slate-500" />
+            </div>
             {isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

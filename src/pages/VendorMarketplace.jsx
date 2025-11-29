@@ -219,10 +219,10 @@ export default function VendorMarketplace() {
           </div>
         ) : isHomepage ? (
           /* Homepage - Grouped by Category with Carousels */
-          <div className="space-y-8">
+          <div className="space-y-4">
             {/* Promo Ad Banner */}
-            <div className="-mx-6 lg:mx-auto">
-              <PromoAdBanner vendor={promoVendor} className="lg:max-w-7xl lg:mx-auto lg:rounded-2xl lg:mb-8" />
+            <div className="-mx-6 lg:mx-auto mb-2">
+              <PromoAdBanner vendor={promoVendor} className="lg:max-w-7xl lg:mx-auto lg:rounded-2xl" />
             </div>
 
             {/* Event Type Sections with Horizontal Ads */}
