@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+
 import { MapPin, Star, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../../utils";
@@ -93,29 +93,11 @@ export default function VendorCard({ vendor }) {
         </div>
 
         <div className="p-4">
-          <div className="flex items-start justify-between gap-2 mb-1.5">
-            <div className="min-w-0 flex-1">
-              <h3 className="font-semibold text-xl text-slate-900 group-hover:text-slate-600 transition-colors line-clamp-1">
-                {vendor.business_name}
-              </h3>
-              {vendor.slogan && (
-                <p className="text-sm text-slate-500 italic line-clamp-1 mt-0.5">"{vendor.slogan}"</p>
-              )}
-            </div>
-          </div>
+          <h3 className="font-semibold text-xl text-slate-900 group-hover:text-slate-600 transition-colors line-clamp-1 mb-2">
+            {vendor.business_name}
+          </h3>
 
           <div className="space-y-1.5 mb-3">
-            <div className="flex items-center gap-2 flex-wrap">
-              <Badge variant="outline" className="border-slate-300 text-slate-700 bg-slate-100">
-                {CATEGORY_LABELS[vendor.category]}
-              </Badge>
-              {vendor.years_in_business && (
-                <Badge variant="outline" className="border-slate-200 text-slate-600">
-                  {vendor.years_in_business}+ years
-                </Badge>
-              )}
-            </div>
-
             {vendor.location && (
               <div className="flex items-center gap-1.5 text-slate-500 text-sm">
                 <MapPin className="h-4 w-4" />
