@@ -9,8 +9,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Menu, X, ChevronDown, User, LogOut, Sun, Moon } from "lucide-react";
+import { Menu, X, ChevronDown, User, LogOut, Sun, Moon, ShoppingCart } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
+import { useCart } from "../shopping/CartContext";
 
 const EVENT_MENUS = [
   { 
@@ -78,6 +79,7 @@ const EVENT_MENUS = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const { cartCount } = useCart();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [darkMode, setDarkMode] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -123,7 +125,12 @@ export default function Navbar() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-1">
-            {EVENT_MENUS.map((menu) => (
+           <Link to={createPageUrl("Shop")}>
+             <Button variant="ghost" className="font-medium">
+               Shop
+             </Button>
+           </Link>
+          {EVENT_MENUS.map((menu) => (
               <DropdownMenu key={menu.value}>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center gap-1 font-medium">
@@ -149,7 +156,17 @@ export default function Navbar() {
 
           {/* Dark Mode Toggle & Auth Buttons */}
           <div className="hidden md:flex items-center gap-3">
-            <div className="flex items-center gap-2 mr-2">
+          <Link to={createPageUrl("Cart")}>
+            <Button variant="ghost" size="icon" className="relative">
+              <ShoppingCart className="h-5 w-5 text-slate-600" />
+              {cartCount > 0 && (
+                <span className="absolute top-0 right-0 h-4 w-4 rounded-full bg-indigo-600 text-white text-[10px] font-bold flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </Button>
+          </Link>
+          <div className="flex items-center gap-2 mr-2">
               <Sun className="h-4 w-4 text-slate-500" />
               <Switch 
                 checked={darkMode} 
