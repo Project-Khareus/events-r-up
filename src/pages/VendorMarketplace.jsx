@@ -193,39 +193,13 @@ export default function VendorMarketplace() {
               <PromoAdBanner vendor={promoVendor} className="lg:max-w-7xl lg:mx-auto lg:rounded-2xl lg:mb-8" />
             </div>
 
-            {/* Category Sections with Ad Placeholders */}
-            {vendorsByEventAndCategory.slice(0, 2).map((group) => (
+            {/* Event Type Sections */}
+            {vendorsByEventType.map((group) => (
               <VendorCategorySection
-                key={`${group.eventType}_${group.category}`}
-                title={CATEGORY_LABELS[group.category] || group.category}
+                key={group.eventType}
+                title={EVENT_TYPE_LABELS[group.eventType] || group.eventType}
                 eventType={group.eventType}
-                category={group.category}
-                vendors={group.vendors}
-              />
-            ))}
-
-
-
-            {/* Remaining Category Sections - First Half */}
-            {vendorsByEventAndCategory.slice(2, 4).map((group) => (
-              <VendorCategorySection
-                key={`${group.eventType}_${group.category}`}
-                title={CATEGORY_LABELS[group.category] || group.category}
-                eventType={group.eventType}
-                category={group.category}
-                vendors={group.vendors}
-              />
-            ))}
-
-
-
-            {/* Remaining Category Sections - Second Half */}
-            {vendorsByEventAndCategory.slice(4).map((group) => (
-              <VendorCategorySection
-                key={`${group.eventType}_${group.category}`}
-                title={CATEGORY_LABELS[group.category] || group.category}
-                eventType={group.eventType}
-                category={group.category}
+                category="all"
                 vendors={group.vendors}
               />
             ))}
