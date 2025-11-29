@@ -9,6 +9,8 @@ import FilterControls from "../components/marketplace/FilterControls";
 import VendorCard from "../components/marketplace/VendorCard";
 import VendorCategorySection from "../components/marketplace/VendorCategorySection";
 import PromoAdBanner from "../components/marketplace/PromoAdBanner";
+import SideAdPlaceholder from "../components/marketplace/SideAdPlaceholder";
+import HorizontalAdPlaceholder from "../components/marketplace/HorizontalAdPlaceholder";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const CATEGORY_LABELS = {
@@ -181,7 +183,12 @@ export default function VendorMarketplace() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="max-w-[1400px] mx-auto px-6 py-12">
+        <div className="flex">
+          {/* Left Side Ad */}
+          <SideAdPlaceholder position="left" />
+          
+          <div className="flex-1 min-w-0">
         {/* Results Count - only show when searching */}
         {searchQuery && (
           <div className="mb-8">
@@ -218,16 +225,24 @@ export default function VendorMarketplace() {
               <PromoAdBanner vendor={promoVendor} className="lg:max-w-7xl lg:mx-auto lg:rounded-2xl lg:mb-8" />
             </div>
 
-            {/* Event Type Sections */}
-            {vendorsByEvent.map((group) => (
-              <VendorCategorySection
-                key={group.eventType}
-                title={EVENT_LABELS[group.eventType] || group.eventType}
-                eventType={group.eventType}
-                category="all"
-                vendors={group.vendors}
-              />
+            {/* Event Type Sections with Horizontal Ads */}
+            {vendorsByEvent.map((group, index) => (
+              <React.Fragment key={group.eventType}>
+                <VendorCategorySection
+                  title={EVENT_LABELS[group.eventType] || group.eventType}
+                  eventType={group.eventType}
+                  category="all"
+                  vendors={group.vendors}
+                />
+                {/* Insert horizontal ad after every 2 sections */}
+                {(index + 1) % 2 === 0 && index < vendorsByEvent.length - 1 && (
+                  <HorizontalAdPlaceholder size="medium" />
+                )}
+              </React.Fragment>
             ))}
+            
+            {/* Bottom Horizontal Ad */}
+            <HorizontalAdPlaceholder size="large" />
           </div>
         ) : (
           /* Filtered View - Grid Layout */
@@ -249,6 +264,11 @@ export default function VendorMarketplace() {
               </div>
             )}
 
+            {/* Horizontal Ad between sections */}
+            {featuredVendors.length > 0 && regularVendors.length > 0 && (
+              <HorizontalAdPlaceholder size="small" />
+            )}
+
             {/* Regular Vendors */}
             {regularVendors.length > 0 && (
               <div>
@@ -264,8 +284,16 @@ export default function VendorMarketplace() {
                   </div>
               </div>
             )}
+            
+            {/* Bottom Horizontal Ad */}
+            <HorizontalAdPlaceholder size="large" />
           </div>
         )}
+          </div>
+          
+          {/* Right Side Ad */}
+          <SideAdPlaceholder position="right" />
+        </div>
       </div>
     </div>
   );
