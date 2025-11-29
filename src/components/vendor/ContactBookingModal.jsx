@@ -6,16 +6,18 @@ import { Mail, Phone, Globe, MessageCircle, Calendar, Instagram, Facebook, Twitt
 import StartConversationButton from "../messaging/StartConversationButton";
 import BookingForm from "../bookings/BookingForm";
 
-export default function ContactBookingModal({ vendor }) {
+export default function ContactBookingModal({ vendor, trigger }) {
   const [open, setOpen] = useState(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="fixed bottom-6 right-6 h-14 px-6 bg-indigo-600 hover:bg-indigo-700 rounded-full shadow-xl shadow-indigo-200 z-40 flex items-center gap-2">
-          <MessageCircle className="h-5 w-5" />
-          <span className="hidden sm:inline">Contact / Book</span>
-        </Button>
+        {trigger || (
+          <Button className="fixed bottom-6 right-6 h-14 px-6 bg-indigo-600 hover:bg-indigo-700 rounded-full shadow-xl shadow-indigo-200 z-40 flex items-center gap-2">
+            <MessageCircle className="h-5 w-5" />
+            <span className="hidden sm:inline">Contact / Book</span>
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>

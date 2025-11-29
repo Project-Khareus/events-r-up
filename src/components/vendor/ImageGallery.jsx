@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Maximize2 } from "lucide-react";
 
 export default function ImageGallery({ images, businessName }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -16,51 +16,18 @@ export default function ImageGallery({ images, businessName }) {
   };
 
   return (
-    <>
-      {/* Main Image */}
-      <div 
-        className="relative h-96 lg:h-[500px] rounded-3xl overflow-hidden mb-4 shadow-2xl cursor-pointer group"
-        onClick={() => setIsLightboxOpen(true)}
-      >
-        <img
-          src={images[selectedIndex]}
-          alt={`${businessName} - Image ${selectedIndex + 1}`}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent" />
-        
-        {images.length > 1 && (
-          <>
-            <button
-              onClick={(e) => { e.stopPropagation(); goToPrevious(); }}
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
-            >
-              <ChevronLeft className="h-6 w-6 text-slate-700" />
-            </button>
-            <button
-              onClick={(e) => { e.stopPropagation(); goToNext(); }}
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
-            >
-              <ChevronRight className="h-6 w-6 text-slate-700" />
-            </button>
-            <div className="absolute bottom-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
-              {selectedIndex + 1} / {images.length}
-            </div>
-          </>
-        )}
-      </div>
-
-      {/* Thumbnails */}
+    <div className="flex flex-col lg:flex-row gap-4 h-auto lg:h-[500px]">
+      {/* Thumbnails - Vertical on Desktop, Horizontal on Mobile */}
       {images.length > 1 && (
-        <div className="flex gap-2 overflow-x-auto pb-2 mb-8">
+        <div className="order-2 lg:order-1 flex lg:flex-col gap-3 overflow-auto lg:overflow-y-auto lg:w-24 scrollbar-hide shrink-0">
           {images.map((image, index) => (
             <button
               key={index}
               onClick={() => setSelectedIndex(index)}
-              className={`shrink-0 w-20 h-20 rounded-xl overflow-hidden transition-all ${
+              className={`shrink-0 w-20 h-20 lg:w-24 lg:h-24 rounded-lg overflow-hidden border-2 transition-all ${
                 selectedIndex === index 
-                  ? "ring-2 ring-indigo-600 ring-offset-2" 
-                  : "opacity-70 hover:opacity-100"
+                  ? "border-slate-900 opacity-100" 
+                  : "border-transparent opacity-60 hover:opacity-100 hover:border-slate-300"
               }`}
             >
               <img
@@ -72,6 +39,39 @@ export default function ImageGallery({ images, businessName }) {
           ))}
         </div>
       )}
+
+      {/* Main Image */}
+      <div 
+        className="order-1 lg:order-2 relative flex-1 h-96 lg:h-full bg-slate-100 rounded-2xl overflow-hidden group cursor-pointer"
+        onClick={() => setIsLightboxOpen(true)}
+      >
+        <img
+          src={images[selectedIndex]}
+          alt={`${businessName} - Image ${selectedIndex + 1}`}
+          className="w-full h-full object-cover"
+        />
+        
+        <div className="absolute top-4 right-4 bg-white/90 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-sm">
+          <Maximize2 className="h-5 w-5 text-slate-700" />
+        </div>
+        
+        {images.length > 1 && (
+          <>
+            <button
+              onClick={(e) => { e.stopPropagation(); goToPrevious(); }}
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors opacity-0 group-hover:opacity-100"
+            >
+              <ChevronLeft className="h-6 w-6 text-slate-700" />
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); goToNext(); }}
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors opacity-0 group-hover:opacity-100"
+            >
+              <ChevronRight className="h-6 w-6 text-slate-700" />
+            </button>
+          </>
+        )}
+      </div>
 
       {/* Lightbox */}
       {isLightboxOpen && (
@@ -112,6 +112,6 @@ export default function ImageGallery({ images, businessName }) {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
