@@ -11,28 +11,11 @@ import VendorCategorySection from "../components/marketplace/VendorCategorySecti
 import PromoAdBanner from "../components/marketplace/PromoAdBanner";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const CATEGORY_LABELS = {
-  bridal_fashion: "Bridal Fashion & Accessories",
-  makeup_artistes: "Make-Up Artistes",
-  decor_logistics: "Décor & Logistics Setup",
-  event_grounds: "Event Grounds",
-  photography_videography: "Photography & Videography",
-  design_creatives: "Design & Creatives",
-  catering: "Catering",
-  jewellery: "Jewellery",
-  honeymoon_packages: "Honeymoon / Destination Packages",
-  music_karaoke_mc: "Music / Karaoke / MCs",
-  car_rentals: "Car Rentals",
-  social_media_support: "Social Media Support",
-  ushers: "Ushers",
-  dance_tutorials: "Couple's First Dance Tutorials",
-  rent_a_team: "Rent-a-Team",
-  conference_facilities: "Conference Facilities",
-  rapporteur_services: "Rapporteur Services",
-  caskets: "Caskets",
-  catering_drinks: "Catering & Drinks",
-  fashion_wreaths: "Fashion / Wreaths",
-  others: "Others"
+const EVENT_TYPE_LABELS = {
+  weddings: "Weddings",
+  parties: "Parties",
+  conference: "Conference",
+  funeral: "Funeral"
 };
 
 export default function VendorMarketplace() {
@@ -87,32 +70,32 @@ export default function VendorMarketplace() {
     return eligibleVendors[randomIndex];
   }, [vendors]);
 
-  // Group vendors by event type then category for homepage display
+  // Group vendors by main event type for homepage display
   const isHomepage = eventType === "all" && category === "all" && !searchQuery;
-  const vendorsByEventAndCategory = useMemo(() => {
+  const vendorsByEventType = useMemo(() => {
     if (!isHomepage) return [];
     const eventOrder = ["weddings", "parties", "conference", "funeral"];
     const grouped = {};
     
     vendors.forEach((vendor) => {
-      const key = `${vendor.event_type}_${vendor.category}`;
+      const key = vendor.event_type;
       if (!grouped[key]) {
         grouped[key] = {
           eventType: vendor.event_type,
-          category: vendor.category,
           vendors: []
         };
       }
       grouped[key].vendors.push(vendor);
     });
     
-    // Sort by event order, then by category
-    return Object.values(grouped).sort((a, b) => {
-      const eventA = eventOrder.indexOf(a.eventType);
-      const eventB = eventOrder.indexOf(b.eventType);
-      if (eventA !== eventB) return eventA - eventB;
-      return (a.category || "").localeCompare(b.category || "");
-    });
+    // Sort by event order and filter out groups with less than 4 vendors
+    return Object.values(grouped)
+      .filter(group => group.vendors.length >= 4)
+      .sort((a, b) => {
+        const eventA = eventOrder.indexOf(a.eventType);
+        const eventB = eventOrder.indexOf(b.eventType);
+        return eventA - eventB;
+      });
   }, [vendors, isHomepage]);
 
   const handleClearFilters = () => {
