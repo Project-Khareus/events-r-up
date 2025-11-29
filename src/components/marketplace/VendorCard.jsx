@@ -46,7 +46,7 @@ export default function VendorCard({ vendor }) {
 
   return (
     <Link to={createPageUrl(`VendorDetail?id=${vendor.id}`)}>
-      <Card className="group overflow-hidden border-slate-200 hover:border-indigo-300 transition-all duration-500 hover:shadow-xl hover:-translate-y-1 bg-white rounded-2xl">
+      <Card className="group overflow-hidden border-slate-200 hover:border-slate-400 transition-all duration-500 hover:shadow-xl hover:-translate-y-1 bg-white rounded-2xl">
         <div className="relative h-48 overflow-hidden bg-slate-100">
           {vendor.image_url ? (
             <img
@@ -67,14 +67,14 @@ export default function VendorCard({ vendor }) {
           )}
           
           {isFeatured && (
-            <div className="absolute top-4 left-4 bg-amber-400 text-slate-900 px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg font-medium text-sm">
+            <div className="absolute top-4 left-4 bg-slate-800 text-white px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg font-medium text-sm">
               <Crown className="h-3.5 w-3.5" />
               Top Rated
             </div>
           )}
 
           {vendor.starting_price && (
-            <div className="absolute bottom-4 right-4 bg-amber-400 text-slate-900 px-3 py-1.5 rounded-lg shadow-lg font-semibold text-sm">
+            <div className="absolute bottom-4 right-4 bg-slate-800 text-white px-3 py-1.5 rounded-lg shadow-lg font-semibold text-sm">
               From ${vendor.starting_price.toLocaleString()}
             </div>
           )}
@@ -95,7 +95,7 @@ export default function VendorCard({ vendor }) {
         <div className="p-4">
           <div className="flex items-start justify-between gap-2 mb-1.5">
             <div className="min-w-0 flex-1">
-              <h3 className="font-semibold text-xl text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">
+              <h3 className="font-semibold text-xl text-slate-900 group-hover:text-slate-600 transition-colors line-clamp-1">
                 {vendor.business_name}
               </h3>
               {vendor.slogan && (
@@ -106,7 +106,7 @@ export default function VendorCard({ vendor }) {
 
           <div className="space-y-1.5 mb-3">
             <div className="flex items-center gap-2 flex-wrap">
-              <Badge variant="outline" className="border-indigo-200 text-indigo-700 bg-indigo-50">
+              <Badge variant="outline" className="border-slate-300 text-slate-700 bg-slate-100">
                 {CATEGORY_LABELS[vendor.category]}
               </Badge>
               {vendor.years_in_business && (

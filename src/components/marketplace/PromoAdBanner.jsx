@@ -75,7 +75,7 @@ export default function PromoAdBanner() {
       
       <div className="flex-1 p-4 md:py-6 md:pr-6 flex items-center justify-center relative">
         {activeBanner.badge_text && (
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-gradient-to-r from-pink-500 to-rose-500 text-white px-5 py-2 rounded-full font-semibold text-sm shadow-lg flex items-center gap-2">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-gradient-to-r from-slate-600 to-slate-700 text-white px-5 py-2 rounded-full font-semibold text-sm shadow-lg flex items-center gap-2">
             <ArrowRight className="h-4 w-4" />
             {activeBanner.badge_text}
           </div>

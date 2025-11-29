@@ -126,16 +126,16 @@ export default function VendorMarketplace() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900 text-white">
+      <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
         <div className="max-w-7xl mx-auto px-6 py-20 lg:py-28">
           <div className="max-w-3xl">
             <div className="flex items-center gap-2 mb-6">
-              <Sparkles className="h-6 w-6 text-amber-400" />
-              <span className="text-amber-400 font-medium tracking-wide">Omnievents, lasting memories</span>
+              <Sparkles className="h-6 w-6 text-slate-400" />
+              <span className="text-slate-400 font-medium tracking-wide">Omnievents, lasting memories</span>
             </div>
             <h1 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
               Find Your Perfect
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-200">
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300">
                 Event Vendors
               </span>
             </h1>
@@ -155,7 +155,7 @@ export default function VendorMarketplace() {
                 <SearchBar value={searchQuery} onChange={setSearchQuery} />
               </div>
               <Link to={createPageUrl("EventPlanning")}>
-                <button className="h-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white rounded-xl font-medium shadow-lg shadow-indigo-200 transition-all hover:scale-105 flex items-center gap-2 justify-center whitespace-nowrap">
+                <button className="h-full px-6 py-3 bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-900 hover:to-black text-white rounded-xl font-medium shadow-lg shadow-slate-300 transition-all hover:scale-105 flex items-center gap-2 justify-center whitespace-nowrap">
                   <Wand2 className="h-5 w-5" />
                   Plan an Event
                 </button>
@@ -267,7 +267,7 @@ export default function VendorMarketplace() {
             {featuredVendors.length > 0 && (
               <div>
                 <div className="flex items-center gap-2 mb-6">
-                  <TrendingUp className="h-5 w-5 text-amber-500" />
+                  <TrendingUp className="h-5 w-5 text-slate-500" />
                   <h2 className="text-2xl font-bold text-slate-900">Featured Vendors</h2>
                 </div>
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">

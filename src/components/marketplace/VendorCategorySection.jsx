@@ -26,13 +26,13 @@ export default function VendorCategorySection({ title, eventType, category, vend
       <div className="flex items-center justify-between mb-4 px-1">
         <Link 
           to={createPageUrl(`CategoryPage?category=${category}&event=${eventType}`)}
-          className="text-xl font-bold text-slate-900 hover:text-indigo-600 transition-colors"
+          className="text-xl font-bold text-slate-900 hover:text-slate-600 transition-colors"
         >
           {title}
         </Link>
         <Link 
           to={createPageUrl(`CategoryPage?category=${category}&event=${eventType}`)}
-          className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+          className="text-sm font-medium text-slate-600 hover:text-slate-800"
         >
           See all
         </Link>
