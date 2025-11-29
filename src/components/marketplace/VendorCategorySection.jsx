@@ -38,10 +38,12 @@ export default function VendorCategorySection({ title, eventType, category, vend
         </Link>
       </div>
 
-      {/* Desktop Grid */}
-      <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-3">
+      {/* Desktop Masonry */}
+      <div className="hidden md:block md:columns-2 lg:columns-4 gap-3 space-y-3">
         {vendors.slice(0, 4).map((vendor) => (
-          <VendorCard key={vendor.id} vendor={vendor} />
+          <div key={vendor.id} className="break-inside-avoid">
+            <VendorCard vendor={vendor} />
+          </div>
         ))}
       </div>
 

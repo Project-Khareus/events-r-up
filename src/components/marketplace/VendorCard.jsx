@@ -23,7 +23,7 @@ const CATEGORY_LABELS = {
   bakery: "Bakery & Desserts"
 };
 
-export default function VendorCard({ vendor }) {
+export default function VendorCard({ vendor, size = "auto" }) {
   if (!vendor) return null;
   
   const { data: reviews = [] } = useQuery({
@@ -39,17 +39,30 @@ export default function VendorCard({ vendor }) {
   // Featured is determined by high ratings (4.5+) and having at least 3 reviews
   const isFeatured = useMemo(() => {
     if (reviews.length >= 3 && averageRating >= 4.5) {
-      // Add some randomness - 70% chance to show featured badge for qualifying vendors
       const hash = vendor.id.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
       return hash % 10 < 7;
     }
     return false;
   }, [reviews.length, averageRating, vendor.id]);
 
+  // Determine card size based on vendor id hash for consistent but varied sizing
+  const cardSize = useMemo(() => {
+    if (size !== "auto") return size;
+    const hash = vendor.id.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+    const sizes = ["small", "medium", "medium", "large"];
+    return sizes[hash % 4];
+  }, [vendor.id, size]);
+
+  const imageHeights = {
+    small: "h-40",
+    medium: "h-56",
+    large: "h-72"
+  };
+
   return (
     <Link to={createPageUrl(`VendorDetail?id=${vendor.id}`)}>
       <Card className="group overflow-hidden border border-slate-200 hover:border-slate-400 transition-all duration-500 bg-white rounded-none">
-        <div className="relative h-48 overflow-hidden bg-slate-100">
+        <div className={`relative ${imageHeights[cardSize]} overflow-hidden bg-slate-100`}
           {vendor.image_url ? (
             <img
               src={vendor.image_url}

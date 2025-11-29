@@ -270,11 +270,13 @@ export default function VendorMarketplace() {
                   <TrendingUp className="h-5 w-5 text-slate-500" />
                   <h2 className="text-2xl font-bold text-slate-900">Featured Vendors</h2>
                 </div>
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-                  {featuredVendors.slice(0, featuredVendors.length - (featuredVendors.length % 4) || 4).map((vendor) => (
-                    <VendorCard key={vendor.id} vendor={vendor} />
-                  ))}
-                </div>
+                <div className="columns-2 lg:columns-4 gap-3 space-y-3">
+                        {featuredVendors.slice(0, featuredVendors.length - (featuredVendors.length % 4) || 4).map((vendor) => (
+                          <div key={vendor.id} className="break-inside-avoid">
+                            <VendorCard vendor={vendor} />
+                          </div>
+                        ))}
+                      </div>
               </div>
             )}
 
@@ -284,11 +286,13 @@ export default function VendorMarketplace() {
                 {featuredVendors.length > 0 && (
                   <h2 className="text-2xl font-bold text-slate-900 mb-6">All Vendors</h2>
                 )}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-                  {regularVendors.slice(0, regularVendors.length - (regularVendors.length % 4) || regularVendors.length).map((vendor) => (
-                    <VendorCard key={vendor.id} vendor={vendor} />
-                  ))}
-                </div>
+                <div className="columns-2 lg:columns-4 gap-3 space-y-3">
+                    {regularVendors.slice(0, regularVendors.length - (regularVendors.length % 4) || regularVendors.length).map((vendor) => (
+                      <div key={vendor.id} className="break-inside-avoid">
+                        <VendorCard vendor={vendor} />
+                      </div>
+                    ))}
+                  </div>
               </div>
             )}
           </div>
