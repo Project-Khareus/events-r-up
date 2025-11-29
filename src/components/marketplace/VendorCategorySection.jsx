@@ -39,7 +39,7 @@ export default function VendorCategorySection({ title, eventType, category, vend
       </div>
 
       {/* Desktop Grid */}
-      <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-3">
         {vendors.slice(0, 4).map((vendor) => (
           <VendorCard key={vendor.id} vendor={vendor} />
         ))}
@@ -64,7 +64,7 @@ export default function VendorCategorySection({ title, eventType, category, vend
         {/* Scrollable Container */}
         <div
           ref={scrollRef}
-          className="flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-1 pb-2"
+          className="flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-1 pb-2"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {vendors.map((vendor) => (

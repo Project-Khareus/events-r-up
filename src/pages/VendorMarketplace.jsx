@@ -223,7 +223,7 @@ export default function VendorMarketplace() {
             ))}
 
             {/* Ad Placeholder Row 1 */}
-            <div className="hidden md:grid md:grid-cols-4 gap-6 items-start">
+            <div className="hidden md:grid md:grid-cols-4 gap-3 items-start">
               <AdPlaceholderCard />
               {vendors.slice(0, 3).map((vendor) => (
                 <VendorCard key={`ad-row-${vendor.id}`} vendor={vendor} />
@@ -242,7 +242,7 @@ export default function VendorMarketplace() {
             ))}
 
             {/* Ad Placeholder Row 2 - Middle */}
-            <div className="hidden md:grid md:grid-cols-4 gap-6 items-start">
+            <div className="hidden md:grid md:grid-cols-4 gap-3 items-start">
               {vendors.slice(3, 6).map((vendor) => (
                 <VendorCard key={`ad-row-mid-${vendor.id}`} vendor={vendor} />
               ))}
@@ -270,7 +270,7 @@ export default function VendorMarketplace() {
                   <TrendingUp className="h-5 w-5 text-slate-500" />
                   <h2 className="text-2xl font-bold text-slate-900">Featured Vendors</h2>
                 </div>
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                   {featuredVendors.slice(0, featuredVendors.length - (featuredVendors.length % 4) || 4).map((vendor) => (
                     <VendorCard key={vendor.id} vendor={vendor} />
                   ))}
@@ -284,7 +284,7 @@ export default function VendorMarketplace() {
                 {featuredVendors.length > 0 && (
                   <h2 className="text-2xl font-bold text-slate-900 mb-6">All Vendors</h2>
                 )}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                   {regularVendors.slice(0, regularVendors.length - (regularVendors.length % 4) || regularVendors.length).map((vendor) => (
                     <VendorCard key={vendor.id} vendor={vendor} />
                   ))}
