@@ -17,8 +17,11 @@ export default function VendorCategorySection({ title, eventType, category, vend
     }
   };
 
-  // Hide category if no vendors
-  if (vendors.length === 0) return null;
+  // Hide category if less than 4 vendors
+  if (vendors.length < 4) return null;
+  
+  // Only show multiples of 4 on desktop to avoid orphan cards
+  const displayCount = Math.floor(vendors.length / 4) * 4;
 
   return (
     <div className="mb-10">
