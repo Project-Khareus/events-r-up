@@ -118,10 +118,8 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to={createPageUrl("VendorMarketplace")} className="flex items-center gap-2">
-            <span className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              Events R'Up
-            </span>
-          </Link>
+                            <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69224d81efa2f499554b5019/75b8299d5_logo.png" alt="Events R'Up" className="h-8 w-auto object-contain" />
+                          </Link>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-1">
