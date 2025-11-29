@@ -34,6 +34,8 @@ const CATEGORY_LABELS = {
 export default function VendorCard({ vendor, size = "auto" }) {
   if (!vendor) return null;
   
+  const [imageError, setImageError] = React.useState(false);
+  
   const { data: reviews = [] } = useQuery({
     queryKey: ['reviews', vendor.id],
     queryFn: () => base44.entities.Review.filter({ vendor_id: vendor.id }),
@@ -71,21 +73,18 @@ export default function VendorCard({ vendor, size = "auto" }) {
     <Link to={createPageUrl(`VendorDetail?id=${vendor.id}`)}>
       <Card className="group overflow-hidden border border-slate-200 hover:border-slate-400 transition-all duration-500 bg-white rounded-none">
         <div className={`relative ${imageHeights[cardSize]} overflow-hidden bg-slate-100`}>
-          {vendor.image_url ? (
+          {vendor.image_url && !imageError ? (
             <img
               src={vendor.image_url}
               alt={vendor.business_name}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              onError={() => setImageError(true)}
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-50 to-slate-100">
-              {vendor.logo_url ? (
-                <img src={vendor.logo_url} alt={vendor.business_name} className="max-h-32 max-w-[80%] object-contain" />
-              ) : (
-                <span className="text-6xl text-indigo-200">
-                  {vendor.business_name?.[0]?.toUpperCase()}
-                </span>
-              )}
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
+              <span className="text-6xl font-serif text-slate-300">
+                {vendor.business_name?.[0]?.toUpperCase()}
+              </span>
             </div>
           )}
           

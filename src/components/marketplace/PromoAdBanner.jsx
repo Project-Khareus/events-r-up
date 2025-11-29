@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { ArrowRight } from "lucide-react";
 
-export default function PromoAdBanner() {
+export default function PromoAdBanner({ vendor }) {
   const { data: banners = [] } = useQuery({
     queryKey: ['promo-banners'],
     queryFn: () => base44.entities.PromoBanner.filter({ is_active: true }),
@@ -19,8 +19,53 @@ export default function PromoAdBanner() {
     return true;
   });
 
+  // If no active banner, use the passed vendor for dynamic promo
+  if (!activeBanner && vendor) {
+    const vendorImages = [vendor.image_url, ...(vendor.gallery_images || [])].filter(Boolean).slice(0, 8);
+    while (vendorImages.length < 8) {
+      vendorImages.push(null);
+    }
+
+    return (
+      <Link to={createPageUrl(`VendorDetail?id=${vendor.id}`)}>
+        <div className="bg-slate-900 flex flex-col md:flex-row group cursor-pointer hover:bg-slate-800 transition-colors">
+          <div className="flex-shrink-0 p-6 md:p-10 md:w-[320px] flex flex-col justify-center">
+            <div className="text-xs font-medium tracking-widest uppercase text-slate-400 mb-2">Featured Vendor</div>
+            <h3 className="text-xl md:text-2xl font-bold text-white mb-2 leading-tight">
+              {vendor.business_name}
+            </h3>
+            <p className="text-slate-400 text-sm mb-4 line-clamp-2">
+              {vendor.description || vendor.slogan || "Discover exceptional services for your special event."}
+            </p>
+            <div className="bg-white text-slate-900 px-4 py-2 rounded-full font-medium text-sm hover:bg-slate-100 transition-colors w-fit flex items-center gap-2">
+              View Profile
+              <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
+            </div>
+          </div>
+          <div className="flex-1 p-4 md:py-6 md:pr-6 flex items-center justify-center">
+            <div className="grid grid-cols-4 gap-2 md:gap-3 w-full max-w-lg">
+              {vendorImages.map((img, i) => (
+                <div key={i} className="aspect-square bg-slate-800 rounded-lg overflow-hidden">
+                  {img ? (
+                    <img 
+                      src={img} 
+                      alt="" 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-slate-800" />
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Link>
+    );
+  }
+
   if (!activeBanner) {
-    // Placeholder when no active promo
+    // Placeholder when no active promo and no vendor
     return (
       <div className="bg-slate-900 flex flex-col md:flex-row">
         <div className="flex-shrink-0 p-6 md:p-10 md:w-[320px] flex flex-col justify-center">
