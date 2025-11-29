@@ -46,7 +46,7 @@ export default function VendorCard({ vendor }) {
 
   return (
     <Link to={createPageUrl(`VendorDetail?id=${vendor.id}`)}>
-      <Card className="group overflow-hidden border-slate-200 hover:border-slate-400 transition-all duration-500 hover:shadow-xl hover:-translate-y-1 bg-white rounded-2xl">
+      <Card className="group overflow-hidden border border-slate-200 hover:border-slate-400 transition-all duration-500 bg-white rounded-none">
         <div className="relative h-48 overflow-hidden bg-slate-100">
           {vendor.image_url ? (
             <img
