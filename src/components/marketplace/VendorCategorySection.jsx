@@ -17,8 +17,8 @@ export default function VendorCategorySection({ title, eventType, category, vend
     }
   };
 
-  // Hide category if less than 4 vendors (can't fill a complete row on desktop)
-  if (vendors.length < 4) return null;
+  // Hide category if no vendors
+  if (vendors.length === 0) return null;
 
   return (
     <div className="mb-10">
