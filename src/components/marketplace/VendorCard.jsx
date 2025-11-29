@@ -24,6 +24,8 @@ const CATEGORY_LABELS = {
 };
 
 export default function VendorCard({ vendor }) {
+  if (!vendor) return null;
+  
   const { data: reviews = [] } = useQuery({
     queryKey: ['reviews', vendor.id],
     queryFn: () => base44.entities.Review.filter({ vendor_id: vendor.id }),
