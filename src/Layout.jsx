@@ -7,11 +7,12 @@ export default function Layout({ children }) {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&display=swap');
-        .font-serif {
-          font-family: 'Playfair Display', Georgia, serif;
-        }
-      `}</style>
+                    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&display=swap');
+                    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+                    .font-serif {
+                      font-family: 'Playfair Display', Georgia, serif;
+                    }
+                  `}</style>
       <Navbar />
       <main className="pb-20 md:pb-0 flex-1">{children}</main>
       <Footer />
