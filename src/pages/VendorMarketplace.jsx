@@ -11,34 +11,27 @@ import VendorCategorySection from "../components/marketplace/VendorCategorySecti
 import PromoAdBanner from "../components/marketplace/PromoAdBanner";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const EVENT_TYPE_LABELS = {
-  weddings: "Weddings",
-  parties: "Parties",
-  conference: "Conference",
-  funeral: "Funeral"
-};
-
 const CATEGORY_LABELS = {
-  bridal_fashion: "Bridal Fashion",
+  bridal_fashion: "Bridal Fashion & Accessories",
   makeup_artistes: "Make-Up Artistes",
-  decor_logistics: "Décor & Logistics",
+  decor_logistics: "Décor & Logistics Setup",
   event_grounds: "Event Grounds",
   photography_videography: "Photography & Videography",
   design_creatives: "Design & Creatives",
   catering: "Catering",
   jewellery: "Jewellery",
-  honeymoon_packages: "Honeymoon Packages",
+  honeymoon_packages: "Honeymoon / Destination Packages",
   music_karaoke_mc: "Music / Karaoke / MCs",
   car_rentals: "Car Rentals",
   social_media_support: "Social Media Support",
   ushers: "Ushers",
-  dance_tutorials: "Dance Tutorials",
+  dance_tutorials: "Couple's First Dance Tutorials",
   rent_a_team: "Rent-a-Team",
   conference_facilities: "Conference Facilities",
   rapporteur_services: "Rapporteur Services",
   caskets: "Caskets",
   catering_drinks: "Catering & Drinks",
-  fashion_wreaths: "Fashion & Wreaths",
+  fashion_wreaths: "Fashion / Wreaths",
   others: "Others"
 };
 
@@ -113,15 +106,13 @@ export default function VendorMarketplace() {
       grouped[key].vendors.push(vendor);
     });
     
-    // Sort by event order, then by category, and filter out groups with less than 4 vendors
-    return Object.values(grouped)
-      .filter(group => group.vendors.length >= 4)
-      .sort((a, b) => {
-        const eventA = eventOrder.indexOf(a.eventType);
-        const eventB = eventOrder.indexOf(b.eventType);
-        if (eventA !== eventB) return eventA - eventB;
-        return (a.category || "").localeCompare(b.category || "");
-      });
+    // Sort by event order, then by category
+    return Object.values(grouped).sort((a, b) => {
+      const eventA = eventOrder.indexOf(a.eventType);
+      const eventB = eventOrder.indexOf(b.eventType);
+      if (eventA !== eventB) return eventA - eventB;
+      return (a.category || "").localeCompare(b.category || "");
+    });
   }, [vendors, isHomepage]);
 
   const handleClearFilters = () => {
@@ -219,8 +210,34 @@ export default function VendorMarketplace() {
               <PromoAdBanner vendor={promoVendor} className="lg:max-w-7xl lg:mx-auto lg:rounded-2xl lg:mb-8" />
             </div>
 
-            {/* Category Sections */}
-            {vendorsByEventAndCategory.map((group) => (
+            {/* Category Sections with Ad Placeholders */}
+            {vendorsByEventAndCategory.slice(0, 2).map((group) => (
+              <VendorCategorySection
+                key={`${group.eventType}_${group.category}`}
+                title={CATEGORY_LABELS[group.category] || group.category}
+                eventType={group.eventType}
+                category={group.category}
+                vendors={group.vendors}
+              />
+            ))}
+
+
+
+            {/* Remaining Category Sections - First Half */}
+            {vendorsByEventAndCategory.slice(2, 4).map((group) => (
+              <VendorCategorySection
+                key={`${group.eventType}_${group.category}`}
+                title={CATEGORY_LABELS[group.category] || group.category}
+                eventType={group.eventType}
+                category={group.category}
+                vendors={group.vendors}
+              />
+            ))}
+
+
+
+            {/* Remaining Category Sections - Second Half */}
+            {vendorsByEventAndCategory.slice(4).map((group) => (
               <VendorCategorySection
                 key={`${group.eventType}_${group.category}`}
                 title={CATEGORY_LABELS[group.category] || group.category}
