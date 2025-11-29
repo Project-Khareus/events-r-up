@@ -8,19 +8,27 @@ import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 
 const CATEGORY_LABELS = {
-  venue: "Venue",
+  bridal_fashion: "Bridal Fashion",
+  makeup_artistes: "Make-Up",
+  decor_logistics: "Décor & Logistics",
+  event_grounds: "Event Grounds",
+  photography_videography: "Photo & Video",
+  design_creatives: "Design",
   catering: "Catering",
-  photography: "Photography",
-  videography: "Videography",
-  dj_music: "DJ & Music",
-  florist: "Florist",
-  decorator: "Decorator",
-  planning: "Event Planning",
-  lighting: "Lighting",
-  entertainment: "Entertainment",
-  transportation: "Transportation",
-  rentals: "Rentals",
-  bakery: "Bakery & Desserts"
+  jewellery: "Jewellery",
+  honeymoon_packages: "Honeymoon",
+  music_karaoke_mc: "Music & MC",
+  car_rentals: "Car Rentals",
+  social_media_support: "Social Media",
+  ushers: "Ushers",
+  dance_tutorials: "Dance",
+  rent_a_team: "Rent-a-Team",
+  conference_facilities: "Conference",
+  rapporteur_services: "Rapporteur",
+  caskets: "Caskets",
+  catering_drinks: "Catering & Drinks",
+  fashion_wreaths: "Fashion & Wreaths",
+  others: "Others"
 };
 
 export default function VendorCard({ vendor, size = "auto" }) {
@@ -108,7 +116,12 @@ export default function VendorCard({ vendor, size = "auto" }) {
         </div>
 
         <div className="p-4">
-          <h3 className="font-semibold text-xl text-slate-900 group-hover:text-slate-600 transition-colors line-clamp-1 mb-2">
+          {vendor.category && (
+            <span className="text-xs font-medium tracking-widest uppercase text-slate-400 mb-1 block">
+              {CATEGORY_LABELS[vendor.category] || vendor.category}
+            </span>
+          )}
+          <h3 className="font-serif font-bold text-xl text-slate-900 group-hover:text-slate-600 transition-colors line-clamp-1 mb-2 tracking-tight">
             {vendor.business_name}
           </h3>
 

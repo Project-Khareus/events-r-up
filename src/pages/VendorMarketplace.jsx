@@ -119,9 +119,9 @@ export default function VendorMarketplace() {
               <Sparkles className="h-6 w-6 text-slate-400" />
               <span className="text-slate-400 font-medium tracking-wide">Omnievents, lasting memories</span>
             </div>
-            <h1 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+            <h1 className="text-5xl lg:text-6xl font-serif font-bold mb-6 leading-tight tracking-tight">
               Find Your Perfect
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300">
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300 italic">
                 Event Vendors
               </span>
             </h1>
