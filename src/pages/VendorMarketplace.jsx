@@ -7,9 +7,7 @@ import { createPageUrl } from "../utils";
 import SearchBar from "../components/marketplace/SearchBar";
 import FilterControls from "../components/marketplace/FilterControls";
 import VendorCard from "../components/marketplace/VendorCard";
-import VendorCategorySection from "../components/marketplace/VendorCategorySection";
 import PromoAdBanner from "../components/marketplace/PromoAdBanner";
-import AdPlaceholderCard from "../components/marketplace/AdPlaceholderCard";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const CATEGORY_LABELS = {
@@ -88,32 +86,20 @@ export default function VendorMarketplace() {
     return eligibleVendors[randomIndex];
   }, [vendors]);
 
-  // Group vendors by event type then category for homepage display
+  // Check if homepage (no filters applied)
   const isHomepage = eventType === "all" && category === "all" && !searchQuery;
-  const vendorsByEventAndCategory = useMemo(() => {
+  
+  // Shuffle vendors for varied display while keeping it consistent per session
+  const shuffledVendors = useMemo(() => {
     if (!isHomepage) return [];
-    const eventOrder = ["weddings", "parties", "conference", "funeral"];
-    const grouped = {};
-    
-    vendors.forEach((vendor) => {
-      const key = `${vendor.event_type}_${vendor.category}`;
-      if (!grouped[key]) {
-        grouped[key] = {
-          eventType: vendor.event_type,
-          category: vendor.category,
-          vendors: []
-        };
-      }
-      grouped[key].vendors.push(vendor);
-    });
-    
-    // Sort by event order, then by category
-    return Object.values(grouped).sort((a, b) => {
-      const eventA = eventOrder.indexOf(a.eventType);
-      const eventB = eventOrder.indexOf(b.eventType);
-      if (eventA !== eventB) return eventA - eventB;
-      return (a.category || "").localeCompare(b.category || "");
-    });
+    const shuffled = [...vendors];
+    // Deterministic shuffle based on date for consistency
+    const seed = Math.floor(Date.now() / 86400000);
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = (seed + i) % (i + 1);
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
   }, [vendors, isHomepage]);
 
   const handleClearFilters = () => {
@@ -204,61 +190,21 @@ export default function VendorMarketplace() {
             <p className="text-slate-600">Try adjusting your filters or search terms</p>
           </div>
         ) : isHomepage ? (
-          /* Homepage - Grouped by Category with Carousels */
+          /* Homepage - Pinterest-style Masonry Feed */
           <div className="space-y-8">
             {/* Promo Ad Banner */}
             <div className="-mx-6 lg:mx-auto">
               <PromoAdBanner vendor={promoVendor} className="lg:max-w-7xl lg:mx-auto lg:rounded-2xl lg:mb-8" />
             </div>
 
-            {/* Category Sections with Ad Placeholders */}
-            {vendorsByEventAndCategory.slice(0, 2).map((group) => (
-              <VendorCategorySection
-                key={`${group.eventType}_${group.category}`}
-                title={CATEGORY_LABELS[group.category] || group.category}
-                eventType={group.eventType}
-                category={group.category}
-                vendors={group.vendors}
-              />
-            ))}
-
-            {/* Ad Placeholder Row 1 */}
-            <div className="hidden md:grid md:grid-cols-4 gap-3 items-start">
-              <AdPlaceholderCard />
-              {vendors.slice(0, 3).map((vendor) => (
-                <VendorCard key={`ad-row-${vendor.id}`} vendor={vendor} />
+            {/* Continuous Masonry Grid */}
+            <div className="columns-2 md:columns-3 lg:columns-4 gap-3">
+              {shuffledVendors.map((vendor, index) => (
+                <div key={vendor.id} className="break-inside-avoid mb-3">
+                  <VendorCard vendor={vendor} />
+                </div>
               ))}
             </div>
-
-            {/* Remaining Category Sections - First Half */}
-            {vendorsByEventAndCategory.slice(2, 4).map((group) => (
-              <VendorCategorySection
-                key={`${group.eventType}_${group.category}`}
-                title={CATEGORY_LABELS[group.category] || group.category}
-                eventType={group.eventType}
-                category={group.category}
-                vendors={group.vendors}
-              />
-            ))}
-
-            {/* Ad Placeholder Row 2 - Middle */}
-            <div className="hidden md:grid md:grid-cols-4 gap-3 items-start">
-              {vendors.slice(3, 6).map((vendor) => (
-                <VendorCard key={`ad-row-mid-${vendor.id}`} vendor={vendor} />
-              ))}
-              <AdPlaceholderCard />
-            </div>
-
-            {/* Remaining Category Sections - Second Half */}
-            {vendorsByEventAndCategory.slice(4).map((group) => (
-              <VendorCategorySection
-                key={`${group.eventType}_${group.category}`}
-                title={CATEGORY_LABELS[group.category] || group.category}
-                eventType={group.eventType}
-                category={group.category}
-                vendors={group.vendors}
-              />
-            ))}
           </div>
         ) : (
           /* Filtered View - Grid Layout */
