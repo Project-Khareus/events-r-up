@@ -52,10 +52,15 @@ export default function VendorMarketplace() {
     setCategory(categoryParam);
   }, [eventParam, categoryParam]);
 
-  const { data: vendors = [], isLoading } = useQuery({
+  const { data: rawVendors = [], isLoading } = useQuery({
     queryKey: ['vendors'],
     queryFn: () => base44.entities.Vendor.list('-created_date', 100),
   });
+  
+  // Normalize vendor data - handle both flat and nested data structures
+  const vendors = useMemo(() => {
+    return rawVendors.map(v => v.data ? { id: v.id, ...v.data } : v);
+  }, [rawVendors]);
 
   const filteredVendors = useMemo(() => {
     return vendors.filter((vendor) => {
