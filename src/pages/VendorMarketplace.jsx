@@ -9,7 +9,6 @@ import FilterControls from "../components/marketplace/FilterControls";
 import VendorCard from "../components/marketplace/VendorCard";
 import VendorCategorySection from "../components/marketplace/VendorCategorySection";
 import PromoAdBanner from "../components/marketplace/PromoAdBanner";
-import AdPlaceholderCard from "../components/marketplace/AdPlaceholderCard";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const CATEGORY_LABELS = {
@@ -222,13 +221,7 @@ export default function VendorMarketplace() {
               />
             ))}
 
-            {/* Ad Placeholder Row 1 */}
-            <div className="hidden md:grid md:grid-cols-4 gap-3 items-start">
-              <AdPlaceholderCard />
-              {vendors.slice(0, 3).map((vendor) => (
-                <VendorCard key={`ad-row-${vendor.id}`} vendor={vendor} />
-              ))}
-            </div>
+
 
             {/* Remaining Category Sections - First Half */}
             {vendorsByEventAndCategory.slice(2, 4).map((group) => (
@@ -241,13 +234,7 @@ export default function VendorMarketplace() {
               />
             ))}
 
-            {/* Ad Placeholder Row 2 - Middle */}
-            <div className="hidden md:grid md:grid-cols-4 gap-3 items-start">
-              {vendors.slice(3, 6).map((vendor) => (
-                <VendorCard key={`ad-row-mid-${vendor.id}`} vendor={vendor} />
-              ))}
-              <AdPlaceholderCard />
-            </div>
+
 
             {/* Remaining Category Sections - Second Half */}
             {vendorsByEventAndCategory.slice(4).map((group) => (
