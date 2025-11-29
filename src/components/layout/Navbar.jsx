@@ -143,17 +143,17 @@ export default function Navbar() {
                     <ChevronDown className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
+                <DropdownMenuContent align="end" className="rounded-none border-slate-200">
+                  <DropdownMenuItem asChild className="rounded-none hover:bg-slate-900 hover:text-white focus:bg-slate-900 focus:text-white">
                     <Link to={createPageUrl("Bookings")}>My Bookings</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem asChild className="rounded-none hover:bg-slate-900 hover:text-white focus:bg-slate-900 focus:text-white">
                     <Link to={createPageUrl("Messages")}>Messages</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem asChild className="rounded-none hover:bg-slate-900 hover:text-white focus:bg-slate-900 focus:text-white">
                     <Link to={createPageUrl("VendorSignup")}>List Your Business</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                  <DropdownMenuItem onClick={handleLogout} className="rounded-none text-red-600 hover:bg-red-600 hover:text-white focus:bg-red-600 focus:text-white">
                     <LogOut className="h-4 w-4 mr-2" />
                     Sign Out
                   </DropdownMenuItem>
