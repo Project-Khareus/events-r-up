@@ -19,21 +19,25 @@ export default function ImageGallery({ images, businessName }) {
     <div className="flex flex-col lg:flex-row gap-4 h-auto lg:h-[500px]">
       {/* Thumbnails - Vertical on Desktop, Horizontal on Mobile */}
       {images.length > 1 && (
-        <div className="order-2 lg:order-1 flex lg:flex-col gap-3 overflow-auto lg:overflow-y-auto lg:w-[88px] scrollbar-hide shrink-0">
+        <div className="order-2 lg:order-1 flex lg:flex-col gap-3 overflow-auto lg:overflow-y-auto lg:w-[88px] scrollbar-hide shrink-0 py-1">
           {images.map((image, index) => (
             <button
               key={index}
               onClick={() => setSelectedIndex(index)}
-              className={`shrink-0 w-[72px] h-[72px] lg:w-[88px] lg:h-[88px] rounded-xl overflow-hidden border-2 transition-all ${
+              className={`relative shrink-0 w-[72px] h-[72px] lg:w-[88px] lg:h-[88px] rounded-xl overflow-hidden border-2 transition-all bg-slate-100 ${
                 selectedIndex === index 
-                  ? "border-slate-900 opacity-100" 
-                  : "border-transparent opacity-60 hover:opacity-100 hover:border-slate-300"
+                  ? "border-slate-900 opacity-100 shadow-sm" 
+                  : "border-transparent opacity-70 hover:opacity-100 hover:border-slate-300"
               }`}
             >
               <img
                 src={image}
-                alt={`Thumbnail ${index + 1}`}
-                className="w-full h-full object-cover"
+                alt=""
+                className="w-full h-full object-cover block"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.parentNode.classList.add('after:content-[\'📷\']', 'after:flex', 'after:items-center', 'after:justify-center', 'after:w-full', 'after:h-full', 'after:text-slate-300', 'after:text-2xl');
+                }}
               />
             </button>
           ))}
