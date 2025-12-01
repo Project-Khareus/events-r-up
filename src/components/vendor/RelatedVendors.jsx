@@ -13,7 +13,7 @@ export default function RelatedVendors({ currentVendorId, category, eventType, c
   const relatedVendors = vendors.filter(v => 
     v.id !== currentVendorId && 
     (v.category === category || v.event_type === eventType)
-  ).slice(0, compact ? 2 : 4);
+  ).slice(0, compact ? 4 : 8);
 
   if (isLoading) {
     return (
