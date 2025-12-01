@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 
 const EVENT_TYPES = [
-  { value: "all", label: "All Events" },
   { value: "weddings", label: "Weddings" },
   { value: "parties", label: "Parties" },
   { value: "conference", label: "Conference" },
@@ -14,10 +13,8 @@ const EVENT_TYPES = [
 
 const CATEGORIES_BY_EVENT = {
   all: [
-    { value: "all", label: "All Categories" },
   ],
   weddings: [
-    { value: "all", label: "All Categories" },
     { value: "bridal_fashion", label: "Bridal Fashion & Accessories" },
     { value: "makeup_artistes", label: "Make-Up Artistes" },
     { value: "decor_logistics", label: "Décor & Logistics Setup" },
@@ -35,7 +32,6 @@ const CATEGORIES_BY_EVENT = {
     { value: "rent_a_team", label: "Rent-a-Team" },
   ],
   parties: [
-    { value: "all", label: "All Categories" },
     { value: "event_grounds", label: "Event Grounds" },
     { value: "makeup_artistes", label: "Make-Up Artistes" },
     { value: "decor_logistics", label: "Décor & Logistics Setup" },
@@ -47,7 +43,6 @@ const CATEGORIES_BY_EVENT = {
     { value: "car_rentals", label: "Car Rentals" },
   ],
   conference: [
-    { value: "all", label: "All Categories" },
     { value: "conference_facilities", label: "Conference Facilities" },
     { value: "catering", label: "Catering" },
     { value: "car_rentals", label: "Car Rentals" },
@@ -56,7 +51,6 @@ const CATEGORIES_BY_EVENT = {
     { value: "decor_logistics", label: "Décor & Logistics Setup" },
   ],
   funeral: [
-    { value: "all", label: "All Categories" },
     { value: "caskets", label: "Caskets" },
     { value: "catering_drinks", label: "Catering & Drinks" },
     { value: "decor_logistics", label: "Décor & Logistics Setup" },
@@ -67,7 +61,6 @@ const CATEGORIES_BY_EVENT = {
 };
 
 const PRICE_RANGES = [
-  { value: "all", label: "All Prices" },
   { value: "$", label: "$" },
   { value: "$$", label: "$$" },
   { value: "$$$", label: "$$$" },
@@ -93,7 +86,7 @@ export default function FilterControls({
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <Select value={eventType} onValueChange={handleEventChange}>
+      <Select value={eventType === "all" ? undefined : eventType} onValueChange={handleEventChange}>
         <SelectTrigger className="w-40 rounded-xl">
           <SelectValue placeholder="Event Type" />
         </SelectTrigger>
@@ -106,7 +99,7 @@ export default function FilterControls({
         </SelectContent>
       </Select>
 
-      <Select value={category} onValueChange={onCategoryChange}>
+      <Select value={category === "all" ? undefined : category} onValueChange={onCategoryChange} disabled={!categories || categories.length === 0}>
         <SelectTrigger className="w-56 rounded-xl">
           <SelectValue placeholder="Category" />
         </SelectTrigger>
@@ -119,7 +112,7 @@ export default function FilterControls({
         </SelectContent>
       </Select>
 
-      <Select value={priceRange} onValueChange={onPriceChange}>
+      <Select value={priceRange === "all" ? undefined : priceRange} onValueChange={onPriceChange}>
         <SelectTrigger className="w-32 rounded-xl">
           <SelectValue placeholder="Price" />
         </SelectTrigger>
