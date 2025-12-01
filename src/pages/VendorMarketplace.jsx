@@ -120,9 +120,8 @@ export default function VendorMarketplace() {
       grouped[key].vendors.push(vendor);
     });
     
-    // Sort by event order, filter out groups with less than 4 vendors
+    // Sort by event order
     return Object.values(grouped)
-      .filter(group => group.vendors.length >= 4)
       .sort((a, b) => {
         const eventA = eventOrder.indexOf(a.eventType);
         const eventB = eventOrder.indexOf(b.eventType);
@@ -260,12 +259,12 @@ export default function VendorMarketplace() {
                   <h2 className="text-2xl font-bold text-slate-900">Featured Vendors</h2>
                 </div>
                 <div className="columns-2 lg:columns-4 gap-3 space-y-3">
-                        {featuredVendors.slice(0, featuredVendors.length - (featuredVendors.length % 4) || 4).map((vendor) => (
-                          <div key={vendor.id} className="break-inside-avoid">
-                            <VendorCard vendor={vendor} />
-                          </div>
-                        ))}
-                      </div>
+                  {featuredVendors.map((vendor) => (
+                    <div key={vendor.id} className="break-inside-avoid">
+                      <VendorCard vendor={vendor} />
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
@@ -281,12 +280,12 @@ export default function VendorMarketplace() {
                   <h2 className="text-2xl font-bold text-slate-900 mb-6">All Vendors</h2>
                 )}
                 <div className="columns-2 lg:columns-4 gap-3 space-y-3">
-                    {regularVendors.slice(0, regularVendors.length - (regularVendors.length % 4) || regularVendors.length).map((vendor) => (
-                      <div key={vendor.id} className="break-inside-avoid">
-                        <VendorCard vendor={vendor} />
-                      </div>
-                    ))}
-                  </div>
+                  {regularVendors.map((vendor) => (
+                    <div key={vendor.id} className="break-inside-avoid">
+                      <VendorCard vendor={vendor} />
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
             

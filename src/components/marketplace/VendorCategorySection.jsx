@@ -17,11 +17,7 @@ export default function VendorCategorySection({ title, eventType, category, vend
     }
   };
 
-  // Hide category if less than 4 vendors
-  if (vendors.length < 4) return null;
-  
-  // Only show multiples of 4 on desktop to avoid orphan cards
-  const displayCount = Math.floor(vendors.length / 4) * 4;
+  if (!vendors || vendors.length === 0) return null;
 
   return (
     <div className="mb-10">
@@ -42,9 +38,9 @@ export default function VendorCategorySection({ title, eventType, category, vend
         </Link>
       </div>
 
-      {/* Desktop Grid - 4 columns, only show multiples of 4 */}
+      {/* Desktop Grid */}
       <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-3">
-        {vendors.slice(0, displayCount).map((vendor) => (
+        {vendors.map((vendor) => (
           <div key={vendor.id}>
             <VendorCard vendor={vendor} />
           </div>
