@@ -53,8 +53,18 @@ export default function VendorMarketplace() {
   }, [eventParam, categoryParam]);
 
   const { data: rawVendors = [], isLoading } = useQuery({
-    queryKey: ['vendors'],
-    queryFn: () => base44.entities.Vendor.list('-created_date', 100),
+    queryKey: ['vendors', eventType, category, priceRange],
+    queryFn: () => {
+      const filters = {};
+      if (eventType !== "all") filters.event_type = eventType;
+      if (category !== "all") filters.category = category;
+      if (priceRange !== "all") filters.price_range = priceRange;
+      
+      if (Object.keys(filters).length > 0) {
+        return base44.entities.Vendor.filter(filters, '-created_date', 200);
+      }
+      return base44.entities.Vendor.list('-created_date', 200);
+    },
   });
   
   // Normalize vendor data - handle both flat and nested data structures
