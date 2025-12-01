@@ -54,23 +54,13 @@ export default function VendorMarketplace() {
 
   const { data: rawVendors = [], isLoading } = useQuery({
     queryKey: ['vendors'],
-    queryFn: () => base44.entities.Vendor.list('-created_date', 300),
+    queryFn: () => base44.entities.Vendor.list('-created_date', 100),
   });
-
-  // Fetch fallback vendors for empty states
-  const { data: rawFallbackVendors = [] } = useQuery({
-    queryKey: ['fallbackVendors'],
-    queryFn: () => base44.entities.Vendor.list('-rating', 8),
-  });
-
+  
   // Normalize vendor data - handle both flat and nested data structures
   const vendors = useMemo(() => {
     return rawVendors.map(v => v.data ? { id: v.id, ...v.data } : v);
   }, [rawVendors]);
-
-  const fallbackVendors = useMemo(() => {
-    return rawFallbackVendors.map(v => v.data ? { id: v.id, ...v.data } : v);
-  }, [rawFallbackVendors]);
 
   const filteredVendors = useMemo(() => {
     return vendors.filter((vendor) => {
@@ -79,9 +69,8 @@ export default function VendorMarketplace() {
         vendor.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         vendor.services?.some(s => s.toLowerCase().includes(searchQuery.toLowerCase()));
       
-      // Case insensitive comparison for safer filtering
-      const matchesEvent = eventType === "all" || (vendor.event_type || "").toLowerCase() === eventType.toLowerCase();
-      const matchesCategory = category === "all" || (vendor.category || "").toLowerCase() === category.toLowerCase();
+      const matchesEvent = eventType === "all" || vendor.event_type === eventType;
+      const matchesCategory = category === "all" || vendor.category === category;
       const matchesPrice = priceRange === "all" || vendor.price_range === priceRange;
 
       return matchesSearch && matchesEvent && matchesCategory && matchesPrice;
@@ -226,35 +215,12 @@ export default function VendorMarketplace() {
             ))}
           </div>
         ) : filteredVendors.length === 0 ? (
-          <div>
-            <div className="text-center py-12 bg-slate-50 rounded-3xl mb-12 border border-slate-100">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white shadow-sm mb-4 text-slate-400">
-                <Sparkles className="h-6 w-6" />
-              </div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-1">No exact matches found</h3>
-              <p className="text-slate-500 mb-6">We couldn't find vendors matching your exact filters, but don't worry!</p>
-              <Button 
-                variant="outline" 
-                onClick={handleClearFilters}
-                className="bg-white hover:bg-slate-50"
-              >
-                Clear Filters & Show All
-              </Button>
+          <div className="text-center py-20">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 mb-4">
+              <Sparkles className="h-8 w-8 text-slate-400" />
             </div>
-            
-            <div>
-              <div className="flex items-center gap-2 mb-6">
-                <TrendingUp className="h-5 w-5 text-slate-500" />
-                <h2 className="text-2xl font-bold text-slate-900">Top Rated Vendors You Might Like</h2>
-              </div>
-              <div className="columns-2 lg:columns-4 gap-3 space-y-3">
-                {(fallbackVendors.length > 0 ? fallbackVendors : vendors.slice(0, 8)).map((vendor) => (
-                  <div key={vendor.id} className="break-inside-avoid">
-                    <VendorCard vendor={vendor} />
-                  </div>
-                ))}
-              </div>
-            </div>
+            <h3 className="text-xl font-semibold text-slate-900 mb-2">No vendors found</h3>
+            <p className="text-slate-600">Try adjusting your filters or search terms</p>
           </div>
         ) : isHomepage ? (
           /* Homepage - Grouped by Category with Carousels */

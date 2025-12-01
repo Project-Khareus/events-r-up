@@ -17,12 +17,7 @@ import {
   ChevronRight,
   Truck,
   RotateCcw,
-  Lock,
-  Instagram,
-  Facebook,
-  Twitter,
-  Youtube,
-  Video
+  Lock
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
@@ -32,7 +27,6 @@ import ReviewsList from "../components/reviews/ReviewsList";
 import ImageGallery from "../components/vendor/ImageGallery";
 import RelatedVendors from "../components/vendor/RelatedVendors";
 import ContactBookingModal from "../components/vendor/ContactBookingModal";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const CATEGORY_LABELS = {
   venue: "Venue",
@@ -193,7 +187,7 @@ export default function VendorDetail() {
               )}
             </div>
 
-            <div className="flex gap-3 mb-6">
+            <div className="flex gap-3 mb-8">
               <div className="flex-1">
                 <ContactBookingModal 
                   vendor={vendor} 
@@ -207,35 +201,6 @@ export default function VendorDetail() {
               <Button variant="outline" className="h-12 w-12 p-0 rounded-lg border-slate-300 hover:bg-slate-50 shrink-0">
                 <Heart className="h-5 w-5" />
               </Button>
-            </div>
-
-            {/* Social Media */}
-            <div className="flex gap-4 mb-8">
-               {vendor.instagram && (
-                  <a href={vendor.instagram} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-pink-600 transition-colors">
-                     <Instagram className="h-5 w-5" />
-                  </a>
-               )}
-               {vendor.facebook && (
-                  <a href={vendor.facebook} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-blue-600 transition-colors">
-                     <Facebook className="h-5 w-5" />
-                  </a>
-               )}
-               {vendor.twitter && (
-                  <a href={vendor.twitter} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-sky-500 transition-colors">
-                     <Twitter className="h-5 w-5" />
-                  </a>
-               )}
-               {vendor.tiktok && (
-                  <a href={vendor.tiktok} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-black transition-colors">
-                     <Video className="h-5 w-5" />
-                  </a>
-               )}
-               {vendor.youtube && (
-                  <a href={vendor.youtube} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-red-600 transition-colors">
-                     <Youtube className="h-5 w-5" />
-                  </a>
-               )}
             </div>
 
             {/* Info Cards */}
@@ -285,77 +250,62 @@ export default function VendorDetail() {
           </div>
         </div>
 
-        {/* Bottom Section - Tabs for compact view */}
-        <div className="mt-12 border-t border-slate-200 pt-12">
-           <div className="grid lg:grid-cols-12 gap-12">
-              <div className="lg:col-span-8">
-                <Tabs defaultValue="description" className="w-full">
-                  <TabsList className="w-full justify-start border-b border-slate-200 rounded-none h-auto p-0 bg-transparent mb-8">
-                    <TabsTrigger 
-                       value="description"
-                       className="rounded-none border-b-2 border-transparent data-[state=active]:border-slate-900 data-[state=active]:bg-transparent px-0 py-3 mr-8 text-base"
-                    >
-                       Description
-                    </TabsTrigger>
-                    <TabsTrigger 
-                       value="services"
-                       className="rounded-none border-b-2 border-transparent data-[state=active]:border-slate-900 data-[state=active]:bg-transparent px-0 py-3 mr-8 text-base"
-                    >
-                       Services
-                    </TabsTrigger>
-                    <TabsTrigger 
-                       value="reviews"
-                       className="rounded-none border-b-2 border-transparent data-[state=active]:border-slate-900 data-[state=active]:bg-transparent px-0 py-3 mr-8 text-base"
-                    >
-                       Reviews ({reviews.length})
-                    </TabsTrigger>
-                  </TabsList>
+        {/* Bottom Section */}
+        <div className="mt-20 grid lg:grid-cols-12 gap-12 border-t border-slate-200 pt-12">
+          <div className="lg:col-span-7 space-y-12">
+             
+             {/* Description */}
+             <section>
+                <h2 className="text-2xl font-serif font-bold text-slate-900 mb-4">Description</h2>
+                <div className="prose prose-slate max-w-none text-slate-600 leading-relaxed">
+                   {vendor.description || "No description provided."}
+                </div>
+             </section>
 
-                  <TabsContent value="description" className="mt-0">
-                     <div className="prose prose-slate max-w-none text-slate-600 leading-relaxed">
-                        {vendor.description || "No description provided."}
-                     </div>
-                  </TabsContent>
+             {/* Services */}
+             {vendor.services && vendor.services.length > 0 && (
+               <section>
+                  <h3 className="text-xl font-serif font-bold text-slate-900 mb-4">Services Included</h3>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    {vendor.services.map((service, index) => (
+                      <div key={index} className="flex items-center gap-3 p-3 border border-slate-100 rounded-lg bg-white shadow-sm">
+                        <CheckCircle2 className="h-5 w-5 text-slate-900 shrink-0" />
+                        <span className="text-slate-700 font-medium">{service}</span>
+                      </div>
+                    ))}
+                  </div>
+               </section>
+             )}
 
-                  <TabsContent value="services" className="mt-0">
-                     {vendor.services && vendor.services.length > 0 ? (
-                        <div className="grid sm:grid-cols-2 gap-4">
-                           {vendor.services.map((service, index) => (
-                              <div key={index} className="flex items-center gap-3 p-3 border border-slate-100 rounded-lg bg-slate-50">
-                                 <CheckCircle2 className="h-5 w-5 text-slate-900 shrink-0" />
-                                 <span className="text-slate-700 font-medium">{service}</span>
-                              </div>
-                           ))}
-                        </div>
-                     ) : (
-                        <p className="text-slate-500">No specific services listed.</p>
-                     )}
-                  </TabsContent>
+             {/* Reviews */}
+             <section id="reviews" className="pt-8 border-t border-slate-200">
+                <div className="flex items-center justify-between mb-8">
+                   <h2 className="text-2xl font-serif font-bold text-slate-900">Reviews ({reviews.length})</h2>
+                </div>
+                
+                <div className="space-y-8">
+                   <ReviewForm vendorId={vendor.id} vendorName={vendor.business_name} />
+                   <ReviewsList vendorId={vendor.id} />
+                </div>
+             </section>
+          </div>
 
-                  <TabsContent value="reviews" className="mt-0">
-                     <div className="space-y-8">
-                        <ReviewForm vendorId={vendor.id} vendorName={vendor.business_name} />
-                        <ReviewsList vendorId={vendor.id} />
-                     </div>
-                  </TabsContent>
-                </Tabs>
-              </div>
-
-              <div className="lg:col-span-4">
-                 <RatingStats reviews={reviews} />
-              </div>
-           </div>
-        </div>
-
-        {/* Related Vendors - Full width grid */}
-        <div className="mt-24 pt-12 border-t border-slate-200">
-           <h3 className="font-serif font-bold text-slate-900 mb-8 text-2xl">You might also like</h3>
-           <RelatedVendors 
-              currentVendorId={vendor.id} 
-              category={vendor.category} 
-              eventType={vendor.event_type} 
-              compact={false}
-           />
+          {/* Sidebar - Ratings & Similar */}
+          <div className="lg:col-span-5 space-y-8">
+             <div className="sticky top-24">
+                <RatingStats reviews={reviews} />
+                
+                <div className="mt-12">
+                   <h3 className="font-serif font-bold text-slate-900 mb-6 text-xl">You might also like</h3>
+                   <RelatedVendors 
+                      currentVendorId={vendor.id} 
+                      category={vendor.category} 
+                      eventType={vendor.event_type} 
+                      compact={true}
+                   />
+                </div>
+             </div>
+          </div>
         </div>
       </div>
     </div>
