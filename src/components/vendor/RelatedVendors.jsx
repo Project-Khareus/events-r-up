@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import VendorCard from "../marketplace/VendorCard";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function RelatedVendors({ currentVendorId, category, eventType, compact = false }) {
+export default function RelatedVendors({ currentVendorId, category, eventType, compact = false, limit = 4 }) {
   const { data: vendors = [], isLoading } = useQuery({
     queryKey: ['vendors'],
     queryFn: () => base44.entities.Vendor.list(),
@@ -13,7 +13,7 @@ export default function RelatedVendors({ currentVendorId, category, eventType, c
   const relatedVendors = vendors.filter(v => 
     v.id !== currentVendorId && 
     (v.category === category || v.event_type === eventType)
-  ).slice(0, compact ? 2 : 4);
+  ).slice(0, compact ? 2 : limit);
 
   if (isLoading) {
     return (
