@@ -53,18 +53,8 @@ export default function VendorMarketplace() {
   }, [eventParam, categoryParam]);
 
   const { data: rawVendors = [], isLoading } = useQuery({
-    queryKey: ['vendors', eventType, category, priceRange],
-    queryFn: () => {
-      const filters = {};
-      if (eventType !== "all") filters.event_type = eventType;
-      if (category !== "all") filters.category = category;
-      if (priceRange !== "all") filters.price_range = priceRange;
-      
-      if (Object.keys(filters).length > 0) {
-        return base44.entities.Vendor.filter(filters, '-created_date', 200);
-      }
-      return base44.entities.Vendor.list('-created_date', 200);
-    },
+    queryKey: ['vendors'],
+    queryFn: () => base44.entities.Vendor.list('-created_date', 300),
   });
 
   // Fetch fallback vendors for empty states
@@ -237,29 +227,34 @@ export default function VendorMarketplace() {
           </div>
         ) : filteredVendors.length === 0 ? (
           <div>
-            <div className="text-center py-16 border-b border-slate-200 mb-12">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 mb-4">
-                <Sparkles className="h-8 w-8 text-slate-400" />
+            <div className="text-center py-12 bg-slate-50 rounded-3xl mb-12 border border-slate-100">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white shadow-sm mb-4 text-slate-400">
+                <Sparkles className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">No specific vendors found</h3>
-              <p className="text-slate-600">Try adjusting your filters, or check out these top rated vendors below</p>
+              <h3 className="text-lg font-semibold text-slate-900 mb-1">No exact matches found</h3>
+              <p className="text-slate-500 mb-6">We couldn't find vendors matching your exact filters, but don't worry!</p>
+              <Button 
+                variant="outline" 
+                onClick={handleClearFilters}
+                className="bg-white hover:bg-slate-50"
+              >
+                Clear Filters & Show All
+              </Button>
             </div>
             
-            {fallbackVendors.length > 0 && (
-              <div>
-                <div className="flex items-center gap-2 mb-6">
-                  <TrendingUp className="h-5 w-5 text-slate-500" />
-                  <h2 className="text-2xl font-bold text-slate-900">You might be interested in</h2>
-                </div>
-                <div className="columns-2 lg:columns-4 gap-3 space-y-3">
-                  {fallbackVendors.map((vendor) => (
-                    <div key={vendor.id} className="break-inside-avoid">
-                      <VendorCard vendor={vendor} />
-                    </div>
-                  ))}
-                </div>
+            <div>
+              <div className="flex items-center gap-2 mb-6">
+                <TrendingUp className="h-5 w-5 text-slate-500" />
+                <h2 className="text-2xl font-bold text-slate-900">Top Rated Vendors You Might Like</h2>
               </div>
-            )}
+              <div className="columns-2 lg:columns-4 gap-3 space-y-3">
+                {(fallbackVendors.length > 0 ? fallbackVendors : vendors.slice(0, 8)).map((vendor) => (
+                  <div key={vendor.id} className="break-inside-avoid">
+                    <VendorCard vendor={vendor} />
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         ) : isHomepage ? (
           /* Homepage - Grouped by Category with Carousels */
