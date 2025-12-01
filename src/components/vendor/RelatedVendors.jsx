@@ -10,17 +10,32 @@ export default function RelatedVendors({ currentVendorId, category, eventType, c
     queryFn: () => base44.entities.Vendor.list(),
   });
 
-  const relatedVendors = vendors.filter(v => 
+  // Get strictly related vendors first
+  let relatedVendors = vendors.filter(v => 
     v.id !== currentVendorId && 
     (v.category === category || v.event_type === eventType)
-  ).slice(0, compact ? 4 : 8);
+  );
+
+  // If we don't have enough related vendors, fill with other random vendors
+  const targetCount = compact ? 4 : 8;
+  
+  if (relatedVendors.length < targetCount) {
+    const usedIds = new Set([currentVendorId, ...relatedVendors.map(v => v.id)]);
+    const otherVendors = vendors.filter(v => !usedIds.has(v.id));
+    
+    // Shuffle other vendors to randomize
+    const shuffled = [...otherVendors].sort(() => 0.5 - Math.random());
+    
+    relatedVendors = [...relatedVendors, ...shuffled.slice(0, targetCount - relatedVendors.length)];
+  } else {
+    relatedVendors = relatedVendors.slice(0, targetCount);
+  }
 
   if (isLoading) {
     return (
-      <div className={compact ? "mt-4" : "mt-16"}>
-        {!compact && <h2 className="text-2xl font-bold text-slate-900 mb-6">Similar Vendors</h2>}
+      <div className={compact ? "mt-4" : "mt-0"}>
         <div className={compact ? "space-y-4" : "grid md:grid-cols-2 lg:grid-cols-4 gap-6"}>
-          {[1, 2].map((i) => (
+          {[...Array(compact ? 2 : 4)].map((_, i) => (
             <Skeleton key={i} className={compact ? "h-64 rounded-xl" : "h-80 rounded-2xl"} />
           ))}
         </div>
@@ -28,7 +43,11 @@ export default function RelatedVendors({ currentVendorId, category, eventType, c
     );
   }
 
-  if (relatedVendors.length === 0) return null;
+  if (relatedVendors.length === 0) return (
+    <div className="text-center py-8 text-slate-500">
+      No similar vendors found at the moment.
+    </div>
+  );
 
   if (compact) {
     return (
@@ -41,8 +60,7 @@ export default function RelatedVendors({ currentVendorId, category, eventType, c
   }
 
   return (
-    <div className="mt-16 border-t border-slate-200 pt-12">
-      <h2 className="text-2xl font-bold text-slate-900 mb-6">Similar Vendors You May Like</h2>
+    <div>
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         {relatedVendors.map((vendor) => (
           <VendorCard key={vendor.id} vendor={vendor} />
