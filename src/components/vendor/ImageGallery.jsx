@@ -19,12 +19,12 @@ export default function ImageGallery({ images, businessName }) {
     <div className="flex flex-col lg:flex-row gap-4 h-auto lg:h-[500px]">
       {/* Thumbnails - Vertical on Desktop, Horizontal on Mobile */}
       {images.length > 1 && (
-        <div className="order-2 lg:order-1 flex lg:flex-col gap-3 overflow-auto lg:overflow-y-auto lg:w-24 scrollbar-hide shrink-0">
+        <div className="order-2 lg:order-1 flex lg:flex-col gap-3 overflow-auto lg:overflow-y-auto lg:w-[88px] scrollbar-hide shrink-0">
           {images.map((image, index) => (
             <button
               key={index}
               onClick={() => setSelectedIndex(index)}
-              className={`shrink-0 w-20 h-20 lg:w-24 lg:h-24 rounded-lg overflow-hidden border-2 transition-all ${
+              className={`shrink-0 w-[72px] h-[72px] lg:w-[88px] lg:h-[88px] rounded-xl overflow-hidden border-2 transition-all ${
                 selectedIndex === index 
                   ? "border-slate-900 opacity-100" 
                   : "border-transparent opacity-60 hover:opacity-100 hover:border-slate-300"
