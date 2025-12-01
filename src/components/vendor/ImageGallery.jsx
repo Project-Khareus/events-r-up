@@ -1,5 +1,24 @@
 import React, { useState } from "react";
-import { ChevronLeft, ChevronRight, X, Maximize2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Maximize2, Image as ImageIcon } from "lucide-react";
+
+const SafeImage = ({ src, alt, className }) => {
+  const [error, setError] = useState(false);
+  if (error) {
+    return (
+      <div className={`bg-slate-100 flex items-center justify-center ${className}`}>
+        <ImageIcon className="w-6 h-6 text-slate-300" />
+      </div>
+    );
+  }
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={className}
+      onError={() => setError(true)}
+    />
+  );
+};
 
 export default function ImageGallery({ images, businessName }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -19,18 +38,18 @@ export default function ImageGallery({ images, businessName }) {
     <div className="flex flex-col lg:flex-row gap-4 h-auto lg:h-[500px]">
       {/* Thumbnails - Vertical on Desktop, Horizontal on Mobile */}
       {images.length > 1 && (
-        <div className="order-2 lg:order-1 flex lg:flex-col gap-3 overflow-auto lg:overflow-y-auto lg:w-[88px] scrollbar-hide shrink-0">
+        <div className="order-2 lg:order-1 flex lg:flex-col gap-3 overflow-auto lg:overflow-y-auto lg:w-[88px] scrollbar-hide shrink-0 pb-2">
           {images.map((image, index) => (
             <button
               key={index}
               onClick={() => setSelectedIndex(index)}
-              className={`shrink-0 w-[72px] h-[72px] lg:w-[88px] lg:h-[88px] rounded-xl overflow-hidden border-2 transition-all ${
+              className={`shrink-0 w-[72px] h-[72px] lg:w-[88px] lg:h-[88px] rounded-xl overflow-hidden border-2 transition-all bg-slate-100 ${
                 selectedIndex === index 
                   ? "border-slate-900 opacity-100" 
                   : "border-transparent opacity-60 hover:opacity-100 hover:border-slate-300"
               }`}
             >
-              <img
+              <SafeImage
                 src={image}
                 alt={`Thumbnail ${index + 1}`}
                 className="w-full h-full object-cover"
@@ -45,7 +64,7 @@ export default function ImageGallery({ images, businessName }) {
         className="order-1 lg:order-2 relative flex-1 h-96 lg:h-full bg-slate-100 rounded-2xl overflow-hidden group cursor-pointer"
         onClick={() => setIsLightboxOpen(true)}
       >
-        <img
+        <SafeImage
           src={images[selectedIndex]}
           alt={`${businessName} - Image ${selectedIndex + 1}`}
           className="w-full h-full object-cover"
