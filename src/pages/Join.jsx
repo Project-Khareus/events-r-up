@@ -9,8 +9,12 @@ import { Facebook, Instagram, Mail } from "lucide-react";
 export default function Join() {
   const handleAuth = () => {
     // Redirect to platform authentication which handles social providers
-    // Using window.location.origin + path to ensure full URL is passed to redirect
-    const nextUrl = createPageUrl("VendorSignup");
+    // Ensure we have a full URL for the redirect to avoid 404s on social auth callbacks
+    const targetPath = createPageUrl("VendorSignup");
+    const nextUrl = targetPath.startsWith('http') 
+      ? targetPath 
+      : `${window.location.origin}${targetPath.startsWith('/') ? '' : '/'}${targetPath}`;
+      
     base44.auth.redirectToLogin(nextUrl);
   };
 
