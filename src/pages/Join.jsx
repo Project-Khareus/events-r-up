@@ -9,7 +9,9 @@ import { Facebook, Instagram, Mail } from "lucide-react";
 export default function Join() {
   const handleAuth = () => {
     // Redirect to platform authentication which handles social providers
-    base44.auth.redirectToLogin(createPageUrl("VendorSignup"));
+    // Using window.location.origin + path to ensure full URL is passed to redirect
+    const nextUrl = createPageUrl("VendorSignup");
+    base44.auth.redirectToLogin(nextUrl);
   };
 
   return (
