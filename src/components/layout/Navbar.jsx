@@ -194,7 +194,7 @@ export default function Navbar() {
                 >
                   Sign In
                 </Button>
-                <Link to={createPageUrl("VendorSignup")}>
+                <Link to={createPageUrl("Join")}>
                   <Button className="bg-indigo-600 hover:bg-indigo-700 font-medium">
                     List Your Business
                   </Button>
@@ -266,7 +266,7 @@ export default function Navbar() {
                     >
                       Sign In
                     </Button>
-                    <Link to={createPageUrl("VendorSignup")} className="w-full" onClick={() => setIsOpen(false)}>
+                    <Link to={createPageUrl("Join")} className="w-full" onClick={() => setIsOpen(false)}>
                       <Button className="w-full bg-indigo-600 hover:bg-indigo-700">
                         List Your Business
                       </Button>
