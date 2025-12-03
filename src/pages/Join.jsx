@@ -1,21 +1,28 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { Facebook, Instagram, Mail } from "lucide-react";
 
 export default function Join() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const isAuthenticated = await base44.auth.isAuthenticated();
+      if (isAuthenticated) {
+        navigate(createPageUrl("VendorSignup"));
+      }
+    };
+    checkAuth();
+  }, [navigate]);
+
   const handleAuth = () => {
-    // Redirect to platform authentication which handles social providers
-    // Ensure we have a full URL for the redirect to avoid 404s on social auth callbacks
-    const targetPath = createPageUrl("VendorSignup");
-    const nextUrl = targetPath.startsWith('http') 
-      ? targetPath 
-      : `${window.location.origin}${targetPath.startsWith('/') ? '' : '/'}${targetPath}`;
-      
-    base44.auth.redirectToLogin(nextUrl);
+    // Redirect back to this page after login
+    // The useEffect above will then handle the redirect to VendorSignup
+    base44.auth.redirectToLogin(window.location.href);
   };
 
   return (
