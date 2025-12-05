@@ -80,7 +80,7 @@ export default function BlogEditor({ post, onSave, onCancel, isAdmin }) {
   };
 
   // Custom image handler for Quill to upload to server instead of base64
-  const imageHandler = () => {
+  const imageHandler = React.useCallback(() => {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
@@ -95,14 +95,21 @@ export default function BlogEditor({ post, onSave, onCancel, isAdmin }) {
         const { file_url } = await base44.integrations.Core.UploadFile({ file });
         toast.dismiss(loadingId);
         
-        const quill = quillRef.current.getEditor();
-        const range = quill.getSelection(true);
-        quill.insertEmbed(range.index, 'image', file_url);
+        if (quillRef.current) {
+            const quill = quillRef.current.getEditor();
+            const range = quill.getSelection(true);
+            if (range) {
+                quill.insertEmbed(range.index, 'image', file_url);
+            } else {
+                const length = quill.getLength();
+                quill.insertEmbed(length, 'image', file_url);
+            }
+        }
       } catch (error) {
         toast.error("Failed to insert image");
       }
     };
-  };
+  }, []);
 
   const modules = useMemo(() => ({
     toolbar: {
@@ -119,7 +126,7 @@ export default function BlogEditor({ post, onSave, onCancel, isAdmin }) {
         image: imageHandler
       }
     }
-  }), []);
+  }), [imageHandler]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
