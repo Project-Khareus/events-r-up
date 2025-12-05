@@ -288,14 +288,14 @@ export default function BlogEditor({ post, onSave, onCancel, isAdmin }) {
 
         <div className="space-y-2">
           <Label>Content (Rich Text)</Label>
-          <div className="h-[500px] pb-12">
+          <div className="min-h-[400px] mb-12">
             <ReactQuill 
               ref={quillRef}
               theme="snow"
               value={formData.content}
               onChange={(content) => handleChange("content", content)}
               modules={modules}
-              className="h-full"
+              className="bg-white h-[400px]"
             />
           </div>
         </div>
