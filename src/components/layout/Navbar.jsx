@@ -147,6 +147,11 @@ export default function Navbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ))}
+            <Link to={createPageUrl("Classifieds")}>
+              <Button variant="ghost" className="font-medium">
+                EVENTS
+              </Button>
+            </Link>
             <Link to={createPageUrl("Blog")}>
               <Button variant="ghost" className="font-medium">
                 BLOG
@@ -252,6 +257,13 @@ export default function Navbar() {
                 </div>
               ))}
               <div className="py-2">
+                 <Link
+                   to={createPageUrl("Classifieds")}
+                   className="block px-2 py-2 font-semibold text-slate-900 hover:bg-slate-50 rounded-lg"
+                   onClick={() => setIsOpen(false)}
+                 >
+                   EVENTS
+                 </Link>
                  <Link
                    to={createPageUrl("Blog")}
                    className="block px-2 py-2 font-semibold text-slate-900 hover:bg-slate-50 rounded-lg"
