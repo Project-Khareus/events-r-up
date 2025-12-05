@@ -149,7 +149,7 @@ export default function Navbar() {
             ))}
             <Link to={createPageUrl("Blog")}>
               <Button variant="ghost" className="font-medium">
-                Blog
+                BLOG
               </Button>
             </Link>
           </div>
@@ -252,7 +252,7 @@ export default function Navbar() {
                    className="block px-2 py-2 font-semibold text-slate-900 hover:bg-slate-50 rounded-lg"
                    onClick={() => setIsOpen(false)}
                  >
-                   Blog
+                   BLOG
                  </Link>
               </div>
               <div className="border-t border-slate-200 mt-4 pt-4 px-2 space-y-2">
