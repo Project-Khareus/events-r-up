@@ -147,6 +147,11 @@ export default function Navbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ))}
+            <Link to={createPageUrl("Blog")}>
+              <Button variant="ghost" className="font-medium">
+                Blog
+              </Button>
+            </Link>
           </div>
 
           {/* Dark Mode Toggle & Auth Buttons */}
@@ -241,6 +246,15 @@ export default function Navbar() {
                   </div>
                 </div>
               ))}
+              <div className="py-2">
+                 <Link
+                   to={createPageUrl("Blog")}
+                   className="block px-2 py-2 font-semibold text-slate-900 hover:bg-slate-50 rounded-lg"
+                   onClick={() => setIsOpen(false)}
+                 >
+                   Blog
+                 </Link>
+              </div>
               <div className="border-t border-slate-200 mt-4 pt-4 px-2 space-y-2">
                 {isAuthenticated ? (
                   <>
