@@ -73,7 +73,9 @@ export default function BlogPostDetail() {
                 <AvatarFallback>{post.author_name?.[0]}</AvatarFallback>
               </Avatar>
               <div className="text-left">
-                <p className="font-medium text-slate-900 dark:text-white text-sm">{post.author_name}</p>
+                <Link to={createPageUrl(`UserProfile`) + `?userId=${post.user_id}`} className="hover:underline decoration-indigo-500">
+                  <p className="font-medium text-slate-900 dark:text-white text-sm">{post.author_name}</p>
+                </Link>
                 <p className="text-xs text-slate-500 dark:text-slate-400">Editor</p>
               </div>
             </div>

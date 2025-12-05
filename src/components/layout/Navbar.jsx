@@ -186,6 +186,12 @@ export default function Navbar() {
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuItem asChild className="rounded-none hover:bg-slate-900 hover:text-white focus:bg-slate-900 focus:text-white">
+                    <Link to={createPageUrl("MyFeed")}>My Feed</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild className="rounded-none hover:bg-slate-900 hover:text-white focus:bg-slate-900 focus:text-white">
+                    <Link to={createPageUrl("UserProfile") + `?userId=${user?.id}`}>My Profile</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild className="rounded-none hover:bg-slate-900 hover:text-white focus:bg-slate-900 focus:text-white">
                     <Link to={createPageUrl("Bookings")}>My Bookings</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild className="rounded-none hover:bg-slate-900 hover:text-white focus:bg-slate-900 focus:text-white">
@@ -275,6 +281,12 @@ export default function Navbar() {
               <div className="border-t border-slate-200 mt-4 pt-4 px-2 space-y-2">
                 {isAuthenticated ? (
                   <>
+                    <Link to={createPageUrl("MyFeed")} className="block py-2 text-slate-700" onClick={() => setIsOpen(false)}>
+                      My Feed
+                    </Link>
+                    <Link to={createPageUrl("UserProfile") + `?userId=${user?.id}`} className="block py-2 text-slate-700" onClick={() => setIsOpen(false)}>
+                      My Profile
+                    </Link>
                     <Link to={createPageUrl("Bookings")} className="block py-2 text-slate-700" onClick={() => setIsOpen(false)}>
                       My Bookings
                     </Link>

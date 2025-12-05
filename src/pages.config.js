@@ -15,6 +15,8 @@ import AdminBlog from './pages/AdminBlog';
 import CreateEvent from './pages/CreateEvent';
 import Classifieds from './pages/Classifieds';
 import EventDetail from './pages/EventDetail';
+import UserProfile from './pages/UserProfile';
+import MyFeed from './pages/MyFeed';
 import __Layout from './Layout.jsx';
 
 
@@ -36,6 +38,8 @@ export const PAGES = {
     "CreateEvent": CreateEvent,
     "Classifieds": Classifieds,
     "EventDetail": EventDetail,
+    "UserProfile": UserProfile,
+    "MyFeed": MyFeed,
 }
 
 export const pagesConfig = {

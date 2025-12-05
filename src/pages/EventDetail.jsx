@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { ArrowLeft, Calendar, MapPin, DollarSign, Share2, Tag } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, DollarSign, Share2, Tag, User } from "lucide-react";
 import { format } from "date-fns";
 import EventCard from "../components/events/EventCard";
 
@@ -203,6 +203,11 @@ export default function EventDetail() {
                     </div>
 
                     <div className="flex flex-col gap-3">
+                        <Link to={createPageUrl("UserProfile") + `?userId=${event.user_id}`} className="block w-full">
+                            <Button variant="outline" className="w-full gap-2 border-slate-300">
+                                <User className="h-4 w-4" /> View Organizer Profile
+                            </Button>
+                        </Link>
                         <Button className="w-full bg-indigo-600 hover:bg-indigo-700 h-12 text-lg">
                             Register / Buy Ticket
                         </Button>
