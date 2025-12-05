@@ -45,7 +45,12 @@ export default function Layout({ children }) {
                     .dark .shadow-xl {
                       box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.3) !important;
                     }
-                  `}</style>
+                    /* Leaflet CSS fix */
+                    .leaflet-container {
+                      z-index: 0;
+                    }
+                    `}</style>
+                    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />
       <Navbar />
       <main className="pb-20 md:pb-0 flex-1">{children}</main>
       <Footer />

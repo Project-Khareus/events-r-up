@@ -12,6 +12,9 @@ import Join from './pages/Join';
 import Blog from './pages/Blog';
 import BlogPostDetail from './pages/BlogPostDetail';
 import AdminBlog from './pages/AdminBlog';
+import CreateEvent from './pages/CreateEvent';
+import Classifieds from './pages/Classifieds';
+import EventDetail from './pages/EventDetail';
 import __Layout from './Layout.jsx';
 
 
@@ -30,6 +33,9 @@ export const PAGES = {
     "Blog": Blog,
     "BlogPostDetail": BlogPostDetail,
     "AdminBlog": AdminBlog,
+    "CreateEvent": CreateEvent,
+    "Classifieds": Classifieds,
+    "EventDetail": EventDetail,
 }
 
 export const pagesConfig = {
