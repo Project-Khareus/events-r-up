@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Plus, Pencil, Trash2, ArrowLeft, Loader2 } from "lucide-react";
+import { Plus, Pencil, Trash2, ArrowLeft, Loader2, CheckCircle, XCircle, FileText, Clock } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { toast } from "sonner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,43 +27,72 @@ export default function AdminBlog() {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [currentPost, setCurrentPost] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [user, setUser] = useState(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
+  const [activeTab, setActiveTab] = useState("all");
 
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    const checkAdmin = async () => {
+    const checkAuth = async () => {
       try {
-        const user = await base44.auth.me();
-        if (user && user.role === 'admin') {
-          setIsAdmin(true);
-        } else {
-          toast.error("Access denied. Admins only.");
-          navigate(createPageUrl("Blog"));
+        const currentUser = await base44.auth.me();
+        setUser(currentUser);
+        if (!currentUser) {
+          toast.error("Please log in to access the Blog CMS");
+          base44.auth.redirectToLogin(window.location.href);
         }
       } catch (error) {
-        toast.error("Please log in to access admin area");
         base44.auth.redirectToLogin(window.location.href);
       } finally {
         setCheckingAuth(false);
       }
     };
-    checkAdmin();
-  }, [navigate]);
+    checkAuth();
+  }, []);
+
+  const isAdmin = user?.role === 'admin';
 
   const { data: posts = [], isLoading } = useQuery({
-    queryKey: ['blog_posts_admin'],
+    queryKey: ['blog_posts_cms'],
     queryFn: () => base44.entities.BlogPost.list('-created_date', 100),
-    enabled: isAdmin
+    enabled: !!user
   });
 
+  // Filter posts based on role
+  const filteredPosts = useMemo(() => {
+      if (isAdmin) {
+          if (activeTab === 'pending') return posts.filter(p => p.status === 'pending');
+          if (activeTab === 'my_posts') return posts.filter(p => p.user_id === user?.id);
+          return posts;
+      } else {
+          // Non-admins only see their own posts
+          return posts.filter(p => p.user_id === user?.id);
+      }
+  }, [posts, isAdmin, activeTab, user]);
+
   const createPostMutation = useMutation({
-    mutationFn: (data) => base44.entities.BlogPost.create(data),
-    onSuccess: () => {
+    mutationFn: (data) => base44.entities.BlogPost.create({ ...data, user_id: user.id }),
+    onSuccess: async (newPost) => {
       queryClient.invalidateQueries({ queryKey: ['blog_posts'] });
-      queryClient.invalidateQueries({ queryKey: ['blog_posts_admin'] });
-      toast.success("Post created successfully");
+      queryClient.invalidateQueries({ queryKey: ['blog_posts_cms'] });
+      
+      if (newPost.status === 'pending' && !isAdmin) {
+          toast.success("Post submitted for approval!");
+          try {
+              // Notify admin (using a generic placeholder or app owner if available)
+              await base44.integrations.Core.SendEmail({
+                  to: "admin@omnievents.com", // Ideally this would be dynamic
+                  subject: "New Blog Post Submission",
+                  body: `User ${user.full_name} has submitted a new blog post titled "${newPost.title}" for approval.`
+              });
+          } catch (e) {
+              console.error("Failed to send notification email", e);
+          }
+      } else {
+          toast.success("Post saved successfully");
+      }
+      
       setIsEditing(false);
       setCurrentPost(null);
     },
@@ -70,10 +101,23 @@ export default function AdminBlog() {
 
   const updatePostMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.BlogPost.update(id, data),
-    onSuccess: () => {
+    onSuccess: (updatedPost) => {
       queryClient.invalidateQueries({ queryKey: ['blog_posts'] });
-      queryClient.invalidateQueries({ queryKey: ['blog_posts_admin'] });
-      toast.success("Post updated successfully");
+      queryClient.invalidateQueries({ queryKey: ['blog_posts_cms'] });
+      
+      if (updatedPost.status === 'pending' && !isAdmin) {
+           toast.success("Post submitted for approval!");
+             try {
+              base44.integrations.Core.SendEmail({
+                  to: "admin@omnievents.com",
+                  subject: "Blog Post Submission Updated",
+                  body: `User ${user.full_name} has updated and submitted the blog post titled "${updatedPost.title}" for approval.`
+              });
+          } catch (e) {}
+      } else {
+          toast.success("Post updated successfully");
+      }
+      
       setIsEditing(false);
       setCurrentPost(null);
     },
@@ -84,7 +128,7 @@ export default function AdminBlog() {
     mutationFn: (id) => base44.entities.BlogPost.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['blog_posts'] });
-      queryClient.invalidateQueries({ queryKey: ['blog_posts_admin'] });
+      queryClient.invalidateQueries({ queryKey: ['blog_posts_cms'] });
       toast.success("Post deleted successfully");
     },
     onError: () => toast.error("Failed to delete post")
@@ -102,6 +146,13 @@ export default function AdminBlog() {
     deletePostMutation.mutate(id);
   };
 
+  const handleStatusChange = (post, newStatus) => {
+      updatePostMutation.mutate({ 
+          id: post.id, 
+          data: { ...post, status: newStatus } 
+      });
+  };
+
   if (checkingAuth) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -110,19 +161,18 @@ export default function AdminBlog() {
     );
   }
 
-  if (!isAdmin) return null;
-
   if (isEditing) {
     return (
       <div className="min-h-screen bg-slate-50 py-8 px-4">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
            <BlogEditor 
              post={currentPost} 
              onSave={handleSave} 
              onCancel={() => {
                setIsEditing(false);
                setCurrentPost(null);
-             }} 
+             }}
+             isAdmin={isAdmin}
            />
         </div>
       </div>
@@ -139,13 +189,35 @@ export default function AdminBlog() {
                     <ArrowLeft className="h-4 w-4" />
                 </Button>
             </Link>
-            <h1 className="text-3xl font-bold text-slate-900">Blog CMS</h1>
+            <div>
+                <h1 className="text-3xl font-bold text-slate-900">Blog CMS</h1>
+                <p className="text-slate-500">{isAdmin ? "Manage and approve content" : "Manage your contributions"}</p>
+            </div>
           </div>
-          <Button onClick={() => setIsEditing(true)} className="bg-indigo-600 hover:bg-indigo-700">
+          <Button onClick={() => { setCurrentPost(null); setIsEditing(true); }} className="bg-indigo-600 hover:bg-indigo-700">
             <Plus className="mr-2 h-4 w-4" />
             New Post
           </Button>
         </div>
+
+        {isAdmin && (
+            <div className="mb-6">
+                <Tabs value={activeTab} onValueChange={setActiveTab}>
+                    <TabsList>
+                        <TabsTrigger value="all">All Posts</TabsTrigger>
+                        <TabsTrigger value="pending" className="relative">
+                            Pending Approval
+                            {posts.filter(p => p.status === 'pending').length > 0 && (
+                                <span className="ml-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">
+                                    {posts.filter(p => p.status === 'pending').length}
+                                </span>
+                            )}
+                        </TabsTrigger>
+                        <TabsTrigger value="my_posts">My Posts</TabsTrigger>
+                    </TabsList>
+                </Tabs>
+            </div>
+        )}
 
         {isLoading ? (
           <div className="space-y-4">
@@ -153,8 +225,8 @@ export default function AdminBlog() {
           </div>
         ) : (
           <div className="grid gap-4">
-            {posts.map(post => (
-              <Card key={post.id} className="p-4 flex items-center justify-between hover:shadow-md transition-shadow">
+            {filteredPosts.map(post => (
+              <Card key={post.id} className="p-4 flex flex-col md:flex-row md:items-center justify-between hover:shadow-md transition-shadow gap-4">
                 <div className="flex items-center gap-4">
                   <div className="h-16 w-24 bg-slate-100 rounded overflow-hidden shrink-0">
                     {post.cover_image_url ? (
@@ -166,30 +238,59 @@ export default function AdminBlog() {
                     )}
                   </div>
                   <div>
-                    <h3 className="font-bold text-slate-900 line-clamp-1">{post.title}</h3>
-                    <p className="text-sm text-slate-500">
-                        {post.category} • {format(new Date(post.created_date), 'MMM d, yyyy')}
-                        {post.is_featured && <span className="ml-2 text-indigo-600 font-medium bg-indigo-50 px-2 py-0.5 rounded text-xs">Featured</span>}
-                    </p>
+                    <div className="flex items-center gap-2">
+                        <h3 className="font-bold text-slate-900 line-clamp-1">{post.title}</h3>
+                        <Badge variant={
+                            post.status === 'published' ? 'default' : 
+                            post.status === 'pending' ? 'secondary' : 
+                            post.status === 'rejected' ? 'destructive' : 'outline'
+                        } className="capitalize text-xs h-5">
+                            {post.status || 'draft'}
+                        </Badge>
+                        {post.is_featured && <span className="text-indigo-600 font-medium bg-indigo-50 px-2 py-0.5 rounded text-xs border border-indigo-100">Featured</span>}
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-slate-500 mt-1">
+                        <span className="flex items-center gap-1"><FileText className="h-3 w-3" /> {post.category}</span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {format(new Date(post.created_date), 'MMM d, yyyy')}</span>
+                        {isAdmin && post.author_name && (
+                            <>
+                                <span>•</span>
+                                <span>by {post.author_name}</span>
+                            </>
+                        )}
+                    </div>
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 self-end md:self-center">
+                  {isAdmin && post.status === 'pending' && (
+                      <>
+                        <Button size="sm" className="bg-green-600 hover:bg-green-700 h-8" onClick={() => handleStatusChange(post, 'published')}>
+                            <CheckCircle className="h-3 w-3 mr-1" /> Approve
+                        </Button>
+                        <Button size="sm" variant="destructive" className="h-8" onClick={() => handleStatusChange(post, 'rejected')}>
+                            <XCircle className="h-3 w-3 mr-1" /> Reject
+                        </Button>
+                      </>
+                  )}
+                  
                   <Button 
                     variant="outline" 
                     size="sm"
+                    className="h-8"
                     onClick={() => {
                       setCurrentPost(post);
                       setIsEditing(true);
                     }}
                   >
-                    <Pencil className="h-4 w-4 mr-2" />
+                    <Pencil className="h-3 w-3 mr-1" />
                     Edit
                   </Button>
                   
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button variant="destructive" size="sm">
+                      <Button variant="ghost" size="sm" className="h-8 text-red-500 hover:text-red-600 hover:bg-red-50">
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </AlertDialogTrigger>
@@ -212,9 +313,11 @@ export default function AdminBlog() {
               </Card>
             ))}
             
-            {posts.length === 0 && (
+            {filteredPosts.length === 0 && (
                 <div className="text-center py-20 bg-white rounded-xl border border-slate-200 border-dashed">
-                    <p className="text-slate-500">No blog posts found. Create your first one!</p>
+                    <p className="text-slate-500">
+                        {activeTab === 'pending' ? "No pending posts to review." : "No blog posts found. Create your first one!"}
+                    </p>
                 </div>
             )}
           </div>

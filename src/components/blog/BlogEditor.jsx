@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,14 +8,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
-import { Loader2, Image as ImageIcon, Save, X } from "lucide-react";
+import { Loader2, Image as ImageIcon, Save, X, Send } from "lucide-react";
 
 const CATEGORIES = ["Trends", "Real Weddings", "Planning Tips", "Vendor Spotlights", "Company News"];
 
-export default function BlogEditor({ post, onSave, onCancel }) {
+export default function BlogEditor({ post, onSave, onCancel, isAdmin }) {
   const [isLoading, setIsLoading] = useState(false);
+  const quillRef = useRef(null);
   const [formData, setFormData] = useState({
     title: "",
     slug: "",
@@ -25,7 +28,8 @@ export default function BlogEditor({ post, onSave, onCancel }) {
     read_time: "5 min read",
     is_featured: false,
     author_name: "",
-    author_avatar_url: ""
+    author_avatar_url: "",
+    status: "draft"
   });
 
   useEffect(() => {
@@ -40,21 +44,22 @@ export default function BlogEditor({ post, onSave, onCancel }) {
         read_time: post.read_time || "5 min read",
         is_featured: post.is_featured || false,
         author_name: post.author_name || "",
-        author_avatar_url: post.author_avatar_url || ""
+        author_avatar_url: post.author_avatar_url || "",
+        status: post.status || "draft"
       });
     } else {
-        // Set default author from current user if creating new
         base44.auth.me().then(user => {
             if (user) {
                 setFormData(prev => ({
                     ...prev,
                     author_name: user.full_name || "",
-                    author_avatar_url: user.profile_picture_url || "" // assuming this might exist or can be empty
+                    author_avatar_url: user.profile_picture_url || "",
+                    status: isAdmin ? "published" : "pending"
                 }));
             }
         });
     }
-  }, [post]);
+  }, [post, isAdmin]);
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -71,9 +76,50 @@ export default function BlogEditor({ post, onSave, onCancel }) {
       toast.success("Image uploaded successfully");
     } catch (error) {
       toast.error("Failed to upload image");
-      console.error(error);
     }
   };
+
+  // Custom image handler for Quill to upload to server instead of base64
+  const imageHandler = () => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files[0];
+      if (!file) return;
+
+      try {
+        const loadingId = toast.loading("Uploading image to post...");
+        const { file_url } = await base44.integrations.Core.UploadFile({ file });
+        toast.dismiss(loadingId);
+        
+        const quill = quillRef.current.getEditor();
+        const range = quill.getSelection(true);
+        quill.insertEmbed(range.index, 'image', file_url);
+      } catch (error) {
+        toast.error("Failed to insert image");
+      }
+    };
+  };
+
+  const modules = useMemo(() => ({
+    toolbar: {
+      container: [
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
+        [{ 'color': [] }, { 'background': [] }],
+        [{ 'align': [] }],
+        ['link', 'image', 'video'],
+        ['clean']
+      ],
+      handlers: {
+        image: imageHandler
+      }
+    }
+  }), []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -87,12 +133,31 @@ export default function BlogEditor({ post, onSave, onCancel }) {
     }
   };
 
+  const handleSubmitForApproval = () => {
+      handleChange("status", "pending");
+      // We trigger the submit in the parent via onSave, but need to ensure status is updated first
+      // The state update is async, so we pass the modified data directly
+      setIsLoading(true);
+      onSave({ ...formData, status: "pending" }).finally(() => setIsLoading(false));
+  };
+
   return (
-    <Card className="p-6 bg-white shadow-lg max-w-4xl mx-auto">
+    <Card className="p-6 bg-white shadow-lg max-w-5xl mx-auto">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-slate-900">
-          {post ? "Edit Post" : "Create New Post"}
-        </h2>
+        <div className="flex items-center gap-3">
+          <h2 className="text-2xl font-bold text-slate-900">
+            {post ? "Edit Post" : "Create New Post"}
+          </h2>
+          {formData.status && (
+              <Badge variant={
+                  formData.status === 'published' ? 'default' : 
+                  formData.status === 'pending' ? 'secondary' : 
+                  formData.status === 'rejected' ? 'destructive' : 'outline'
+              } className="capitalize">
+                  {formData.status}
+              </Badge>
+          )}
+        </div>
         <Button variant="ghost" size="icon" onClick={onCancel}>
           <X className="h-5 w-5" />
         </Button>
@@ -117,16 +182,6 @@ export default function BlogEditor({ post, onSave, onCancel }) {
               placeholder="my-awesome-post"
             />
           </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label>Excerpt</Label>
-          <Textarea 
-            value={formData.excerpt}
-            onChange={(e) => handleChange("excerpt", e.target.value)}
-            placeholder="Short summary for card display..."
-            rows={3}
-          />
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
@@ -154,14 +209,39 @@ export default function BlogEditor({ post, onSave, onCancel }) {
               placeholder="e.g. 5 min read"
             />
           </div>
-          <div className="flex items-center space-x-2 pt-8">
+          <div className="space-y-2">
+             <Label>Status</Label>
+             {isAdmin ? (
+                 <Select 
+                   value={formData.status} 
+                   onValueChange={(val) => handleChange("status", val)}
+                 >
+                   <SelectTrigger>
+                     <SelectValue />
+                   </SelectTrigger>
+                   <SelectContent>
+                     <SelectItem value="draft">Draft</SelectItem>
+                     <SelectItem value="pending">Pending Review</SelectItem>
+                     <SelectItem value="published">Published</SelectItem>
+                     <SelectItem value="rejected">Rejected</SelectItem>
+                   </SelectContent>
+                 </Select>
+             ) : (
+                 <div className="h-10 px-3 py-2 border rounded-md bg-slate-50 text-slate-500 text-sm capitalize flex items-center">
+                     {formData.status}
+                 </div>
+             )}
+          </div>
+        </div>
+        
+        <div className="flex items-center space-x-2">
             <Switch 
               checked={formData.is_featured}
               onCheckedChange={(val) => handleChange("is_featured", val)}
               id="featured-mode"
+              disabled={!isAdmin} // Only admins can feature posts
             />
-            <Label htmlFor="featured-mode">Featured Post</Label>
-          </div>
+            <Label htmlFor="featured-mode">Featured Post {isAdmin ? "" : "(Admins only)"}</Label>
         </div>
 
         <div className="space-y-2">
@@ -171,7 +251,7 @@ export default function BlogEditor({ post, onSave, onCancel }) {
                <img 
                  src={formData.cover_image_url} 
                  alt="Cover" 
-                 className="h-20 w-32 object-cover rounded-md border border-slate-200"
+                 className="h-24 w-40 object-cover rounded-md border border-slate-200"
                />
              )}
              <div className="flex-1">
@@ -189,7 +269,7 @@ export default function BlogEditor({ post, onSave, onCancel }) {
                  />
                  <Button type="button" variant="outline" className="w-full">
                    <ImageIcon className="h-4 w-4 mr-2" />
-                   Or Upload Image
+                   Upload Cover Image
                  </Button>
                </div>
              </div>
@@ -197,18 +277,30 @@ export default function BlogEditor({ post, onSave, onCancel }) {
         </div>
 
         <div className="space-y-2">
-          <Label>Content</Label>
-          <div className="h-96 pb-12">
+          <Label>Excerpt</Label>
+          <Textarea 
+            value={formData.excerpt}
+            onChange={(e) => handleChange("excerpt", e.target.value)}
+            placeholder="Short summary for card display..."
+            rows={2}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label>Content (Rich Text)</Label>
+          <div className="h-[500px] pb-12">
             <ReactQuill 
+              ref={quillRef}
               theme="snow"
               value={formData.content}
               onChange={(content) => handleChange("content", content)}
+              modules={modules}
               className="h-full"
             />
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 pt-4">
+        <div className="grid md:grid-cols-2 gap-6 pt-8">
             <div className="space-y-2">
                 <Label>Author Name</Label>
                 <Input 
@@ -225,14 +317,27 @@ export default function BlogEditor({ post, onSave, onCancel }) {
             </div>
         </div>
 
-        <div className="flex justify-end gap-3 pt-6 border-t border-slate-100">
+        <div className="flex justify-end gap-3 pt-6 border-t border-slate-100 sticky bottom-0 bg-white py-4 z-10">
           <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
+          
+          {!isAdmin && formData.status !== 'published' && (
+              <Button 
+                  type="button" 
+                  onClick={handleSubmitForApproval} 
+                  disabled={isLoading}
+                  className="bg-green-600 hover:bg-green-700"
+              >
+                  {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
+                  Submit for Approval
+              </Button>
+          )}
+
           <Button type="submit" disabled={isLoading} className="bg-indigo-600 hover:bg-indigo-700">
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             <Save className="mr-2 h-4 w-4" />
-            Save Post
+            {isAdmin ? "Save Post" : "Save Draft"}
           </Button>
         </div>
       </form>
