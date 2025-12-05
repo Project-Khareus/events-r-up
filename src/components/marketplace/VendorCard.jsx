@@ -55,24 +55,10 @@ export default function VendorCard({ vendor, size = "auto" }) {
     return false;
   }, [reviews.length, averageRating, vendor.id]);
 
-  // Determine card size based on vendor id hash for consistent but varied sizing
-  const cardSize = useMemo(() => {
-    if (size !== "auto") return size;
-    const hash = vendor.id.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
-    const sizes = ["small", "medium", "medium", "large"];
-    return sizes[hash % 4];
-  }, [vendor.id, size]);
-
-  const imageHeights = {
-    small: "h-40",
-    medium: "h-56",
-    large: "h-72"
-  };
-
   return (
-    <Link to={createPageUrl(`VendorDetail?id=${vendor.id}`)}>
-      <Card className="group overflow-hidden border border-slate-200 hover:border-slate-400 transition-all duration-500 bg-white rounded-none">
-        <div className={`relative ${imageHeights[cardSize]} overflow-hidden bg-slate-100`}>
+    <Link to={createPageUrl(`VendorDetail?id=${vendor.id}`)} className="block h-full">
+      <Card className="group h-full flex flex-col overflow-hidden border border-slate-200 hover:border-slate-400 transition-all duration-500 bg-white rounded-none">
+        <div className="relative h-64 overflow-hidden bg-slate-100 shrink-0">
           {vendor.image_url && !imageError ? (
             <img
               src={vendor.image_url}
@@ -114,7 +100,7 @@ export default function VendorCard({ vendor, size = "auto" }) {
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         </div>
 
-        <div className="p-4">
+        <div className="p-4 flex flex-col flex-1">
           {vendor.category && (
             <span className="text-xs font-medium tracking-widest uppercase text-slate-400 mb-1 block">
               {CATEGORY_LABELS[vendor.category] || vendor.category}
@@ -146,7 +132,7 @@ export default function VendorCard({ vendor, size = "auto" }) {
           </div>
 
           {vendor.description && (
-            <p className="text-slate-600 text-sm line-clamp-2 leading-relaxed">
+            <p className="text-slate-600 text-sm line-clamp-2 leading-relaxed mt-auto">
               {vendor.description}
             </p>
           )}
