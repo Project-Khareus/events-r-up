@@ -10,10 +10,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { format } from "date-fns";
 
 export default function Blog() {
-  const { data: posts = [], isLoading } = useQuery({
+  const { data: allPosts = [], isLoading } = useQuery({
     queryKey: ['blog_posts'],
-    queryFn: () => base44.entities.BlogPost.list('-created_date', 20),
+    queryFn: () => base44.entities.BlogPost.list('-created_date', 50),
   });
+
+  // Only show published posts on the public blog
+  const posts = allPosts.filter(p => p.status === 'published');
 
   const featuredPost = posts.find(p => p.is_featured) || posts[0];
   const otherPosts = posts.filter(p => p.id !== featuredPost?.id);
