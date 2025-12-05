@@ -34,8 +34,9 @@ export default function UserProfile() {
     queryKey: ['user_events', userId],
     queryFn: async () => {
         if (!userId) return [];
-        const allEvents = await base44.entities.EventListing.list('-created_date', 50);
-        return allEvents.filter(e => e.user_id === userId);
+        const rawEvents = await base44.entities.EventListing.list('-created_date', 50);
+        const normalizedEvents = rawEvents.map(e => e.data ? { id: e.id, ...e.data } : e);
+        return normalizedEvents.filter(e => e.user_id === userId);
     },
     enabled: !!userId
   });
@@ -45,8 +46,9 @@ export default function UserProfile() {
     queryKey: ['user_posts', userId],
     queryFn: async () => {
         if (!userId) return [];
-        const allPosts = await base44.entities.BlogPost.list('-created_date', 50);
-        return allPosts.filter(p => p.user_id === userId && p.status === 'published');
+        const rawPosts = await base44.entities.BlogPost.list('-created_date', 50);
+        const normalizedPosts = rawPosts.map(p => p.data ? { id: p.id, ...p.data } : p);
+        return normalizedPosts.filter(p => p.user_id === userId && p.status === 'published');
     },
     enabled: !!userId
   });
