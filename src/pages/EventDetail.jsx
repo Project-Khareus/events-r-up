@@ -33,14 +33,10 @@ export default function EventDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   const eventId = urlParams.get("id");
 
-  const { data: rawEvents = [], isLoading } = useQuery({
+  const { data: events = [], isLoading } = useQuery({
     queryKey: ['events'],
-    queryFn: () => base44.entities.EventListing.list('-created_date', 100),
+    queryFn: () => base44.entities.EventListing.list(),
   });
-
-  const events = useMemo(() => {
-    return rawEvents.map(e => e.data ? { id: e.id, ...e.data } : e);
-  }, [rawEvents]);
 
   const event = useMemo(() => events.find(e => e.id === eventId), [events, eventId]);
 

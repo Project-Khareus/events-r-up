@@ -15,14 +15,10 @@ export default function Classifieds() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTheme, setSelectedTheme] = useState("All");
 
-  const { data: rawEvents = [], isLoading } = useQuery({
+  const { data: events = [], isLoading } = useQuery({
     queryKey: ['events'],
-    queryFn: () => base44.entities.EventListing.list('-created_date', 100),
+    queryFn: () => base44.entities.EventListing.list('-created_date', 50),
   });
-
-  const events = useMemo(() => {
-    return rawEvents.map(e => e.data ? { id: e.id, ...e.data } : e);
-  }, [rawEvents]);
 
   const filteredEvents = useMemo(() => {
     return events.filter(event => {

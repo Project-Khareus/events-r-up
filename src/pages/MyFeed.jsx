@@ -46,18 +46,14 @@ export default function MyFeed() {
             base44.entities.UserProfile.list()
         ]);
 
-        const normalizedEvents = allEvents.map(e => e.data ? { id: e.id, ...e.data } : e);
-
-        const filteredEvents = normalizedEvents
+        const filteredEvents = allEvents
             .filter(e => followedIds.includes(e.user_id))
             .map(e => {
                 const author = allProfiles.find(p => p.user_id === e.user_id);
                 return { ...e, type: 'event', author };
             });
 
-        const normalizedPosts = allPosts.map(p => p.data ? { id: p.id, ...p.data } : p);
-
-        const filteredPosts = normalizedPosts
+        const filteredPosts = allPosts
             .filter(p => followedIds.includes(p.user_id) && p.status === 'published')
             .map(p => {
                 const author = allProfiles.find(u => u.user_id === p.user_id);
