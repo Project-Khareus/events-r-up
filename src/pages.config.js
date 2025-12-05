@@ -9,6 +9,8 @@ import Notifications from './pages/Notifications';
 import CategoryPage from './pages/CategoryPage';
 import LegalPage from './pages/LegalPage';
 import Join from './pages/Join';
+import Blog from './pages/Blog';
+import BlogPostDetail from './pages/BlogPostDetail';
 import __Layout from './Layout.jsx';
 
 
@@ -24,6 +26,8 @@ export const PAGES = {
     "CategoryPage": CategoryPage,
     "LegalPage": LegalPage,
     "Join": Join,
+    "Blog": Blog,
+    "BlogPostDetail": BlogPostDetail,
 }
 
 export const pagesConfig = {
