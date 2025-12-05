@@ -83,10 +83,10 @@ export default function Blog() {
                 <div className="flex items-center gap-2">
                   <span className="text-indigo-600 font-semibold tracking-wide text-sm uppercase">{featuredPost.category}</span>
                 </div>
-                <h2 className="text-4xl lg:text-5xl font-serif font-bold text-slate-900 leading-tight group-hover:text-indigo-900 transition-colors">
+                <h2 className="text-4xl lg:text-5xl font-serif font-bold text-slate-900 leading-tight group-hover:text-indigo-900 transition-colors dark:text-white dark:group-hover:text-indigo-400">
                   {featuredPost.title}
                 </h2>
-                <p className="text-lg text-slate-600 line-clamp-3 leading-relaxed">
+                <p className="text-lg text-slate-600 line-clamp-3 leading-relaxed dark:text-slate-300">
                   {featuredPost.excerpt}
                 </p>
                 <div className="flex items-center gap-3 pt-4">
@@ -95,8 +95,8 @@ export default function Blog() {
                     <AvatarFallback>{featuredPost.author_name?.[0]}</AvatarFallback>
                   </Avatar>
                   <div className="text-sm">
-                    <p className="font-medium text-slate-900">{featuredPost.author_name}</p>
-                    <p className="text-slate-500">
+                    <p className="font-medium text-slate-900 dark:text-white">{featuredPost.author_name}</p>
+                    <p className="text-slate-500 dark:text-slate-400">
                       {format(new Date(featuredPost.created_date), 'MMM d')} • {featuredPost.read_time}
                     </p>
                   </div>
@@ -108,7 +108,7 @@ export default function Blog() {
 
         {/* Recent Posts Grid */}
         <div>
-          <h3 className="text-2xl font-bold text-slate-900 mb-8 font-serif">Latest Stories</h3>
+          <h3 className="text-2xl font-bold text-slate-900 mb-8 font-serif dark:text-white">Latest Stories</h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
             {otherPosts.map(post => (
               <Link key={post.id} to={createPageUrl("BlogPostDetail") + `?id=${post.id}`} className="group flex flex-col h-full">
@@ -121,14 +121,14 @@ export default function Blog() {
                 </div>
                 <div className="flex-1 flex flex-col">
                    <div className="flex items-center gap-2 mb-3">
-                     <Badge variant="secondary" className="bg-slate-100 text-slate-700 hover:bg-slate-200 border-0 rounded-sm">
+                     <Badge variant="secondary" className="bg-slate-100 text-slate-700 hover:bg-slate-200 border-0 rounded-sm dark:bg-slate-800 dark:text-slate-300">
                         {post.category}
                      </Badge>
                    </div>
-                   <h3 className="text-xl font-bold text-slate-900 mb-3 line-clamp-2 group-hover:text-indigo-600 transition-colors">
+                   <h3 className="text-xl font-bold text-slate-900 mb-3 line-clamp-2 group-hover:text-indigo-600 transition-colors dark:text-white dark:group-hover:text-indigo-400">
                      {post.title}
                    </h3>
-                   <p className="text-slate-600 line-clamp-2 mb-4 text-sm flex-1">
+                   <p className="text-slate-600 line-clamp-2 mb-4 text-sm flex-1 dark:text-slate-400">
                      {post.excerpt}
                    </p>
                    <div className="flex items-center gap-2 mt-auto">
@@ -136,8 +136,8 @@ export default function Blog() {
                         <AvatarImage src={post.author_avatar_url} />
                         <AvatarFallback>{post.author_name?.[0]}</AvatarFallback>
                       </Avatar>
-                      <div className="text-xs text-slate-500">
-                        <span className="font-medium text-slate-900">{post.author_name}</span>
+                      <div className="text-xs text-slate-500 dark:text-slate-400">
+                        <span className="font-medium text-slate-900 dark:text-slate-200">{post.author_name}</span>
                         <span className="mx-1">•</span>
                         <span>{format(new Date(post.created_date), 'MMM d')}</span>
                         <span className="mx-1">•</span>
