@@ -1,8 +1,7 @@
 import React, { useMemo } from "react";
 import { Card } from "@/components/ui/card";
 
-import { MapPin, Star, Crown, Eye, Heart, Share2 } from "lucide-react";
-import { toast } from "sonner";
+import { MapPin, Star, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../../utils";
 import { useQuery } from "@tanstack/react-query";
@@ -71,8 +70,8 @@ export default function VendorCard({ vendor, size = "auto" }) {
   };
 
   return (
-    <div className="h-full">
-      <Card className="group h-full flex flex-col overflow-hidden border border-slate-200 hover:border-slate-400 hover:shadow-xl transition-all duration-500 bg-white rounded-none relative">
+    <Link to={createPageUrl(`VendorDetail?id=${vendor.id}`)}>
+      <Card className="group overflow-hidden border border-slate-200 hover:border-slate-400 transition-all duration-500 bg-white rounded-none">
         <div className={`relative ${imageHeights[cardSize]} overflow-hidden bg-slate-100`}>
           {vendor.image_url && !imageError ? (
             <img
@@ -112,37 +111,18 @@ export default function VendorCard({ vendor, size = "auto" }) {
             </div>
           )}
 
-          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          
-          {/* Hover Actions */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300 z-10 translate-y-4 group-hover:translate-y-0">
-            <Link to={createPageUrl(`VendorDetail?id=${vendor.id}`)} className="h-10 w-10 bg-white rounded-full flex items-center justify-center text-slate-700 hover:bg-indigo-600 hover:text-white transition-colors shadow-lg" title="View Details">
-              <Eye className="h-4 w-4" />
-            </Link>
-            <button 
-              onClick={(e) => {
-                e.preventDefault();
-                toast.success("Added to favorites");
-              }}
-              className="h-10 w-10 bg-white rounded-full flex items-center justify-center text-slate-700 hover:bg-red-500 hover:text-white transition-colors shadow-lg" 
-              title="Add to Favorites"
-            >
-              <Heart className="h-4 w-4" />
-            </button>
-          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         </div>
 
-        <div className="p-4 relative">
+        <div className="p-4">
           {vendor.category && (
             <span className="text-xs font-medium tracking-widest uppercase text-slate-400 mb-1 block">
               {CATEGORY_LABELS[vendor.category] || vendor.category}
             </span>
           )}
-          <Link to={createPageUrl(`VendorDetail?id=${vendor.id}`)}>
-            <h3 className="font-serif font-bold text-xl text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1 mb-2 tracking-tight">
-              {vendor.business_name}
-            </h3>
-          </Link>
+          <h3 className="font-serif font-bold text-xl text-slate-900 group-hover:text-slate-600 transition-colors line-clamp-1 mb-2 tracking-tight">
+            {vendor.business_name}
+          </h3>
 
           <div className="space-y-1.5 mb-3">
             {vendor.location && (
@@ -172,6 +152,6 @@ export default function VendorCard({ vendor, size = "auto" }) {
           )}
         </div>
       </Card>
-    </div>
+    </Link>
   );
 }
