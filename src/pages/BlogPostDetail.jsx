@@ -50,35 +50,35 @@ export default function BlogPostDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-white pb-20">
+    <div className="min-h-screen bg-white dark:bg-slate-950 pb-20">
       <div className="max-w-4xl mx-auto px-6 py-12">
-        <Link to={createPageUrl("Blog")} className="inline-flex items-center text-slate-500 hover:text-indigo-600 mb-8 transition-colors">
+        <Link to={createPageUrl("Blog")} className="inline-flex items-center text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 mb-8 transition-colors">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Blog
         </Link>
 
         <div className="space-y-6 text-center max-w-3xl mx-auto mb-12">
-          <span className="text-indigo-600 font-semibold tracking-wide text-sm uppercase">{post.category}</span>
-          <h1 className="text-3xl md:text-5xl font-serif font-bold text-slate-900 leading-tight">
+          <span className="text-indigo-600 dark:text-indigo-400 font-semibold tracking-wide text-sm uppercase">{post.category}</span>
+          <h1 className="text-3xl md:text-5xl font-serif font-bold text-slate-900 dark:text-white leading-tight">
             {post.title}
           </h1>
-          <p className="text-xl text-slate-600 leading-relaxed">
+          <p className="text-xl text-slate-600 dark:text-slate-300 leading-relaxed">
             {post.excerpt}
           </p>
 
-          <div className="flex items-center justify-center gap-6 py-6 border-t border-b border-slate-100 mt-8">
+          <div className="flex items-center justify-center gap-6 py-6 border-t border-b border-slate-100 dark:border-slate-800 mt-8">
             <div className="flex items-center gap-3">
               <Avatar className="h-10 w-10">
                 <AvatarImage src={post.author_avatar_url} />
                 <AvatarFallback>{post.author_name?.[0]}</AvatarFallback>
               </Avatar>
               <div className="text-left">
-                <p className="font-medium text-slate-900 text-sm">{post.author_name}</p>
-                <p className="text-xs text-slate-500">Editor</p>
+                <p className="font-medium text-slate-900 dark:text-white text-sm">{post.author_name}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Editor</p>
               </div>
             </div>
-            <div className="h-8 w-px bg-slate-200"></div>
-            <div className="flex items-center gap-6 text-sm text-slate-500">
+            <div className="h-8 w-px bg-slate-200 dark:bg-slate-700"></div>
+            <div className="flex items-center gap-6 text-sm text-slate-500 dark:text-slate-400">
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
                 {format(new Date(post.created_date), 'MMM d, yyyy')}
@@ -91,7 +91,7 @@ export default function BlogPostDetail() {
           </div>
         </div>
 
-        <div className="rounded-2xl overflow-hidden mb-12 shadow-xl">
+        <div className="rounded-2xl overflow-hidden mb-12 shadow-xl dark:shadow-none dark:border dark:border-slate-800">
           <img 
             src={post.cover_image_url} 
             alt={post.title}
@@ -99,14 +99,14 @@ export default function BlogPostDetail() {
           />
         </div>
 
-        <div className="prose prose-lg prose-slate mx-auto prose-headings:font-serif prose-a:text-indigo-600 hover:prose-a:text-indigo-700 prose-img:rounded-xl">
+        <div className="prose prose-lg prose-slate dark:prose-invert mx-auto prose-headings:font-serif prose-a:text-indigo-600 hover:prose-a:text-indigo-700 dark:prose-a:text-indigo-400 dark:hover:prose-a:text-indigo-300 prose-img:rounded-xl">
           <ReactMarkdown>{post.content}</ReactMarkdown>
         </div>
 
-        <div className="max-w-3xl mx-auto mt-16 pt-8 border-t border-slate-100 flex justify-between items-center">
-          <p className="font-serif font-bold text-slate-900 text-xl">Share this article</p>
+        <div className="max-w-3xl mx-auto mt-16 pt-8 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+          <p className="font-serif font-bold text-slate-900 dark:text-white text-xl">Share this article</p>
           <div className="flex gap-2">
-             <Button variant="outline" size="icon" className="rounded-full">
+             <Button variant="outline" size="icon" className="rounded-full dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
                <Share2 className="h-4 w-4" />
              </Button>
           </div>
