@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { createPageUrl } from "../utils";
+import { createPageUrl } from "../../utils";
 import { Calendar, MapPin, DollarSign } from "lucide-react";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
