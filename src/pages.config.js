@@ -11,6 +11,7 @@ import LegalPage from './pages/LegalPage';
 import Join from './pages/Join';
 import Blog from './pages/Blog';
 import BlogPostDetail from './pages/BlogPostDetail';
+import AdminBlog from './pages/AdminBlog';
 import __Layout from './Layout.jsx';
 
 
@@ -28,6 +29,7 @@ export const PAGES = {
     "Join": Join,
     "Blog": Blog,
     "BlogPostDetail": BlogPostDetail,
+    "AdminBlog": AdminBlog,
 }
 
 export const pagesConfig = {

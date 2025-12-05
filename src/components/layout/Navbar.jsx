@@ -175,6 +175,11 @@ export default function Navbar() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="rounded-none border-slate-200">
+                  {user?.role === 'admin' && (
+                    <DropdownMenuItem asChild className="rounded-none hover:bg-slate-900 hover:text-white focus:bg-slate-900 focus:text-white">
+                      <Link to={createPageUrl("AdminBlog")}>Blog CMS</Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem asChild className="rounded-none hover:bg-slate-900 hover:text-white focus:bg-slate-900 focus:text-white">
                     <Link to={createPageUrl("Bookings")}>My Bookings</Link>
                   </DropdownMenuItem>
