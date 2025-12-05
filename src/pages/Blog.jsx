@@ -77,9 +77,10 @@ export default function Blog() {
             <div className="grid lg:grid-cols-2 gap-8 items-center">
               <div className="overflow-hidden rounded-2xl">
                 <img 
-                  src={featuredPost.cover_image_url || "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=2000"} 
+                  src={featuredPost.cover_image_url || "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=2000"} 
                   alt={featuredPost.title}
                   className="w-full aspect-[16/10] object-cover transform group-hover:scale-105 transition-transform duration-500"
+                  onError={(e) => { e.target.onerror = null; e.target.src = "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=2000"; }}
                 />
               </div>
               <div className="space-y-6">
