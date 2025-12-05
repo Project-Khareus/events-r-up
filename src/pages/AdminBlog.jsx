@@ -241,11 +241,11 @@ export default function AdminBlog() {
                     <div className="flex items-center gap-2">
                         <h3 className="font-bold text-slate-900 line-clamp-1">{post.title}</h3>
                         <Badge variant={
-                            post.status === 'published' ? 'default' : 
+                            (post.status === 'published' || !post.status) ? 'default' : 
                             post.status === 'pending' ? 'secondary' : 
                             post.status === 'rejected' ? 'destructive' : 'outline'
                         } className="capitalize text-xs h-5">
-                            {post.status || 'draft'}
+                            {post.status || 'published'}
                         </Badge>
                         {post.is_featured && <span className="text-indigo-600 font-medium bg-indigo-50 px-2 py-0.5 rounded text-xs border border-indigo-100">Featured</span>}
                     </div>

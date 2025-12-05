@@ -45,7 +45,7 @@ export default function BlogEditor({ post, onSave, onCancel, isAdmin }) {
         is_featured: post.is_featured || false,
         author_name: post.author_name || "",
         author_avatar_url: post.author_avatar_url || "",
-        status: post.status || "draft"
+        status: post.status || "published"
       });
     } else {
         base44.auth.me().then(user => {
