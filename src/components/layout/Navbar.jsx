@@ -198,7 +198,7 @@ export default function Navbar() {
                     <Link to={createPageUrl("Messages")}>Messages</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild className="rounded-none hover:bg-slate-900 hover:text-white focus:bg-slate-900 focus:text-white">
-                    <Link to={createPageUrl("VendorSignup")}>List Your Business</Link>
+                    <Link to={createPageUrl("ManageListing")}>Manage Listing</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout} className="rounded-none text-red-600 hover:bg-red-600 hover:text-white focus:bg-red-600 focus:text-white">
                     <LogOut className="h-4 w-4 mr-2" />

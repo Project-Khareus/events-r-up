@@ -18,6 +18,7 @@ import EventDetail from './pages/EventDetail';
 import UserProfile from './pages/UserProfile';
 import MyFeed from './pages/MyFeed';
 import TestBackend from './pages/TestBackend';
+import ManageListing from './pages/ManageListing';
 import __Layout from './Layout.jsx';
 
 
@@ -42,6 +43,7 @@ export const PAGES = {
     "UserProfile": UserProfile,
     "MyFeed": MyFeed,
     "TestBackend": TestBackend,
+    "ManageListing": ManageListing,
 }
 
 export const pagesConfig = {
