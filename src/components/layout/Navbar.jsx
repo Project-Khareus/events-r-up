@@ -130,6 +130,9 @@ export default function Navbar() {
               ))}
             </div>
 
+            <Link to={createPageUrl("Classifieds")} className="text-sm font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-white transition-colors">
+              Classifieds
+            </Link>
             <Link to={createPageUrl("Blog")} className="text-sm font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-white transition-colors">
               Blog
             </Link>
