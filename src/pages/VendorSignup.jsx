@@ -51,9 +51,20 @@ export default function VendorSignup() {
       };
       return base44.entities.Vendor.create(vendorData);
     },
-    onSuccess: () => {
+    onSuccess: async (newVendor) => {
       setIsSubmitted(true);
       toast.success("Your vendor listing has been submitted for review!");
+      
+      // Notify admin
+      try {
+        await base44.functions.invoke('notifyVendorSubmission', {
+          business_name: newVendor.business_name,
+          vendor_id: newVendor.id,
+          contact_email: newVendor.contact_email
+        });
+      } catch (err) {
+        console.error("Failed to notify admin", err);
+      }
     },
     onError: () => {
       toast.error("Failed to create listing. Please try again.");
