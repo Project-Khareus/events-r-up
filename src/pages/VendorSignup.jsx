@@ -46,7 +46,7 @@ export default function VendorSignup() {
         user_id: user.id,
         starting_price: data.starting_price ? parseFloat(data.starting_price) : undefined,
         years_in_business: data.years_in_business ? parseInt(data.years_in_business) : undefined,
-        services: data.services ? data.services.split(",").map(s => s.trim()).filter(Boolean) : [],
+        // services, event_type, category are already arrays from the form
         status: "pending",
       };
       return base44.entities.Vendor.create(vendorData);

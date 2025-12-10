@@ -46,7 +46,7 @@ export default function ManageListing() {
         ...data,
         starting_price: data.starting_price ? parseFloat(data.starting_price) : undefined,
         years_in_business: data.years_in_business ? parseInt(data.years_in_business) : undefined,
-        services: data.services ? data.services.split(",").map(s => s.trim()).filter(Boolean) : [],
+        // services, event_type, category are already arrays from the form
       };
       // Keep existing status unless specifically changing logic (e.g., re-approval needed?)
       // For now, we'll keep the existing status or let it be handled by admin

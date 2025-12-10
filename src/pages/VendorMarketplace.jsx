@@ -69,8 +69,12 @@ export default function VendorMarketplace() {
         vendor.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         vendor.services?.some(s => s.toLowerCase().includes(searchQuery.toLowerCase()));
       
-      const matchesEvent = eventType === "all" || vendor.event_type === eventType;
-      const matchesCategory = category === "all" || vendor.category === category;
+      // Handle array or string for backward compatibility
+      const vendorEvents = Array.isArray(vendor.event_type) ? vendor.event_type : [vendor.event_type];
+      const vendorCategories = Array.isArray(vendor.category) ? vendor.category : [vendor.category];
+
+      const matchesEvent = eventType === "all" || vendorEvents.includes(eventType);
+      const matchesCategory = category === "all" || vendorCategories.includes(category);
       const matchesPrice = priceRange === "all" || vendor.price_range === priceRange;
 
       return matchesSearch && matchesEvent && matchesCategory && matchesPrice;
@@ -108,25 +112,24 @@ export default function VendorMarketplace() {
     if (!isHomepage) return [];
     const eventOrder = ["weddings", "parties", "conference", "funeral"];
     const grouped = {};
-    
-    vendors.forEach((vendor) => {
-      const key = vendor.event_type;
-      if (!grouped[key]) {
-        grouped[key] = {
-          eventType: vendor.event_type,
-          vendors: []
-        };
-      }
-      grouped[key].vendors.push(vendor);
+
+    // Initialize groups
+    eventOrder.forEach(e => {
+        grouped[e] = { eventType: e, vendors: [] };
     });
-    
-    // Sort by event order
-    return Object.values(grouped)
-      .sort((a, b) => {
-        const eventA = eventOrder.indexOf(a.eventType);
-        const eventB = eventOrder.indexOf(b.eventType);
-        return eventA - eventB;
+
+    vendors.forEach((vendor) => {
+      const vendorEvents = Array.isArray(vendor.event_type) ? vendor.event_type : [vendor.event_type];
+      vendorEvents.forEach(eventType => {
+          if (grouped[eventType]) {
+              grouped[eventType].vendors.push(vendor);
+          }
       });
+    });
+
+    // Sort by event order, filter out groups with less than 4 vendors
+    return Object.values(grouped)
+      .filter(group => group.vendors.length >= 4);
   }, [vendors, isHomepage]);
 
   const handleClearFilters = () => {
@@ -259,12 +262,12 @@ export default function VendorMarketplace() {
                   <h2 className="text-2xl font-bold text-slate-900">Featured Vendors</h2>
                 </div>
                 <div className="columns-2 lg:columns-4 gap-3 space-y-3">
-                  {featuredVendors.map((vendor) => (
-                    <div key={vendor.id} className="break-inside-avoid">
-                      <VendorCard vendor={vendor} />
-                    </div>
-                  ))}
-                </div>
+                        {featuredVendors.slice(0, featuredVendors.length - (featuredVendors.length % 4) || 4).map((vendor) => (
+                          <div key={vendor.id} className="break-inside-avoid">
+                            <VendorCard vendor={vendor} />
+                          </div>
+                        ))}
+                      </div>
               </div>
             )}
 
@@ -280,12 +283,12 @@ export default function VendorMarketplace() {
                   <h2 className="text-2xl font-bold text-slate-900 mb-6">All Vendors</h2>
                 )}
                 <div className="columns-2 lg:columns-4 gap-3 space-y-3">
-                  {regularVendors.map((vendor) => (
-                    <div key={vendor.id} className="break-inside-avoid">
-                      <VendorCard vendor={vendor} />
-                    </div>
-                  ))}
-                </div>
+                    {regularVendors.slice(0, regularVendors.length - (regularVendors.length % 4) || regularVendors.length).map((vendor) => (
+                      <div key={vendor.id} className="break-inside-avoid">
+                        <VendorCard vendor={vendor} />
+                      </div>
+                    ))}
+                  </div>
               </div>
             )}
             

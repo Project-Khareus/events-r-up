@@ -5,12 +5,16 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { 
   Store, Upload, Loader2, X, Plus, 
-  Instagram, Facebook, Twitter, Linkedin, Globe, Phone, Mail
+  Instagram, Facebook, Twitter, Linkedin, Globe, Phone, Mail,
+  Check
 } from "lucide-react";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 const EVENT_TYPES = [
   { value: "weddings", label: "Weddings" },
@@ -66,22 +70,22 @@ const CATEGORIES_BY_EVENT = {
   ],
 };
 
-const PRICE_RANGES = [
-  { value: "$", label: "$ - Budget Friendly" },
-  { value: "$$", label: "$$ - Moderate" },
-  { value: "$$$", label: "$$$ - Premium" },
-  { value: "$$$$", label: "$$$$ - Luxury" },
+const COMMON_SERVICES = [
+  "Photography", "Videography", "Catering", "DJ Services", "Live Band",
+  "Event Planning", "Decoration", "Florist", "Venue Rental", "Security",
+  "Valet Parking", "Makeup", "Hair Styling", "Dress Rental", "Suit Rental",
+  "Cake Design", "Bartending", "Lighting", "Sound System", "Invitation Design",
+  "MC / Host", "Transportation", "Photo Booth", "Tent Rental", "Table & Chair Rental"
 ];
 
 const DEFAULT_FORM_DATA = {
   business_name: "",
   slogan: "",
-  event_type: "",
-  category: "",
+  event_type: [], // Changed to array
+  category: [],   // Changed to array
   description: "",
   location: "",
   starting_price: "",
-  price_range: "",
   contact_email: "",
   contact_phone: "",
   website: "",
@@ -92,7 +96,7 @@ const DEFAULT_FORM_DATA = {
   linkedin: "",
   image_url: "",
   gallery_images: [],
-  services: "",
+  services: [], // Changed to array
   years_in_business: "",
 };
 
@@ -100,15 +104,18 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
   const [formData, setFormData] = useState(DEFAULT_FORM_DATA);
   const [imageUploading, setImageUploading] = useState(false);
   const [galleryUploading, setGalleryUploading] = useState(false);
+  const [serviceInput, setServiceInput] = useState("");
 
   useEffect(() => {
     if (initialData) {
       setFormData(prev => ({
         ...prev,
         ...initialData,
-        // Ensure arrays and non-string fields are handled correctly if they come from DB
+        // Ensure arrays
         gallery_images: initialData.gallery_images || [],
-        services: Array.isArray(initialData.services) ? initialData.services.join(", ") : (initialData.services || ""),
+        event_type: Array.isArray(initialData.event_type) ? initialData.event_type : (initialData.event_type ? [initialData.event_type] : []),
+        category: Array.isArray(initialData.category) ? initialData.category : (initialData.category ? [initialData.category] : []),
+        services: Array.isArray(initialData.services) ? initialData.services : (initialData.services ? initialData.services.split(", ") : []),
         starting_price: initialData.starting_price?.toString() || "",
         years_in_business: initialData.years_in_business?.toString() || "",
       }));
@@ -163,14 +170,59 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.business_name || !formData.event_type || !formData.category) {
-      toast.error("Please fill in all required fields");
+    if (!formData.business_name || formData.event_type.length === 0 || formData.category.length === 0) {
+      toast.error("Please fill in all required fields (Business Name, Event Type, Category)");
       return;
     }
     onSubmit(formData);
   };
 
-  const categories = formData.event_type ? CATEGORIES_BY_EVENT[formData.event_type] || [] : [];
+  const toggleEventType = (value) => {
+    setFormData(prev => {
+      const newTypes = prev.event_type.includes(value)
+        ? prev.event_type.filter(t => t !== value)
+        : [...prev.event_type, value];
+      return { ...prev, event_type: newTypes };
+    });
+  };
+
+  const toggleCategory = (value) => {
+    setFormData(prev => {
+      const newCategories = prev.category.includes(value)
+        ? prev.category.filter(c => c !== value)
+        : [...prev.category, value];
+      return { ...prev, category: newCategories };
+    });
+  };
+
+  const addService = (service) => {
+    if (service && !formData.services.includes(service)) {
+      setFormData(prev => ({
+        ...prev,
+        services: [...prev.services, service]
+      }));
+    }
+    setServiceInput("");
+  };
+
+  const removeService = (service) => {
+    setFormData(prev => ({
+      ...prev,
+      services: prev.services.filter(s => s !== service)
+    }));
+  };
+
+  // Aggregate categories from selected event types
+  const availableCategories = formData.event_type.reduce((acc, type) => {
+    const cats = CATEGORIES_BY_EVENT[type] || [];
+    // Deduplicate
+    cats.forEach(c => {
+      if (!acc.some(existing => existing.value === c.value)) {
+        acc.push(c);
+      }
+    });
+    return acc;
+  }, []);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
@@ -296,41 +348,61 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-4 mt-4">
-          <div>
-            <Label>Event Type *</Label>
-            <Select 
-              value={formData.event_type} 
-              onValueChange={(value) => setFormData({ ...formData, event_type: value, category: "" })}
-            >
-              <SelectTrigger className="mt-1">
-                <SelectValue placeholder="Select event type" />
-              </SelectTrigger>
-              <SelectContent>
-                {EVENT_TYPES.map((type) => (
-                  <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label>Category *</Label>
-            <Select 
-              value={formData.category} 
-              onValueChange={(value) => setFormData({ ...formData, category: value })}
-              disabled={!formData.event_type}
-            >
-              <SelectTrigger className="mt-1">
-                <SelectValue placeholder="Select category" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map((cat) => (
-                  <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        <div className="mt-4">
+          <Label className="mb-2 block">Event Types * (Select all that apply)</Label>
+          <div className="flex flex-wrap gap-2">
+            {EVENT_TYPES.map((type) => {
+              const isSelected = formData.event_type.includes(type.value);
+              return (
+                <button
+                  key={type.value}
+                  type="button"
+                  onClick={() => toggleEventType(type.value)}
+                  className={cn(
+                    "px-4 py-2 rounded-full text-sm font-medium border transition-colors",
+                    isSelected 
+                      ? "bg-indigo-600 text-white border-indigo-600 hover:bg-indigo-700" 
+                      : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+                  )}
+                >
+                  {type.label}
+                  {isSelected && <Check className="inline-block ml-1 h-3 w-3" />}
+                </button>
+              );
+            })}
           </div>
         </div>
+
+        {formData.event_type.length > 0 && (
+          <div className="mt-4">
+            <Label className="mb-2 block">Categories * (Select all that apply)</Label>
+            {availableCategories.length === 0 ? (
+                <p className="text-sm text-slate-500 italic">No specific categories found for selected event types.</p>
+            ) : (
+                <div className="flex flex-wrap gap-2">
+                {availableCategories.map((cat) => {
+                    const isSelected = formData.category.includes(cat.value);
+                    return (
+                    <button
+                        key={cat.value}
+                        type="button"
+                        onClick={() => toggleCategory(cat.value)}
+                        className={cn(
+                        "px-3 py-1.5 rounded-full text-sm font-medium border transition-colors",
+                        isSelected 
+                            ? "bg-indigo-100 text-indigo-800 border-indigo-200 hover:bg-indigo-200" 
+                            : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+                        )}
+                    >
+                        {cat.label}
+                        {isSelected && <Check className="inline-block ml-1 h-3 w-3" />}
+                    </button>
+                    );
+                })}
+                </div>
+            )}
+          </div>
+        )}
 
         <div className="mt-4">
           <Label>Description</Label>
@@ -343,13 +415,63 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
         </div>
 
         <div className="mt-4">
-          <Label>Services Offered</Label>
-          <Input
-            value={formData.services}
-            onChange={(e) => setFormData({ ...formData, services: e.target.value })}
-            placeholder="e.g., Photography, Video Editing, Drone Shots (comma separated)"
-            className="mt-1"
-          />
+          <Label className="mb-2 block">Services Offered (Tags)</Label>
+          <div className="flex flex-wrap gap-2 mb-2">
+            {formData.services.map((service, index) => (
+              <Badge key={index} variant="secondary" className="px-3 py-1 bg-slate-100 text-slate-700 hover:bg-slate-200">
+                {service}
+                <button 
+                  onClick={() => removeService(service)}
+                  className="ml-2 hover:text-red-500 focus:outline-none"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </Badge>
+            ))}
+          </div>
+          
+          <Popover>
+            <PopoverTrigger asChild>
+               <Button variant="outline" role="combobox" className="w-full justify-between text-left font-normal text-slate-500">
+                  {serviceInput || "Type or select a service..."}
+                  <Plus className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+               </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[300px] p-0" align="start">
+              <Command>
+                <CommandInput 
+                    placeholder="Search services..." 
+                    value={serviceInput}
+                    onValueChange={setServiceInput}
+                />
+                <CommandEmpty>
+                   <button 
+                     className="w-full text-left px-2 py-1.5 text-sm text-indigo-600 hover:bg-indigo-50 rounded-sm"
+                     onClick={() => addService(serviceInput)}
+                   >
+                     Add "{serviceInput}"
+                   </button>
+                </CommandEmpty>
+                <CommandGroup className="max-h-64 overflow-auto">
+                  {COMMON_SERVICES.map((service) => (
+                    <CommandItem
+                      key={service}
+                      onSelect={() => addService(service)}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          formData.services.includes(service) ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                      {service}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </Command>
+            </PopoverContent>
+          </Popover>
+          <p className="text-xs text-slate-500 mt-1">Select common services or type your own.</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-4 mt-4">
@@ -382,23 +504,6 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
               className="mt-1"
             />
           </div>
-        </div>
-
-        <div className="mt-4">
-          <Label>Price Range</Label>
-          <Select 
-            value={formData.price_range} 
-            onValueChange={(value) => setFormData({ ...formData, price_range: value })}
-          >
-            <SelectTrigger className="mt-1 w-full md:w-1/2">
-              <SelectValue placeholder="Select price range" />
-            </SelectTrigger>
-            <SelectContent>
-              {PRICE_RANGES.map((range) => (
-                <SelectItem key={range.value} value={range.value}>{range.label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
         </div>
       </Card>
 
