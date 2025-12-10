@@ -1,11 +1,11 @@
 import React, { useMemo } from "react";
 import { Card } from "@/components/ui/card";
-
 import { MapPin, Star, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../../utils";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
+import { Badge } from "@/components/ui/badge";
 
 const CATEGORY_LABELS = {
   bridal_fashion: "Bridal Fashion",
@@ -55,6 +55,10 @@ export default function VendorCard({ vendor, size = "auto" }) {
     return false;
   }, [reviews.length, averageRating, vendor.id]);
 
+  // Handle arrays for category and event_type
+  const categories = Array.isArray(vendor.category) ? vendor.category : (vendor.category ? [vendor.category] : []);
+  const eventTypes = Array.isArray(vendor.event_type) ? vendor.event_type : (vendor.event_type ? [vendor.event_type] : []);
+
   return (
     <Link to={createPageUrl(`VendorDetail?id=${vendor.id}`)} className="block h-full">
       <Card className="group h-full flex flex-col overflow-hidden border border-slate-200 hover:border-slate-400 transition-all duration-500 bg-white rounded-none">
@@ -101,11 +105,18 @@ export default function VendorCard({ vendor, size = "auto" }) {
         </div>
 
         <div className="p-4 flex flex-col flex-1">
-          {vendor.category && (
-            <span className="text-xs font-medium tracking-widest uppercase text-slate-400 mb-1 block">
-              {CATEGORY_LABELS[vendor.category] || vendor.category}
-            </span>
-          )}
+          {/* Categories Tags */}
+          <div className="flex flex-wrap gap-1 mb-2">
+            {categories.slice(0, 2).map((cat, i) => (
+               <span key={i} className="text-xs font-medium tracking-wide uppercase text-slate-500 bg-slate-100 px-2 py-0.5 rounded-sm">
+                 {CATEGORY_LABELS[cat] || cat}
+               </span>
+            ))}
+            {categories.length > 2 && (
+              <span className="text-xs font-medium text-slate-400 px-1">+ {categories.length - 2}</span>
+            )}
+          </div>
+
           <h3 className="font-serif font-bold text-xl text-slate-900 group-hover:text-slate-600 transition-colors line-clamp-1 mb-2 tracking-tight">
             {vendor.business_name}
           </h3>

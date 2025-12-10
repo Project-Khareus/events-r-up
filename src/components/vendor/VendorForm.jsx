@@ -328,14 +328,14 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
         
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <Label>Business Name *</Label>
-            <Input
-              value={formData.business_name}
-              onChange={(e) => setFormData({ ...formData, business_name: e.target.value })}
-              placeholder="Your business name"
-              className="mt-1"
-              required
-            />
+           <Label>Business Name *</Label>
+           <Input
+             value={formData.business_name}
+             onChange={(e) => setFormData({ ...formData, business_name: e.target.value })}
+             placeholder="Your business name"
+             className="mt-1"
+             // Removed required attribute to rely on custom validation
+           />
           </div>
           <div>
             <Label>Slogan / Tagline</Label>
@@ -446,6 +446,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
                 />
                 <CommandEmpty>
                    <button 
+                     type="button"
                      className="w-full text-left px-2 py-1.5 text-sm text-indigo-600 hover:bg-indigo-50 rounded-sm"
                      onClick={() => addService(serviceInput)}
                    >
