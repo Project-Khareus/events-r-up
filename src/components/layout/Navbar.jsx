@@ -92,7 +92,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-20">
           
           {/* Logo */}
-          <Link to={createPageUrl("Home")} className="flex items-center gap-3 group">
+          <Link to={createPageUrl("VendorMarketplace")} className="flex items-center gap-3 group">
             <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-xl flex items-center justify-center text-white font-serif font-bold text-xl shadow-lg shadow-indigo-200 dark:shadow-none group-hover:scale-105 transition-transform">
               Ob
             </div>
@@ -103,7 +103,7 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <div className="hidden lg:flex items-center gap-8">
-            <Link to={createPageUrl("Home")} className="text-sm font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-white transition-colors">
+            <Link to={createPageUrl("VendorMarketplace")} className="text-sm font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-white transition-colors">
               Home
             </Link>
             
@@ -253,8 +253,8 @@ export default function Navbar() {
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[400px]">
                 <div className="flex flex-col gap-6 mt-8">
-                  <Link to={createPageUrl("Home")} className="text-lg font-medium">Home</Link>
-                  <Link to={createPageUrl("VendorMarketplace")} className="text-lg font-medium">Marketplace</Link>
+                  <Link to={createPageUrl("VendorMarketplace")} className="text-lg font-medium">Home</Link>
+                  {/* Marketplace link removed since Home now points there */}
                   <Link to={createPageUrl("Blog")} className="text-lg font-medium">Blog</Link>
                   <Link to={createPageUrl("Classifieds")} className="text-lg font-medium">Classifieds</Link>
                   

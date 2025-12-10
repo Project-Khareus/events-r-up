@@ -20,6 +20,7 @@ import MyFeed from './pages/MyFeed';
 import TestBackend from './pages/TestBackend';
 import ManageListing from './pages/ManageListing';
 import AdminVendors from './pages/AdminVendors';
+import Home from './pages/Home';
 import __Layout from './Layout.jsx';
 
 
@@ -46,6 +47,7 @@ export const PAGES = {
     "TestBackend": TestBackend,
     "ManageListing": ManageListing,
     "AdminVendors": AdminVendors,
+    "Home": Home,
 }
 
 export const pagesConfig = {
