@@ -5,7 +5,7 @@ import { createPageUrl } from "../../utils";
 import { useQuery } from "@tanstack/react-query";
 import { 
   Menu, X, Home, Compass, MessageCircle, CalendarDays, 
-  Bell, User, LogOut, Settings, PlusCircle, ShieldCheck, FileText, CheckSquare
+  Bell, User, LogOut, Settings, PlusCircle, ShieldCheck, FileText, CheckSquare, Store
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
