@@ -40,7 +40,8 @@ export default function EventCard({ event }) {
             <span className="line-clamp-1">{event.location_address}</span>
           </div>
         </div>
-      </Card>
-    </Link>
+        </Card>
+      </Link>
+    </div>
   );
 }

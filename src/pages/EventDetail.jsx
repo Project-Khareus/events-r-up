@@ -10,6 +10,8 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { ArrowLeft, Calendar, MapPin, DollarSign, Share2, Tag, User } from "lucide-react";
 import { format } from "date-fns";
 import EventCard from "../components/events/EventCard";
+import FavoriteButton from "../components/events/FavoriteButton";
+import AddToCalendarButton from "../components/events/AddToCalendarButton";
 
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   var R = 6371; // Radius of the earth in km
@@ -233,6 +235,12 @@ export default function EventDetail() {
                     </div>
 
                     <div className="flex flex-col gap-3">
+                        <div className="flex gap-2">
+                            <FavoriteButton eventId={event.id} className="flex-1" variant="outline" size="default" />
+                            <div className="flex-1">
+                                <AddToCalendarButton event={event} />
+                            </div>
+                        </div>
                         <Button className="w-full bg-indigo-600 hover:bg-indigo-700 h-12 text-lg">
                             Register / Buy Ticket
                         </Button>
