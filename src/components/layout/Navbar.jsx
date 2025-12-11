@@ -5,8 +5,8 @@ import { createPageUrl } from "../../utils";
 import { useQuery } from "@tanstack/react-query";
 import { 
   Menu, X, Home, Compass, MessageCircle, CalendarDays, 
-  Bell, User, LogOut, Settings, PlusCircle, ShieldCheck, FileText, CheckSquare, Store
-} from "lucide-react";
+  Bell, User, LogOut, Settings, PlusCircle, ShieldCheck, FileText, CheckSquare, Store, Heart
+  } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTheme } from "next-themes";
@@ -234,6 +234,12 @@ export default function Navbar() {
                       <Link to={createPageUrl("Bookings")}>
                         <CalendarDays className="mr-2 h-4 w-4" />
                         <span>My Bookings</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to={createPageUrl("MyFavorites")}>
+                        <Heart className="mr-2 h-4 w-4" />
+                        <span>My Favorites</span>
                       </Link>
                     </DropdownMenuItem>
                     
