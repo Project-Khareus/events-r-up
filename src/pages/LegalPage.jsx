@@ -37,35 +37,45 @@ export default function LegalPage() {
   const displayContent = page?.content || defaultContent[slug]?.content || "Content coming soon.";
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="max-w-4xl mx-auto px-6 py-12">
-        <Link 
-          to={createPageUrl("VendorMarketplace")}
-          className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-8 transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Marketplace
-        </Link>
+    <div className="min-h-screen bg-white font-serif">
+      <div className="max-w-3xl mx-auto px-6 py-12">
+        <div className="mb-12">
+            <Link 
+            to={createPageUrl("VendorMarketplace")}
+            className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors font-sans text-sm"
+            >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Marketplace
+            </Link>
+        </div>
 
         {isLoading ? (
-          <div className="space-y-4">
-            <Skeleton className="h-10 w-64" />
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-4 w-5/6" />
+          <div className="space-y-6 pt-8">
+            <Skeleton className="h-16 w-3/4" />
+            <Skeleton className="h-6 w-full" />
+            <Skeleton className="h-6 w-full" />
+            <Skeleton className="h-6 w-5/6" />
           </div>
         ) : (
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 md:p-12">
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">{displayTitle}</h1>
+          <article>
+             {/* If content doesn't start with H1, we might want to show title, but usually it does. 
+                 We'll trust the markdown content for the title to match Medium's document style. */}
+            {(!displayContent.trim().startsWith('#')) && (
+                 <h1 className="text-5xl font-medium text-slate-900 mb-8 leading-tight tracking-tight font-serif">
+                    {displayTitle}
+                 </h1>
+            )}
+
             {page?.last_updated && (
-              <p className="text-sm text-slate-500 mb-8">
+              <p className="text-base text-slate-500 mb-10 font-sans border-b border-slate-100 pb-8">
                 Last updated: {new Date(page.last_updated).toLocaleDateString()}
               </p>
             )}
-            <div className="prose prose-slate max-w-none">
+            
+            <div className="prose prose-lg prose-slate max-w-none prose-headings:font-serif prose-headings:font-medium prose-p:font-serif prose-p:text-slate-800 prose-a:text-slate-900 prose-a:underline prose-a:underline-offset-2 prose-blockquote:border-l-4 prose-blockquote:border-slate-900 prose-blockquote:italic">
               <ReactMarkdown>{displayContent}</ReactMarkdown>
             </div>
-          </div>
+          </article>
         )}
       </div>
     </div>
