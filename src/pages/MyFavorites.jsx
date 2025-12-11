@@ -25,20 +25,20 @@ export default function MyFavorites() {
   });
 
   // 2. Fetch the actual events for those favorites
-  // We'll fetch all events and filter in memory for simplicity in this demo,
-  // or we could fetch them individually if we had a bulk get. 
-  // Given standard list limits, fetching list and matching is okay for now,
-  // but ideally we'd filter by IDs in the query if supported.
+  // Fetch each event individually to ensure we find it even if it's not in the recent list
   const { data: events = [], isLoading: isLoadingEvents } = useQuery({
     queryKey: ['favoritedEvents', favorites],
     queryFn: async () => {
       if (favorites.length === 0) return [];
-      // Fetching all events to filter. In a real app with pagination this would be different.
-      // Trying to be efficient: if we have few favorites, maybe fetch individually?
-      // Let's stick to listing recent events for now to find matches.
-      const allEvents = await base44.entities.EventListing.list('-created_date', 100);
-      const favoriteIds = new Set(favorites.map(f => f.event_id));
-      return allEvents.filter(e => favoriteIds.has(e.id));
+      
+      const eventPromises = favorites.map(async (fav) => {
+        // Use filter to fetch specific event by ID. This ensures we get it regardless of creation date.
+        const results = await base44.entities.EventListing.filter({ id: fav.event_id });
+        return results && results.length > 0 ? results[0] : null;
+      });
+      
+      const results = await Promise.all(eventPromises);
+      return results.filter(e => !!e); // Remove any nulls (deleted events)
     },
     enabled: favorites.length > 0,
   });

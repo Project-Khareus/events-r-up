@@ -46,7 +46,8 @@ export default function FavoriteButton({ eventId, className, variant = "outline"
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['favorites', eventId]);
+      queryClient.invalidateQueries({ queryKey: ['favorites', eventId] });
+      queryClient.invalidateQueries({ queryKey: ['myFavorites'] });
       toast.success(isFavorited ? "Removed from favorites" : "Added to favorites");
     },
     onError: (err) => {
