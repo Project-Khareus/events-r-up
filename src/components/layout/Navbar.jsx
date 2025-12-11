@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTheme } from "next-themes";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import NotificationItem from "../notifications/NotificationItem";
 
 const EVENT_MENUS = [
   {
@@ -81,6 +82,15 @@ export default function Navbar() {
     queryFn: () => base44.auth.me().catch(() => null),
   });
 
+  const { data: notifications = [] } = useQuery({
+    queryKey: ['notifications', 'preview'],
+    queryFn: () => base44.entities.Notification.list('-created_date', 10),
+    enabled: !!user,
+    refetchInterval: 15000,
+  });
+
+  const unreadCount = notifications.filter(n => !n.is_read).length;
+
   const handleLogout = async () => {
     await base44.auth.logout();
     navigate(createPageUrl("Home"));
@@ -148,12 +158,40 @@ export default function Navbar() {
             ) : user ? (
               <>
                 <div className="flex items-center gap-2">
-                  <Link to={createPageUrl("Notifications")}>
-                    <Button variant="ghost" size="icon" className="rounded-full relative">
-                      <Bell className="h-5 w-5 text-slate-600 dark:text-slate-300" />
-                      <span className="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900" />
-                    </Button>
-                  </Link>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="rounded-full relative">
+                        <Bell className="h-5 w-5 text-slate-600 dark:text-slate-300" />
+                        {unreadCount > 0 && (
+                          <span className="absolute top-2 right-2 h-2.5 w-2.5 bg-red-500 rounded-full border-2 border-white dark:border-slate-900 animate-pulse" />
+                        )}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-80 p-0">
+                      <div className="flex items-center justify-between p-4 border-b">
+                        <h4 className="font-semibold">Notifications</h4>
+                        <Link to={createPageUrl("Notifications")} className="text-xs text-indigo-600 hover:underline">
+                          View all
+                        </Link>
+                      </div>
+                      <div className="max-h-[400px] overflow-y-auto">
+                        {notifications.length === 0 ? (
+                          <div className="p-8 text-center text-slate-500 text-sm">
+                            No notifications yet
+                          </div>
+                        ) : (
+                          <div className="divide-y divide-slate-100">
+                            {notifications.map(notification => (
+                              <div key={notification.id} className="p-2 hover:bg-slate-50">
+                                <NotificationItem notification={notification} compact={true} />
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
                   <Link to={createPageUrl("Messages")}>
                     <Button variant="ghost" size="icon" className="rounded-full">
                       <MessageCircle className="h-5 w-5 text-slate-600 dark:text-slate-300" />
