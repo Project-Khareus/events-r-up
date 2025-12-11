@@ -43,10 +43,18 @@ export default function CreateEvent() {
         base44.auth.redirectToLogin(window.location.href);
         return;
       }
+      
+      // Check for required profile fields and approved status
+      if (!currentUser.phone_number || !currentUser.profile_picture_url || currentUser.status !== 'approved') {
+        toast.info("Please complete your profile to publish events");
+        navigate(`${createPageUrl("CompleteProfile")}?next=${encodeURIComponent(createPageUrl("CreateEvent"))}`);
+        return;
+      }
+
       setUser(currentUser);
     };
     checkAuth();
-  }, []);
+  }, [navigate]);
 
   const createEventMutation = useMutation({
     mutationFn: (data) => base44.entities.EventListing.create(data),

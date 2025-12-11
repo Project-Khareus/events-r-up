@@ -25,6 +25,7 @@ import Weddings from './pages/Weddings';
 import Parties from './pages/Parties';
 import Conference from './pages/Conference';
 import Funeral from './pages/Funeral';
+import CompleteProfile from './pages/CompleteProfile';
 import __Layout from './Layout.jsx';
 
 
@@ -56,6 +57,7 @@ export const PAGES = {
     "Parties": Parties,
     "Conference": Conference,
     "Funeral": Funeral,
+    "CompleteProfile": CompleteProfile,
 }
 
 export const pagesConfig = {
