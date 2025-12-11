@@ -86,9 +86,18 @@ export default function EventDetail() {
 
   if (!event) return <div className="p-12 text-center">Event not found</div>;
 
+  const isPending = event.status === 'pending';
+  const isRejected = event.status === 'rejected';
+
+
   return (
     <div className="min-h-screen bg-slate-50 pb-20">
       {/* Hero Image */}
+      {(isPending || isRejected) && (
+        <div className={`w-full py-3 px-6 text-center text-white font-medium ${isPending ? 'bg-yellow-500' : 'bg-red-500'}`}>
+            {isPending ? 'This event is pending approval and is visible only to you and admins.' : 'This event has been rejected.'}
+        </div>
+      )}
       <div className="h-[400px] md:h-[500px] w-full relative bg-slate-900">
          <img 
             src={event.image_url || "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=80&w=2000"} 

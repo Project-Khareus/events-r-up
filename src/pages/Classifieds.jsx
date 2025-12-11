@@ -20,15 +20,20 @@ export default function Classifieds() {
     queryFn: () => base44.entities.EventListing.list('-created_date', 50),
   });
 
+  // Filter approved events client-side just in case RLS returns non-approved for admins/owners mixed in list
+  // or to be explicit about what we show.
+  const approvedEvents = useMemo(() => events.filter(e => e.status === 'approved' || !e.status), [events]); // !e.status for backward compatibility with existing events
+
+
   const filteredEvents = useMemo(() => {
-    return events.filter(event => {
+    return approvedEvents.filter(event => {
       const matchesSearch = !searchQuery || 
         event.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
         event.location_address.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesTheme = selectedTheme === "All" || event.theme === selectedTheme;
       return matchesSearch && matchesTheme;
     });
-  }, [events, searchQuery, selectedTheme]);
+  }, [approvedEvents, searchQuery, selectedTheme]);
 
   return (
     <div className="min-h-screen bg-slate-50">

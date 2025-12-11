@@ -60,7 +60,7 @@ export default function CreateEvent() {
     mutationFn: (data) => base44.entities.EventListing.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['events'] });
-      toast.success("Event published successfully!");
+      toast.success("Event submitted for approval! It will appear once approved.");
       navigate(createPageUrl("Classifieds"));
     },
     onError: () => toast.error("Failed to publish event")
@@ -94,12 +94,30 @@ export default function CreateEvent() {
 
     setIsLoading(true);
     
+    // Check for duplicates
+    try {
+        const duplicates = await base44.entities.EventListing.filter({ 
+            title: formData.title, 
+            event_date: formData.event_date 
+        });
+
+        if (duplicates && duplicates.length > 0) {
+            // Check if it's not just the same event being edited (though this is create page, so likely new)
+            toast.error("An event with this title and date already exists!");
+            setIsLoading(false);
+            return;
+        }
+    } catch (err) {
+        console.error("Error checking duplicates", err);
+    }
+
     const eventData = {
       ...formData,
       user_id: user.id,
       location_lat: mapPosition.lat,
       location_lng: mapPosition.lng,
-      price: formData.is_paid ? parseFloat(formData.price) : 0
+      price: formData.is_paid ? parseFloat(formData.price) : 0,
+      status: 'pending' // Explicitly set pending
     };
 
     createEventMutation.mutate(eventData);

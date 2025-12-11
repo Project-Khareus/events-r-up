@@ -254,6 +254,12 @@ export default function Navbar() {
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem asChild>
+                            <Link to={createPageUrl("AdminEvents")}>
+                              <CalendarDays className="mr-2 h-4 w-4" />
+                              <span>Event Approvals</span>
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem asChild>
                             <Link to={createPageUrl("AdminBlog")}>
                               <FileText className="mr-2 h-4 w-4" />
                               <span>Blog CMS</span>

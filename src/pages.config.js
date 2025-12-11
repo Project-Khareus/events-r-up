@@ -27,6 +27,7 @@ import Conference from './pages/Conference';
 import Funeral from './pages/Funeral';
 import CompleteProfile from './pages/CompleteProfile';
 import MyFavorites from './pages/MyFavorites';
+import AdminEvents from './pages/AdminEvents';
 import __Layout from './Layout.jsx';
 
 
@@ -60,6 +61,7 @@ export const PAGES = {
     "Funeral": Funeral,
     "CompleteProfile": CompleteProfile,
     "MyFavorites": MyFavorites,
+    "AdminEvents": AdminEvents,
 }
 
 export const pagesConfig = {
