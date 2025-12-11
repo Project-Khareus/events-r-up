@@ -8,6 +8,12 @@ import { Button } from "@/components/ui/button";
 import EventCard from "../components/events/EventCard";
 import { Skeleton } from "@/components/ui/skeleton";
 
+// Helper to handle potential nested data structure
+const normalizeData = (item) => {
+  if (!item) return null;
+  return item.data ? { id: item.id, ...item.data } : item;
+};
+
 export default function MyFavorites() {
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
@@ -15,7 +21,7 @@ export default function MyFavorites() {
   });
 
   // 1. Fetch user's favorites
-  const { data: favorites = [], isLoading: isLoadingFavorites } = useQuery({
+  const { data: rawFavorites = [], isLoading: isLoadingFavorites } = useQuery({
     queryKey: ['myFavorites'],
     queryFn: async () => {
       if (!user) return [];
@@ -24,21 +30,31 @@ export default function MyFavorites() {
     enabled: !!user,
   });
 
+  const favorites = useMemo(() => rawFavorites.map(normalizeData), [rawFavorites]);
+
   // 2. Fetch the actual events for those favorites
-  // Fetch each event individually to ensure we find it even if it's not in the recent list
   const { data: events = [], isLoading: isLoadingEvents } = useQuery({
     queryKey: ['favoritedEvents', favorites],
     queryFn: async () => {
       if (favorites.length === 0) return [];
       
       const eventPromises = favorites.map(async (fav) => {
-        // Use filter to fetch specific event by ID. This ensures we get it regardless of creation date.
-        const results = await base44.entities.EventListing.filter({ id: fav.event_id });
-        return results && results.length > 0 ? results[0] : null;
+        if (!fav || !fav.event_id) return null;
+        try {
+          // Attempt to filter by ID
+          const results = await base44.entities.EventListing.filter({ id: fav.event_id });
+          if (results && results.length > 0) {
+            return normalizeData(results[0]);
+          }
+          return null;
+        } catch (err) {
+          console.error("Error fetching event", fav.event_id, err);
+          return null;
+        }
       });
       
       const results = await Promise.all(eventPromises);
-      return results.filter(e => !!e); // Remove any nulls (deleted events)
+      return results.filter(e => !!e); // Remove any nulls (deleted events or errors)
     },
     enabled: favorites.length > 0,
   });

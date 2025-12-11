@@ -6,6 +6,12 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
+// Helper to handle potential nested data structure
+const normalizeData = (item) => {
+  if (!item) return null;
+  return item.data ? { id: item.id, ...item.data } : item;
+};
+
 export default function FavoriteButton({ eventId, className, variant = "outline", size = "icon" }) {
   const queryClient = useQueryClient();
 
@@ -17,7 +23,7 @@ export default function FavoriteButton({ eventId, className, variant = "outline"
 
   // 2. Check if favorited
   // We fetch the user's favorites for this specific event
-  const { data: favorites = [] } = useQuery({
+  const { data: rawFavorites = [] } = useQuery({
     queryKey: ['favorites', eventId],
     queryFn: async () => {
       if (!user) return [];
@@ -27,6 +33,7 @@ export default function FavoriteButton({ eventId, className, variant = "outline"
     enabled: !!user && !!eventId,
   });
 
+  const favorites = useMemo(() => rawFavorites.map(normalizeData), [rawFavorites]);
   const myFavorite = favorites[0];
   const isFavorited = !!myFavorite;
 
