@@ -23,9 +23,9 @@ export default function VendorSignup() {
         return;
       }
       const currentUser = await base44.auth.me();
-      setUser(currentUser);
-      
-      // Check if user already has a vendor listing
+        setUser(currentUser);
+
+        // Check if user already has a vendor listing
       const vendors = await base44.entities.Vendor.list();
       const existingVendor = vendors.find(v => v.user_id === currentUser.id);
       
@@ -117,7 +117,11 @@ export default function VendorSignup() {
         </div>
 
         <VendorForm 
-          initialData={{ contact_email: user?.email }}
+          initialData={{ 
+            contact_email: user?.email,
+            image_url: user?.avatar_url, // Auto-fill from social login
+            business_name: user?.full_name // Auto-fill name as starting point
+          }}
           onSubmit={handleSubmit}
           isSubmitting={createVendorMutation.isPending}
           submitLabel="Submit Your Listing"
