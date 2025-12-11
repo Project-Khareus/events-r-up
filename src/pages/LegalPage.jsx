@@ -72,7 +72,17 @@ export default function LegalPage() {
               </p>
             )}
             
-            <div className="prose prose-lg prose-slate max-w-none prose-headings:font-serif prose-headings:font-medium prose-p:font-serif prose-p:text-slate-800 prose-a:text-slate-900 prose-a:underline prose-a:underline-offset-2 prose-blockquote:border-l-4 prose-blockquote:border-slate-900 prose-blockquote:italic">
+            <div className="prose prose-lg prose-slate max-w-none 
+              prose-headings:font-serif prose-headings:font-medium 
+              prose-h1:text-5xl prose-h1:mb-8
+              prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:tracking-tight
+              prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4
+              prose-p:font-serif prose-p:text-slate-800 prose-p:leading-relaxed prose-p:mb-6
+              prose-a:text-slate-900 prose-a:underline prose-a:underline-offset-2 prose-a:decoration-1
+              prose-blockquote:border-l-4 prose-blockquote:border-slate-900 prose-blockquote:pl-6 prose-blockquote:italic
+              prose-ul:list-disc prose-ul:pl-6 prose-ul:my-6
+              prose-ol:list-decimal prose-ol:pl-6 prose-ol:my-6
+              prose-li:marker:text-slate-900 prose-li:marker:font-bold prose-li:pl-2 prose-li:my-2">
               <ReactMarkdown>{displayContent}</ReactMarkdown>
             </div>
           </article>
