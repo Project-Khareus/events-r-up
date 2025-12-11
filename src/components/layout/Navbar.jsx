@@ -265,6 +265,12 @@ export default function Navbar() {
                               <span>Blog CMS</span>
                             </Link>
                           </DropdownMenuItem>
+                          <DropdownMenuItem asChild>
+                            <Link to={createPageUrl("AdminLegal")}>
+                              <CheckSquare className="mr-2 h-4 w-4" />
+                              <span>Legal Pages</span>
+                            </Link>
+                          </DropdownMenuItem>
                        </>
                     )}
 

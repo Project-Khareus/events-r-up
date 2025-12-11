@@ -29,6 +29,7 @@ import CompleteProfile from './pages/CompleteProfile';
 import MyFavorites from './pages/MyFavorites';
 import AdminEvents from './pages/AdminEvents';
 import SocialCallback from './pages/SocialCallback';
+import AdminLegal from './pages/AdminLegal';
 import __Layout from './Layout.jsx';
 
 
@@ -64,6 +65,7 @@ export const PAGES = {
     "MyFavorites": MyFavorites,
     "AdminEvents": AdminEvents,
     "SocialCallback": SocialCallback,
+    "AdminLegal": AdminLegal,
 }
 
 export const pagesConfig = {
