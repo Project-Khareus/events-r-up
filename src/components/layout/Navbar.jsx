@@ -103,11 +103,12 @@ export default function Navbar() {
           
           {/* Logo */}
           <Link to={createPageUrl("VendorMarketplace")} className="flex items-center gap-3 group">
-            <img 
-              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69224d81efa2f499554b5019/ea69c03a9_newlogo.png" 
-              alt="Events R'Up" 
-              className="h-12 w-auto object-contain transition-transform group-hover:scale-105" 
-            />
+            <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-xl flex items-center justify-center text-white font-serif font-bold text-xl shadow-lg shadow-indigo-200 dark:shadow-none group-hover:scale-105 transition-transform">
+              Ob
+            </div>
+            <span className="font-serif font-bold text-2xl text-slate-900 dark:text-white tracking-tight">
+              Omnievents
+            </span>
           </Link>
 
           {/* Desktop Nav */}
