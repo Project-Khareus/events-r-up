@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
@@ -32,6 +32,7 @@ function deg2rad(deg) {
 export default function EventDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   const eventId = urlParams.get("id");
+  const [showMap, setShowMap] = useState(false);
 
   const { data: events = [], isLoading } = useQuery({
     queryKey: ['events'],
@@ -140,41 +141,55 @@ export default function EventDetail() {
                 {/* Map Section */}
                 <section>
                     <h2 className="text-2xl font-bold text-slate-900 mb-4">Location</h2>
-                    <div className="rounded-xl overflow-hidden border border-slate-200 shadow-sm h-[400px] relative z-0">
-                        <MapContainer 
-                            center={[event.location_lat || 0, event.location_lng || 0]} 
-                            zoom={14} 
-                            style={{ height: "100%", width: "100%" }}
-                        >
-                            <TileLayer
-                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            />
-                            <Marker position={[event.location_lat || 0, event.location_lng || 0]}>
-                                <Popup>{event.location_address}</Popup>
-                            </Marker>
-                        </MapContainer>
-                        <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur p-4 rounded-lg shadow-lg z-[1000] flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                <div className="bg-indigo-100 p-2 rounded-full">
-                                    <MapPin className="h-6 w-6 text-indigo-600" />
-                                </div>
-                                <div>
-                                    <p className="font-bold text-slate-900 text-sm">{event.location_address}</p>
-                                    <p className="text-xs text-slate-500">
-                                        {event.location_lat?.toFixed(4)}, {event.location_lng?.toFixed(4)}
-                                    </p>
-                                </div>
+                    
+                    {!showMap ? (
+                        <div className="rounded-xl border border-slate-200 shadow-sm bg-slate-50 p-8 flex flex-col items-center justify-center text-center">
+                            <div className="bg-indigo-100 p-4 rounded-full mb-4">
+                                <MapPin className="h-8 w-8 text-indigo-600" />
                             </div>
-                            <a 
-                                href={`https://www.google.com/maps/search/?api=1&query=${event.location_lat},${event.location_lng}`} 
-                                target="_blank" 
-                                rel="noreferrer"
-                            >
-                                <Button variant="outline" size="sm">Get Directions</Button>
-                            </a>
+                            <h3 className="text-lg font-semibold text-slate-900 mb-2">{event.location_address}</h3>
+                            <p className="text-sm text-slate-500 mb-6">
+                                {event.location_lat?.toFixed(4)}, {event.location_lng?.toFixed(4)}
+                            </p>
+                            <div className="flex flex-wrap gap-3 justify-center">
+                                <Button onClick={() => setShowMap(true)} variant="outline" className="bg-white">
+                                    View on Map
+                                </Button>
+                                <a 
+                                    href={`https://www.google.com/maps/search/?api=1&query=${event.location_lat},${event.location_lng}`} 
+                                    target="_blank" 
+                                    rel="noreferrer"
+                                >
+                                    <Button>Get Directions</Button>
+                                </a>
+                            </div>
                         </div>
-                    </div>
+                    ) : (
+                        <div className="rounded-xl overflow-hidden border border-slate-200 shadow-sm h-[400px] relative z-0">
+                            <MapContainer 
+                                center={[event.location_lat || 0, event.location_lng || 0]} 
+                                zoom={14} 
+                                scrollWheelZoom={false}
+                                style={{ height: "100%", width: "100%" }}
+                            >
+                                <TileLayer
+                                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                />
+                                <Marker position={[event.location_lat || 0, event.location_lng || 0]}>
+                                    <Popup>{event.location_address}</Popup>
+                                </Marker>
+                            </MapContainer>
+                            <Button 
+                                variant="secondary" 
+                                size="sm" 
+                                className="absolute top-4 right-4 z-[1000] shadow-md bg-white hover:bg-slate-100"
+                                onClick={() => setShowMap(false)}
+                            >
+                                Hide Map
+                            </Button>
+                        </div>
+                    )}
                 </section>
             </div>
 
