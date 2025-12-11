@@ -21,6 +21,10 @@ import TestBackend from './pages/TestBackend';
 import ManageListing from './pages/ManageListing';
 import AdminVendors from './pages/AdminVendors';
 import Home from './pages/Home';
+import Weddings from './pages/Weddings';
+import Parties from './pages/Parties';
+import Conference from './pages/Conference';
+import Funeral from './pages/Funeral';
 import __Layout from './Layout.jsx';
 
 
@@ -48,6 +52,10 @@ export const PAGES = {
     "ManageListing": ManageListing,
     "AdminVendors": AdminVendors,
     "Home": Home,
+    "Weddings": Weddings,
+    "Parties": Parties,
+    "Conference": Conference,
+    "Funeral": Funeral,
 }
 
 export const pagesConfig = {

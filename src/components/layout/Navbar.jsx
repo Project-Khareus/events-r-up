@@ -110,15 +110,18 @@ export default function Navbar() {
             <div className="flex items-center gap-6">
               {EVENT_MENUS.map((menu) => (
                 <div key={menu.title} className="relative group">
-                  <button className="text-sm font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-white transition-colors py-2 flex items-center gap-1">
+                  <Link 
+                    to={createPageUrl(menu.title)}
+                    className="text-sm font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-white transition-colors py-2 flex items-center gap-1"
+                  >
                     {menu.title}
-                  </button>
+                  </Link>
                   <div className="absolute top-full left-0 w-64 bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-slate-100 dark:border-slate-800 p-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all transform translate-y-2 group-hover:translate-y-0 z-50">
                     <div className="py-1">
                       {menu.categories.map((cat) => (
                         <Link
                           key={cat.id}
-                          to={`${createPageUrl("VendorMarketplace")}?event=${menu.title.toLowerCase()}&category=${cat.id}`}
+                          to={`${createPageUrl(menu.title)}?category=${cat.id}`}
                           className="block px-4 py-2 text-sm text-slate-600 hover:text-indigo-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white rounded-lg transition-colors"
                         >
                           {cat.name}
