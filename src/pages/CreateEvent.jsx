@@ -80,7 +80,7 @@ export default function CreateEvent() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.title || !formData.location_address || !formData.event_date) {
       toast.error("Please fill in all required fields");
