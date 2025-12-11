@@ -161,6 +161,76 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
     }
   };
 
+  const handleFacebookImport = async () => {
+    const redirectUri = `${window.location.origin}/SocialCallback`;
+    
+    try {
+      // 1. Get Auth URL
+      const { url } = await base44.functions.invoke('socialMedia', { 
+        action: 'get_auth_url',
+        redirectUri 
+      }).then(res => res.data);
+
+      // 2. Open Popup
+      const width = 600;
+      const height = 700;
+      const left = window.screen.width / 2 - width / 2;
+      const top = window.screen.height / 2 - height / 2;
+      
+      const popup = window.open(
+        url, 
+        "Facebook Login", 
+        `width=${width},height=${height},left=${left},top=${top}`
+      );
+
+      // 3. Listen for message
+      const messageHandler = async (event) => {
+        if (event.origin !== window.location.origin) return;
+        
+        if (event.data.type === "SOCIAL_AUTH_SUCCESS") {
+          window.removeEventListener("message", messageHandler);
+          popup.close();
+          
+          toast.info("Fetching photos from Facebook...");
+          setGalleryUploading(true);
+          
+          try {
+             const { images } = await base44.functions.invoke('socialMedia', {
+                action: 'fetch_photos',
+                code: event.data.code,
+                redirectUri
+             }).then(res => res.data);
+
+             if (images && images.length > 0) {
+                 setFormData(prev => ({
+                     ...prev,
+                     gallery_images: [...prev.gallery_images, ...images]
+                 }));
+                 toast.success(`Imported ${images.length} photos from Facebook!`);
+             } else {
+                 toast.info("No uploaded photos found on your Facebook account.");
+             }
+          } catch (err) {
+              console.error(err);
+              toast.error("Failed to fetch photos");
+          } finally {
+              setGalleryUploading(false);
+          }
+        } else if (event.data.type === "SOCIAL_AUTH_ERROR") {
+           window.removeEventListener("message", messageHandler);
+           popup.close();
+           toast.error("Facebook connection failed");
+        }
+      };
+
+      window.addEventListener("message", messageHandler);
+
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to initialize Facebook connection");
+    }
+  };
+
   const removeGalleryImage = (index) => {
     setFormData(prev => ({
       ...prev,
@@ -313,7 +383,29 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
                   )}
                 </label>
               </div>
-              <p className="text-xs text-slate-400 text-center">Add portfolio images to showcase your work</p>
+              
+              <div className="flex flex-col gap-2 mt-4">
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                        <span className="w-full border-t border-slate-200" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-white px-2 text-slate-400 font-medium">Or import from</span>
+                    </div>
+                  </div>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={handleFacebookImport}
+                    className="w-full gap-2 text-blue-600 border-blue-200 hover:bg-blue-50"
+                    disabled={galleryUploading}
+                  >
+                    <Facebook className="h-4 w-4" />
+                    Import from Facebook Photos
+                  </Button>
+              </div>
+              
+              <p className="text-xs text-slate-400 text-center mt-3">Add portfolio images to showcase your work</p>
             </div>
           </div>
         </div>

@@ -28,6 +28,7 @@ import Funeral from './pages/Funeral';
 import CompleteProfile from './pages/CompleteProfile';
 import MyFavorites from './pages/MyFavorites';
 import AdminEvents from './pages/AdminEvents';
+import SocialCallback from './pages/SocialCallback';
 import __Layout from './Layout.jsx';
 
 
@@ -62,6 +63,7 @@ export const PAGES = {
     "CompleteProfile": CompleteProfile,
     "MyFavorites": MyFavorites,
     "AdminEvents": AdminEvents,
+    "SocialCallback": SocialCallback,
 }
 
 export const pagesConfig = {
