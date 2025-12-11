@@ -202,12 +202,22 @@ export default function EventDetail() {
                         </div>
                     </div>
 
+                    {/* Organizer Info - Modified */}
+                    <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-100 mb-4">
+                        <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center border border-indigo-200 text-indigo-700 font-bold overflow-hidden">
+                             {/* Note: In a real scenario we might fetch user details to get avatar, here we just show an icon or initial */}
+                             <User className="h-5 w-5" />
+                        </div>
+                        <div>
+                            <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Organizer</p>
+                            <p className="font-medium text-slate-900 line-clamp-1">
+                                {event.user_id ? "Event Organizer" : "Unknown"} 
+                                {/* Ideally we would fetch the user name here, but for now just static or placeholder if not joined */}
+                            </p>
+                        </div>
+                    </div>
+
                     <div className="flex flex-col gap-3">
-                        <Link to={createPageUrl("UserProfile") + `?userId=${event.user_id}`} className="block w-full">
-                            <Button variant="outline" className="w-full gap-2 border-slate-300">
-                                <User className="h-4 w-4" /> View Organizer Profile
-                            </Button>
-                        </Link>
                         <Button className="w-full bg-indigo-600 hover:bg-indigo-700 h-12 text-lg">
                             Register / Buy Ticket
                         </Button>
