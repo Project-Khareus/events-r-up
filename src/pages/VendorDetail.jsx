@@ -128,6 +128,19 @@ export default function VendorDetail() {
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-4 sm:py-6">
+        {/* Breadcrumbs */}
+        <nav className="flex items-center gap-2 text-xs sm:text-sm text-slate-500 mb-6 sm:mb-8 overflow-x-auto whitespace-nowrap pb-2 scrollbar-hide">
+          <Link to={createPageUrl("VendorMarketplace")} className="hover:text-slate-900 transition-colors">Home</Link>
+          <ChevronRight className="h-3 w-3 shrink-0" />
+          <Link to={createPageUrl("VendorMarketplace")} className="hover:text-slate-900 transition-colors">Vendors</Link>
+          <ChevronRight className="h-3 w-3 shrink-0" />
+          <Link to={createPageUrl(`VendorMarketplace?category=${vendor.category}`)} className="hover:text-slate-900 transition-colors capitalize">
+            {CATEGORY_LABELS[vendor.category] || vendor.category}
+          </Link>
+          <ChevronRight className="h-3 w-3 shrink-0" />
+          <span className="text-slate-900 font-medium truncate">{vendor.business_name}</span>
+        </nav>
+
         <div className="grid lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12">
           {/* Left Column: Image Gallery (7 cols) */}
           <div className="lg:col-span-7">
