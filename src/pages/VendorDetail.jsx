@@ -17,14 +17,8 @@ import {
   ChevronRight,
   Truck,
   RotateCcw,
-  Lock,
-  Instagram, 
-  Facebook, 
-  Twitter, 
-  Linkedin,
-  Youtube
+  Lock
 } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import RatingStats from "../components/reviews/RatingStats";
@@ -133,9 +127,9 @@ export default function VendorDetail() {
 
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans">
-      <div className="max-w-[1200px] mx-auto px-6 py-6">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-4 sm:py-6">
         {/* Breadcrumbs */}
-        <nav className="flex items-center gap-2 text-sm text-slate-500 mb-8 overflow-x-auto whitespace-nowrap pb-2">
+        <nav className="flex items-center gap-2 text-xs sm:text-sm text-slate-500 mb-6 sm:mb-8 overflow-x-auto whitespace-nowrap pb-2 scrollbar-hide">
           <Link to={createPageUrl("VendorMarketplace")} className="hover:text-slate-900 transition-colors">Home</Link>
           <ChevronRight className="h-3 w-3 shrink-0" />
           <Link to={createPageUrl("VendorMarketplace")} className="hover:text-slate-900 transition-colors">Vendors</Link>
@@ -147,7 +141,7 @@ export default function VendorDetail() {
           <span className="text-slate-900 font-medium truncate">{vendor.business_name}</span>
         </nav>
 
-        <div className="grid lg:grid-cols-12 gap-12">
+        <div className="grid lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12">
           {/* Left Column: Image Gallery (7 cols) */}
           <div className="lg:col-span-7">
              <ImageGallery images={allImages} businessName={vendor.business_name} />
@@ -156,7 +150,7 @@ export default function VendorDetail() {
           {/* Right Column: Product Info (5 cols) */}
           <div className="lg:col-span-5">
             <div className="space-y-1">
-              <h1 className="text-3xl lg:text-4xl font-serif font-bold text-slate-900 leading-tight">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-slate-900 leading-tight">
                 {vendor.business_name}
               </h1>
               
@@ -181,10 +175,10 @@ export default function VendorDetail() {
 
             <div className="mb-6">
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-bold text-slate-900">
+                <span className="text-2xl sm:text-3xl font-bold text-slate-900">
                   {vendor.starting_price ? `$${vendor.starting_price.toLocaleString()}` : "Price varies"}
                 </span>
-                {vendor.starting_price && <span className="text-slate-500 text-sm font-normal">starting price</span>}
+                {vendor.starting_price && <span className="text-slate-500 text-xs sm:text-sm font-normal">starting price</span>}
               </div>
               {vendor.price_range && (
                 <Badge variant="secondary" className="mt-2 bg-green-100 text-green-700 hover:bg-green-100 border-0 rounded-sm font-medium">
@@ -208,44 +202,6 @@ export default function VendorDetail() {
                 <Heart className="h-5 w-5" />
               </Button>
             </div>
-
-            {/* Social Media Handles */}
-            {(vendor.instagram || vendor.facebook || vendor.twitter || vendor.linkedin || vendor.tiktok || vendor.youtube) && (
-              <div className="flex gap-2 mb-6">
-                {vendor.instagram && (
-                  <a href={`https://instagram.com/${vendor.instagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors">
-                    <Instagram className="h-4 w-4" />
-                  </a>
-                )}
-                {vendor.facebook && (
-                  <a href={vendor.facebook.startsWith('http') ? vendor.facebook : `https://facebook.com/${vendor.facebook}`} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors">
-                    <Facebook className="h-4 w-4" />
-                  </a>
-                )}
-                {vendor.twitter && (
-                  <a href={`https://twitter.com/${vendor.twitter.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors">
-                    <Twitter className="h-4 w-4" />
-                  </a>
-                )}
-                {vendor.linkedin && (
-                  <a href={vendor.linkedin.startsWith('http') ? vendor.linkedin : `https://linkedin.com/in/${vendor.linkedin}`} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors">
-                    <Linkedin className="h-4 w-4" />
-                  </a>
-                )}
-                {vendor.youtube && (
-                  <a href={vendor.youtube.startsWith('http') ? vendor.youtube : `https://youtube.com/${vendor.youtube}`} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors">
-                    <Youtube className="h-4 w-4" />
-                  </a>
-                )}
-                {vendor.tiktok && (
-                  <a href={`https://tiktok.com/@${vendor.tiktok.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors">
-                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
-                    </svg>
-                  </a>
-                )}
-              </div>
-            )}
 
             {/* Info Cards */}
             <div className="space-y-3">
@@ -295,65 +251,60 @@ export default function VendorDetail() {
         </div>
 
         {/* Bottom Section */}
-        <div className="mt-12 border-t border-slate-200 pt-12">
-          <div className="grid lg:grid-cols-12 gap-12 mb-16">
-             {/* Compact Tabs Section (Description, Services, Reviews) */}
-             <div className="lg:col-span-7">
-               <Tabs defaultValue="description" className="w-full">
-                 <TabsList className="w-full justify-start bg-slate-100 p-1 rounded-lg mb-6">
-                   <TabsTrigger value="description" className="flex-1">Description</TabsTrigger>
-                   <TabsTrigger value="services" className="flex-1">Services</TabsTrigger>
-                   <TabsTrigger value="reviews" className="flex-1">Reviews ({reviews.length})</TabsTrigger>
-                 </TabsList>
-                 
-                 <TabsContent value="description" className="min-h-[200px]">
-                   <div className="prose prose-slate max-w-none text-slate-600 leading-relaxed">
-                      {vendor.description || "No description provided."}
-                   </div>
-                 </TabsContent>
-                 
-                 <TabsContent value="services" className="min-h-[200px]">
-                   {vendor.services && vendor.services.length > 0 ? (
-                     <div className="grid sm:grid-cols-2 gap-4">
-                       {vendor.services.map((service, index) => (
-                         <div key={index} className="flex items-center gap-3 p-3 border border-slate-100 rounded-lg bg-white shadow-sm">
-                           <CheckCircle2 className="h-5 w-5 text-slate-900 shrink-0" />
-                           <span className="text-slate-700 font-medium">{service}</span>
-                         </div>
-                       ))}
-                     </div>
-                   ) : (
-                     <p className="text-slate-500 italic">No services listed.</p>
-                   )}
-                 </TabsContent>
-                 
-                 <TabsContent value="reviews" className="min-h-[200px]">
-                   <div className="space-y-8">
-                      <ReviewForm vendorId={vendor.id} vendorName={vendor.business_name} />
-                      <ReviewsList vendorId={vendor.id} />
-                   </div>
-                 </TabsContent>
-               </Tabs>
-             </div>
+        <div className="mt-12 sm:mt-16 lg:mt-20 grid lg:grid-cols-12 gap-8 lg:gap-12 border-t border-slate-200 pt-8 sm:pt-10 lg:pt-12">
+          <div className="lg:col-span-7 space-y-12">
+             
+             {/* Description */}
+             <section>
+                <h2 className="text-2xl font-serif font-bold text-slate-900 mb-4">Description</h2>
+                <div className="prose prose-slate max-w-none text-slate-600 leading-relaxed">
+                   {vendor.description || "No description provided."}
+                </div>
+             </section>
 
-             {/* Rating Stats (Compact Side) */}
-             <div className="lg:col-span-5">
-                <RatingStats reviews={reviews} />
-             </div>
+             {/* Services */}
+             {vendor.services && vendor.services.length > 0 && (
+               <section>
+                  <h3 className="text-xl font-serif font-bold text-slate-900 mb-4">Services Included</h3>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    {vendor.services.map((service, index) => (
+                      <div key={index} className="flex items-center gap-3 p-3 border border-slate-100 rounded-lg bg-white shadow-sm">
+                        <CheckCircle2 className="h-5 w-5 text-slate-900 shrink-0" />
+                        <span className="text-slate-700 font-medium">{service}</span>
+                      </div>
+                    ))}
+                  </div>
+               </section>
+             )}
+
+             {/* Reviews */}
+             <section id="reviews" className="pt-8 border-t border-slate-200">
+                <div className="flex items-center justify-between mb-8">
+                   <h2 className="text-2xl font-serif font-bold text-slate-900">Reviews ({reviews.length})</h2>
+                </div>
+                
+                <div className="space-y-8">
+                   <ReviewForm vendorId={vendor.id} vendorName={vendor.business_name} />
+                   <ReviewsList vendorId={vendor.id} />
+                </div>
+             </section>
           </div>
 
-          {/* Expanded You Might Also Like Section */}
-          <div className="border-t border-slate-200 pt-12">
-             <div className="flex items-center justify-between mb-8">
-                <h3 className="font-serif font-bold text-slate-900 text-2xl">You might also like</h3>
+          {/* Sidebar - Ratings & Similar */}
+          <div className="lg:col-span-5 space-y-8">
+             <div className="sticky top-24">
+                <RatingStats reviews={reviews} />
+                
+                <div className="mt-12">
+                   <h3 className="font-serif font-bold text-slate-900 mb-6 text-xl">You might also like</h3>
+                   <RelatedVendors 
+                      currentVendorId={vendor.id} 
+                      category={vendor.category} 
+                      eventType={vendor.event_type} 
+                      compact={true}
+                   />
+                </div>
              </div>
-             <RelatedVendors 
-                currentVendorId={vendor.id} 
-                category={vendor.category} 
-                eventType={vendor.event_type} 
-                limit={8}
-                compact={false}
-             />
           </div>
         </div>
       </div>

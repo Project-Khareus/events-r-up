@@ -62,7 +62,7 @@ export default function VendorCard({ vendor, size = "auto" }) {
   return (
     <Link to={createPageUrl(`VendorDetail?id=${vendor.id}`)} className="block h-full">
       <Card className="group h-full flex flex-col overflow-hidden border border-slate-200 hover:border-slate-400 transition-all duration-500 bg-white rounded-none">
-        <div className="relative h-64 overflow-hidden bg-slate-100 shrink-0">
+        <div className="relative h-48 sm:h-56 md:h-64 overflow-hidden bg-slate-100 shrink-0">
           {vendor.image_url && !imageError ? (
             <img
               src={vendor.image_url}
@@ -79,21 +79,22 @@ export default function VendorCard({ vendor, size = "auto" }) {
           )}
           
           {isFeatured && (
-            <div className="absolute top-4 left-4 bg-slate-800 text-white px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg font-medium text-sm">
-              <Crown className="h-3.5 w-3.5" />
-              Top Rated
+            <div className="absolute top-2 left-2 sm:top-4 sm:left-4 bg-slate-800 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded-full flex items-center gap-1 sm:gap-1.5 shadow-lg font-medium text-xs sm:text-sm">
+              <Crown className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+              <span className="hidden sm:inline">Top Rated</span>
+              <span className="sm:hidden">Top</span>
             </div>
           )}
 
           {vendor.starting_price && (
-            <div className="absolute bottom-4 right-4 bg-slate-800 text-white px-3 py-1.5 rounded-lg shadow-lg font-semibold text-sm">
-              From ${vendor.starting_price.toLocaleString()}
+            <div className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 bg-slate-800 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded-md sm:rounded-lg shadow-lg font-semibold text-xs sm:text-sm">
+              ${vendor.starting_price.toLocaleString()}
             </div>
           )}
 
           {/* Gallery indicator */}
           {vendor.gallery_images && vendor.gallery_images.length > 0 && (
-            <div className="absolute bottom-4 left-4 bg-black/60 text-white px-2 py-1 rounded-md flex items-center gap-1.5 text-xs">
+            <div className="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 bg-black/60 text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md flex items-center gap-1 sm:gap-1.5 text-xs">
               <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
@@ -104,46 +105,46 @@ export default function VendorCard({ vendor, size = "auto" }) {
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         </div>
 
-        <div className="p-4 flex flex-col flex-1">
+        <div className="p-3 sm:p-4 flex flex-col flex-1">
           {/* Categories Tags */}
-          <div className="flex flex-wrap gap-1 mb-2">
+          <div className="flex flex-wrap gap-1 mb-1.5 sm:mb-2">
             {categories.slice(0, 2).map((cat, i) => (
-               <span key={i} className="text-xs font-medium tracking-wide uppercase text-slate-500 bg-slate-100 px-2 py-0.5 rounded-sm">
+               <span key={i} className="text-[10px] sm:text-xs font-medium tracking-wide uppercase text-slate-500 bg-slate-100 px-1.5 sm:px-2 py-0.5 rounded-sm">
                  {CATEGORY_LABELS[cat] || cat}
                </span>
             ))}
             {categories.length > 2 && (
-              <span className="text-xs font-medium text-slate-400 px-1">+ {categories.length - 2}</span>
+              <span className="text-[10px] sm:text-xs font-medium text-slate-400 px-1">+ {categories.length - 2}</span>
             )}
           </div>
 
-          <h3 className="font-serif font-bold text-xl text-slate-900 group-hover:text-slate-600 transition-colors line-clamp-1 mb-2 tracking-tight">
+          <h3 className="font-serif font-bold text-base sm:text-lg lg:text-xl text-slate-900 group-hover:text-slate-600 transition-colors line-clamp-1 mb-1.5 sm:mb-2 tracking-tight">
             {vendor.business_name}
           </h3>
 
-          <div className="space-y-1.5 mb-3">
+          <div className="space-y-1 sm:space-y-1.5 mb-2 sm:mb-3">
             {vendor.location && (
-              <div className="flex items-center gap-1.5 text-slate-500 text-sm">
-                <MapPin className="h-4 w-4" />
-                <span>{vendor.location}</span>
+              <div className="flex items-center gap-1 sm:gap-1.5 text-slate-500 text-xs sm:text-sm">
+                <MapPin className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
+                <span className="truncate">{vendor.location}</span>
               </div>
             )}
 
             {(averageRating || reviews.length > 0) && (
-              <div className="flex items-center gap-1.5">
-                <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                <span className="text-sm font-medium text-slate-700">
+              <div className="flex items-center gap-1 sm:gap-1.5">
+                <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-amber-400 text-amber-400 shrink-0" />
+                <span className="text-xs sm:text-sm font-medium text-slate-700">
                   {averageRating ? averageRating.toFixed(1) : 'New'}
                 </span>
                 {reviews.length > 0 && (
-                  <span className="text-xs text-slate-500">({reviews.length})</span>
+                  <span className="text-[10px] sm:text-xs text-slate-500">({reviews.length})</span>
                 )}
               </div>
             )}
           </div>
 
           {vendor.description && (
-            <p className="text-slate-600 text-sm line-clamp-2 leading-relaxed mt-auto">
+            <p className="text-slate-600 text-xs sm:text-sm line-clamp-2 leading-relaxed mt-auto">
               {vendor.description}
             </p>
           )}
