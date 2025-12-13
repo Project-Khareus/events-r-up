@@ -317,9 +317,13 @@ export default function Navbar() {
                 <div className="flex flex-col gap-6 mt-8">
                   <Link to={createPageUrl("VendorMarketplace")} className="text-lg font-medium">Home</Link>
                   {/* Marketplace link removed since Home now points there */}
+                  <Link to={createPageUrl("Weddings")} className="text-lg font-medium">Weddings</Link>
+                  <Link to={createPageUrl("Parties")} className="text-lg font-medium">Parties</Link>
+                  <Link to={createPageUrl("Conference")} className="text-lg font-medium">Conference</Link>
+                  <Link to={createPageUrl("Funeral")} className="text-lg font-medium">Funeral</Link>
                   <Link to={createPageUrl("Blog")} className="text-lg font-medium">Blog</Link>
                   <Link to={createPageUrl("Classifieds")} className="text-lg font-medium">Classifieds</Link>
-                  
+
                   {user ? (
                     <>
                       <div className="h-px bg-slate-200 dark:bg-slate-800 my-2" />
