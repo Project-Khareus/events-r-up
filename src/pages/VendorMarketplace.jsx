@@ -163,16 +163,16 @@ export default function VendorMarketplace() {
       </div>
 
       {/* Search & Filters */}
-      <div className="max-w-7xl mx-auto px-6 -mt-8">
-        <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-8">
-          <div className="flex flex-col gap-6">
-            <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-6 sm:-mt-8">
+        <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200 p-4 sm:p-6 lg:p-8">
+          <div className="flex flex-col gap-4 sm:gap-6">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch">
               <div className="flex-1">
                 <SearchBar value={searchQuery} onChange={setSearchQuery} />
               </div>
-              <Link to={createPageUrl("EventPlanning")}>
-                <button className="h-full px-6 py-3 bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-900 hover:to-black text-white rounded-xl font-medium shadow-lg shadow-slate-300 transition-all hover:scale-105 flex items-center gap-2 justify-center whitespace-nowrap">
-                  <Wand2 className="h-5 w-5" />
+              <Link to={createPageUrl("EventPlanning")} className="w-full sm:w-auto">
+                <button className="w-full sm:w-auto h-full px-4 sm:px-6 py-3 bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-900 hover:to-black text-white rounded-xl font-medium shadow-lg shadow-slate-300 transition-all hover:scale-105 flex items-center gap-2 justify-center whitespace-nowrap text-sm sm:text-base">
+                  <Wand2 className="h-4 w-4 sm:h-5 sm:w-5" />
                   Plan an Event
                 </button>
               </Link>
@@ -190,45 +190,47 @@ export default function VendorMarketplace() {
         </div>
       </div>
 
-      <div className="max-w-[1400px] mx-auto px-6 py-12">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <div className="flex">
-          {/* Left Side Ad */}
-          <SideAdPlaceholder position="left" />
-          
+          {/* Left Side Ad - Hidden on mobile */}
+          <div className="hidden xl:block">
+            <SideAdPlaceholder position="left" />
+          </div>
+
           <div className="flex-1 min-w-0">
         {/* Results Count - only show when searching */}
         {searchQuery && (
-          <div className="mb-8">
-            <p className="text-slate-600">
+          <div className="mb-6 sm:mb-8 px-2">
+            <p className="text-sm sm:text-base text-slate-600">
               <span className="font-semibold text-slate-900">{filteredVendors.length}</span> vendors found
             </p>
           </div>
         )}
 
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 px-2">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="space-y-4">
-                <Skeleton className="h-64 rounded-2xl" />
-                <Skeleton className="h-6 w-3/4" />
+              <div key={i} className="space-y-3 sm:space-y-4">
+                <Skeleton className="h-48 sm:h-56 lg:h-64 rounded-xl sm:rounded-2xl" />
+                <Skeleton className="h-5 sm:h-6 w-3/4" />
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-2/3" />
               </div>
             ))}
           </div>
         ) : filteredVendors.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 mb-4">
-              <Sparkles className="h-8 w-8 text-slate-400" />
+          <div className="text-center py-12 sm:py-20 px-4">
+            <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-slate-100 mb-3 sm:mb-4">
+              <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-slate-400" />
             </div>
-            <h3 className="text-xl font-semibold text-slate-900 mb-2">No vendors found</h3>
-            <p className="text-slate-600">Try adjusting your filters or search terms</p>
+            <h3 className="text-lg sm:text-xl font-semibold text-slate-900 mb-2">No vendors found</h3>
+            <p className="text-sm sm:text-base text-slate-600">Try adjusting your filters or search terms</p>
           </div>
         ) : isHomepage ? (
           /* Homepage - Grouped by Category with Carousels */
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {/* Promo Ad Banner */}
-            <div className="-mx-6 lg:mx-auto mb-2">
+            <div className="-mx-4 sm:-mx-6 lg:mx-auto mb-2">
               <PromoAdBanner vendor={promoVendor} className="lg:max-w-7xl lg:mx-auto lg:rounded-2xl" />
             </div>
 
@@ -253,15 +255,15 @@ export default function VendorMarketplace() {
           </div>
         ) : (
           /* Filtered View - Grid Layout */
-          <div className="space-y-12">
+          <div className="space-y-8 sm:space-y-12 px-2">
             {/* Featured Vendors */}
             {featuredVendors.length > 0 && (
               <div>
-                <div className="flex items-center gap-2 mb-6">
-                  <TrendingUp className="h-5 w-5 text-slate-500" />
-                  <h2 className="text-2xl font-bold text-slate-900">Featured Vendors</h2>
+                <div className="flex items-center gap-2 mb-4 sm:mb-6">
+                  <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-slate-500" />
+                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Featured Vendors</h2>
                 </div>
-                <div className="columns-2 lg:columns-4 gap-3 space-y-3">
+                <div className="columns-1 sm:columns-2 lg:columns-4 gap-2 sm:gap-3 space-y-2 sm:space-y-3">
                         {featuredVendors.slice(0, featuredVendors.length - (featuredVendors.length % 4) || 4).map((vendor) => (
                           <div key={vendor.id} className="break-inside-avoid">
                             <VendorCard vendor={vendor} />
@@ -271,18 +273,20 @@ export default function VendorMarketplace() {
               </div>
             )}
 
-            {/* Horizontal Ad between sections */}
+            {/* Horizontal Ad between sections - Hidden on mobile */}
             {featuredVendors.length > 0 && regularVendors.length > 0 && (
-              <HorizontalAdPlaceholder size="small" />
+              <div className="hidden sm:block">
+                <HorizontalAdPlaceholder size="small" />
+              </div>
             )}
 
             {/* Regular Vendors */}
             {regularVendors.length > 0 && (
               <div>
                 {featuredVendors.length > 0 && (
-                  <h2 className="text-2xl font-bold text-slate-900 mb-6">All Vendors</h2>
+                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4 sm:mb-6">All Vendors</h2>
                 )}
-                <div className="columns-2 lg:columns-4 gap-3 space-y-3">
+                <div className="columns-1 sm:columns-2 lg:columns-4 gap-2 sm:gap-3 space-y-2 sm:space-y-3">
                     {regularVendors.slice(0, regularVendors.length - (regularVendors.length % 4) || regularVendors.length).map((vendor) => (
                       <div key={vendor.id} className="break-inside-avoid">
                         <VendorCard vendor={vendor} />
@@ -291,17 +295,21 @@ export default function VendorMarketplace() {
                   </div>
               </div>
             )}
-            
-            {/* Bottom Horizontal Ad */}
-            <HorizontalAdPlaceholder size="large" />
+
+            {/* Bottom Horizontal Ad - Hidden on mobile */}
+            <div className="hidden sm:block">
+              <HorizontalAdPlaceholder size="large" />
+            </div>
           </div>
         )}
           </div>
-          
-          {/* Right Side Ad */}
-          <SideAdPlaceholder position="right" />
-        </div>
-      </div>
+
+          {/* Right Side Ad - Hidden on mobile */}
+          <div className="hidden xl:block">
+            <SideAdPlaceholder position="right" />
+          </div>
+          </div>
+          </div>
     </div>
   );
 }
