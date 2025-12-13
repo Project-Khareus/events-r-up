@@ -52,7 +52,7 @@ export default function Layout({ children }) {
                     `}</style>
                     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />
       <Navbar />
-      <main className="pb-20 md:pb-0 flex-1">{children}</main>
+      <main className="pb-16 md:pb-0 flex-1">{children}</main>
       <Footer />
       <MobileBottomNav />
     </div>
