@@ -69,7 +69,7 @@ export const PAGES = {
 }
 
 export const pagesConfig = {
-    mainPage: "VendorMarketplace",
+    mainPage: "Home",
     Pages: PAGES,
     Layout: __Layout,
 };
