@@ -229,31 +229,47 @@ export default function VendorMarketplace() {
           </div>
         ) : isHomepage ? (
           /* Homepage - Grouped by Category with Carousels */
-          <div className="space-y-3 sm:space-y-4">
-            {/* Promo Ad Banner */}
-            <div className="-mx-4 sm:-mx-6 lg:mx-auto mb-2">
-              <PromoAdBanner vendor={promoVendor} className="lg:max-w-7xl lg:mx-auto lg:rounded-2xl" />
-            </div>
+          vendorsByEvent.length > 0 ? (
+            <div className="space-y-3 sm:space-y-4">
+              {/* Promo Ad Banner */}
+              <div className="-mx-4 sm:-mx-6 lg:mx-auto mb-2">
+                <PromoAdBanner vendor={promoVendor} className="lg:max-w-7xl lg:mx-auto lg:rounded-2xl" />
+              </div>
 
-            {/* Event Type Sections with Horizontal Ads */}
-            {vendorsByEvent.map((group, index) => (
-              <React.Fragment key={group.eventType}>
-                <VendorCategorySection
-                  title={EVENT_LABELS[group.eventType] || group.eventType}
-                  eventType={group.eventType}
-                  category="all"
-                  vendors={group.vendors}
-                />
-                {/* Insert horizontal ad after every 2 sections */}
-                {(index + 1) % 2 === 0 && index < vendorsByEvent.length - 1 && (
-                  <HorizontalAdPlaceholder size="medium" />
-                )}
-              </React.Fragment>
-            ))}
-            
-            {/* Bottom Horizontal Ad */}
-            <HorizontalAdPlaceholder size="large" />
-          </div>
+              {/* Event Type Sections with Horizontal Ads */}
+              {vendorsByEvent.map((group, index) => (
+                <React.Fragment key={group.eventType}>
+                  <VendorCategorySection
+                    title={EVENT_LABELS[group.eventType] || group.eventType}
+                    eventType={group.eventType}
+                    category="all"
+                    vendors={group.vendors}
+                  />
+                  {/* Insert horizontal ad after every 2 sections */}
+                  {(index + 1) % 2 === 0 && index < vendorsByEvent.length - 1 && (
+                    <HorizontalAdPlaceholder size="medium" />
+                  )}
+                </React.Fragment>
+              ))}
+              
+              {/* Bottom Horizontal Ad */}
+              <HorizontalAdPlaceholder size="large" />
+            </div>
+          ) : (
+            /* Show all vendors when no event type grouping available */
+            <div className="space-y-8 sm:space-y-12 px-2">
+              <div>
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4 sm:mb-6">All Vendors</h2>
+                <div className="columns-1 sm:columns-2 lg:columns-4 gap-2 sm:gap-3 space-y-2 sm:space-y-3">
+                  {vendors.map((vendor) => (
+                    <div key={vendor.id} className="break-inside-avoid">
+                      <VendorCard vendor={vendor} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )
         ) : (
           /* Filtered View - Grid Layout */
           <div className="space-y-8 sm:space-y-12 px-2">
