@@ -48,10 +48,15 @@ export default function CategoryPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [priceRange, setPriceRange] = useState("all");
 
-  const { data: vendors = [], isLoading } = useQuery({
+  const { data: rawVendors = [], isLoading } = useQuery({
     queryKey: ['vendors', category],
     queryFn: () => base44.entities.Vendor.filter({ category }),
   });
+
+  // Normalize vendor data - handle both flat and nested data structures
+  const vendors = useMemo(() => {
+    return rawVendors.map(v => v.data ? { id: v.id, ...v.data } : v);
+  }, [rawVendors]);
 
   const filteredVendors = useMemo(() => {
     return vendors.filter((vendor) => {
@@ -59,8 +64,11 @@ export default function CategoryPage() {
         vendor.business_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         vendor.description?.toLowerCase().includes(searchQuery.toLowerCase());
       
-      const matchesEvent = eventType === "all" || vendor.event_type === eventType;
-      const matchesPrice = priceRange === "all" || vendor.price_range === priceRange;
+      // Handle array or string for backward compatibility - also handle null/undefined
+      const vendorEvents = vendor.event_type ? (Array.isArray(vendor.event_type) ? vendor.event_type : [vendor.event_type]) : [];
+      
+      const matchesEvent = eventType === "all" || vendorEvents.length === 0 || vendorEvents.includes(eventType);
+      const matchesPrice = priceRange === "all" || !vendor.price_range || vendor.price_range === priceRange;
 
       return matchesSearch && matchesEvent && matchesPrice;
     });
