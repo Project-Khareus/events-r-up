@@ -59,7 +59,9 @@ export default function VendorMarketplace() {
   
   // Normalize vendor data - handle both flat and nested data structures
   const vendors = useMemo(() => {
-    return rawVendors.map(v => v.data ? { id: v.id, ...v.data } : v);
+    return rawVendors
+      .map(v => v.data ? { id: v.id, ...v.data } : v)
+      .filter(v => !v.status || v.status === 'approved'); // Show only approved or vendors without status
   }, [rawVendors]);
 
   const filteredVendors = useMemo(() => {
