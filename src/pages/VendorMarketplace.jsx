@@ -265,7 +265,7 @@ export default function VendorMarketplace() {
                   <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Featured Vendors</h2>
                 </div>
                 <div className="columns-1 sm:columns-2 lg:columns-4 gap-2 sm:gap-3 space-y-2 sm:space-y-3">
-                        {featuredVendors.slice(0, featuredVendors.length - (featuredVendors.length % 4) || 4).map((vendor) => (
+                        {featuredVendors.map((vendor) => (
                           <div key={vendor.id} className="break-inside-avoid">
                             <VendorCard vendor={vendor} />
                           </div>
@@ -288,7 +288,7 @@ export default function VendorMarketplace() {
                   <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4 sm:mb-6">All Vendors</h2>
                 )}
                 <div className="columns-1 sm:columns-2 lg:columns-4 gap-2 sm:gap-3 space-y-2 sm:space-y-3">
-                    {regularVendors.slice(0, regularVendors.length - (regularVendors.length % 4) || regularVendors.length).map((vendor) => (
+                    {regularVendors.map((vendor) => (
                       <div key={vendor.id} className="break-inside-avoid">
                         <VendorCard vendor={vendor} />
                       </div>
