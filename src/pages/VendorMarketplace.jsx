@@ -127,9 +127,9 @@ export default function VendorMarketplace() {
       });
     });
 
-    // Sort by event order, filter out groups with less than 4 vendors
+    // Return all groups that have vendors
     return Object.values(grouped)
-      .filter(group => group.vendors.length >= 4);
+      .filter(group => group.vendors.length > 0);
   }, [vendors, isHomepage]);
 
   const handleClearFilters = () => {
