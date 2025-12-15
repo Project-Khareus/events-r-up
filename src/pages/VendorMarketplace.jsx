@@ -119,7 +119,8 @@ export default function VendorMarketplace() {
     });
 
     vendors.forEach((vendor) => {
-      const vendorEvents = Array.isArray(vendor.event_type) ? vendor.event_type : [vendor.event_type];
+      const vendorEvents = vendor.event_type ? (Array.isArray(vendor.event_type) ? vendor.event_type : [vendor.event_type]) : [];
+      if (vendorEvents.length === 0) return; // Skip vendors without event type
       vendorEvents.forEach(eventType => {
           if (grouped[eventType]) {
               grouped[eventType].vendors.push(vendor);
