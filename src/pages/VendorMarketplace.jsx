@@ -69,13 +69,13 @@ export default function VendorMarketplace() {
         vendor.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         vendor.services?.some(s => s.toLowerCase().includes(searchQuery.toLowerCase()));
       
-      // Handle array or string for backward compatibility
-      const vendorEvents = Array.isArray(vendor.event_type) ? vendor.event_type : [vendor.event_type];
-      const vendorCategories = Array.isArray(vendor.category) ? vendor.category : [vendor.category];
+      // Handle array or string for backward compatibility - also handle null/undefined
+      const vendorEvents = vendor.event_type ? (Array.isArray(vendor.event_type) ? vendor.event_type : [vendor.event_type]) : [];
+      const vendorCategories = vendor.category ? (Array.isArray(vendor.category) ? vendor.category : [vendor.category]) : [];
 
-      const matchesEvent = eventType === "all" || vendorEvents.includes(eventType);
-      const matchesCategory = category === "all" || vendorCategories.includes(category);
-      const matchesPrice = priceRange === "all" || vendor.price_range === priceRange;
+      const matchesEvent = eventType === "all" || vendorEvents.length === 0 || vendorEvents.includes(eventType);
+      const matchesCategory = category === "all" || vendorCategories.length === 0 || vendorCategories.includes(category);
+      const matchesPrice = priceRange === "all" || !vendor.price_range || vendor.price_range === priceRange;
 
       return matchesSearch && matchesEvent && matchesCategory && matchesPrice;
     });
