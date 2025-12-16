@@ -1,14 +1,14 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "../../utils";
-import { Home, Heart, Search, Bell, Store } from "lucide-react";
+import { Home, Heart, Search, Bell, User } from "lucide-react";
 
 const NAV_ITEMS = [
   { name: "Home", icon: Home, page: "VendorMarketplace" },
   { name: "My Picks", icon: Heart, page: "MyPicks" },
   { name: "Search", icon: Search, page: "VendorMarketplace" },
   { name: "Notifications", icon: Bell, page: "Notifications" },
-  { name: "My Listing", icon: Store, page: "VendorSignup" },
+  { name: "Profile", icon: User, page: "MyProfile" },
 ];
 
 export default function MobileBottomNav() {
