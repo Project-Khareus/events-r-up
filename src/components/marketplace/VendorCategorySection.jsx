@@ -4,7 +4,7 @@ import { createPageUrl } from "../../utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import VendorCard from "./VendorCard";
 
-export default function VendorCategorySection({ title, eventType, category, vendors }) {
+export default function VendorCategorySection({ title, eventType, category, vendors, allReviews = [] }) {
   const scrollRef = useRef(null);
 
   const scroll = (direction) => {
@@ -17,7 +17,11 @@ export default function VendorCategorySection({ title, eventType, category, vend
     }
   };
 
-  if (!vendors || vendors.length === 0) return null;
+  // Hide category if less than 4 vendors
+  if (vendors.length < 4) return null;
+  
+  // Only show multiples of 4 on desktop to avoid orphan cards
+  const displayCount = Math.floor(vendors.length / 4) * 4;
 
   return (
     <div className="mb-10">
@@ -38,9 +42,9 @@ export default function VendorCategorySection({ title, eventType, category, vend
         </Link>
       </div>
 
-      {/* Desktop Grid */}
+      {/* Desktop Grid - 4 columns, only show multiples of 4 */}
       <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-3">
-        {vendors.map((vendor) => (
+        {vendors.slice(0, displayCount).map((vendor) => (
           <div key={vendor.id}>
             <VendorCard vendor={vendor} />
           </div>

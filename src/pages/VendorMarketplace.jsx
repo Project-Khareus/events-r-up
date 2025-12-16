@@ -62,6 +62,18 @@ export default function VendorMarketplace() {
     refetchOnReconnect: false,
     retry: false,
   });
+
+  // Batch fetch all reviews to avoid rate limiting
+  const { data: allReviews = [] } = useQuery({
+    queryKey: ['all_reviews'],
+    queryFn: () => base44.entities.Review.list('-created_date', 500),
+    staleTime: Infinity,
+    cacheTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: false,
+  });
   
   // Normalize vendor data - handle both flat and nested data structures
   const vendors = useMemo(() => {
@@ -251,6 +263,7 @@ export default function VendorMarketplace() {
                     eventType={group.eventType}
                     category="all"
                     vendors={group.vendors}
+                    allReviews={allReviews}
                   />
                   {/* Insert horizontal ad after every 2 sections */}
                   {(index + 1) % 2 === 0 && index < vendorsByEvent.length - 1 && (
@@ -270,7 +283,7 @@ export default function VendorMarketplace() {
                 <div className="columns-1 sm:columns-2 lg:columns-4 gap-2 sm:gap-3 space-y-2 sm:space-y-3">
                   {vendors.map((vendor) => (
                     <div key={vendor.id} className="break-inside-avoid">
-                      <VendorCard vendor={vendor} />
+                      <VendorCard vendor={vendor} reviews={allReviews.filter(r => r.vendor_id === vendor.id)} />
                     </div>
                   ))}
                 </div>
@@ -288,12 +301,12 @@ export default function VendorMarketplace() {
                   <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Featured Vendors</h2>
                 </div>
                 <div className="columns-1 sm:columns-2 lg:columns-4 gap-2 sm:gap-3 space-y-2 sm:space-y-3">
-                        {featuredVendors.map((vendor) => (
-                          <div key={vendor.id} className="break-inside-avoid">
-                            <VendorCard vendor={vendor} />
-                          </div>
-                        ))}
-                      </div>
+                  {featuredVendors.map((vendor) => (
+                    <div key={vendor.id} className="break-inside-avoid">
+                      <VendorCard vendor={vendor} reviews={allReviews.filter(r => r.vendor_id === vendor.id)} />
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
@@ -313,7 +326,7 @@ export default function VendorMarketplace() {
                 <div className="columns-1 sm:columns-2 lg:columns-4 gap-2 sm:gap-3 space-y-2 sm:space-y-3">
                     {regularVendors.map((vendor) => (
                       <div key={vendor.id} className="break-inside-avoid">
-                        <VendorCard vendor={vendor} />
+                        <VendorCard vendor={vendor} reviews={allReviews.filter(r => r.vendor_id === vendor.id)} />
                       </div>
                     ))}
                   </div>
