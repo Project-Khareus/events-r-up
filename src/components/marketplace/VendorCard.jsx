@@ -31,21 +31,10 @@ const CATEGORY_LABELS = {
   others: "Others"
 };
 
-export default function VendorCard({ vendor, size = "auto" }) {
+export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
   if (!vendor) return null;
   
   const [imageError, setImageError] = React.useState(false);
-  
-  const { data: reviews = [] } = useQuery({
-    queryKey: ['reviews', vendor.id],
-    queryFn: () => base44.entities.Review.filter({ vendor_id: vendor.id }),
-    staleTime: Infinity,
-    cacheTime: Infinity,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    retry: false,
-  });
 
   const averageRating = reviews.length > 0
     ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length

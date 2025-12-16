@@ -46,7 +46,7 @@ export default function VendorCategorySection({ title, eventType, category, vend
       <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-3">
         {vendors.slice(0, displayCount).map((vendor) => (
           <div key={vendor.id}>
-            <VendorCard vendor={vendor} />
+            <VendorCard vendor={vendor} reviews={allReviews.filter(r => r.vendor_id === vendor.id)} />
           </div>
         ))}
       </div>
@@ -75,7 +75,7 @@ export default function VendorCategorySection({ title, eventType, category, vend
         >
           {vendors.map((vendor) => (
             <div key={vendor.id} className="flex-shrink-0 w-72 snap-start">
-              <VendorCard vendor={vendor} />
+              <VendorCard vendor={vendor} reviews={allReviews.filter(r => r.vendor_id === vendor.id)} />
             </div>
           ))}
         </div>
