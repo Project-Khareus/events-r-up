@@ -13,6 +13,12 @@ export default function Blog() {
   const { data: allPosts = [], isLoading } = useQuery({
     queryKey: ['blog_posts'],
     queryFn: () => base44.entities.BlogPost.list('-created_date', 50),
+    staleTime: Infinity,
+    cacheTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: false,
   });
 
   // Only show published posts on the public blog

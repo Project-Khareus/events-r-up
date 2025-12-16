@@ -18,6 +18,12 @@ export default function Classifieds() {
   const { data: events = [], isLoading } = useQuery({
     queryKey: ['events'],
     queryFn: () => base44.entities.EventListing.list('-created_date', 50),
+    staleTime: Infinity,
+    cacheTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: false,
   });
 
   // Filter approved events client-side just in case RLS returns non-approved for admins/owners mixed in list
