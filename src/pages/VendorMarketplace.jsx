@@ -52,40 +52,25 @@ export default function VendorMarketplace() {
     setCategory(categoryParam);
   }, [eventParam, categoryParam]);
 
-  const { data: rawVendors = [], isLoading, error } = useQuery({
+  const { data: rawVendors = [], isLoading } = useQuery({
     queryKey: ['vendors'],
     queryFn: () => base44.entities.Vendor.list('-created_date', 100),
-    staleTime: Infinity, // Data never goes stale
-    cacheTime: Infinity, // Keep in cache forever
+    staleTime: Infinity,
+    cacheTime: Infinity,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
     retry: false,
   });
-
-  // Debug logging
-  console.log('Raw vendors from API:', rawVendors);
-  console.log('Query error:', error);
   
   // Normalize vendor data - handle both flat and nested data structures
   const vendors = useMemo(() => {
-    // TEMPORARY: Status filter disabled - showing ALL vendors including pending/rejected
-    const normalized = rawVendors.map(v => v.data ? { id: v.id, ...v.data } : v);
-    console.log('Normalized vendors:', normalized);
-    return normalized;
-    
-    /* ORIGINAL STATUS FILTER - COMMENTED OUT
     return rawVendors
       .map(v => v.data ? { id: v.id, ...v.data } : v)
       .filter(v => !v.status || v.status === 'approved');
-    */
   }, [rawVendors]);
 
   const filteredVendors = useMemo(() => {
-    // TEMPORARY: All filters disabled - showing ALL vendors
-    return vendors;
-    
-    /* ORIGINAL FILTERS - COMMENTED OUT
     return vendors.filter((vendor) => {
       const matchesSearch = !searchQuery || 
         vendor.business_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -101,7 +86,6 @@ export default function VendorMarketplace() {
 
       return matchesSearch && matchesEvent && matchesCategory && matchesPrice;
     });
-    */
   }, [vendors, searchQuery, eventType, category, priceRange]);
 
   const featuredVendors = useMemo(() => {
