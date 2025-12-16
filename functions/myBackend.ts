@@ -5,9 +5,13 @@ Deno.serve(async (req) => {
         const base44 = createClientFromRequest(req);
         const user = await base44.auth.me();
 
+        if (!user) {
+            return Response.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
         return Response.json({ 
             message: "Hello from the backend!",
-            user: user ? user.email : "Anonymous",
+            user: user.email,
             timestamp: new Date().toISOString()
         });
     } catch (error) {
