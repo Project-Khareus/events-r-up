@@ -39,7 +39,12 @@ export default function VendorCard({ vendor, size = "auto" }) {
   const { data: reviews = [] } = useQuery({
     queryKey: ['reviews', vendor.id],
     queryFn: () => base44.entities.Review.filter({ vendor_id: vendor.id }),
-    staleTime: 60000,
+    staleTime: Infinity,
+    cacheTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: false,
   });
 
   const averageRating = reviews.length > 0
