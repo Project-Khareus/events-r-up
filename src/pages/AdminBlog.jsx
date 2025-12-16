@@ -56,7 +56,12 @@ export default function AdminBlog() {
   const { data: posts = [], isLoading } = useQuery({
     queryKey: ['blog_posts_cms'],
     queryFn: () => base44.entities.BlogPost.list('-created_date', 100),
-    enabled: !!user
+    enabled: !!user,
+    staleTime: 60000,
+    cacheTime: 300000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    retry: false,
   });
 
   // Filter posts based on role

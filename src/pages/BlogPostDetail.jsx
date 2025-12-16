@@ -21,7 +21,13 @@ export default function BlogPostDetail() {
       const posts = await base44.entities.BlogPost.filter({ id: postId });
       return posts[0];
     },
-    enabled: !!postId
+    enabled: !!postId,
+    staleTime: Infinity,
+    cacheTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: false,
   });
 
   if (isLoading) {
