@@ -80,13 +80,22 @@ export default function Navbar() {
   const { data: user, isLoading } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => base44.auth.me().catch(() => null),
+    staleTime: Infinity,
+    cacheTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: false,
   });
 
   const { data: notifications = [] } = useQuery({
     queryKey: ['notifications', 'preview'],
     queryFn: () => base44.entities.Notification.list('-created_date', 10),
     enabled: !!user,
-    refetchInterval: 15000,
+    staleTime: 60000,
+    refetchInterval: 30000,
+    refetchOnWindowFocus: false,
+    retry: false,
   });
 
   const unreadCount = notifications.filter(n => !n.is_read).length;
