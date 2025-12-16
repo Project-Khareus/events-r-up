@@ -150,216 +150,126 @@ export default function VendorDetail() {
           <span className="text-slate-900 font-medium truncate">{vendor.business_name}</span>
         </nav>
 
-        {/* Hero Section with Gallery */}
-        <div className="mb-8 sm:mb-12">
-          <ImageGallery images={allImages} businessName={vendor.business_name} />
-        </div>
-
-        <div className="grid lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-12">
-          {/* Left Column: Main Content (2 cols) */}
-          <div className="lg:col-span-2 space-y-8 sm:space-y-10">
-            {/* Vendor Header */}
-            <section>
-              <div className="space-y-1 mb-4">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-slate-900 leading-tight">
-                  {vendor.business_name}
-                </h1>
-                
-                <div className="flex items-center gap-2 text-slate-500 text-sm">
-                  <span>{CATEGORY_LABELS[vendor.category] || vendor.category}</span>
-                  <span>•</span>
-                  <span>{vendor.location || "Location varies"}</span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 mb-6">
-                <div className="flex items-center gap-2">
-                  <div className="flex text-slate-900">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className={`h-4 w-4 ${i < Math.round(averageRating) ? "fill-slate-900 text-slate-900" : "text-slate-300"}`} />
-                    ))}
-                  </div>
-                  <span className="font-bold text-slate-900">{averageRating.toFixed(1)}</span>
-                </div>
-                <span className="text-slate-500">
-                  ({reviewCount} {reviewCount === 1 ? 'review' : 'reviews'})
-                </span>
-              </div>
-
-              {vendor.slogan && (
-                <p className="text-lg text-slate-600 mb-6 italic">{vendor.slogan}</p>
-              )}
-            </section>
-
-            {/* Description */}
-            {vendor.description && (
-              <section>
-                <h2 className="text-xl font-semibold text-slate-900 mb-3">About</h2>
-                <div className="prose prose-slate max-w-none text-slate-600 leading-relaxed">
-                  {vendor.description}
-                </div>
-              </section>
-            )}
-
-            {/* Highlights */}
-            {(vendor.years_in_business || vendor.awards?.length > 0 || vendor.certifications?.length > 0) && (
-              <section>
-                <h2 className="text-xl font-semibold text-slate-900 mb-4">Highlights</h2>
-                <div className="grid sm:grid-cols-2 gap-3">
-                  {vendor.years_in_business && (
-                    <div className="flex items-start gap-3 p-3 border border-slate-200 rounded-lg">
-                      <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
-                        <Award className="h-5 w-5 text-slate-600" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-slate-900">{vendor.years_in_business}+ Years</p>
-                        <p className="text-sm text-slate-500">In business</p>
-                      </div>
-                    </div>
-                  )}
-                  {vendor.certifications?.length > 0 && (
-                    <div className="flex items-start gap-3 p-3 border border-slate-200 rounded-lg">
-                      <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
-                        <Shield className="h-5 w-5 text-slate-600" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-slate-900">Certified</p>
-                        <p className="text-sm text-slate-500">{vendor.certifications[0]}</p>
-                      </div>
-                    </div>
-                  )}
-                  {vendor.awards?.length > 0 && (
-                    <div className="flex items-start gap-3 p-3 border border-slate-200 rounded-lg sm:col-span-2">
-                      <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
-                        <Award className="h-5 w-5 text-slate-600" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-slate-900">Awards</p>
-                        <p className="text-sm text-slate-500">{vendor.awards.join(', ')}</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </section>
-            )}
-
-            {/* Services */}
-            {vendor.services && vendor.services.length > 0 && (
-              <section>
-                <h2 className="text-xl font-semibold text-slate-900 mb-4">Services Offered</h2>
-                <div className="grid sm:grid-cols-2 gap-3">
-                  {vendor.services.map((service, index) => (
-                    <div key={index} className="flex items-center gap-3 p-3 border border-slate-200 rounded-lg bg-white">
-                      <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0" />
-                      <span className="text-slate-700 font-medium">{service}</span>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Reviews Section */}
-            <section id="reviews" className="pt-8 border-t border-slate-200">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-semibold text-slate-900">Customer Reviews</h2>
-              </div>
-              
-              <div className="mb-8">
-                <RatingStats reviews={reviews} />
-              </div>
-
-              <div className="space-y-6">
-                <ReviewForm vendorId={vendor.id} vendorName={vendor.business_name} />
-                <ReviewsList vendorId={vendor.id} />
-              </div>
-            </section>
-
+        <div className="grid lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12">
+          {/* Left Column: Image Gallery (7 cols) */}
+          <div className="lg:col-span-7">
+             <ImageGallery images={allImages} businessName={vendor.business_name} />
           </div>
 
-          {/* Right Column: Sticky Sidebar (1 col) */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-24 space-y-6">
-              {/* Pricing Card */}
-              <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-                <div className="mb-6">
-                  <div className="flex items-baseline gap-2 mb-2">
-                    <span className="text-3xl font-bold text-slate-900">
-                      {vendor.starting_price ? `$${vendor.starting_price.toLocaleString()}` : "Custom"}
-                    </span>
-                    {vendor.starting_price && <span className="text-slate-500 text-sm">starting</span>}
-                  </div>
-                  {vendor.price_range && (
-                    <Badge variant="secondary" className="bg-green-50 text-green-700 border-green-200">
-                      {vendor.price_range}
-                    </Badge>
-                  )}
-                </div>
+          {/* Right Column: Product Info (5 cols) */}
+          <div className="lg:col-span-5">
+            <div className="space-y-1">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-slate-900 leading-tight">
+                {vendor.business_name}
+              </h1>
+              
+              <div className="flex items-center gap-2 text-slate-500 text-sm">
+                <span>{CATEGORY_LABELS[vendor.category] || vendor.category}</span>
+                <span>•</span>
+                <span>{vendor.location || "Location varies"}</span>
+              </div>
+            </div>
 
-                <div className="space-y-3">
+            <div className="flex items-center gap-2 mt-3 mb-6">
+              <div className="flex text-slate-900">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className={`h-4 w-4 ${i < Math.round(averageRating) ? "fill-slate-900 text-slate-900" : "text-slate-300"}`} />
+                ))}
+              </div>
+              <span className="font-bold text-slate-900">{averageRating.toFixed(1)}/5</span>
+              <span className="text-slate-500 underline decoration-slate-300 underline-offset-2">
+                ({reviewCount} reviews)
+              </span>
+            </div>
+
+            <div className="mb-6">
+              <div className="flex items-baseline gap-2">
+                <span className="text-2xl sm:text-3xl font-bold text-slate-900">
+                  {vendor.starting_price ? `$${vendor.starting_price.toLocaleString()}` : "Price varies"}
+                </span>
+                {vendor.starting_price && <span className="text-slate-500 text-xs sm:text-sm font-normal">starting price</span>}
+              </div>
+              {vendor.price_range && (
+                <Badge variant="secondary" className="mt-2 bg-green-100 text-green-700 hover:bg-green-100 border-0 rounded-sm font-medium">
+                  Price Range: {vendor.price_range}
+                </Badge>
+              )}
+            </div>
+
+            <div className="space-y-3 mb-8">
+              <div className="flex gap-3">
+                <div className="flex-1">
                   <ContactBookingModal 
                     vendor={vendor} 
                     trigger={
-                      <Button className="w-full h-12 text-base font-semibold bg-slate-900 hover:bg-slate-800 text-white rounded-lg">
-                        Contact Vendor
+                      <Button className="w-full h-12 text-base font-medium bg-slate-900 hover:bg-slate-800 text-white rounded-lg shadow-none transition-all active:scale-95">
+                         Contact / Book Now
                       </Button>
                     }
                   />
-                  <div className="flex gap-2">
-                    <Button variant="outline" className="flex-1 rounded-lg">
-                      <Heart className="h-4 w-4 mr-2" />
-                      Save
-                    </Button>
-                    <ShareButton 
-                      url={window.location.href}
-                      title={`${vendor.business_name} - Event Vendor`}
-                      description={vendor.description || `Check out ${vendor.business_name} on Omnievents!`}
-                      variant="outline"
-                      size="icon"
-                      className="rounded-lg"
-                    />
+                </div>
+                <Button variant="outline" className="h-12 w-12 p-0 rounded-lg border-slate-300 hover:bg-slate-50 shrink-0">
+                  <Heart className="h-5 w-5" />
+                </Button>
+              </div>
+              <ShareButton 
+                url={window.location.href}
+                title={`${vendor.business_name} - Event Vendor`}
+                description={vendor.description || `Check out ${vendor.business_name} on Omnievents!`}
+                variant="outline"
+                className="w-full h-11"
+              />
+            </div>
+
+            {/* Info Cards */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100 hover:bg-slate-100 transition-colors cursor-pointer group">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm text-slate-700 border border-slate-100">
+                    <Shield className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-slate-900 text-sm group-hover:underline">Verified Vendor Identity</p>
+                    <p className="text-xs text-slate-500">Background checked & approved</p>
                   </div>
                 </div>
+                <ChevronRight className="h-5 w-5 text-slate-400" />
               </div>
 
-              {/* Trust Badges */}
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6">
-                <h3 className="font-semibold text-slate-900 mb-4">Why book with us</h3>
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 border border-slate-200">
-                      <Shield className="h-4 w-4 text-slate-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-slate-900 text-sm">Verified</p>
-                      <p className="text-xs text-slate-500">Background checked</p>
-                    </div>
+              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100 hover:bg-slate-100 transition-colors cursor-pointer group">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm text-slate-700 border border-slate-100">
+                    <Lock className="h-5 w-5" />
                   </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 border border-slate-200">
-                      <Lock className="h-4 w-4 text-slate-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-slate-900 text-sm">Secure</p>
-                      <p className="text-xs text-slate-500">Protected payments</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 border border-slate-200">
-                      <CheckCircle2 className="h-4 w-4 text-slate-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-slate-900 text-sm">Trusted</p>
-                      <p className="text-xs text-slate-500">Top-rated service</p>
-                    </div>
+                  <div>
+                    <p className="font-semibold text-slate-900 text-sm group-hover:underline">Secure Booking Payment</p>
+                    <p className="text-xs text-slate-500">Your funds are held safely</p>
                   </div>
                 </div>
+                <ChevronRight className="h-5 w-5 text-slate-400" />
               </div>
 
-              {/* Social Links */}
-              {(vendor.instagram || vendor.facebook || vendor.twitter || vendor.tiktok || vendor.linkedin || vendor.website) && (
-                <div className="bg-white border border-slate-200 rounded-2xl p-6">
-                  <h3 className="font-semibold text-slate-900 mb-4">Connect</h3>
-                  <div className="flex flex-wrap gap-2">
+              {vendor.years_in_business && (
+                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100 hover:bg-slate-100 transition-colors cursor-pointer group">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm text-slate-700 border border-slate-100">
+                      <Award className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-slate-900 text-sm group-hover:underline">Experienced Pro</p>
+                      <p className="text-xs text-slate-500">{vendor.years_in_business}+ years in business</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-slate-400" />
+                </div>
+              )}
+            </div>
+
+            {/* Social Media Links */}
+            {(vendor.instagram || vendor.facebook || vendor.twitter || vendor.tiktok || vendor.linkedin || vendor.website) && (
+              <div className="pt-6 border-t border-slate-200">
+                <h3 className="text-sm font-semibold text-slate-900 mb-3">Connect with us</h3>
+                <div className="flex flex-wrap gap-2">
                   {vendor.website && (
                     <a href={vendor.website.startsWith('http') ? vendor.website : `https://${vendor.website}`} target="_blank" rel="noopener noreferrer" className="p-2.5 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
                       <svg className="h-5 w-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -402,21 +312,68 @@ export default function VendorDetail() {
                       </svg>
                     </a>
                   )}
-                  </div>
                 </div>
-              )}
-
-              {/* Related Vendors */}
-              <div className="bg-white border border-slate-200 rounded-2xl p-6">
-                <h3 className="font-semibold text-slate-900 mb-4">Similar Vendors</h3>
-                <RelatedVendors 
-                  currentVendorId={vendor.id} 
-                  category={vendor.category} 
-                  eventType={vendor.event_type} 
-                  compact={true}
-                />
               </div>
-            </div>
+            )}
+
+          </div>
+        </div>
+
+        {/* Bottom Section */}
+        <div className="mt-12 sm:mt-16 lg:mt-20 grid lg:grid-cols-12 gap-8 lg:gap-12 border-t border-slate-200 pt-8 sm:pt-10 lg:pt-12">
+          <div className="lg:col-span-7 space-y-12">
+             
+             {/* Description */}
+             <section>
+                <h2 className="text-2xl font-serif font-bold text-slate-900 mb-4">Description</h2>
+                <div className="prose prose-slate max-w-none text-slate-600 leading-relaxed">
+                   {vendor.description || "No description provided."}
+                </div>
+             </section>
+
+             {/* Services */}
+             {vendor.services && vendor.services.length > 0 && (
+               <section>
+                  <h3 className="text-xl font-serif font-bold text-slate-900 mb-4">Services Included</h3>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    {vendor.services.map((service, index) => (
+                      <div key={index} className="flex items-center gap-3 p-3 border border-slate-100 rounded-lg bg-white shadow-sm">
+                        <CheckCircle2 className="h-5 w-5 text-slate-900 shrink-0" />
+                        <span className="text-slate-700 font-medium">{service}</span>
+                      </div>
+                    ))}
+                  </div>
+               </section>
+             )}
+
+             {/* Reviews */}
+             <section id="reviews" className="pt-8 border-t border-slate-200">
+                <div className="flex items-center justify-between mb-8">
+                   <h2 className="text-2xl font-serif font-bold text-slate-900">Reviews ({reviews.length})</h2>
+                </div>
+                
+                <div className="space-y-8">
+                   <ReviewForm vendorId={vendor.id} vendorName={vendor.business_name} />
+                   <ReviewsList vendorId={vendor.id} />
+                </div>
+             </section>
+          </div>
+
+          {/* Sidebar - Ratings & Similar */}
+          <div className="lg:col-span-5 space-y-8">
+             <div className="sticky top-24">
+                <RatingStats reviews={reviews} />
+                
+                <div className="mt-12">
+                   <h3 className="font-serif font-bold text-slate-900 mb-6 text-xl">You might also like</h3>
+                   <RelatedVendors 
+                      currentVendorId={vendor.id} 
+                      category={vendor.category} 
+                      eventType={vendor.event_type} 
+                      compact={true}
+                   />
+                </div>
+             </div>
           </div>
         </div>
       </div>
