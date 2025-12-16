@@ -29,19 +29,29 @@ export default function MetaTags({
       element.setAttribute('content', content);
     };
 
-    // Open Graph tags
+    // Open Graph tags (Facebook, LinkedIn, etc.)
     setMetaTag('og:title', title);
     setMetaTag('og:description', description);
     setMetaTag('og:image', image);
+    setMetaTag('og:image:secure_url', image);
+    setMetaTag('og:image:width', '1200');
+    setMetaTag('og:image:height', '630');
+    setMetaTag('og:image:alt', title);
     setMetaTag('og:url', url || window.location.href);
     setMetaTag('og:type', type);
     setMetaTag('og:site_name', 'Omnievents');
+    setMetaTag('og:locale', 'en_US');
 
     // Twitter Card tags
     setMetaTag('twitter:card', image ? 'summary_large_image' : 'summary', true);
+    setMetaTag('twitter:site', '@omnievents', true);
     setMetaTag('twitter:title', title, true);
     setMetaTag('twitter:description', description, true);
     setMetaTag('twitter:image', image, true);
+    setMetaTag('twitter:image:alt', title, true);
+
+    // Facebook specific
+    setMetaTag('fb:app_id', '123456789', true); // Replace with actual FB App ID if available
 
     // Standard meta tags
     setMetaTag('description', description, true);
