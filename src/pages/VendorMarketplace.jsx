@@ -52,15 +52,21 @@ export default function VendorMarketplace() {
     setCategory(categoryParam);
   }, [eventParam, categoryParam]);
 
-  const { data: rawVendors = [], isLoading } = useQuery({
+  const { data: rawVendors = [], isLoading, error } = useQuery({
     queryKey: ['vendors'],
     queryFn: () => base44.entities.Vendor.list('-created_date', 100),
   });
+
+  // Debug logging
+  console.log('Raw vendors from API:', rawVendors);
+  console.log('Query error:', error);
   
   // Normalize vendor data - handle both flat and nested data structures
   const vendors = useMemo(() => {
     // TEMPORARY: Status filter disabled - showing ALL vendors including pending/rejected
-    return rawVendors.map(v => v.data ? { id: v.id, ...v.data } : v);
+    const normalized = rawVendors.map(v => v.data ? { id: v.id, ...v.data } : v);
+    console.log('Normalized vendors:', normalized);
+    return normalized;
     
     /* ORIGINAL STATUS FILTER - COMMENTED OUT
     return rawVendors
