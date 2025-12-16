@@ -2,6 +2,7 @@ import React from "react";
 import Navbar from "./components/layout/Navbar";
 import MobileBottomNav from "./components/layout/MobileBottomNav";
 import Footer from "./components/layout/Footer";
+import CookieConsent from "./components/layout/CookieConsent";
 
 export default function Layout({ children }) {
   return (
@@ -55,6 +56,7 @@ export default function Layout({ children }) {
       <main className="pb-20 md:pb-0 flex-1">{children}</main>
       <Footer />
       <MobileBottomNav />
+      <CookieConsent />
     </div>
   );
 }
