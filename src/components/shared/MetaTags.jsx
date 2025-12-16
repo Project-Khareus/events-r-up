@@ -51,7 +51,9 @@ export default function MetaTags({
     setMetaTag('twitter:image:alt', title, true);
 
     // Facebook specific
-    setMetaTag('fb:app_id', '123456789', true); // Replace with actual FB App ID if available
+    if (import.meta.env.VITE_FACEBOOK_APP_ID) {
+      setMetaTag('fb:app_id', import.meta.env.VITE_FACEBOOK_APP_ID, true);
+    }
 
     // Standard meta tags
     setMetaTag('description', description, true);
