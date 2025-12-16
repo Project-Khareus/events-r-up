@@ -23,19 +23,25 @@ export default function VendorCategorySection({ title, eventType, category, vend
   // Only show multiples of 4 on desktop to avoid orphan cards
   const displayCount = Math.floor(vendors.length / 4) * 4;
 
+  // Determine target link - if category is 'all', link to the main Event Type page (e.g. Weddings), otherwise CategoryPage
+  const pageName = eventType ? eventType.charAt(0).toUpperCase() + eventType.slice(1) : "VendorMarketplace";
+  const targetUrl = category === 'all' 
+    ? createPageUrl(pageName)
+    : createPageUrl(`CategoryPage?category=${category}&event=${eventType}`);
+
   return (
     <div className="mb-10">
       {/* Header */}
       <div className="flex items-center gap-4 mb-4 px-1">
         <Link 
-              to={createPageUrl(`CategoryPage?category=${category}&event=${eventType}`)}
+              to={targetUrl}
               className="text-sm font-semibold tracking-widest uppercase text-slate-500 hover:text-slate-700 transition-colors whitespace-nowrap"
             >
               {title}
             </Link>
         <div className="flex-1 h-px bg-slate-300" />
         <Link 
-          to={createPageUrl(`CategoryPage?category=${category}&event=${eventType}`)}
+          to={targetUrl}
           className="text-sm font-medium text-slate-600 hover:text-slate-800 whitespace-nowrap"
         >
           See all

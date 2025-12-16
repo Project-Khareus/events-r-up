@@ -74,7 +74,7 @@ export default function CategoryPage() {
     });
   }, [vendors, searchQuery, eventType, priceRange]);
 
-  const categoryTitle = CATEGORY_LABELS[category] || category;
+  const categoryTitle = category === 'all' ? "All Vendors" : (CATEGORY_LABELS[category] || category);
   const eventTitle = EVENT_LABELS[eventType] || "";
 
   return (
