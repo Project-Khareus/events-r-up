@@ -124,6 +124,9 @@ export default function Footer() {
               <Link to={createPageUrl("LegalPage?slug=terms")} className="text-slate-500 hover:text-slate-700">
                 Terms
               </Link>
+              <Link to={createPageUrl("LegalPage?slug=cookies")} className="text-slate-500 hover:text-slate-700">
+                Cookies
+              </Link>
               <Link to={createPageUrl("LegalPage?slug=contact")} className="text-slate-500 hover:text-slate-700">
                 Contact
               </Link>
