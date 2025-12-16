@@ -158,29 +158,33 @@ export default function VendorDetail() {
         <div className="grid lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-12">
           {/* Left Column: Main Content (2 cols) */}
           <div className="lg:col-span-2 space-y-8 sm:space-y-10">
-            <div className="space-y-1">
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-slate-900 leading-tight">
-                {vendor.business_name}
-              </h1>
-              
-              <div className="flex items-center gap-2 text-slate-500 text-sm">
-                <span>{CATEGORY_LABELS[vendor.category] || vendor.category}</span>
-                <span>•</span>
-                <span>{vendor.location || "Location varies"}</span>
+            {/* Vendor Header */}
+            <section>
+              <div className="space-y-1 mb-4">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-slate-900 leading-tight">
+                  {vendor.business_name}
+                </h1>
+                
+                <div className="flex items-center gap-2 text-slate-500 text-sm">
+                  <span>{CATEGORY_LABELS[vendor.category] || vendor.category}</span>
+                  <span>•</span>
+                  <span>{vendor.location || "Location varies"}</span>
+                </div>
               </div>
-            </div>
 
-            <div className="flex items-center gap-2 mt-3 mb-6">
-              <div className="flex text-slate-900">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className={`h-4 w-4 ${i < Math.round(averageRating) ? "fill-slate-900 text-slate-900" : "text-slate-300"}`} />
-                ))}
+              <div className="flex items-center gap-3 mb-6">
+                <div className="flex items-center gap-2">
+                  <div className="flex text-slate-900">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className={`h-4 w-4 ${i < Math.round(averageRating) ? "fill-slate-900 text-slate-900" : "text-slate-300"}`} />
+                    ))}
+                  </div>
+                  <span className="font-bold text-slate-900">{averageRating.toFixed(1)}</span>
+                </div>
+                <span className="text-slate-500">
+                  ({reviewCount} {reviewCount === 1 ? 'review' : 'reviews'})
+                </span>
               </div>
-              <span className="font-bold text-slate-900">{averageRating.toFixed(1)}/5</span>
-              <span className="text-slate-500 underline decoration-slate-300 underline-offset-2">
-                ({reviewCount} reviews)
-              </span>
-            </div>
 
               {vendor.slogan && (
                 <p className="text-lg text-slate-600 mb-6 italic">{vendor.slogan}</p>
