@@ -96,11 +96,14 @@ export default function Navbar() {
   });
 
   const { data: notifications = [] } = useQuery({
-    queryKey: ['notifications', 'preview'],
-    queryFn: () => base44.entities.Notification.list('-created_date', 10),
-    enabled: !!user,
+    queryKey: ['notifications', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return [];
+      return await base44.entities.Notification.list('-created_date', 10);
+    },
+    enabled: !!user?.id,
     staleTime: 60000,
-    refetchInterval: 30000,
+    refetchInterval: 300000,
     refetchOnWindowFocus: false,
     retry: false,
   });
