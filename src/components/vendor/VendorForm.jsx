@@ -98,6 +98,7 @@ const DEFAULT_FORM_DATA = {
   gallery_images: [],
   services: [], // Changed to array
   years_in_business: "",
+  subscription_type: "monthly", // Default to monthly
 };
 
 export default function VendorForm({ initialData, onSubmit, isSubmitting, submitLabel = "Submit Listing" }) {
@@ -646,6 +647,66 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
             placeholder="https://yourwebsite.com"
             className="mt-1"
           />
+        </div>
+      </Card>
+
+      {/* Subscription Plan */}
+      <Card className="p-6 rounded-2xl border-slate-200">
+        <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+          <svg className="h-5 w-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+          </svg>
+          Subscription Plan
+        </h2>
+        
+        <div className="grid md:grid-cols-2 gap-4">
+          <button
+            type="button"
+            onClick={() => setFormData({ ...formData, subscription_type: "monthly" })}
+            className={cn(
+              "p-6 border-2 rounded-xl transition-all text-left",
+              formData.subscription_type === "monthly"
+                ? "border-indigo-600 bg-indigo-50 shadow-md"
+                : "border-slate-200 hover:border-slate-300"
+            )}
+          >
+            <div className="flex items-start justify-between mb-3">
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-slate-900 mb-1">Monthly</h3>
+                <p className="text-sm text-slate-600">Flexible month-to-month billing</p>
+              </div>
+              {formData.subscription_type === "monthly" && (
+                <Check className="h-6 w-6 text-indigo-600" />
+              )}
+            </div>
+            <div className="text-3xl font-bold text-slate-900">$49<span className="text-lg text-slate-500 font-normal">/mo</span></div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setFormData({ ...formData, subscription_type: "annual" })}
+            className={cn(
+              "p-6 border-2 rounded-xl transition-all text-left relative",
+              formData.subscription_type === "annual"
+                ? "border-indigo-600 bg-indigo-50 shadow-md"
+                : "border-slate-200 hover:border-slate-300"
+            )}
+          >
+            <Badge className="absolute -top-2 -right-2 bg-green-600 text-white hover:bg-green-700">
+              Save $98
+            </Badge>
+            <div className="flex items-start justify-between mb-3">
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-slate-900 mb-1">Annual</h3>
+                <p className="text-sm text-slate-600">Get 12 months for the price of 10</p>
+              </div>
+              {formData.subscription_type === "annual" && (
+                <Check className="h-6 w-6 text-indigo-600" />
+              )}
+            </div>
+            <div className="text-3xl font-bold text-slate-900">$490<span className="text-lg text-slate-500 font-normal">/year</span></div>
+            <p className="text-xs text-green-600 font-medium mt-2">✓ 2 months FREE</p>
+          </button>
         </div>
       </Card>
 

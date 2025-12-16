@@ -41,11 +41,23 @@ export default function VendorSignup() {
 
   const createVendorMutation = useMutation({
     mutationFn: async (data) => {
+      const startDate = new Date().toISOString().split('T')[0];
+      const endDate = new Date();
+      
+      // Calculate end date based on subscription type
+      if (data.subscription_type === "annual") {
+        endDate.setMonth(endDate.getMonth() + 12); // 10 months + 2 free = 12 months
+      } else {
+        endDate.setMonth(endDate.getMonth() + 1);
+      }
+      
       const vendorData = {
         ...data,
         user_id: user.id,
         starting_price: data.starting_price ? parseFloat(data.starting_price) : undefined,
         years_in_business: data.years_in_business ? parseInt(data.years_in_business) : undefined,
+        subscription_start_date: startDate,
+        subscription_end_date: endDate.toISOString().split('T')[0],
         // services, event_type, category are already arrays from the form
         status: "pending",
       };
