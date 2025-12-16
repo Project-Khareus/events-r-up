@@ -24,7 +24,7 @@ import { createPageUrl } from "../utils";
 import RatingStats from "../components/reviews/RatingStats";
 import ReviewForm from "../components/reviews/ReviewForm";
 import ReviewsList from "../components/reviews/ReviewsList";
-import ImageGallery from "../components/vendor/ImageGallery";
+import MediaGallery from "../components/vendor/MediaGallery";
 import RelatedVendors from "../components/vendor/RelatedVendors";
 import ContactBookingModal from "../components/vendor/ContactBookingModal";
 import ShareButton from "../components/shared/ShareButton";
@@ -121,6 +121,7 @@ export default function VendorDetail() {
   }
 
   const allImages = [vendor.image_url, ...(vendor.gallery_images || [])].filter(Boolean);
+  const allVideos = vendor.gallery_videos || [];
   const averageRating = reviews.length > 0
     ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
     : (vendor.rating || 0);
@@ -153,7 +154,7 @@ export default function VendorDetail() {
         <div className="grid lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12">
           {/* Left Column: Image Gallery (7 cols) */}
           <div className="lg:col-span-7">
-             <ImageGallery images={allImages} businessName={vendor.business_name} />
+             <MediaGallery images={allImages} videos={allVideos} businessName={vendor.business_name} />
           </div>
 
           {/* Right Column: Product Info (5 cols) */}

@@ -96,6 +96,7 @@ const DEFAULT_FORM_DATA = {
   linkedin: "",
   image_url: "",
   gallery_images: [],
+  gallery_videos: [],
   services: [], // Changed to array
   years_in_business: "",
   subscription_type: "monthly", // Default to monthly
@@ -105,6 +106,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
   const [formData, setFormData] = useState(DEFAULT_FORM_DATA);
   const [imageUploading, setImageUploading] = useState(false);
   const [galleryUploading, setGalleryUploading] = useState(false);
+  const [videoUploading, setVideoUploading] = useState(false);
   const [serviceInput, setServiceInput] = useState("");
 
   useEffect(() => {
@@ -114,6 +116,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
         ...initialData,
         // Ensure arrays
         gallery_images: initialData.gallery_images || [],
+        gallery_videos: initialData.gallery_videos || [],
         event_type: Array.isArray(initialData.event_type) ? initialData.event_type : (initialData.event_type ? [initialData.event_type] : []),
         category: Array.isArray(initialData.category) ? initialData.category : (initialData.category ? [initialData.category] : []),
         services: Array.isArray(initialData.services) ? initialData.services : (initialData.services ? initialData.services.split(", ") : []),
@@ -239,6 +242,36 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
     }));
   };
 
+  const handleVideoUpload = async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    setVideoUploading(true);
+    try {
+      const uploadPromises = files.map(file => 
+        base44.integrations.Core.UploadFile({ file })
+      );
+      const results = await Promise.all(uploadPromises);
+      const newUrls = results.map(r => r.file_url);
+      setFormData(prev => ({ 
+        ...prev, 
+        gallery_videos: [...prev.gallery_videos, ...newUrls] 
+      }));
+      toast.success(`${files.length} video(s) uploaded!`);
+    } catch (error) {
+      toast.error("Failed to upload some videos");
+    } finally {
+      setVideoUploading(false);
+    }
+  };
+
+  const removeVideo = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      gallery_videos: prev.gallery_videos.filter((_, i) => i !== index)
+    }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.business_name || formData.event_type.length === 0 || formData.category.length === 0) {
@@ -304,7 +337,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
           Profile & Images
         </h2>
         
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-3 gap-6">
           {/* Main Image */}
           <div>
             <Label className="mb-2 block">Main Business Image *</Label>
@@ -349,7 +382,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
 
           {/* Gallery Images */}
           <div>
-            <Label className="mb-2 block">Portfolio Gallery</Label>
+            <Label className="mb-2 block">Portfolio Gallery (Images)</Label>
             <div className="border-2 border-dashed border-slate-200 rounded-xl p-4 hover:border-indigo-300 transition-colors">
               <div className="grid grid-cols-3 gap-2 mb-3">
                 {formData.gallery_images.map((url, index) => (
@@ -407,6 +440,47 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
               </div>
               
               <p className="text-xs text-slate-400 text-center mt-3">Add portfolio images to showcase your work</p>
+            </div>
+          </div>
+
+          {/* Gallery Videos */}
+          <div>
+            <Label className="mb-2 block">Portfolio Videos</Label>
+            <div className="border-2 border-dashed border-slate-200 rounded-xl p-4 hover:border-indigo-300 transition-colors">
+              <div className="grid grid-cols-2 gap-2 mb-3">
+                {formData.gallery_videos.map((url, index) => (
+                  <div key={index} className="relative aspect-video">
+                    <video 
+                      src={url} 
+                      className="w-full h-full object-cover rounded-lg"
+                      controls
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeVideo(index)}
+                      className="absolute top-1 right-1 p-0.5 bg-red-500 text-white rounded-full hover:bg-red-600"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ))}
+                <label className="aspect-video border-2 border-dashed border-slate-200 rounded-lg flex items-center justify-center cursor-pointer hover:border-indigo-300">
+                  <input
+                    type="file"
+                    accept="video/*"
+                    multiple
+                    onChange={handleVideoUpload}
+                    className="hidden"
+                    disabled={videoUploading}
+                  />
+                  {videoUploading ? (
+                    <Loader2 className="h-6 w-6 text-indigo-600 animate-spin" />
+                  ) : (
+                    <Plus className="h-6 w-6 text-slate-400" />
+                  )}
+                </label>
+              </div>
+              <p className="text-xs text-slate-400 text-center mt-3">Add videos to showcase your work (MP4, MOV, etc.)</p>
             </div>
           </div>
         </div>
