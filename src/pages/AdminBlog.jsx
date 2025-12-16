@@ -85,9 +85,9 @@ export default function AdminBlog() {
       if (newPost.status === 'pending' && !isAdmin) {
           toast.success("Post submitted for approval!");
           try {
-              // Notify admin (using a generic placeholder or app owner if available)
+              // Notify admin
               await base44.integrations.Core.SendEmail({
-                  to: "admin@omnievents.com", // Ideally this would be dynamic
+                  to: import.meta.env.VITE_ADMIN_EMAIL || "admin@omnievents.com",
                   subject: "New Blog Post Submission",
                   body: `User ${user.full_name} has submitted a new blog post titled "${newPost.title}" for approval.`
               });
@@ -114,7 +114,7 @@ export default function AdminBlog() {
            toast.success("Post submitted for approval!");
              try {
               base44.integrations.Core.SendEmail({
-                  to: "admin@omnievents.com",
+                  to: import.meta.env.VITE_ADMIN_EMAIL || "admin@omnievents.com",
                   subject: "Blog Post Submission Updated",
                   body: `User ${user.full_name} has updated and submitted the blog post titled "${updatedPost.title}" for approval.`
               });
