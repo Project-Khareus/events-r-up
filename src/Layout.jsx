@@ -3,6 +3,7 @@ import Navbar from "./components/layout/Navbar";
 import MobileBottomNav from "./components/layout/MobileBottomNav";
 import Footer from "./components/layout/Footer";
 import CookieConsent from "./components/layout/CookieConsent";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function Layout({ children }) {
   return (
@@ -57,6 +58,7 @@ export default function Layout({ children }) {
       <Footer />
       <MobileBottomNav />
       <CookieConsent />
+      <Toaster />
     </div>
   );
 }
