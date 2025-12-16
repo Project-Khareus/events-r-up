@@ -13,16 +13,14 @@ export default function AdminVendors() {
   const queryClient = useQueryClient();
 
   // Fetch pending vendors
-  const { data: vendors = [], isLoading } = useQuery({
+  const { data: pendingVendors = [], isLoading } = useQuery({
     queryKey: ['admin_pending_vendors'],
     queryFn: async () => {
        const user = await base44.auth.me();
        if (user.role !== 'admin') throw new Error("Unauthorized");
-       return base44.entities.Vendor.list('-created_date', 100);
+       return base44.entities.Vendor.filter({ status: 'pending' }, '-created_date', 100);
     },
   });
-
-  const pendingVendors = vendors.filter(v => v.status === 'pending');
 
   const approveMutation = useMutation({
     mutationFn: async (vendorId) => {

@@ -4,19 +4,29 @@ Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
         
-        // We use service role to find an admin, as the signing-up user might not have permission to list all users
-        const users = await base44.asServiceRole.entities.User.list();
-        const admin = users.find(u => u.role === 'admin');
+        // We use service role to find an admin
+        // Try to filter for admin directly to handle pagination/large user bases
+        let admins = [];
+        try {
+             admins = await base44.asServiceRole.entities.User.filter({ role: 'admin' });
+        } catch (e) {
+             // Fallback if filter not supported on User entity in this environment
+             console.log("Filter failed, falling back to list", e);
+             const users = await base44.asServiceRole.entities.User.list();
+             admins = users.filter(u => u.role === 'admin');
+        }
 
-        if (!admin) {
+        if (!admins || admins.length === 0) {
             console.log("No admin found to notify.");
             return Response.json({ message: "No admin found" });
         }
 
+        // Notify all admins or just the first one
+        const adminEmail = admins[0].email;
         const { business_name, vendor_id, contact_email } = await req.json();
 
         await base44.integrations.Core.SendEmail({
-            to: admin.email,
+            to: adminEmail,
             subject: `New Vendor Registration: ${business_name}`,
             body: `
                 <h1>New Vendor Registration</h1>
