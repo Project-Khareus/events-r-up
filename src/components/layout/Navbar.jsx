@@ -80,11 +80,10 @@ export default function Navbar() {
   const { data: user, isLoading } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => base44.auth.me().catch(() => null),
-    staleTime: Infinity,
-    cacheTime: Infinity,
+    staleTime: 300000, // 5 minutes
+    cacheTime: 600000, // 10 minutes
     refetchOnWindowFocus: false,
     refetchOnMount: false,
-    refetchOnReconnect: false,
     retry: false,
   });
 
