@@ -61,6 +61,12 @@ export default function VendorSignup() {
         // services, event_type, category are already arrays from the form
         status: "pending",
       };
+
+      // Clean up empty strings for optional fields to avoid validation errors
+      ["contact_email", "website", "instagram", "facebook", "twitter", "tiktok", "linkedin", "image_url"].forEach(key => {
+        if (vendorData[key] === "") delete vendorData[key];
+      });
+
       return base44.entities.Vendor.create(vendorData);
     },
     onSuccess: async (newVendor) => {
@@ -78,8 +84,9 @@ export default function VendorSignup() {
         console.error("Failed to notify admin", err);
       }
     },
-    onError: () => {
-      toast.error("Failed to create listing. Please try again.");
+    onError: (error) => {
+      console.error("Submission error:", error);
+      toast.error(error.message || "Failed to create listing. Please try again.");
     }
   });
 
