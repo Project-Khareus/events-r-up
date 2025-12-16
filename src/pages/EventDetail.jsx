@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { ArrowLeft, Calendar, MapPin, DollarSign, Tag, User } from "lucide-react";
 import ShareButton from "../components/shared/ShareButton";
+import MetaTags from "../components/shared/MetaTags";
 import { format } from "date-fns";
 import EventCard from "../components/events/EventCard";
 import FavoriteButton from "../components/events/FavoriteButton";
@@ -93,6 +94,13 @@ export default function EventDetail() {
 
   return (
     <div className="min-h-screen bg-slate-50 pb-20">
+      <MetaTags 
+        title={event.title}
+        description={event.description || `Join us at ${event.title} on ${format(new Date(event.event_date), 'MMMM d, yyyy')}`}
+        image={event.image_url}
+        url={window.location.href}
+        type="event"
+      />
       {/* Hero Image */}
       {(isPending || isRejected) && (
         <div className={`w-full py-3 px-6 text-center text-white font-medium ${isPending ? 'bg-yellow-500' : 'bg-red-500'}`}>

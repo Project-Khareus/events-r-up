@@ -10,6 +10,7 @@ import { format } from "date-fns";
 import { ArrowLeft, Clock, Calendar } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import ShareButton from "../components/shared/ShareButton";
+import MetaTags from "../components/shared/MetaTags";
 
 export default function BlogPostDetail() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -58,6 +59,13 @@ export default function BlogPostDetail() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950 pb-20">
+      <MetaTags 
+        title={post.title}
+        description={post.excerpt || post.title}
+        image={post.cover_image_url}
+        url={window.location.href}
+        type="article"
+      />
       <div className="max-w-4xl mx-auto px-6 py-12">
         <Link to={createPageUrl("Blog")} className="inline-flex items-center text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 mb-8 transition-colors">
           <ArrowLeft className="h-4 w-4 mr-2" />

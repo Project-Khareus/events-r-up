@@ -28,6 +28,7 @@ import ImageGallery from "../components/vendor/ImageGallery";
 import RelatedVendors from "../components/vendor/RelatedVendors";
 import ContactBookingModal from "../components/vendor/ContactBookingModal";
 import ShareButton from "../components/shared/ShareButton";
+import MetaTags from "../components/shared/MetaTags";
 
 const CATEGORY_LABELS = {
   venue: "Venue",
@@ -128,6 +129,13 @@ export default function VendorDetail() {
 
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans">
+      <MetaTags 
+        title={vendor.business_name}
+        description={vendor.description || `${vendor.business_name} - Professional ${CATEGORY_LABELS[vendor.category] || vendor.category} services for your special events.`}
+        image={vendor.image_url || vendor.logo_url}
+        url={window.location.href}
+        type="business.business"
+      />
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-4 sm:py-6">
         {/* Breadcrumbs */}
         <nav className="flex items-center gap-2 text-xs sm:text-sm text-slate-500 mb-6 sm:mb-8 overflow-x-auto whitespace-nowrap pb-2 scrollbar-hide">
