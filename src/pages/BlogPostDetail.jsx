@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { format } from "date-fns";
-import { ArrowLeft, Share2, Clock, Calendar } from "lucide-react";
+import { ArrowLeft, Clock, Calendar } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import ShareButton from "../components/shared/ShareButton";
 
 export default function BlogPostDetail() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -113,11 +114,12 @@ export default function BlogPostDetail() {
 
         <div className="max-w-3xl mx-auto mt-16 pt-8 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
           <p className="font-serif font-bold text-slate-900 dark:text-white text-xl">Share this article</p>
-          <div className="flex gap-2">
-             <Button variant="outline" size="icon" className="rounded-full dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
-               <Share2 className="h-4 w-4" />
-             </Button>
-          </div>
+          <ShareButton 
+            url={window.location.href}
+            title={post.title}
+            description={post.excerpt || post.title}
+            variant="outline"
+          />
         </div>
       </div>
     </div>
