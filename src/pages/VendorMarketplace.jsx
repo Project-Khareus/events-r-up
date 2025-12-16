@@ -59,19 +59,27 @@ export default function VendorMarketplace() {
   
   // Normalize vendor data - handle both flat and nested data structures
   const vendors = useMemo(() => {
+    // TEMPORARY: Status filter disabled - showing ALL vendors including pending/rejected
+    return rawVendors.map(v => v.data ? { id: v.id, ...v.data } : v);
+    
+    /* ORIGINAL STATUS FILTER - COMMENTED OUT
     return rawVendors
       .map(v => v.data ? { id: v.id, ...v.data } : v)
-      .filter(v => !v.status || v.status === 'approved'); // Show only approved or vendors without status
+      .filter(v => !v.status || v.status === 'approved');
+    */
   }, [rawVendors]);
 
   const filteredVendors = useMemo(() => {
+    // TEMPORARY: All filters disabled - showing ALL vendors
+    return vendors;
+    
+    /* ORIGINAL FILTERS - COMMENTED OUT
     return vendors.filter((vendor) => {
       const matchesSearch = !searchQuery || 
         vendor.business_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         vendor.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         vendor.services?.some(s => s.toLowerCase().includes(searchQuery.toLowerCase()));
       
-      // Handle array or string for backward compatibility - also handle null/undefined
       const vendorEvents = vendor.event_type ? (Array.isArray(vendor.event_type) ? vendor.event_type : [vendor.event_type]) : [];
       const vendorCategories = vendor.category ? (Array.isArray(vendor.category) ? vendor.category : [vendor.category]) : [];
 
@@ -81,6 +89,7 @@ export default function VendorMarketplace() {
 
       return matchesSearch && matchesEvent && matchesCategory && matchesPrice;
     });
+    */
   }, [vendors, searchQuery, eventType, category, priceRange]);
 
   const featuredVendors = useMemo(() => {
