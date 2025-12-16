@@ -18,10 +18,11 @@ export default function Classifieds() {
   const { data: events = [], isLoading } = useQuery({
     queryKey: ['events'],
     queryFn: () => base44.entities.EventListing.list('-created_date', 50),
-    staleTime: 60000,
-    cacheTime: 300000,
+    staleTime: 300000, // 5 minutes
+    cacheTime: 600000, // 10 minutes
     refetchOnWindowFocus: false,
     refetchOnMount: false,
+    refetchOnReconnect: false,
     retry: false,
   });
 
