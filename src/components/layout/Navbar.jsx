@@ -238,9 +238,15 @@ export default function Navbar() {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
+                      <Link to={createPageUrl("MyProfile")}>
+                        <User className="mr-2 h-4 w-4" />
+                        <span>My Profile</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
                       <Link to={`${createPageUrl("UserProfile")}?userId=${user.id}`}>
                         <User className="mr-2 h-4 w-4" />
-                        <span>Profile</span>
+                        <span>Public Profile</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
@@ -346,7 +352,7 @@ export default function Navbar() {
                   {user ? (
                     <>
                       <div className="h-px bg-slate-200 dark:bg-slate-800 my-2" />
-                      <Link to={`${createPageUrl("UserProfile")}?userId=${user.id}`} className="text-lg font-medium">My Profile</Link>
+                      <Link to={createPageUrl("MyProfile")} className="text-lg font-medium">My Profile</Link>
                       <Link to={createPageUrl("ManageListing")} className="text-lg font-medium">Manage Listing</Link>
                       {user.role === 'admin' && (
                           <Link to={createPageUrl("AdminVendors")} className="text-lg font-medium text-indigo-600">Admin: Approvals</Link>
