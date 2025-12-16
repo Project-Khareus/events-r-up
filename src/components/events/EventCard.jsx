@@ -18,10 +18,15 @@ export default function EventCard({ event }) {
               alt={event.title}
               className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
             />
-            <div className="absolute top-3 left-3">
+            <div className="absolute top-3 left-3 flex gap-2">
                <Badge variant="secondary" className="bg-white/90 text-slate-900 backdrop-blur-sm shadow-sm">
                    {event.theme}
                </Badge>
+               {event.status === 'pending' && (
+                 <Badge className="bg-yellow-500 text-white border-0 shadow-sm">
+                   Pending
+                 </Badge>
+               )}
             </div>
             <div className="absolute bottom-3 left-3">
                <Badge className={`${event.is_paid ? 'bg-indigo-600' : 'bg-green-600'} text-white border-0`}>

@@ -15,6 +15,20 @@ export default function Classifieds() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTheme, setSelectedTheme] = useState("All");
 
+  const { data: user } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: async () => {
+      try {
+        const isAuth = await base44.auth.isAuthenticated();
+        if (!isAuth) return null;
+        return await base44.auth.me();
+      } catch {
+        return null;
+      }
+    },
+    staleTime: 300000,
+  });
+
   const { data: events = [], isLoading } = useQuery({
     queryKey: ['events'],
     queryFn: () => base44.entities.EventListing.list('-created_date', 50),
@@ -26,9 +40,14 @@ export default function Classifieds() {
     retry: false,
   });
 
-  // Filter approved events client-side just in case RLS returns non-approved for admins/owners mixed in list
-  // or to be explicit about what we show.
-  const approvedEvents = useMemo(() => events.filter(e => e.status === 'approved' || !e.status), [events]); // !e.status for backward compatibility with existing events
+  // Filter approved events or pending events owned by the current user
+  const approvedEvents = useMemo(() => {
+    return events.filter(e => 
+      e.status === 'approved' || 
+      !e.status || 
+      (user && e.created_by === user.email)
+    );
+  }, [events, user]);
 
 
   const filteredEvents = useMemo(() => {
