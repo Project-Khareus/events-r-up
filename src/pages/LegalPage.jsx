@@ -11,12 +11,17 @@ export default function LegalPage() {
   const urlParams = new URLSearchParams(window.location.search);
   const slug = urlParams.get("slug") || "privacy";
 
-  const { data: pages = [], isLoading } = useQuery({
+  const { data: rawPages = [], isLoading } = useQuery({
     queryKey: ['legal-pages', slug],
     queryFn: () => base44.entities.LegalPage.filter({ slug }),
   });
 
-  const page = pages[0];
+  // Normalize data structure (handle nested .data property if present)
+  const page = React.useMemo(() => {
+    if (!rawPages || rawPages.length === 0) return null;
+    const p = rawPages[0];
+    return p.data ? { id: p.id, ...p.data } : p;
+  }, [rawPages]);
 
   const defaultContent = {
     privacy: {
@@ -30,6 +35,10 @@ export default function LegalPage() {
     contact: {
       title: "Contact Us",
       content: "For inquiries, please email us at support@omnievents.com"
+    },
+    cookies: {
+      title: "Cookie Policy",
+      content: "We use cookies to improve your experience. Content is being loaded..."
     }
   };
 
