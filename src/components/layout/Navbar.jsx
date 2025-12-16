@@ -79,9 +79,17 @@ export default function Navbar() {
   
   const { data: user, isLoading } = useQuery({
     queryKey: ['currentUser'],
-    queryFn: () => base44.auth.me().catch(() => null),
-    staleTime: 300000, // 5 minutes
-    cacheTime: 600000, // 10 minutes
+    queryFn: async () => {
+      try {
+        const isAuth = await base44.auth.isAuthenticated();
+        if (!isAuth) return null;
+        return await base44.auth.me();
+      } catch {
+        return null;
+      }
+    },
+    staleTime: 300000,
+    cacheTime: 600000,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     retry: false,
