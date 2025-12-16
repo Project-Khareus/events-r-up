@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { ArrowLeft, Calendar, MapPin, DollarSign, Share2, Tag, User } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, DollarSign, Tag, User } from "lucide-react";
+import ShareButton from "../components/shared/ShareButton";
 import { format } from "date-fns";
 import EventCard from "../components/events/EventCard";
 import FavoriteButton from "../components/events/FavoriteButton";
@@ -253,9 +254,13 @@ export default function EventDetail() {
                         <Button className="w-full bg-indigo-600 hover:bg-indigo-700 h-12 text-lg">
                             Register / Buy Ticket
                         </Button>
-                        <Button variant="outline" className="w-full gap-2">
-                            <Share2 className="h-4 w-4" /> Share Event
-                        </Button>
+                        <ShareButton 
+                          url={window.location.href}
+                          title={event.title}
+                          description={event.description || `Join us at ${event.title}`}
+                          variant="outline"
+                          className="w-full"
+                        />
                     </div>
                 </div>
             </div>
