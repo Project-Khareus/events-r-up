@@ -37,7 +37,7 @@ export default function CookieConsent() {
           <p className="text-sm text-slate-600 leading-relaxed">
             We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. 
             By clicking "Accept All", you consent to our use of cookies. Read our{" "}
-            <Link to={createPageUrl("LegalPage") + "?slug=cookies"} className="text-indigo-600 hover:text-indigo-700 underline underline-offset-2">
+            <Link to={createPageUrl("CookiePolicy")} className="text-indigo-600 hover:text-indigo-700 underline underline-offset-2">
               Cookie Policy
             </Link>{" "}
             to learn more.

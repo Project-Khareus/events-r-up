@@ -33,6 +33,7 @@ import AdminLegal from './pages/AdminLegal';
 import MyProfile from './pages/MyProfile';
 import HelpCenter from './pages/HelpCenter';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import CookiePolicy from './pages/CookiePolicy';
 import __Layout from './Layout.jsx';
 
 
@@ -72,6 +73,7 @@ export const PAGES = {
     "MyProfile": MyProfile,
     "HelpCenter": HelpCenter,
     "PrivacyPolicy": PrivacyPolicy,
+    "CookiePolicy": CookiePolicy,
 }
 
 export const pagesConfig = {
