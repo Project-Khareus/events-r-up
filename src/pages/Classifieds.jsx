@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Search, Calendar as CalendarIcon, MapPin } from "lucide-react";
 import EventCard from "../components/events/EventCard";
+import LocationFilter from "../components/marketplace/LocationFilter";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const THEMES = ["All", "Music", "Food & Drink", "Business", "Arts & Culture", "Sports", "Community", "Party", "Other"];
@@ -14,6 +15,7 @@ const THEMES = ["All", "Music", "Food & Drink", "Business", "Arts & Culture", "S
 export default function Classifieds() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTheme, setSelectedTheme] = useState("All");
+  const [location, setLocation] = useState(null);
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
@@ -55,10 +57,19 @@ export default function Classifieds() {
       const matchesSearch = !searchQuery || 
         event.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
         event.location_address.toLowerCase().includes(searchQuery.toLowerCase());
+        
       const matchesTheme = selectedTheme === "All" || event.theme === selectedTheme;
-      return matchesSearch && matchesTheme;
+      
+      const matchesLocation = !location || location === "Current Location" || location === "All" || (() => {
+        if (location === "Online") {
+          return event.location_address?.toLowerCase().includes("online") || event.is_online;
+        }
+        return event.location_address?.toLowerCase().includes(location.toLowerCase());
+      })();
+
+      return matchesSearch && matchesTheme && matchesLocation;
     });
-  }, [approvedEvents, searchQuery, selectedTheme]);
+  }, [approvedEvents, searchQuery, selectedTheme, location]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -79,10 +90,14 @@ export default function Classifieds() {
              
              {/* Right Side Actions */}
              <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
+                <LocationFilter location={location} onLocationChange={setLocation} />
                 <Link to={createPageUrl("CreateEvent")}>
-                   <Button className="rounded-full bg-indigo-600 hover:bg-indigo-700 font-medium">
+                   <Button className="rounded-full bg-indigo-600 hover:bg-indigo-700 font-medium hidden md:flex">
                      <Plus className="h-4 w-4 mr-2" />
                      Create Event
+                   </Button>
+                   <Button size="icon" className="rounded-full bg-indigo-600 hover:bg-indigo-700 md:hidden">
+                     <Plus className="h-4 w-4" />
                    </Button>
                 </Link>
              </div>
@@ -112,7 +127,9 @@ export default function Classifieds() {
         <div className="mb-8">
             <h1 className="text-3xl md:text-4xl font-bold text-slate-900 font-serif">
               {selectedTheme === "All" ? "Events in " : `${selectedTheme} events in `}
-              <span className="text-indigo-600 underline decoration-indigo-200 underline-offset-4 decoration-4">Your Area</span>
+              <span className="text-indigo-600 underline decoration-indigo-200 underline-offset-4 decoration-4">
+                {location && location !== "Current Location" ? location : "Your Area"}
+              </span>
             </h1>
         </div>
 
