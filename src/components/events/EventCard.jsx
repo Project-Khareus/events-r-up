@@ -15,7 +15,7 @@ export default function EventCard({ event }) {
       <Link to={createPageUrl("EventDetail") + `?id=${event.id}`} className="block h-full">
         <div className="flex flex-col h-full hover:bg-slate-50 transition-colors rounded-lg overflow-hidden">
           {/* Image Container */}
-          <div className="relative aspect-[3/2] overflow-hidden">
+          <div className="relative aspect-[2/1] overflow-hidden">
             <img 
               src={event.image_url || "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=80&w=800"} 
               alt={event.title}
