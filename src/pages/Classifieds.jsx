@@ -300,26 +300,19 @@ export default function Classifieds() {
               </div>
             ))}
           </div>
-        ) : filteredEvents.length === 0 ? (
-          <div className="text-center py-32 bg-slate-50 rounded-2xl border border-slate-100 border-dashed">
-             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white shadow-sm mb-6">
-               <CalendarIcon className="h-10 w-10 text-slate-400" />
-             </div>
-             <h3 className="text-2xl font-bold text-slate-900 mb-3">No events found</h3>
-             <p className="text-slate-500 mb-8 max-w-md mx-auto">We couldn't find any matches for your search. Try different keywords or browse all categories.</p>
-             <div className="flex justify-center gap-4">
-                <Button variant="outline" onClick={() => {setSearchQuery(""); setSelectedTheme("All");}}>Clear Filters</Button>
-                <Link to={createPageUrl("CreateEvent")}>
-                  <Button>Create an Event</Button>
-                </Link>
-             </div>
-          </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
-            {filteredEvents.map(event => (
-              <EventCard key={event.id} event={event} />
-            ))}
-          </div>
+          <>
+            {usingFallback && (
+              <div className="mb-6 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-indigo-800">
+                No events near {locationState.label === 'Choose a location' ? 'your area' : locationState.label}. Showing upcoming events instead.
+              </div>
+            )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
+              {displayEvents.map(event => (
+                <EventCard key={event.id} event={event} />
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>
