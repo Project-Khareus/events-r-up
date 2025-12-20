@@ -32,25 +32,25 @@ export default function EventCard({ event }) {
           </div>
           
           {/* Content */}
-          <div className="flex-1 pt-4 pb-2 px-1 flex flex-col">
-            <h3 className="text-lg font-bold text-slate-900 leading-tight mb-1 line-clamp-2 group-hover:text-indigo-600 transition-colors">
+          <div className="flex-1 pt-4 flex flex-col gap-1">
+            <h3 className="text-[1.15rem] font-bold text-[#1e0a3c] leading-[1.3] mb-1 line-clamp-2 group-hover:text-indigo-600 transition-colors tracking-tight">
               {event.title}
             </h3>
             
-            <div className="text-sm font-bold text-orange-600 mb-2 uppercase tracking-wide">
+            <div className="text-sm font-bold text-[#d1410c] truncate">
               {format(date, 'EEE, MMM d • h:mm a')}
             </div>
 
-            <div className="text-sm text-slate-500 mb-1 line-clamp-1">
+            <div className="text-sm text-[#6f7287] truncate">
               {event.location_address || "Online Event"}
             </div>
 
-            <div className="mt-auto pt-2 text-sm font-medium text-slate-700">
+            <div className="text-sm font-medium text-[#6f7287] mt-1">
                {event.is_paid ? (event.price ? `$${event.price}` : 'Starts at $0') : 'Free'}
             </div>
             
-            <div className="mt-2 flex items-center gap-2">
-                <Badge variant="outline" className="text-xs font-normal text-slate-500 border-slate-200">
+            <div className="mt-3 flex items-center gap-2">
+                <Badge variant="outline" className="text-xs font-medium text-[#6f7287] border-slate-200 bg-slate-50/50">
                     {event.theme}
                 </Badge>
             </div>
