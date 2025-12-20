@@ -32,7 +32,7 @@ export default function EventCard({ event }) {
           </div>
           
           {/* Content */}
-          <div className="flex-1 pt-4 flex flex-col gap-1">
+          <div className="flex-1 p-4 flex flex-col gap-1">
             <h3 className="text-[1.15rem] font-bold text-[#1e0a3c] leading-[1.3] mb-1 line-clamp-2 group-hover:text-indigo-600 transition-colors tracking-tight">
               {event.title}
             </h3>
