@@ -35,7 +35,7 @@ const DEFAULT_SECTIONS = {
   legal: {
     title: "Legal",
     items: [
-      { label: "Privacy Policy", url: "LegalPage?slug=privacy" },
+      { label: "Privacy Policy", url: "PrivacyPolicy" },
       { label: "Terms of Service", url: "LegalPage?slug=terms" },
       { label: "Cookie Policy", url: "LegalPage?slug=cookies" },
     ]
