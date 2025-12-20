@@ -31,6 +31,7 @@ import AdminEvents from './pages/AdminEvents';
 import SocialCallback from './pages/SocialCallback';
 import AdminLegal from './pages/AdminLegal';
 import MyProfile from './pages/MyProfile';
+import HelpCenter from './pages/HelpCenter';
 import __Layout from './Layout.jsx';
 
 
@@ -68,6 +69,7 @@ export const PAGES = {
     "SocialCallback": SocialCallback,
     "AdminLegal": AdminLegal,
     "MyProfile": MyProfile,
+    "HelpCenter": HelpCenter,
 }
 
 export const pagesConfig = {
