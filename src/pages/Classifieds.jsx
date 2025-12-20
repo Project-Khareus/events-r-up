@@ -280,12 +280,12 @@ export default function Classifieds() {
       <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-8">
         {/* Title Section */}
         <div className="mb-8">
-            <h1 className={`${locationState.label === 'Choose a location' ? 'text-2xl md:text-3xl' : 'text-3xl md:text-4xl'} font-bold text-slate-900 font-serif`}>
+            <h4 className={`${locationState.label === 'Choose a location' ? 'text-2xl md:text-3xl' : 'text-3xl md:text-4xl'} font-bold text-slate-900 font-serif`}>
               {selectedTheme === "All" ? "Events in " : `${selectedTheme} events in `}
               <span className="text-indigo-600 underline decoration-indigo-200 underline-offset-4 decoration-4">
                 {locationState.label === 'Choose a location' ? 'All Locations' : locationState.label}
               </span>
-            </h1>
+            </h4>
         </div>
 
         {/* Grid */}
