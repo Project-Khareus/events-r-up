@@ -61,46 +61,43 @@ export default function Classifieds() {
   }, [approvedEvents, searchQuery, selectedTheme]);
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* Header */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-6 py-12">
-           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-             <div>
-               <h1 className="text-4xl font-bold text-slate-900 mb-2 font-serif">Event Classifieds</h1>
-               <p className="text-lg text-slate-600">Discover local events, meetups, and gatherings near you.</p>
+    <div className="min-h-screen bg-white">
+      {/* Search Header - Sticky */}
+      <div className="sticky top-0 z-30 bg-white border-b border-slate-200 shadow-sm">
+        <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-4">
+          <div className="flex flex-col md:flex-row gap-4 items-center">
+             {/* Search */}
+             <div className="relative flex-1 w-full max-w-2xl">
+               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+               <Input 
+                 placeholder="Search events" 
+                 className="pl-11 h-12 bg-slate-50 border-0 focus-visible:ring-1 focus-visible:ring-indigo-500 rounded-full text-base"
+                 value={searchQuery}
+                 onChange={(e) => setSearchQuery(e.target.value)}
+               />
              </div>
-             <Link to={createPageUrl("CreateEvent")}>
-               <Button className="bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-200">
-                 <Plus className="h-4 w-4 mr-2" />
-                 Post an Event
-               </Button>
-             </Link>
-           </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Filters */}
-        <div className="flex flex-col md:flex-row gap-4 mb-8 items-center">
-          <div className="relative flex-1 w-full">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-            <Input 
-              placeholder="Search events by title or location..." 
-              className="pl-10 h-12 bg-white"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+             
+             {/* Right Side Actions */}
+             <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
+                <Link to={createPageUrl("CreateEvent")}>
+                   <Button className="rounded-full bg-indigo-600 hover:bg-indigo-700 font-medium">
+                     <Plus className="h-4 w-4 mr-2" />
+                     Create Event
+                   </Button>
+                </Link>
+             </div>
           </div>
-          <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 w-full md:w-auto no-scrollbar">
+          
+          {/* Categories / Filters */}
+          <div className="flex gap-2 overflow-x-auto pb-1 mt-4 no-scrollbar items-center">
             {THEMES.map(theme => (
               <button
                 key={theme}
                 onClick={() => setSelectedTheme(theme)}
-                className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                className={`px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
                   selectedTheme === theme 
-                    ? 'bg-slate-900 text-white' 
-                    : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+                    ? 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200' 
+                    : 'bg-white text-slate-600 hover:bg-slate-50'
                 }`}
               >
                 {theme}
@@ -108,31 +105,45 @@ export default function Classifieds() {
             ))}
           </div>
         </div>
+      </div>
+
+      <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-8">
+        {/* Title Section */}
+        <div className="mb-8">
+            <h1 className="text-3xl md:text-4xl font-bold text-slate-900 font-serif">
+              {selectedTheme === "All" ? "Events in " : `${selectedTheme} events in `}
+              <span className="text-indigo-600 underline decoration-indigo-200 underline-offset-4 decoration-4">Your Area</span>
+            </h1>
+        </div>
 
         {/* Grid */}
         {isLoading ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
             {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-              <div key={i} className="h-80 bg-white rounded-xl border border-slate-200 p-4 space-y-4">
-                <Skeleton className="h-40 w-full rounded-lg" />
+              <div key={i} className="space-y-4">
+                <Skeleton className="aspect-[3/2] w-full rounded-lg" />
                 <Skeleton className="h-6 w-3/4" />
                 <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-4 w-1/4" />
               </div>
             ))}
           </div>
         ) : filteredEvents.length === 0 ? (
-          <div className="text-center py-20">
-             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-indigo-50 mb-4">
-               <CalendarIcon className="h-8 w-8 text-indigo-500" />
+          <div className="text-center py-32 bg-slate-50 rounded-2xl border border-slate-100 border-dashed">
+             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white shadow-sm mb-6">
+               <CalendarIcon className="h-10 w-10 text-slate-400" />
              </div>
-             <h3 className="text-xl font-semibold text-slate-900 mb-2">No events found</h3>
-             <p className="text-slate-600 mb-6">Try adjusting your filters or post the first event!</p>
-             <Link to={createPageUrl("CreateEvent")}>
-               <Button variant="outline">Post Event</Button>
-             </Link>
+             <h3 className="text-2xl font-bold text-slate-900 mb-3">No events found</h3>
+             <p className="text-slate-500 mb-8 max-w-md mx-auto">We couldn't find any matches for your search. Try different keywords or browse all categories.</p>
+             <div className="flex justify-center gap-4">
+                <Button variant="outline" onClick={() => {setSearchQuery(""); setSelectedTheme("All");}}>Clear Filters</Button>
+                <Link to={createPageUrl("CreateEvent")}>
+                  <Button>Create an Event</Button>
+                </Link>
+             </div>
           </div>
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
             {filteredEvents.map(event => (
               <EventCard key={event.id} event={event} />
             ))}

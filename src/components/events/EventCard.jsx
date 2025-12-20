@@ -8,50 +8,55 @@ import { Card } from "@/components/ui/card";
 import FavoriteButton from "./FavoriteButton";
 
 export default function EventCard({ event }) {
+  const date = new Date(event.event_date);
+  
   return (
-    <div className="h-full relative group">
+    <div className="h-full relative group bg-white">
       <Link to={createPageUrl("EventDetail") + `?id=${event.id}`} className="block h-full">
-        <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col border-slate-200">
-          <div className="relative h-48 overflow-hidden">
+        <div className="flex flex-col h-full hover:bg-slate-50 transition-colors rounded-lg overflow-hidden">
+          {/* Image Container */}
+          <div className="relative aspect-[3/2] overflow-hidden">
             <img 
               src={event.image_url || "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=80&w=800"} 
               alt={event.title}
-              className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
-            <div className="absolute top-3 left-3 flex gap-2">
-               <Badge variant="secondary" className="bg-white/90 text-slate-900 backdrop-blur-sm shadow-sm">
-                   {event.theme}
+            {event.status === 'pending' && (
+               <Badge className="absolute top-3 left-3 bg-yellow-500 text-white border-0 shadow-sm z-10">
+                 Pending
                </Badge>
-               {event.status === 'pending' && (
-                 <Badge className="bg-yellow-500 text-white border-0 shadow-sm">
-                   Pending
-                 </Badge>
-               )}
-            </div>
-            <div className="absolute bottom-3 left-3">
-               <Badge className={`${event.is_paid ? 'bg-indigo-600' : 'bg-green-600'} text-white border-0`}>
-                   {event.is_paid ? (event.price ? `$${event.price}` : 'Paid') : 'Free'}
-               </Badge>
+             )}
+            <div className="absolute top-3 right-3 z-20">
+               <FavoriteButton eventId={event.id} className="bg-white hover:bg-slate-100 border-0 h-8 w-8 rounded-full shadow-md text-slate-500 hover:text-red-500" size="icon" />
             </div>
           </div>
-          <div className="p-4 flex-1 flex flex-col">
-            <div className="text-xs font-medium text-indigo-600 mb-2 flex items-center gap-1">
-              <Calendar className="h-3 w-3" />
-              {format(new Date(event.event_date), 'MMM d, yyyy • h:mm a')}
-            </div>
-            <h3 className="text-lg font-bold text-slate-900 mb-2 line-clamp-2 group-hover:text-indigo-600 transition-colors">
+          
+          {/* Content */}
+          <div className="flex-1 pt-4 pb-2 px-1 flex flex-col">
+            <h3 className="text-lg font-bold text-slate-900 leading-tight mb-1 line-clamp-2 group-hover:text-indigo-600 transition-colors">
               {event.title}
             </h3>
-            <div className="flex items-start gap-1.5 text-sm text-slate-500 mt-auto">
-              <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
-              <span className="line-clamp-1">{event.location_address}</span>
+            
+            <div className="text-sm font-bold text-orange-600 mb-2 uppercase tracking-wide">
+              {format(date, 'EEE, MMM d • h:mm a')}
+            </div>
+
+            <div className="text-sm text-slate-500 mb-1 line-clamp-1">
+              {event.location_address || "Online Event"}
+            </div>
+
+            <div className="mt-auto pt-2 text-sm font-medium text-slate-700">
+               {event.is_paid ? (event.price ? `$${event.price}` : 'Starts at $0') : 'Free'}
+            </div>
+            
+            <div className="mt-2 flex items-center gap-2">
+                <Badge variant="outline" className="text-xs font-normal text-slate-500 border-slate-200">
+                    {event.theme}
+                </Badge>
             </div>
           </div>
-        </Card>
+        </div>
       </Link>
-      <div className="absolute top-3 right-3 z-20">
-         <FavoriteButton eventId={event.id} className="bg-white/90 hover:bg-white shadow-sm border-0 h-8 w-8" size="icon" />
-      </div>
     </div>
   );
 }
