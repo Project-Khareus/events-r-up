@@ -1,19 +1,57 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, Calendar as CalendarIcon, MapPin } from "lucide-react";
+import { 
+  Plus, Search, Calendar as CalendarIcon, MapPin, 
+  ChevronDown, Crosshair, MonitorPlay, Navigation 
+} from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import EventCard from "../components/events/EventCard";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 
 const THEMES = ["All", "Music", "Food & Drink", "Business", "Arts & Culture", "Sports", "Community", "Party", "Other"];
+
+// Haversine formula to calculate distance between two points in km
+const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
+  if (!lat1 || !lon1 || !lat2 || !lon2) return Infinity;
+  const R = 6371; // Radius of the earth in km
+  const dLat = deg2rad(lat2 - lat1);
+  const dLon = deg2rad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const d = R * c; // Distance in km
+  return d;
+};
+
+const deg2rad = (deg) => {
+  return deg * (Math.PI / 180);
+};
 
 export default function Classifieds() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTheme, setSelectedTheme] = useState("All");
+  
+  // Location state: type can be 'all', 'online', 'coords', 'named'
+  const [locationState, setLocationState] = useState({ 
+    type: 'all', 
+    label: 'Choose a location',
+    lat: null, 
+    lng: null 
+  });
 
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
@@ -50,27 +88,124 @@ export default function Classifieds() {
   }, [events, user]);
 
 
+  const handleUseCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      toast.error("Geolocation is not supported by your browser");
+      return;
+    }
+
+    toast.info("Getting your location...");
+    
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocationState({
+          type: 'coords',
+          label: 'Current Location',
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        });
+        toast.success("Location found!");
+      },
+      (error) => {
+        console.error("Error getting location:", error);
+        toast.error("Unable to retrieve your location");
+      }
+    );
+  };
+
   const filteredEvents = useMemo(() => {
     return approvedEvents.filter(event => {
+      // 1. Search Filter
       const matchesSearch = !searchQuery || 
         event.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
         event.location_address.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      // 2. Theme Filter
       const matchesTheme = selectedTheme === "All" || event.theme === selectedTheme;
-      return matchesSearch && matchesTheme;
+      
+      // 3. Location Filter
+      let matchesLocation = true;
+      
+      if (locationState.type === 'online') {
+        // Assume online events might have "Online" in address or specific flag (schema doesn't have is_online, so checking address/title)
+        matchesLocation = event.location_address?.toLowerCase().includes('online') || event.title?.toLowerCase().includes('webinar');
+      } else if (locationState.type === 'coords' && locationState.lat && locationState.lng) {
+        // 100km radius filter
+        if (event.location_lat && event.location_lng) {
+          const distance = getDistanceFromLatLonInKm(
+            locationState.lat, 
+            locationState.lng, 
+            event.location_lat, 
+            event.location_lng
+          );
+          matchesLocation = distance <= 100;
+        } else {
+          // Keep events with no coords if filtering by coords? 
+          // Usually better to hide them or put them at the end, but strict filtering is safer for "near me"
+          matchesLocation = false; 
+        }
+      }
+      
+      return matchesSearch && matchesTheme && matchesLocation;
     });
-  }, [approvedEvents, searchQuery, selectedTheme]);
+  }, [approvedEvents, searchQuery, selectedTheme, locationState]);
 
   return (
     <div className="min-h-screen bg-white">
       {/* Search Header - Sticky */}
       <div className="sticky top-0 z-30 bg-white border-b border-slate-200 shadow-sm">
         <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-4">
+          
+          {/* Location Picker Header Row */}
+          <div className="flex items-center gap-2 mb-4 text-slate-700">
+            <span className="text-sm font-semibold text-slate-500 uppercase tracking-wide">Browsing events in</span>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center gap-2 text-indigo-600 font-bold text-lg hover:bg-indigo-50 px-3 py-1.5 rounded-lg transition-colors outline-none focus:ring-2 focus:ring-indigo-100">
+                  {locationState.label}
+                  <ChevronDown className="h-5 w-5" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-72 p-2">
+                <DropdownMenuItem 
+                  className="flex items-center gap-3 p-3 cursor-pointer text-indigo-600 font-medium focus:text-indigo-700 focus:bg-indigo-50"
+                  onClick={handleUseCurrentLocation}
+                >
+                  <Crosshair className="h-5 w-5" />
+                  <div className="flex flex-col">
+                    <span>Use my current location</span>
+                  </div>
+                </DropdownMenuItem>
+                
+                <DropdownMenuSeparator />
+                
+                <DropdownMenuItem 
+                  className="flex items-center gap-3 p-3 cursor-pointer"
+                  onClick={() => setLocationState({ type: 'online', label: 'Online Events', lat: null, lng: null })}
+                >
+                  <MonitorPlay className="h-5 w-5 text-slate-500" />
+                  <span>Browse online events</span>
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator />
+
+                <DropdownMenuItem 
+                  className="flex items-center gap-3 p-3 cursor-pointer"
+                  onClick={() => setLocationState({ type: 'all', label: 'All Locations', lat: null, lng: null })}
+                >
+                  <Navigation className="h-5 w-5 text-slate-500" />
+                  <span>All Locations</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
           <div className="flex flex-col md:flex-row gap-4 items-center">
              {/* Search */}
              <div className="relative flex-1 w-full max-w-2xl">
                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
                <Input 
-                 placeholder="Search events" 
+                 placeholder={`Search events in ${locationState.label === 'Choose a location' ? 'all locations' : locationState.label}`}
                  className="pl-11 h-12 bg-slate-50 border-0 focus-visible:ring-1 focus-visible:ring-indigo-500 rounded-full text-base"
                  value={searchQuery}
                  onChange={(e) => setSearchQuery(e.target.value)}
@@ -112,7 +247,9 @@ export default function Classifieds() {
         <div className="mb-8">
             <h1 className="text-3xl md:text-4xl font-bold text-slate-900 font-serif">
               {selectedTheme === "All" ? "Events in " : `${selectedTheme} events in `}
-              <span className="text-indigo-600 underline decoration-indigo-200 underline-offset-4 decoration-4">Your Area</span>
+              <span className="text-indigo-600 underline decoration-indigo-200 underline-offset-4 decoration-4">
+                {locationState.label === 'Choose a location' ? 'All Locations' : locationState.label}
+              </span>
             </h1>
         </div>
 
