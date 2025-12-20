@@ -150,6 +150,41 @@ export default function Classifieds() {
     });
   }, [approvedEvents, searchQuery, selectedTheme, locationState]);
 
+  // Fallbacks: always show something
+  const { displayEvents, usingFallback } = useMemo(() => {
+    if (filteredEvents.length > 0) {
+      return { displayEvents: filteredEvents, usingFallback: false };
+    }
+
+    // Prefer upcoming approved events first
+    const now = new Date();
+    const parseDate = (d) => {
+      const t = d ? new Date(d) : null;
+      return isNaN(t?.getTime?.()) ? null : t;
+    };
+
+    const upcoming = approvedEvents
+      .filter(e => {
+        const dt = parseDate(e.event_date);
+        return !dt || dt >= now; // keep undated or future
+      })
+      .sort((a, b) => {
+        const da = parseDate(a.event_date);
+        const db = parseDate(b.event_date);
+        if (!da && !db) return 0;
+        if (!da) return 1; // undated go last
+        if (!db) return -1;
+        return da - db; // soonest first
+      });
+
+    if (upcoming.length > 0) {
+      return { displayEvents: upcoming, usingFallback: true };
+    }
+
+    // Last resort: all approved events
+    return { displayEvents: approvedEvents, usingFallback: true };
+  }, [filteredEvents, approvedEvents]);
+
   return (
     <div className="min-h-screen bg-white">
       {/* Search Header - Sticky */}
