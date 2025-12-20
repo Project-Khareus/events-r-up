@@ -21,13 +21,13 @@ const DEFAULT_SECTIONS = {
     items: [
       { label: "About Us", url: "LegalPage?slug=about" },
       { label: "Careers", url: "LegalPage?slug=careers" },
-      { label: "Blog", url: "LegalPage?slug=blog" },
+      { label: "Blog", url: "Blog" },
     ]
   },
   support: {
     title: "Support",
     items: [
-      { label: "Help Center", url: "LegalPage?slug=help" },
+      { label: "Help Center", url: "HelpCenter" },
       { label: "Contact Us", url: "LegalPage?slug=contact" },
       { label: "List Your Business", url: "VendorSignup" },
     ]
