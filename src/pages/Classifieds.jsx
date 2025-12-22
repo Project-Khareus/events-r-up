@@ -90,13 +90,7 @@ export default function Classifieds() {
   const { data: events = [], isLoading } = useQuery({
     queryKey: ['events'],
     queryFn: async () => {
-      const lower = await base44.entities.EventListing.filter({ status: 'approved' }, '-created_date', 100);
-      if (Array.isArray(lower) && lower.length > 0) return lower;
-      const cap = await base44.entities.EventListing.filter({ status: 'Approved' }, '-created_date', 100);
-      if (Array.isArray(cap) && cap.length > 0) return cap;
-      const upper = await base44.entities.EventListing.filter({ status: 'APPROVED' }, '-created_date', 100);
-      if (Array.isArray(upper) && upper.length > 0) return upper;
-      return await base44.entities.EventListing.list('-created_date', 100);
+      return await base44.entities.EventListing.list('-created_date', 1000);
     },
     staleTime: 300000, // 5 minutes
     cacheTime: 600000, // 10 minutes
