@@ -1,79 +1,79 @@
-import VendorMarketplace from './pages/VendorMarketplace';
-import VendorDetail from './pages/VendorDetail';
-import Messages from './pages/Messages';
-import Bookings from './pages/Bookings';
-import EventPlanning from './pages/EventPlanning';
-import VendorSignup from './pages/VendorSignup';
-import MyPicks from './pages/MyPicks';
-import Notifications from './pages/Notifications';
-import CategoryPage from './pages/CategoryPage';
-import LegalPage from './pages/LegalPage';
-import Join from './pages/Join';
+import AdminBlog from './pages/AdminBlog';
+import AdminEvents from './pages/AdminEvents';
+import AdminLegal from './pages/AdminLegal';
+import AdminVendors from './pages/AdminVendors';
 import Blog from './pages/Blog';
 import BlogPostDetail from './pages/BlogPostDetail';
-import AdminBlog from './pages/AdminBlog';
-import CreateEvent from './pages/CreateEvent';
+import Bookings from './pages/Bookings';
+import CategoryPage from './pages/CategoryPage';
 import Classifieds from './pages/Classifieds';
-import EventDetail from './pages/EventDetail';
-import UserProfile from './pages/UserProfile';
-import MyFeed from './pages/MyFeed';
-import TestBackend from './pages/TestBackend';
-import ManageListing from './pages/ManageListing';
-import AdminVendors from './pages/AdminVendors';
-import Home from './pages/Home';
-import Weddings from './pages/Weddings';
-import Parties from './pages/Parties';
-import Conference from './pages/Conference';
-import Funeral from './pages/Funeral';
 import CompleteProfile from './pages/CompleteProfile';
-import MyFavorites from './pages/MyFavorites';
-import AdminEvents from './pages/AdminEvents';
-import SocialCallback from './pages/SocialCallback';
-import AdminLegal from './pages/AdminLegal';
-import MyProfile from './pages/MyProfile';
-import HelpCenter from './pages/HelpCenter';
-import PrivacyPolicy from './pages/PrivacyPolicy';
+import Conference from './pages/Conference';
 import CookiePolicy from './pages/CookiePolicy';
+import CreateEvent from './pages/CreateEvent';
+import EventDetail from './pages/EventDetail';
+import EventPlanning from './pages/EventPlanning';
+import Funeral from './pages/Funeral';
+import HelpCenter from './pages/HelpCenter';
+import Home from './pages/Home';
+import Join from './pages/Join';
+import LegalPage from './pages/LegalPage';
+import ManageListing from './pages/ManageListing';
+import Messages from './pages/Messages';
+import MyFavorites from './pages/MyFavorites';
+import MyFeed from './pages/MyFeed';
+import MyPicks from './pages/MyPicks';
+import MyProfile from './pages/MyProfile';
+import Notifications from './pages/Notifications';
+import Parties from './pages/Parties';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import SocialCallback from './pages/SocialCallback';
+import TestBackend from './pages/TestBackend';
+import UserProfile from './pages/UserProfile';
+import VendorDetail from './pages/VendorDetail';
+import VendorMarketplace from './pages/VendorMarketplace';
+import VendorSignup from './pages/VendorSignup';
+import Weddings from './pages/Weddings';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "VendorMarketplace": VendorMarketplace,
-    "VendorDetail": VendorDetail,
-    "Messages": Messages,
-    "Bookings": Bookings,
-    "EventPlanning": EventPlanning,
-    "VendorSignup": VendorSignup,
-    "MyPicks": MyPicks,
-    "Notifications": Notifications,
-    "CategoryPage": CategoryPage,
-    "LegalPage": LegalPage,
-    "Join": Join,
+    "AdminBlog": AdminBlog,
+    "AdminEvents": AdminEvents,
+    "AdminLegal": AdminLegal,
+    "AdminVendors": AdminVendors,
     "Blog": Blog,
     "BlogPostDetail": BlogPostDetail,
-    "AdminBlog": AdminBlog,
-    "CreateEvent": CreateEvent,
+    "Bookings": Bookings,
+    "CategoryPage": CategoryPage,
     "Classifieds": Classifieds,
-    "EventDetail": EventDetail,
-    "UserProfile": UserProfile,
-    "MyFeed": MyFeed,
-    "TestBackend": TestBackend,
-    "ManageListing": ManageListing,
-    "AdminVendors": AdminVendors,
-    "Home": Home,
-    "Weddings": Weddings,
-    "Parties": Parties,
-    "Conference": Conference,
-    "Funeral": Funeral,
     "CompleteProfile": CompleteProfile,
-    "MyFavorites": MyFavorites,
-    "AdminEvents": AdminEvents,
-    "SocialCallback": SocialCallback,
-    "AdminLegal": AdminLegal,
-    "MyProfile": MyProfile,
-    "HelpCenter": HelpCenter,
-    "PrivacyPolicy": PrivacyPolicy,
+    "Conference": Conference,
     "CookiePolicy": CookiePolicy,
+    "CreateEvent": CreateEvent,
+    "EventDetail": EventDetail,
+    "EventPlanning": EventPlanning,
+    "Funeral": Funeral,
+    "HelpCenter": HelpCenter,
+    "Home": Home,
+    "Join": Join,
+    "LegalPage": LegalPage,
+    "ManageListing": ManageListing,
+    "Messages": Messages,
+    "MyFavorites": MyFavorites,
+    "MyFeed": MyFeed,
+    "MyPicks": MyPicks,
+    "MyProfile": MyProfile,
+    "Notifications": Notifications,
+    "Parties": Parties,
+    "PrivacyPolicy": PrivacyPolicy,
+    "SocialCallback": SocialCallback,
+    "TestBackend": TestBackend,
+    "UserProfile": UserProfile,
+    "VendorDetail": VendorDetail,
+    "VendorMarketplace": VendorMarketplace,
+    "VendorSignup": VendorSignup,
+    "Weddings": Weddings,
 }
 
 export const pagesConfig = {

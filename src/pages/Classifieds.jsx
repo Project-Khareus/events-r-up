@@ -259,7 +259,7 @@ export default function Classifieds() {
           </div>
           
           {/* Categories / Filters */}
-          <div className="flex gap-2 overflow-x-auto pb-1 mt-4 no-scrollbar items-center">
+          <div className="flex gap-2 overflow-x-auto py-2 mt-4 no-scrollbar items-center">
             {THEMES.map(theme => (
               <button
                 key={theme}
