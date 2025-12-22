@@ -53,6 +53,8 @@ export default function Classifieds() {
     lng: null 
   });
 
+  const debugMode = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('debug') === '1';
+
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
     queryFn: async () => {
@@ -69,12 +71,12 @@ export default function Classifieds() {
 
   const { data: events = [], isLoading } = useQuery({
     queryKey: ['events'],
-    queryFn: () => base44.entities.EventListing.list('-created_date', 50),
+    queryFn: () => base44.entities.EventListing.filter({ status: 'approved' }, '-created_date', 100),
     staleTime: 300000, // 5 minutes
     cacheTime: 600000, // 10 minutes
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
+    refetchOnWindowFocus: debugMode,
+    refetchOnMount: debugMode,
+    refetchOnReconnect: debugMode,
     retry: false,
   });
 
@@ -315,6 +317,15 @@ export default function Classifieds() {
           </>
         )}
       </div>
+    {debugMode && (
+      <div className="fixed bottom-4 right-4 z-50 bg-white/90 backdrop-blur border border-slate-200 shadow-lg rounded-lg p-3 text-xs text-slate-700">
+        <div className="font-semibold mb-1">Debug: Events</div>
+        <div>Total fetched: {events?.length || 0}</div>
+        <div>Approved after filter: {approvedEvents?.length || 0}</div>
+        <div>After UI filters: {filteredEvents?.length || 0}</div>
+        <div>Fallback active: {usingFallback ? 'yes' : 'no'}</div>
+      </div>
+    )}
     </div>
-  );
-}
+    );
+    }
