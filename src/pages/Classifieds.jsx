@@ -55,6 +55,24 @@ export default function Classifieds() {
 
   const debugMode = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('debug') === '1';
 
+  useEffect(() => {
+    if (!debugMode) return;
+    (async () => {
+      try {
+        const isAuth = await base44.auth.isAuthenticated();
+        console.log('[Debug] isAuthenticated:', isAuth);
+        if (isAuth) {
+          const me = await base44.auth.me();
+          console.log('[Debug] me:', me);
+        }
+        const schema = await base44.entities.EventListing.schema();
+        console.log('[Debug] EventListing schema:', schema);
+      } catch (e) {
+        console.log('[Debug] Error getting debug info', e);
+      }
+    })();
+  }, [debugMode]);
+
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
     queryFn: async () => {
@@ -71,7 +89,15 @@ export default function Classifieds() {
 
   const { data: events = [], isLoading } = useQuery({
     queryKey: ['events'],
-    queryFn: () => base44.entities.EventListing.filter({ status: 'approved' }, '-created_date', 100),
+    queryFn: async () => {
+      const lower = await base44.entities.EventListing.filter({ status: 'approved' }, '-created_date', 100);
+      if (Array.isArray(lower) && lower.length > 0) return lower;
+      const cap = await base44.entities.EventListing.filter({ status: 'Approved' }, '-created_date', 100);
+      if (Array.isArray(cap) && cap.length > 0) return cap;
+      const upper = await base44.entities.EventListing.filter({ status: 'APPROVED' }, '-created_date', 100);
+      if (Array.isArray(upper) && upper.length > 0) return upper;
+      return await base44.entities.EventListing.list('-created_date', 100);
+    },
     staleTime: 300000, // 5 minutes
     cacheTime: 600000, // 10 minutes
     refetchOnWindowFocus: debugMode,
@@ -320,6 +346,7 @@ export default function Classifieds() {
     {debugMode && (
       <div className="fixed bottom-4 right-4 z-50 bg-white/90 backdrop-blur border border-slate-200 shadow-lg rounded-lg p-3 text-xs text-slate-700">
         <div className="font-semibold mb-1">Debug: Events</div>
+        <div>User: {user?.email || 'guest'}</div>
         <div>Total fetched: {events?.length || 0}</div>
         <div>Approved after filter: {approvedEvents?.length || 0}</div>
         <div>After UI filters: {filteredEvents?.length || 0}</div>
