@@ -20,17 +20,24 @@ export default function Bookings() {
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ['bookings'],
     queryFn: async () => {
-      return await base44.entities.Booking.list('-created_date', 100);
+      const allBookings = await base44.entities.Booking.list('-created_date', 100);
+      console.log('All bookings fetched:', allBookings.length, allBookings);
+      return allBookings;
     },
     refetchInterval: 10000,
   });
 
   const { data: vendors = [] } = useQuery({
     queryKey: ['vendors'],
-    queryFn: () => base44.entities.Vendor.list(),
+    queryFn: async () => {
+      const allVendors = await base44.entities.Vendor.list();
+      console.log('All vendors fetched:', allVendors.length, allVendors);
+      return allVendors;
+    },
   });
 
-  const isVendor = vendors.some(v => v.created_by === currentUser?.email);
+  const isVendor = vendors.some(v => v.user_id === currentUser?.id || v.created_by === currentUser?.email);
+  console.log('Current user:', currentUser, 'Is vendor:', isVendor);
 
   const filteredBookings = bookings.filter(booking => {
     if (statusFilter === "all") return true;
