@@ -173,10 +173,18 @@ export default function MyProfile() {
                 <Badge className="mt-2 bg-indigo-100 text-indigo-700">Admin</Badge>
               )}
             </div>
-            <Button variant="outline" onClick={handleLogout} className="gap-2">
-              <LogOut className="h-4 w-4" />
-              Logout
-            </Button>
+            <div className="flex gap-2">
+              <Link to={createPageUrl("UserProfile") + `?userId=${user?.id}`}>
+                <Button variant="outline" className="gap-2">
+                  <User className="h-4 w-4" />
+                  View Public Profile
+                </Button>
+              </Link>
+              <Button variant="outline" onClick={handleLogout} className="gap-2">
+                <LogOut className="h-4 w-4" />
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
       </div>

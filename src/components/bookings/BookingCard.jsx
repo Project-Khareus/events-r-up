@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { createPageUrl } from "../../utils";
 
 const STATUS_CONFIG = {
@@ -119,13 +119,12 @@ export default function BookingCard({ booking, isVendor, currentUserId }) {
     <Card className="p-6 rounded-2xl border-slate-200 hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
-          <button
-            onClick={handleStartChat}
-            disabled={isStartingChat}
-            className="font-semibold text-lg text-slate-900 mb-1 hover:text-indigo-600 transition-colors underline decoration-transparent hover:decoration-indigo-600 text-left"
+          <Link
+            to={createPageUrl("UserProfile") + `?userId=${isVendor ? booking.user_id : booking.vendor_id}`}
+            className="font-semibold text-lg text-slate-900 mb-1 hover:text-indigo-600 transition-colors underline decoration-transparent hover:decoration-indigo-600 block"
           >
             {isVendor ? booking.user_name : booking.vendor_name}
-          </button>
+          </Link>
           <div className="flex items-center gap-2 text-sm text-slate-600">
             <Mail className="h-4 w-4" />
             <span>{booking.user_email}</span>
