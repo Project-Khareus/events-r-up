@@ -138,9 +138,9 @@ export default function VendorDetail() {
         url={window.location.href}
         type="business.business"
       />
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-3 sm:py-4">
         {/* Breadcrumbs */}
-        <nav className="flex items-center gap-2 text-xs sm:text-sm text-slate-500 mb-6 sm:mb-8">
+        <nav className="flex items-center gap-2 text-xs sm:text-sm text-slate-500 mb-4 sm:mb-5">
           <Link to={createPageUrl("VendorMarketplace")} className="hover:text-slate-900 transition-colors shrink-0">Home</Link>
           <ChevronRight className="h-3 w-3 shrink-0" />
           <Link to={createPageUrl("VendorMarketplace")} className="hover:text-slate-900 transition-colors shrink-0">Vendors</Link>
@@ -152,7 +152,7 @@ export default function VendorDetail() {
           <span className="text-slate-900 font-medium truncate max-w-[200px]">{vendor.business_name}</span>
         </nav>
 
-        <div className="grid lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12">
+        <div className="grid lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8">
           {/* Left Column: Image Gallery (7 cols) */}
           <div className="lg:col-span-7">
              <MediaGallery images={allImages} videos={allVideos} businessName={vendor.business_name} />
@@ -160,7 +160,7 @@ export default function VendorDetail() {
 
           {/* Right Column: Product Info (5 cols) */}
           <div className="lg:col-span-5">
-            <div className="space-y-3">
+            <div className="space-y-2">
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-slate-900 leading-tight break-words">
                 {vendor.business_name}
               </h1>
@@ -194,7 +194,7 @@ export default function VendorDetail() {
               )}
             </div>
 
-            <div className="flex items-center gap-2 mt-3 mb-6">
+            <div className="flex items-center gap-2 mt-2 mb-4">
               <div className="flex text-slate-900">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className={`h-4 w-4 ${i < Math.round(averageRating) ? "fill-slate-900 text-slate-900" : "text-slate-300"}`} />
@@ -206,7 +206,7 @@ export default function VendorDetail() {
               </span>
             </div>
 
-            <div className="mb-6">
+            <div className="mb-4">
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl sm:text-3xl font-bold text-slate-900">
                   {vendor.starting_price ? `$${vendor.starting_price.toLocaleString()}` : "Price varies"}
@@ -220,7 +220,7 @@ export default function VendorDetail() {
               )}
             </div>
 
-            <div className="space-y-3 mb-8">
+            <div className="space-y-2 mb-5">
               <div className="flex gap-3">
                 <div className="flex-1">
                   <ContactBookingModal 
@@ -246,7 +246,7 @@ export default function VendorDetail() {
             </div>
 
             {/* Info Cards */}
-            <div className="space-y-3">
+            <div className="space-y-2">
               <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100 hover:bg-slate-100 transition-colors cursor-pointer group">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm text-slate-700 border border-slate-100">
@@ -291,8 +291,8 @@ export default function VendorDetail() {
 
             {/* Social Media Links */}
             {(vendor.instagram || vendor.facebook || vendor.twitter || vendor.tiktok || vendor.linkedin || vendor.website) && (
-              <div className="pt-6 border-t border-slate-200">
-                <h3 className="text-sm font-semibold text-slate-900 mb-3">Connect with us</h3>
+              <div className="pt-4 border-t border-slate-200">
+                <h3 className="text-sm font-semibold text-slate-900 mb-2">Connect with us</h3>
                 <div className="flex flex-wrap gap-2">
                   {vendor.website && (
                     <a href={vendor.website.startsWith('http') ? vendor.website : `https://${vendor.website}`} target="_blank" rel="noopener noreferrer" className="p-2.5 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
@@ -344,12 +344,12 @@ export default function VendorDetail() {
         </div>
 
         {/* Bottom Section */}
-        <div className="mt-12 sm:mt-16 lg:mt-20 grid lg:grid-cols-12 gap-8 lg:gap-12 border-t border-slate-200 pt-8 sm:pt-10 lg:pt-12">
-          <div className="lg:col-span-7 space-y-12">
+        <div className="mt-8 sm:mt-10 lg:mt-12 grid lg:grid-cols-12 gap-6 lg:gap-8 border-t border-slate-200 pt-6 sm:pt-8 lg:pt-10">
+          <div className="lg:col-span-7 space-y-8">
              
              {/* Description */}
              <section>
-                <h2 className="text-2xl font-serif font-bold text-slate-900 mb-4">Description</h2>
+                <h2 className="text-2xl font-serif font-bold text-slate-900 mb-3">Description</h2>
                 <div className="prose prose-slate max-w-none text-slate-600 leading-relaxed">
                    {vendor.description || "No description provided."}
                 </div>
@@ -358,8 +358,8 @@ export default function VendorDetail() {
              {/* Services */}
              {vendor.services && vendor.services.length > 0 && (
                <section>
-                  <h3 className="text-xl font-serif font-bold text-slate-900 mb-4">Services Included</h3>
-                  <div className="grid sm:grid-cols-2 gap-4">
+                  <h3 className="text-xl font-serif font-bold text-slate-900 mb-3">Services Included</h3>
+                  <div className="grid sm:grid-cols-2 gap-3">
                     {vendor.services.map((service, index) => (
                       <div key={index} className="flex items-center gap-3 p-3 border border-slate-100 rounded-lg bg-white shadow-sm">
                         <CheckCircle2 className="h-5 w-5 text-slate-900 shrink-0" />
@@ -371,12 +371,12 @@ export default function VendorDetail() {
              )}
 
              {/* Reviews */}
-             <section id="reviews" className="pt-8 border-t border-slate-200">
-                <div className="flex items-center justify-between mb-8">
+             <section id="reviews" className="pt-6 border-t border-slate-200">
+                <div className="flex items-center justify-between mb-6">
                    <h2 className="text-2xl font-serif font-bold text-slate-900">Reviews ({reviews.length})</h2>
                 </div>
                 
-                <div className="space-y-8">
+                <div className="space-y-6">
                    <ReviewForm vendorId={vendor.id} vendorName={vendor.business_name} />
                    <ReviewsList vendorId={vendor.id} />
                 </div>
@@ -384,12 +384,12 @@ export default function VendorDetail() {
           </div>
 
           {/* Sidebar - Ratings & Similar */}
-          <div className="lg:col-span-5 space-y-8">
+          <div className="lg:col-span-5 space-y-6">
              <div className="sticky top-24">
                 <RatingStats reviews={reviews} />
                 
-                <div className="mt-12">
-                   <h3 className="font-serif font-bold text-slate-900 mb-6 text-xl">You might also like</h3>
+                <div className="mt-8">
+                   <h3 className="font-serif font-bold text-slate-900 mb-4 text-xl">You might also like</h3>
                    <RelatedVendors 
                       currentVendorId={vendor.id} 
                       category={vendor.category} 
