@@ -16,9 +16,7 @@ export default function Messages() {
   const { data: conversations = [], isLoading } = useQuery({
     queryKey: ['conversations'],
     queryFn: async () => {
-      const user = await base44.auth.me();
-      const allConvs = await base44.entities.Conversation.list('-last_message_date', 100);
-      return allConvs.filter(c => c.user_id === user.id || c.vendor_id === user.id);
+      return await base44.entities.Conversation.list('-last_message_date', 100);
     },
     refetchInterval: 10000,
   });
