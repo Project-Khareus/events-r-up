@@ -139,16 +139,16 @@ export default function VendorDetail() {
       />
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-4 sm:py-6">
         {/* Breadcrumbs */}
-        <nav className="flex items-center gap-2 text-xs sm:text-sm text-slate-500 mb-6 sm:mb-8 overflow-x-auto whitespace-nowrap pb-2 scrollbar-hide">
-          <Link to={createPageUrl("VendorMarketplace")} className="hover:text-slate-900 transition-colors">Home</Link>
+        <nav className="flex items-center gap-2 text-xs sm:text-sm text-slate-500 mb-6 sm:mb-8">
+          <Link to={createPageUrl("VendorMarketplace")} className="hover:text-slate-900 transition-colors shrink-0">Home</Link>
           <ChevronRight className="h-3 w-3 shrink-0" />
-          <Link to={createPageUrl("VendorMarketplace")} className="hover:text-slate-900 transition-colors">Vendors</Link>
+          <Link to={createPageUrl("VendorMarketplace")} className="hover:text-slate-900 transition-colors shrink-0">Vendors</Link>
           <ChevronRight className="h-3 w-3 shrink-0" />
-          <Link to={createPageUrl(`VendorMarketplace?category=${vendor.category}`)} className="hover:text-slate-900 transition-colors capitalize">
-            {CATEGORY_LABELS[vendor.category] || vendor.category}
+          <Link to={createPageUrl(`VendorMarketplace?category=${Array.isArray(vendor.category) ? vendor.category[0] : vendor.category}`)} className="hover:text-slate-900 transition-colors truncate">
+            {CATEGORY_LABELS[Array.isArray(vendor.category) ? vendor.category[0] : vendor.category] || (Array.isArray(vendor.category) ? vendor.category[0] : vendor.category)}
           </Link>
           <ChevronRight className="h-3 w-3 shrink-0" />
-          <span className="text-slate-900 font-medium truncate">{vendor.business_name}</span>
+          <span className="text-slate-900 font-medium truncate max-w-[200px]">{vendor.business_name}</span>
         </nav>
 
         <div className="grid lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12">
@@ -159,16 +159,34 @@ export default function VendorDetail() {
 
           {/* Right Column: Product Info (5 cols) */}
           <div className="lg:col-span-5">
-            <div className="space-y-1">
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-slate-900 leading-tight">
+            <div className="space-y-3">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-slate-900 leading-tight break-words">
                 {vendor.business_name}
               </h1>
               
-              <div className="flex items-center gap-2 text-slate-500 text-sm">
-                <span>{CATEGORY_LABELS[vendor.category] || vendor.category}</span>
-                <span>•</span>
-                <span>{vendor.location || "Location varies"}</span>
+              {vendor.slogan && (
+                <p className="text-sm text-slate-600 italic">{vendor.slogan}</p>
+              )}
+              
+              <div className="flex flex-wrap items-center gap-2">
+                {(Array.isArray(vendor.category) ? vendor.category : [vendor.category]).slice(0, 3).map((cat, idx) => (
+                  <Badge key={idx} variant="secondary" className="text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200">
+                    {CATEGORY_LABELS[cat] || cat}
+                  </Badge>
+                ))}
+                {Array.isArray(vendor.category) && vendor.category.length > 3 && (
+                  <Badge variant="secondary" className="text-xs font-medium bg-slate-100 text-slate-700">
+                    +{vendor.category.length - 3} more
+                  </Badge>
+                )}
               </div>
+              
+              {vendor.location && (
+                <div className="flex items-center gap-2 text-slate-500 text-sm">
+                  <MapPin className="h-4 w-4" />
+                  <span>{vendor.location}</span>
+                </div>
+              )}
             </div>
 
             <div className="flex items-center gap-2 mt-3 mb-6">
