@@ -70,6 +70,8 @@ export default function BookingForm({ vendorId, vendorName, compact = false }) {
                 ${booking.message ? `<li><strong>Message:</strong> ${booking.message}</li>` : ''}
               </ul>
               
+              <p><a href="${window.location.origin}/Bookings" style="display: inline-block; padding: 12px 24px; background-color: #4F46E5; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0;">View in Dashboard</a></p>
+              
               <p>Please log in to your dashboard to respond to this booking request.</p>
             `
           });
