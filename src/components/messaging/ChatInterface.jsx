@@ -99,12 +99,23 @@ export default function ChatInterface({ conversationId, onBack }) {
           )}
           <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-50 flex items-center justify-center shrink-0">
             <span className="text-sm font-medium text-indigo-600">
-              {conversation?.vendor_name?.[0]?.toUpperCase()}
+              {(() => {
+                const isVendor = conversation?.vendor_id === currentUser?.id;
+                const displayName = isVendor ? conversation?.user_name : conversation?.vendor_name;
+                return displayName?.[0]?.toUpperCase();
+              })()}
             </span>
           </div>
           <div>
-            <h3 className="font-semibold text-slate-900">{conversation?.vendor_name}</h3>
-            <p className="text-xs text-slate-500">Event Vendor</p>
+            <h3 className="font-semibold text-slate-900">
+              {(() => {
+                const isVendor = conversation?.vendor_id === currentUser?.id;
+                return isVendor ? conversation?.user_name : conversation?.vendor_name;
+              })()}
+            </h3>
+            <p className="text-xs text-slate-500">
+              {conversation?.vendor_id === currentUser?.id ? "Customer" : "Event Vendor"}
+            </p>
           </div>
         </div>
       </div>
