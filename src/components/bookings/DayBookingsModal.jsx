@@ -8,7 +8,7 @@ import { Calendar, Users, Mail, Check, X, MessageSquare } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { createPageUrl } from "../../utils";
 
 const STATUS_CONFIG = {
@@ -112,12 +112,12 @@ export default function DayBookingsModal({ date, bookings, isVendor, open, onClo
               <Card key={booking.id} className="p-4 border-slate-200">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
-                    <button
-                      onClick={() => handleStartChat(booking)}
-                      className="font-semibold text-slate-900 hover:text-indigo-600 transition-colors underline decoration-transparent hover:decoration-indigo-600 text-left"
+                    <Link
+                      to={createPageUrl("UserProfile") + `?userId=${isVendor ? booking.user_id : booking.vendor_id}`}
+                      className="font-semibold text-slate-900 hover:text-indigo-600 transition-colors underline decoration-transparent hover:decoration-indigo-600 block"
                     >
                       {isVendor ? booking.user_name : booking.vendor_name}
-                    </button>
+                    </Link>
                     <div className="flex items-center gap-2 text-sm text-slate-600 mt-1">
                       <Mail className="h-3 w-3" />
                       <span>{booking.user_email}</span>
