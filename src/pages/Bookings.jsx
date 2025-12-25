@@ -17,9 +17,7 @@ export default function Bookings() {
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ['bookings'],
     queryFn: async () => {
-      const user = await base44.auth.me();
-      const allBookings = await base44.entities.Booking.list('-created_date', 100);
-      return allBookings.filter(b => b.user_id === user.id || b.vendor_id === user.id);
+      return await base44.entities.Booking.list('-created_date', 100);
     },
     refetchInterval: 10000,
   });
