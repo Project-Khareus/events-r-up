@@ -247,44 +247,44 @@ export default function VendorDetail() {
 
             {/* Info Cards */}
             <div className="space-y-2">
-              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100 hover:bg-slate-100 transition-colors cursor-pointer group">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm text-slate-700 border border-slate-100">
-                    <Shield className="h-5 w-5" />
+              <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100 hover:bg-slate-100 transition-colors cursor-pointer group">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center shadow-sm text-slate-700 border border-slate-100">
+                    <Shield className="h-4 w-4" />
                   </div>
                   <div>
                     <p className="font-semibold text-slate-900 text-sm group-hover:underline">Verified Vendor Identity</p>
                     <p className="text-xs text-slate-500">Background checked & approved</p>
                   </div>
                 </div>
-                <ChevronRight className="h-5 w-5 text-slate-400" />
+                <ChevronRight className="h-4 w-4 text-slate-400" />
               </div>
 
-              <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100 hover:bg-slate-100 transition-colors cursor-pointer group">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm text-slate-700 border border-slate-100">
-                    <Lock className="h-5 w-5" />
+              <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100 hover:bg-slate-100 transition-colors cursor-pointer group">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center shadow-sm text-slate-700 border border-slate-100">
+                    <Lock className="h-4 w-4" />
                   </div>
                   <div>
                     <p className="font-semibold text-slate-900 text-sm group-hover:underline">Secure Booking Payment</p>
                     <p className="text-xs text-slate-500">Your funds are held safely</p>
                   </div>
                 </div>
-                <ChevronRight className="h-5 w-5 text-slate-400" />
+                <ChevronRight className="h-4 w-4 text-slate-400" />
               </div>
 
               {vendor.years_in_business && (
-                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100 hover:bg-slate-100 transition-colors cursor-pointer group">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm text-slate-700 border border-slate-100">
-                      <Award className="h-5 w-5" />
+                <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100 hover:bg-slate-100 transition-colors cursor-pointer group">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center shadow-sm text-slate-700 border border-slate-100">
+                      <Award className="h-4 w-4" />
                     </div>
                     <div>
                       <p className="font-semibold text-slate-900 text-sm group-hover:underline">Experienced Pro</p>
                       <p className="text-xs text-slate-500">{vendor.years_in_business}+ years in business</p>
                     </div>
                   </div>
-                  <ChevronRight className="h-5 w-5 text-slate-400" />
+                  <ChevronRight className="h-4 w-4 text-slate-400" />
                 </div>
               )}
             </div>
