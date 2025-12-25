@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function Bookings() {
   const [currentUser, setCurrentUser] = useState(null);
   const [statusFilter, setStatusFilter] = useState("all");
+  const [viewMode, setViewMode] = useState("list");
 
   useEffect(() => {
     base44.auth.me().then(setCurrentUser).catch(() => {});
