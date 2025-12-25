@@ -17,6 +17,11 @@ export default function BookingForm({ vendorId, vendorName, compact = false }) {
 
   const createBookingMutation = useMutation({
     mutationFn: async (bookingData) => {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (!isAuth) {
+        throw new Error("Please log in to submit a booking request");
+      }
+      
       const user = await base44.auth.me();
       return base44.entities.Booking.create({
         ...bookingData,
@@ -35,8 +40,13 @@ export default function BookingForm({ vendorId, vendorName, compact = false }) {
       setMessage("");
       toast.success("Booking request submitted successfully!");
     },
-    onError: () => {
-      toast.error("Failed to submit booking request. Please try again.");
+    onError: (error) => {
+      if (error.message?.includes("log in")) {
+        toast.error(error.message);
+        setTimeout(() => base44.auth.redirectToLogin(window.location.href), 1500);
+      } else {
+        toast.error("Failed to submit booking request. Please try again.");
+      }
     }
   });
 
