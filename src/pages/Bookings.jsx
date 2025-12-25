@@ -17,7 +17,24 @@ export default function Bookings() {
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ['bookings'],
     queryFn: async () => {
-      return await base44.entities.Booking.list('-created_date', 100);
+      const user = await base44.auth.me();
+      console.log("=== BOOKINGS DEBUG ===");
+      console.log("Current user:", user);
+      
+      const allBookings = await base44.entities.Booking.list('-created_date', 100);
+      console.log("All bookings fetched:", allBookings);
+      console.log("Total count:", allBookings.length);
+      
+      allBookings.forEach(b => {
+        console.log(`Booking ${b.id}:`, {
+          vendor_id: b.vendor_id,
+          user_id: b.user_id,
+          matches_vendor: b.vendor_id === user.id,
+          matches_user: b.user_id === user.id
+        });
+      });
+      
+      return allBookings;
     },
     refetchInterval: 10000,
   });
