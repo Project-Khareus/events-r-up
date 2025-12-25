@@ -18,14 +18,12 @@ export default function BookingForm({ vendorId, vendorName, compact = false }) {
   const createBookingMutation = useMutation({
     mutationFn: async (bookingData) => {
       const isAuth = await base44.auth.isAuthenticated();
-      console.log("Step 1 - Is authenticated:", isAuth);
       
       if (!isAuth) {
         throw new Error("Please log in to submit a booking request");
       }
       
       const user = await base44.auth.me();
-      console.log("Step 2 - User object:", user);
       
       const bookingPayload = {
         ...bookingData,
@@ -37,16 +35,48 @@ export default function BookingForm({ vendorId, vendorName, compact = false }) {
         status: "pending"
       };
       
-      console.log("Step 3 - Booking payload:", bookingPayload);
-      
       return base44.entities.Booking.create(bookingPayload);
     },
-    onSuccess: () => {
+    onSuccess: async (booking) => {
       queryClient.invalidateQueries({ queryKey: ['bookings'] });
       setEventDate("");
       setGuestCount("");
       setMessage("");
       toast.success("Booking request submitted successfully!");
+      
+      // Send email notification to vendor
+      try {
+        const vendors = await base44.entities.Vendor.filter({ id: vendorId });
+        const vendor = vendors[0];
+        
+        if (vendor?.contact_email) {
+          await base44.integrations.Core.SendEmail({
+            to: vendor.contact_email,
+            subject: `New Booking Request from ${booking.user_name}`,
+            body: `
+              <h2>New Booking Request</h2>
+              <p>You have received a new booking request.</p>
+              
+              <h3>Customer Details:</h3>
+              <ul>
+                <li><strong>Name:</strong> ${booking.user_name}</li>
+                <li><strong>Email:</strong> ${booking.user_email}</li>
+              </ul>
+              
+              <h3>Event Details:</h3>
+              <ul>
+                <li><strong>Date:</strong> ${booking.event_date}</li>
+                <li><strong>Guest Count:</strong> ${booking.guest_count}</li>
+                ${booking.message ? `<li><strong>Message:</strong> ${booking.message}</li>` : ''}
+              </ul>
+              
+              <p>Please log in to your dashboard to respond to this booking request.</p>
+            `
+          });
+        }
+      } catch (emailError) {
+        console.error("Failed to send vendor notification:", emailError);
+      }
     },
     onError: (error) => {
       console.error("Booking error:", error);
