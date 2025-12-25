@@ -52,9 +52,28 @@ export default function ManageListing() {
       // For now, we'll keep the existing status or let it be handled by admin
       return base44.entities.Vendor.update(vendor.id, vendorData);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("Your listing has been updated successfully!");
       queryClient.invalidateQueries(['vendor', vendor.id]);
+      
+      // Notify admins if this was an approved listing being edited
+      if (vendor.status === 'approved') {
+        try {
+          const adminUsers = await base44.entities.User.filter({ role: 'admin' });
+          const notificationPromises = adminUsers.map(admin =>
+            base44.entities.Notification.create({
+              user_id: admin.id,
+              type: 'system',
+              title: 'Approved Vendor Updated',
+              message: `${vendor.business_name} (approved listing) has been updated and may need review.`,
+              link: `VendorDetail?id=${vendor.id}`
+            })
+          );
+          await Promise.all(notificationPromises);
+        } catch (error) {
+          console.error('Failed to notify admins:', error);
+        }
+      }
     },
     onError: () => {
       toast.error("Failed to update listing. Please try again.");
