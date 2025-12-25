@@ -41,16 +41,18 @@ export default function BookingForm({ vendorId, vendorName, compact = false }) {
       toast.success("Booking request submitted successfully!");
     },
     onError: (error) => {
+      console.error("Booking error:", error);
       if (error.message?.includes("log in")) {
         toast.error(error.message);
         setTimeout(() => base44.auth.redirectToLogin(window.location.href), 1500);
       } else {
-        toast.error("Failed to submit booking request. Please try again.");
+        const errorMsg = error.response?.data?.message || error.message || "Failed to submit booking request";
+        toast.error(errorMsg);
       }
     }
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!eventDate) {
@@ -60,6 +62,11 @@ export default function BookingForm({ vendorId, vendorName, compact = false }) {
 
     if (!guestCount || guestCount <= 0) {
       toast.error("Please enter a valid guest count");
+      return;
+    }
+
+    if (!vendorId) {
+      toast.error("Vendor information is missing");
       return;
     }
 
