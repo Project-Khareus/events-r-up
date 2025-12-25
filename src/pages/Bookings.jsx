@@ -17,26 +17,7 @@ export default function Bookings() {
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ['bookings'],
     queryFn: async () => {
-      const user = await base44.auth.me();
-      console.log("=== BOOKINGS DEBUG ===");
-      console.log("1. Current user:", user);
-      console.log("2. User ID:", user.id);
-      
-      // Check vendors to see what ID is used
-      const vendors = await base44.entities.Vendor.list();
-      console.log("3. All vendors:", vendors);
-      const myVendor = vendors.find(v => v.created_by === user.email);
-      console.log("4. My vendor listing:", myVendor);
-      if (myVendor) {
-        console.log("5. My vendor ID field:", myVendor.id);
-        console.log("6. My vendor user_id field:", myVendor.user_id);
-      }
-      
-      const allBookings = await base44.entities.Booking.list('-created_date', 100);
-      console.log("7. Bookings returned by RLS:", allBookings);
-      console.log("8. Total count:", allBookings.length);
-      
-      return allBookings;
+      return await base44.entities.Booking.list('-created_date', 100);
     },
     refetchInterval: 10000,
   });
