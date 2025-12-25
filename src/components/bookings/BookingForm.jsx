@@ -18,12 +18,16 @@ export default function BookingForm({ vendorId, vendorName, compact = false }) {
   const createBookingMutation = useMutation({
     mutationFn: async (bookingData) => {
       const isAuth = await base44.auth.isAuthenticated();
+      console.log("Step 1 - Is authenticated:", isAuth);
+      
       if (!isAuth) {
         throw new Error("Please log in to submit a booking request");
       }
       
       const user = await base44.auth.me();
-      return base44.entities.Booking.create({
+      console.log("Step 2 - User object:", user);
+      
+      const bookingPayload = {
         ...bookingData,
         vendor_id: vendorId,
         vendor_name: vendorName,
@@ -31,7 +35,11 @@ export default function BookingForm({ vendorId, vendorName, compact = false }) {
         user_name: user.full_name || user.email,
         user_email: user.email,
         status: "pending"
-      });
+      };
+      
+      console.log("Step 3 - Booking payload:", bookingPayload);
+      
+      return base44.entities.Booking.create(bookingPayload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bookings'] });
