@@ -36,19 +36,25 @@ export default function Bookings() {
     },
   });
 
-  const isVendor = vendors.some(v => v.user_id === currentUser?.id || v.created_by === currentUser?.email);
-  console.log('Current user:', currentUser, 'Is vendor:', isVendor);
+  const myVendor = vendors.find(v => v.user_id === currentUser?.id || v.created_by === currentUser?.email);
+  const isVendor = !!myVendor;
+  console.log('Current user:', currentUser, 'Is vendor:', isVendor, 'My vendor:', myVendor);
 
-  const filteredBookings = bookings.filter(booking => {
+  // Filter bookings based on user role
+  const roleFilteredBookings = isVendor 
+    ? bookings.filter(b => b.vendor_id === myVendor?.id)
+    : bookings.filter(b => b.user_id === currentUser?.id);
+
+  const filteredBookings = roleFilteredBookings.filter(booking => {
     if (statusFilter === "all") return true;
     return booking.status === statusFilter;
   });
 
   const stats = {
-    pending: bookings.filter(b => b.status === "pending").length,
-    confirmed: bookings.filter(b => b.status === "confirmed").length,
-    declined: bookings.filter(b => b.status === "declined").length,
-    completed: bookings.filter(b => b.status === "completed").length,
+    pending: roleFilteredBookings.filter(b => b.status === "pending").length,
+    confirmed: roleFilteredBookings.filter(b => b.status === "confirmed").length,
+    declined: roleFilteredBookings.filter(b => b.status === "declined").length,
+    completed: roleFilteredBookings.filter(b => b.status === "completed").length,
   };
 
   return (
