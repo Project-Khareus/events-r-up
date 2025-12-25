@@ -28,7 +28,7 @@ export default function MediaGallery({ images = [], videos = [], businessName })
       {/* Thumbnails - Vertical on Desktop, Horizontal on Mobile */}
       {allMedia.length > 1 && (
         <div className="order-2 lg:order-1 flex lg:flex-col gap-2 sm:gap-3 lg:w-[88px] shrink-0 py-1">
-          {allMedia.slice(0, 4).map((media, index) => (
+          {allMedia.slice(0, 5).map((media, index) => (
             <button
               key={index}
               onClick={() => setSelectedIndex(index)}
@@ -58,9 +58,9 @@ export default function MediaGallery({ images = [], videos = [], businessName })
                   }}
                 />
               )}
-              {index === 3 && allMedia.length > 4 && (
+              {index === 4 && allMedia.length > 5 && (
                 <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">+{allMedia.length - 4}</span>
+                  <span className="text-white font-bold text-lg">+{allMedia.length - 5}</span>
                 </div>
               )}
             </button>
