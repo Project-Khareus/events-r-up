@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
-import { Sparkles, TrendingUp, Wand2 } from "lucide-react";
+import { Sparkles, TrendingUp, Wand2, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import SearchBar from "../components/marketplace/SearchBar";
@@ -46,33 +46,36 @@ export default function VendorMarketplace() {
   const [eventType, setEventType] = useState(eventParam);
   const [category, setCategory] = useState(categoryParam);
   const [priceRange, setPriceRange] = useState("all");
+  const [vendorPage, setVendorPage] = useState(1);
+  const vendorsPerPage = 32;
 
   useEffect(() => {
     setEventType(eventParam);
     setCategory(categoryParam);
   }, [eventParam, categoryParam]);
 
-  const { data: rawVendors = [], isLoading } = useQuery({
-    queryKey: ['vendors'],
-    queryFn: () => base44.entities.Vendor.list('-created_date', 1000),
-    staleTime: Infinity,
-    cacheTime: Infinity,
+  const { data: rawVendors = [], isLoading, isFetching } = useQuery({
+    queryKey: ['vendors', vendorPage],
+    queryFn: () => base44.entities.Vendor.list('-created_date', vendorsPerPage * vendorPage),
+    staleTime: 600000, // 10 minutes
+    cacheTime: 1800000, // 30 minutes
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
-    retry: false,
+    retry: 1,
+    keepPreviousData: true,
   });
 
-  // Batch fetch all reviews to avoid rate limiting
+  // Batch fetch reviews with pagination
   const { data: allReviews = [] } = useQuery({
     queryKey: ['all_reviews'],
-    queryFn: () => base44.entities.Review.list('-created_date', 1000),
-    staleTime: Infinity,
-    cacheTime: Infinity,
+    queryFn: () => base44.entities.Review.list('-created_date', 500),
+    staleTime: 600000, // 10 minutes
+    cacheTime: 1800000, // 30 minutes
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
-    retry: false,
+    retry: 1,
   });
   
   // Normalize vendor data - handle both flat and nested data structures
@@ -337,9 +340,30 @@ export default function VendorMarketplace() {
             <div className="hidden sm:block">
               <HorizontalAdPlaceholder size="large" />
             </div>
-          </div>
-        )}
-          </div>
+
+            {/* Load More Button */}
+            {regularVendors.length >= vendorsPerPage * vendorPage && (
+              <div className="flex justify-center mt-8">
+                <Button 
+                  onClick={() => setVendorPage(p => p + 1)}
+                  disabled={isFetching}
+                  size="lg"
+                  className="bg-slate-900 hover:bg-black"
+                >
+                  {isFetching ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Loading...
+                    </>
+                  ) : (
+                    'Load More Vendors'
+                  )}
+                </Button>
+              </div>
+            )}
+            </div>
+            )}
+            </div>
 
           {/* Right Side Ad - Hidden on mobile */}
           <div className="hidden xl:block">

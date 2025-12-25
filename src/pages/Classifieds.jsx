@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { 
   Plus, Search, Calendar as CalendarIcon, MapPin, 
-  ChevronDown, Crosshair, MonitorPlay, Navigation 
+  ChevronDown, Crosshair, MonitorPlay, Navigation, Loader2 
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -44,6 +44,8 @@ const deg2rad = (deg) => {
 export default function Classifieds() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTheme, setSelectedTheme] = useState("All");
+  const [page, setPage] = useState(1);
+  const eventsPerPage = 24;
   
   // Location state: type can be 'all', 'online', 'coords', 'named'
   const [locationState, setLocationState] = useState({ 
@@ -87,17 +89,18 @@ export default function Classifieds() {
     staleTime: 300000,
   });
 
-  const { data: events = [], isLoading } = useQuery({
-    queryKey: ['events'],
+  const { data: events = [], isLoading, isFetching } = useQuery({
+    queryKey: ['events', page],
     queryFn: async () => {
-      return await base44.entities.EventListing.list('-created_date', 1000);
+      return await base44.entities.EventListing.list('-created_date', eventsPerPage * page);
     },
-    staleTime: 300000, // 5 minutes
-    cacheTime: 600000, // 10 minutes
-    refetchOnWindowFocus: debugMode,
-    refetchOnMount: debugMode,
-    refetchOnReconnect: debugMode,
-    retry: false,
+    staleTime: 600000, // 10 minutes
+    cacheTime: 1800000, // 30 minutes
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    retry: 1,
+    keepPreviousData: true, // Keep old data while fetching new
   });
 
   // Filter approved events or pending events owned by the current user
@@ -334,6 +337,25 @@ export default function Classifieds() {
                 <EventCard key={event.id} event={event} />
               ))}
             </div>
+
+            {displayEvents.length >= eventsPerPage * page && (
+              <div className="flex justify-center mt-10">
+                <Button 
+                  onClick={() => setPage(p => p + 1)} 
+                  disabled={isFetching}
+                  className="bg-indigo-600 hover:bg-indigo-700"
+                >
+                  {isFetching ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Loading...
+                    </>
+                  ) : (
+                    'Load More Events'
+                  )}
+                </Button>
+              </div>
+            )}
           </>
         )}
       </div>
