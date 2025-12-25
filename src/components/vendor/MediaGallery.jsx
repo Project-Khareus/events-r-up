@@ -27,8 +27,8 @@ export default function MediaGallery({ images = [], videos = [], businessName })
     <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 h-auto lg:h-[500px]">
       {/* Thumbnails - Vertical on Desktop, Horizontal on Mobile */}
       {allMedia.length > 1 && (
-        <div className="order-2 lg:order-1 flex lg:flex-col gap-2 sm:gap-3 overflow-auto lg:overflow-y-auto lg:w-[88px] scrollbar-hide shrink-0 py-1">
-          {allMedia.map((media, index) => (
+        <div className="order-2 lg:order-1 flex lg:flex-col gap-2 sm:gap-3 lg:w-[88px] shrink-0 py-1">
+          {allMedia.slice(0, 4).map((media, index) => (
             <button
               key={index}
               onClick={() => setSelectedIndex(index)}
@@ -57,6 +57,11 @@ export default function MediaGallery({ images = [], videos = [], businessName })
                     e.target.style.display = 'none';
                   }}
                 />
+              )}
+              {index === 3 && allMedia.length > 4 && (
+                <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">+{allMedia.length - 4}</span>
+                </div>
               )}
             </button>
           ))}

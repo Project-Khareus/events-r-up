@@ -69,6 +69,7 @@ const CATEGORY_LABELS = {
 export default function VendorDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   const vendorId = urlParams.get("id");
+  const [showAllCategories, setShowAllCategories] = React.useState(false);
 
   const { data: vendors = [], isLoading } = useQuery({
     queryKey: ['vendors'],
@@ -169,13 +170,17 @@ export default function VendorDetail() {
               )}
               
               <div className="flex flex-wrap items-center gap-2">
-                {(Array.isArray(vendor.category) ? vendor.category : [vendor.category]).slice(0, 3).map((cat, idx) => (
+                {(Array.isArray(vendor.category) ? vendor.category : [vendor.category]).slice(0, showAllCategories ? undefined : 3).map((cat, idx) => (
                   <Badge key={idx} variant="secondary" className="text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200">
                     {CATEGORY_LABELS[cat] || cat}
                   </Badge>
                 ))}
-                {Array.isArray(vendor.category) && vendor.category.length > 3 && (
-                  <Badge variant="secondary" className="text-xs font-medium bg-slate-100 text-slate-700">
+                {Array.isArray(vendor.category) && vendor.category.length > 3 && !showAllCategories && (
+                  <Badge 
+                    variant="secondary" 
+                    className="text-xs font-medium bg-indigo-100 text-indigo-700 hover:bg-indigo-200 cursor-pointer"
+                    onClick={() => setShowAllCategories(true)}
+                  >
                     +{vendor.category.length - 3} more
                   </Badge>
                 )}
