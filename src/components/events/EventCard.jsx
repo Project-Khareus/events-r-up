@@ -20,6 +20,7 @@ export default function EventCard({ event }) {
               src={event.image_url || "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=80&w=800"} 
               alt={event.title}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
             />
             {event.status === 'pending' && (
                <Badge className="absolute top-3 left-3 bg-yellow-500 text-white border-0 shadow-sm z-10">
