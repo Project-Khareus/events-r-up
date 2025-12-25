@@ -30,6 +30,8 @@ export default function AdminBlog() {
   const [user, setUser] = useState(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
+  const [page, setPage] = useState(1);
+  const postsPerPage = 20;
 
   const queryClient = useQueryClient();
 
@@ -54,11 +56,11 @@ export default function AdminBlog() {
   const isAdmin = user?.role === 'admin';
 
   const { data: posts = [], isLoading } = useQuery({
-    queryKey: ['blog_posts_cms'],
-    queryFn: () => base44.entities.BlogPost.list('-created_date', 100),
+    queryKey: ['blog_posts_cms', page],
+    queryFn: () => base44.entities.BlogPost.list('-created_date', postsPerPage * page),
     enabled: !!user,
-    staleTime: 60000,
-    cacheTime: 300000,
+    staleTime: 300000, // 5 minutes
+    cacheTime: 600000, // 10 minutes
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     retry: false,
@@ -84,16 +86,12 @@ export default function AdminBlog() {
       
       if (newPost.status === 'pending' && !isAdmin) {
           toast.success("Post submitted for approval!");
-          try {
-              // Notify admin
-              await base44.integrations.Core.SendEmail({
-                  to: import.meta.env.VITE_ADMIN_EMAIL || "admin@omnievents.com",
-                  subject: "New Blog Post Submission",
-                  body: `User ${user.full_name} has submitted a new blog post titled "${newPost.title}" for approval.`
-              });
-          } catch (e) {
-              console.error("Failed to send notification email", e);
-          }
+          // Send email async without blocking
+          base44.integrations.Core.SendEmail({
+              to: import.meta.env.VITE_ADMIN_EMAIL || "admin@omnievents.com",
+              subject: "New Blog Post Submission",
+              body: `User ${user.full_name} has submitted a new blog post titled "${newPost.title}" for approval.`
+          }).catch(() => {});
       } else {
           toast.success("Post saved successfully");
       }
@@ -112,13 +110,12 @@ export default function AdminBlog() {
       
       if (updatedPost.status === 'pending' && !isAdmin) {
            toast.success("Post submitted for approval!");
-             try {
-              base44.integrations.Core.SendEmail({
-                  to: import.meta.env.VITE_ADMIN_EMAIL || "admin@omnievents.com",
-                  subject: "Blog Post Submission Updated",
-                  body: `User ${user.full_name} has updated and submitted the blog post titled "${updatedPost.title}" for approval.`
-              });
-          } catch (e) {}
+           // Send email async without blocking
+           base44.integrations.Core.SendEmail({
+               to: import.meta.env.VITE_ADMIN_EMAIL || "admin@omnievents.com",
+               subject: "Blog Post Submission Updated",
+               body: `User ${user.full_name} has updated and submitted the blog post titled "${updatedPost.title}" for approval.`
+           }).catch(() => {});
       } else {
           toast.success("Post updated successfully");
       }
@@ -324,6 +321,14 @@ export default function AdminBlog() {
                         {activeTab === 'pending' ? "No pending posts to review." : "No blog posts found. Create your first one!"}
                     </p>
                 </div>
+            )}
+            
+            {filteredPosts.length >= postsPerPage * page && (
+              <div className="flex justify-center mt-6">
+                <Button onClick={() => setPage(p => p + 1)} variant="outline">
+                  Load More Posts
+                </Button>
+              </div>
             )}
           </div>
         )}

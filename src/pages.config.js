@@ -11,6 +11,7 @@ import CompleteProfile from './pages/CompleteProfile';
 import Conference from './pages/Conference';
 import CookiePolicy from './pages/CookiePolicy';
 import CreateEvent from './pages/CreateEvent';
+import EditEvent from './pages/EditEvent';
 import EventDetail from './pages/EventDetail';
 import EventPlanning from './pages/EventPlanning';
 import Funeral from './pages/Funeral';
@@ -34,7 +35,6 @@ import VendorDetail from './pages/VendorDetail';
 import VendorMarketplace from './pages/VendorMarketplace';
 import VendorSignup from './pages/VendorSignup';
 import Weddings from './pages/Weddings';
-import EditEvent from './pages/EditEvent';
 import __Layout from './Layout.jsx';
 
 
@@ -52,6 +52,7 @@ export const PAGES = {
     "Conference": Conference,
     "CookiePolicy": CookiePolicy,
     "CreateEvent": CreateEvent,
+    "EditEvent": EditEvent,
     "EventDetail": EventDetail,
     "EventPlanning": EventPlanning,
     "Funeral": Funeral,
@@ -75,7 +76,6 @@ export const PAGES = {
     "VendorMarketplace": VendorMarketplace,
     "VendorSignup": VendorSignup,
     "Weddings": Weddings,
-    "EditEvent": EditEvent,
 }
 
 export const pagesConfig = {
