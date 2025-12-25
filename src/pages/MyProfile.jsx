@@ -111,8 +111,9 @@ export default function MyProfile() {
       toast.success("Profile updated successfully");
       queryClient.invalidateQueries(['user_profile']);
     },
-    onError: () => {
-      toast.error("Failed to update profile");
+    onError: (error) => {
+      console.error("Profile update error:", error);
+      toast.error(error?.message || "Failed to update profile");
     }
   });
 
@@ -130,6 +131,10 @@ export default function MyProfile() {
   };
 
   const handleSaveProfile = () => {
+    if (!profileData.display_name || profileData.display_name.trim() === "") {
+      toast.error("Display name is required");
+      return;
+    }
     updateProfileMutation.mutate(profileData);
   };
 
