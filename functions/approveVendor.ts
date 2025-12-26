@@ -47,7 +47,7 @@ Deno.serve(async (req) => {
                     <p>Great news! Your vendor listing for <strong>${vendor.business_name}</strong> has been approved and is now live on Omnievents.</p>
                     <p>You can now view your listing in the marketplace and manage it from your dashboard.</p>
                     <br/>
-                    <a href="${Deno.env.get('BASE44_APP_URL')}/ManageListing" style="background-color: #4F46E5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Manage Listing</a>
+                    <a href="https://eventsrup.com/ManageListing" style="background-color: #4F46E5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Manage Listing</a>
                 `
             });
         }
