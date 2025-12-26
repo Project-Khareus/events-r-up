@@ -2,16 +2,69 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { MessageSquare } from "lucide-react";
+import { toast } from "sonner";
 import ConversationsList from "../components/messaging/ConversationsList";
 import ChatInterface from "../components/messaging/ChatInterface";
 
 export default function Messages() {
   const [selectedConversationId, setSelectedConversationId] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
+  const [isCreatingAdminConvo, setIsCreatingAdminConvo] = useState(false);
 
   useEffect(() => {
     base44.auth.me().then(setCurrentUser).catch(() => {});
   }, []);
+
+  // Check if user wants to message admin
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const messageAdmin = urlParams.get("admin");
+    
+    if (messageAdmin === "true" && currentUser && !isCreatingAdminConvo) {
+      setIsCreatingAdminConvo(true);
+      createAdminConversation();
+    }
+  }, [currentUser]);
+
+  const createAdminConversation = async () => {
+    try {
+      // Get an admin user
+      const admins = await base44.entities.User.filter({ role: 'admin' });
+      if (admins.length === 0) {
+        toast.error("No admin available");
+        return;
+      }
+      const admin = admins[0];
+
+      // Check if conversation already exists
+      const existingConvos = await base44.entities.Conversation.list();
+      const existingConvo = existingConvos.find(
+        c => (c.user_id === currentUser.id && c.vendor_id === admin.id) ||
+             (c.vendor_id === currentUser.id && c.user_id === admin.id)
+      );
+
+      if (existingConvo) {
+        setSelectedConversationId(existingConvo.id);
+      } else {
+        // Create new conversation with admin
+        const newConvo = await base44.entities.Conversation.create({
+          user_id: currentUser.id,
+          vendor_id: admin.id,
+          user_name: currentUser.full_name,
+          vendor_name: admin.full_name || "Admin",
+          last_message: "Conversation started",
+          last_message_date: new Date().toISOString(),
+          unread_count: 0
+        });
+        setSelectedConversationId(newConvo.id);
+      }
+    } catch (error) {
+      console.error("Failed to create admin conversation:", error);
+      toast.error("Failed to start conversation with admin");
+    } finally {
+      setIsCreatingAdminConvo(false);
+    }
+  };
 
   const { data: conversations = [], isLoading } = useQuery({
     queryKey: ['conversations'],

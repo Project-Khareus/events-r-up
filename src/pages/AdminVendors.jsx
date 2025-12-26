@@ -116,7 +116,7 @@ export default function AdminVendors() {
     onSuccess: async (result, { vendor, reason }) => {
       const manageLink = `${window.location.origin}${createPageUrl("ManageListing")}`;
       const viewLink = `${window.location.origin}${createPageUrl("VendorDetail")}?id=${vendor.id}`;
-      const messageLink = `${window.location.origin}${createPageUrl("Messages")}`;
+      const messageLink = `${window.location.origin}${createPageUrl("Messages")}?admin=true`;
       
       // Send email notification to vendor
       try {
