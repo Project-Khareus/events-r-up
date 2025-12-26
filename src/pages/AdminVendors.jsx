@@ -321,7 +321,14 @@ export default function AdminVendors() {
                           </Badge>
                         </div>
                         <p className="text-sm text-slate-500">
-                          Updated {new Date(vendor.updated_date).toLocaleDateString()} at {new Date(vendor.updated_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          Updated {new Date(vendor.updated_date).toLocaleString('en-US', { 
+                            month: 'short', 
+                            day: 'numeric', 
+                            year: 'numeric', 
+                            hour: 'numeric', 
+                            minute: '2-digit',
+                            hour12: true 
+                          })}
                         </p>
                       </div>
                       <Link to={`${createPageUrl("VendorDetail")}?id=${vendor.id}`} target="_blank">
