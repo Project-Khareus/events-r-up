@@ -1,21 +1,30 @@
 import React from "react";
 import { formatDistanceToNow } from "date-fns";
-import { MessageCircle, Calendar, Store, Bell, CheckCircle2 } from "lucide-react";
+import { MessageCircle, Calendar, Store, Bell, CheckCircle2, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
+import { createPageUrl } from "../utils";
 
 const icons = {
   message: MessageCircle,
   event_update: Calendar,
   vendor_response: Store,
-  system: Bell
+  system: Bell,
+  vendor_approved: CheckCircle,
+  vendor_rejected: XCircle,
+  changes_approved: CheckCircle,
+  changes_rejected: AlertCircle
 };
 
 const colors = {
   message: "bg-blue-100 text-blue-600",
   event_update: "bg-orange-100 text-orange-600",
   vendor_response: "bg-indigo-100 text-indigo-600",
-  system: "bg-slate-100 text-slate-600"
+  system: "bg-slate-100 text-slate-600",
+  vendor_approved: "bg-green-100 text-green-600",
+  vendor_rejected: "bg-red-100 text-red-600",
+  changes_approved: "bg-green-100 text-green-600",
+  changes_rejected: "bg-orange-100 text-orange-600"
 };
 
 export default function NotificationItem({ notification, onRead, compact = false }) {
@@ -40,9 +49,35 @@ export default function NotificationItem({ notification, onRead, compact = false
             {formatDistanceToNow(new Date(notification.created_date), { addSuffix: true })}
           </span>
         </div>
-        <p className={cn("text-slate-600 line-clamp-2 mt-1", compact ? "text-xs" : "text-sm")}>
+        <p className={cn("text-slate-600 mt-1", compact ? "text-xs line-clamp-2" : "text-sm")}>
           {notification.message}
         </p>
+        {!compact && (
+          <>
+            {notification.action_by && (
+              <p className="text-xs text-slate-500 mt-1">
+                <span className="font-medium">Action by:</span> {notification.action_by}
+              </p>
+            )}
+            {notification.changes_summary && notification.changes_summary.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-1">
+                {notification.changes_summary.slice(0, 3).map((field, idx) => (
+                  <span key={idx} className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">
+                    {field.replace(/_/g, ' ')}
+                  </span>
+                ))}
+                {notification.changes_summary.length > 3 && (
+                  <span className="text-xs text-slate-500 px-1">+{notification.changes_summary.length - 3} more</span>
+                )}
+              </div>
+            )}
+            {notification.reason && (
+              <p className="text-xs text-orange-700 bg-orange-50 px-2 py-1 rounded mt-2">
+                <span className="font-medium">Reason:</span> {notification.reason}
+              </p>
+            )}
+          </>
+        )}
       </div>
       {!notification.is_read && !compact && onRead && (
         <button
@@ -61,8 +96,9 @@ export default function NotificationItem({ notification, onRead, compact = false
   );
 
   if (notification.link) {
+    const linkPath = notification.link.startsWith('/') ? notification.link : createPageUrl(notification.link);
     return (
-      <Link to={notification.link} onClick={() => onRead && onRead(notification)}>
+      <Link to={linkPath} onClick={() => onRead && onRead(notification)}>
         <Content />
       </Link>
     );

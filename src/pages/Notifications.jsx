@@ -73,7 +73,7 @@ export default function Notifications() {
         <div className="flex items-center justify-between mb-8">
             <div>
                 <h1 className="text-3xl font-bold text-slate-900 mb-2">Notifications</h1>
-                <p className="text-slate-600">Stay updated on your bookings and messages</p>
+                <p className="text-slate-600">Stay updated on vendor submissions, bookings, and messages</p>
             </div>
             {unreadCount > 0 && (
                 <Button 

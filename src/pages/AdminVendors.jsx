@@ -40,7 +40,26 @@ export default function AdminVendors() {
 
   const approveMutation = useMutation({
     mutationFn: async (vendorId) => {
-      return base44.functions.invoke('approveVendor', { vendor_id: vendorId });
+      const currentUser = await base44.auth.me();
+      const vendor = pendingVendors.find(v => v.id === vendorId);
+      const result = await base44.functions.invoke('approveVendor', { vendor_id: vendorId });
+
+      // Create in-app notification
+      if (vendor) {
+        await base44.entities.Notification.create({
+          user_id: vendor.user_id,
+          type: 'vendor_approved',
+          title: 'Vendor Approved!',
+          message: `Congratulations! Your vendor listing "${vendor.business_name}" has been approved and is now live.`,
+          link: `VendorDetail?id=${vendor.id}`,
+          action_by: currentUser.full_name || currentUser.email,
+          action_type: 'approved',
+          vendor_id: vendor.id,
+          vendor_name: vendor.business_name
+        });
+      }
+
+      return result;
     },
     onSuccess: () => {
       toast.success("Vendor approved and notified!");
@@ -53,8 +72,26 @@ export default function AdminVendors() {
 
   const rejectMutation = useMutation({
     mutationFn: async (vendorId) => {
-      // For now just update status, maybe add rejection email later
-      return base44.entities.Vendor.update(vendorId, { status: 'rejected' });
+      const currentUser = await base44.auth.me();
+      const vendor = pendingVendors.find(v => v.id === vendorId);
+      const result = await base44.entities.Vendor.update(vendorId, { status: 'rejected' });
+
+      // Create in-app notification
+      if (vendor) {
+        await base44.entities.Notification.create({
+          user_id: vendor.user_id,
+          type: 'vendor_rejected',
+          title: 'Vendor Submission Not Approved',
+          message: `Unfortunately, your vendor listing "${vendor.business_name}" could not be approved at this time. Please contact admin for details.`,
+          link: 'Messages?admin=true',
+          action_by: currentUser.full_name || currentUser.email,
+          action_type: 'rejected',
+          vendor_id: vendor.id,
+          vendor_name: vendor.business_name
+        });
+      }
+
+      return result;
     },
     onSuccess: () => {
       toast.success("Vendor rejected");
@@ -71,12 +108,17 @@ export default function AdminVendors() {
         pending_changes: null,
         has_pending_changes: false
       };
-      return base44.entities.Vendor.update(vendor.id, updatedData);
+      return { updated: await base44.entities.Vendor.update(vendor.id, updatedData), vendor };
     },
-    onSuccess: async (result, vendor) => {
+    onSuccess: async ({ updated, vendor }) => {
+      const currentUser = await base44.auth.me();
       const manageLink = `https://eventsrup.com${createPageUrl("ManageListing")}`;
       const viewLink = `https://eventsrup.com${createPageUrl("VendorDetail")}?id=${vendor.id}`;
-      
+
+      // Get the list of changed fields
+      const changes = Object.keys(vendor.pending_changes || {})
+        .filter(key => JSON.stringify(vendor[key]) !== JSON.stringify(vendor.pending_changes[key]));
+
       // Send email notification to vendor
       try {
         await base44.integrations.Core.SendEmail({
@@ -85,6 +127,7 @@ export default function AdminVendors() {
           body: `
             <h1>Changes Approved!</h1>
             <p>Great news! Your recent changes to <strong>${vendor.business_name}</strong> have been approved and are now live.</p>
+            <p><strong>Approved by:</strong> ${currentUser.full_name || 'Admin'}</p>
             <p><a href="${viewLink}" style="color: #4F46E5; text-decoration: none;">View Your Public Listing →</a></p>
             <p><a href="${manageLink}" style="color: #4F46E5; text-decoration: none;">Manage Your Listing →</a></p>
           `
@@ -93,10 +136,15 @@ export default function AdminVendors() {
         // Create in-app notification
         await base44.entities.Notification.create({
           user_id: vendor.user_id,
-          type: 'system',
+          type: 'changes_approved',
           title: 'Changes Approved',
           message: `Your updates to ${vendor.business_name} have been approved and are now live.`,
-          link: 'ManageListing'
+          link: 'ManageListing',
+          action_by: currentUser.full_name || currentUser.email,
+          action_type: 'approved',
+          vendor_id: vendor.id,
+          vendor_name: vendor.business_name,
+          changes_summary: changes
         });
       } catch (error) {
         console.error('Failed to send approval notifications:', error);
@@ -108,16 +156,21 @@ export default function AdminVendors() {
 
   const rejectChangesMutation = useMutation({
     mutationFn: async ({ vendor, reason }) => {
-      return base44.entities.Vendor.update(vendor.id, { 
+      return { updated: await base44.entities.Vendor.update(vendor.id, { 
         pending_changes: null,
         has_pending_changes: false 
-      });
+      }), vendor, reason };
     },
-    onSuccess: async (result, { vendor, reason }) => {
+    onSuccess: async ({ updated, vendor, reason }) => {
+      const currentUser = await base44.auth.me();
       const manageLink = `https://eventsrup.com${createPageUrl("ManageListing")}`;
       const viewLink = `https://eventsrup.com${createPageUrl("VendorDetail")}?id=${vendor.id}`;
       const messageLink = `https://eventsrup.com${createPageUrl("Messages")}?admin=true`;
-      
+
+      // Get the list of changed fields
+      const changes = Object.keys(vendor.pending_changes || {})
+        .filter(key => JSON.stringify(vendor[key]) !== JSON.stringify(vendor.pending_changes[key]));
+
       // Send email notification to vendor
       try {
         await base44.integrations.Core.SendEmail({
@@ -126,6 +179,7 @@ export default function AdminVendors() {
           body: `
             <h1>Changes Need Revision</h1>
             <p>Your recent changes to <strong>${vendor.business_name}</strong> could not be approved at this time.</p>
+            <p><strong>Reviewed by:</strong> ${currentUser.full_name || 'Admin'}</p>
             <h3>Reason:</h3>
             <p style="background: #f1f5f9; padding: 12px; border-radius: 8px;">${reason || 'No specific reason provided'}</p>
             <p>Please review and resubmit your changes:</p>
@@ -138,10 +192,16 @@ export default function AdminVendors() {
         // Create in-app notification
         await base44.entities.Notification.create({
           user_id: vendor.user_id,
-          type: 'system',
+          type: 'changes_rejected',
           title: 'Changes Require Revision',
-          message: `Your updates to ${vendor.business_name} need revision. Reason: ${reason || 'No specific reason provided'}`,
-          link: 'ManageListing'
+          message: `Your updates to ${vendor.business_name} need revision.`,
+          link: 'ManageListing',
+          action_by: currentUser.full_name || currentUser.email,
+          action_type: 'requested_changes',
+          vendor_id: vendor.id,
+          vendor_name: vendor.business_name,
+          changes_summary: changes,
+          reason: reason || 'No specific reason provided'
         });
       } catch (error) {
         console.error('Failed to send rejection notifications:', error);
