@@ -225,9 +225,9 @@ export default function AdminVendors() {
                   </div>
                 </div>
               </Card>
-            ))}
-          </div>
-        )}
+                ))}
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="updates">
