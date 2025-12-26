@@ -17,25 +17,33 @@ export default function ManageListing() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const authenticated = await base44.auth.isAuthenticated();
-      if (!authenticated) {
-        base44.auth.redirectToLogin(window.location.href);
-        return;
+      try {
+        const authenticated = await base44.auth.isAuthenticated();
+        if (!authenticated) {
+          base44.auth.redirectToLogin(window.location.href);
+          return;
+        }
+        const currentUser = await base44.auth.me();
+        setUser(currentUser);
+        
+        const vendors = await base44.entities.Vendor.list();
+        const existingVendor = vendors.find(v => v.user_id === currentUser.id);
+        
+        if (!existingVendor) {
+          toast.error("You don't have a vendor listing yet.");
+          navigate(createPageUrl("VendorSignup"));
+          return;
+        }
+        
+        setVendor(existingVendor);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Auth or data fetch error:", error);
+        toast.error("Failed to load your listing. Please try again.");
+        setTimeout(() => {
+          navigate(createPageUrl("VendorMarketplace"));
+        }, 2000);
       }
-      const currentUser = await base44.auth.me();
-      setUser(currentUser);
-      
-      const vendors = await base44.entities.Vendor.list();
-      const existingVendor = vendors.find(v => v.user_id === currentUser.id);
-      
-      if (!existingVendor) {
-        toast.error("You don't have a vendor listing yet.");
-        navigate(createPageUrl("VendorSignup"));
-        return;
-      }
-      
-      setVendor(existingVendor);
-      setIsLoading(false);
     };
     checkAuth();
   }, [navigate]);
