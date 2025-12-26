@@ -92,7 +92,7 @@ export default function Classifieds() {
   const { data: events = [], isLoading, isFetching } = useQuery({
     queryKey: ['events', page],
     queryFn: async () => {
-      return await base44.entities.EventListing.list('-created_date', eventsPerPage * page);
+      return await base44.entities.EventListing.list('-event_date', eventsPerPage * page);
     },
     staleTime: 600000, // 10 minutes
     cacheTime: 1800000, // 30 minutes
@@ -103,13 +103,15 @@ export default function Classifieds() {
     keepPreviousData: true, // Keep old data while fetching new
   });
 
-  // Filter approved events or pending events owned by the current user
+  // Filter approved events or pending events owned by the current user, and exclude past events
   const approvedEvents = useMemo(() => {
-    return events.filter(e => 
-      e.status === 'approved' || 
-      !e.status || 
-      (user && e.created_by === user.email)
-    );
+    const now = new Date();
+    return events.filter(e => {
+      const isApproved = e.status === 'approved' || !e.status || (user && e.created_by === user.email);
+      const eventDate = e.event_date ? new Date(e.event_date) : null;
+      const isUpcoming = !eventDate || eventDate >= now;
+      return isApproved && isUpcoming;
+    });
   }, [events, user]);
 
 
@@ -139,7 +141,7 @@ export default function Classifieds() {
   };
 
   const filteredEvents = useMemo(() => {
-    return approvedEvents.filter(event => {
+    const filtered = approvedEvents.filter(event => {
       // 1. Search Filter
       const matchesSearch = !searchQuery || 
         event.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -172,6 +174,13 @@ export default function Classifieds() {
       }
       
       return matchesSearch && matchesTheme && matchesLocation;
+    });
+    
+    // Sort by event_date ascending (soonest first)
+    return filtered.sort((a, b) => {
+      const dateA = a.event_date ? new Date(a.event_date) : new Date('9999-12-31');
+      const dateB = b.event_date ? new Date(b.event_date) : new Date('9999-12-31');
+      return dateA - dateB;
     });
   }, [approvedEvents, searchQuery, selectedTheme, locationState]);
 
