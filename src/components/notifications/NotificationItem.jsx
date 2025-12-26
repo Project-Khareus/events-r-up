@@ -3,7 +3,7 @@ import { formatDistanceToNow } from "date-fns";
 import { MessageCircle, Calendar, Store, Bell, CheckCircle2, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
-import { createPageUrl } from "../utils";
+import { createPageUrl } from "../../utils";
 
 const icons = {
   message: MessageCircle,
