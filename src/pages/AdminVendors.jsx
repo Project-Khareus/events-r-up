@@ -320,7 +320,9 @@ export default function AdminVendors() {
                             Changes Pending
                           </Badge>
                         </div>
-                        <p className="text-sm text-slate-500">Updated {new Date(vendor.updated_date).toLocaleString()}</p>
+                        <p className="text-sm text-slate-500">
+                          Updated {new Date(vendor.updated_date).toLocaleDateString()} at {new Date(vendor.updated_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </p>
                       </div>
                       <Link to={`${createPageUrl("VendorDetail")}?id=${vendor.id}`} target="_blank">
                         <Button variant="ghost" size="sm" className="gap-2">
@@ -338,6 +340,10 @@ export default function AdminVendors() {
                             .map(key => {
                               const oldVal = vendor[key];
                               const newVal = vendor.pending_changes[key];
+                              
+                              // Check if this is an image field
+                              const isImageField = key === 'image_url' || key === 'logo_url' || key === 'profile_picture_url';
+                              const isGalleryImages = key === 'gallery_images';
                               
                               // Format display values
                               const formatValue = (val) => {
@@ -364,15 +370,52 @@ export default function AdminVendors() {
                                     <div className="w-2 h-2 rounded-full bg-orange-500"></div>
                                     <span className="font-semibold text-slate-900">{fieldLabel}</span>
                                   </div>
-                                  <div className="ml-4 space-y-1">
-                                    <div className="flex items-start gap-2">
-                                      <span className="text-xs text-slate-500 font-medium uppercase tracking-wide min-w-[60px]">Before:</span>
-                                      <span className="text-sm text-slate-600">{formatValue(oldVal)}</span>
-                                    </div>
-                                    <div className="flex items-start gap-2">
-                                      <span className="text-xs text-green-600 font-medium uppercase tracking-wide min-w-[60px]">After:</span>
-                                      <span className="text-sm text-slate-900 font-medium">{formatValue(newVal)}</span>
-                                    </div>
+                                  <div className="ml-4 space-y-2">
+                                    {isImageField ? (
+                                      <div className="flex gap-4">
+                                        <div>
+                                          <span className="text-xs text-slate-500 font-medium uppercase tracking-wide block mb-1">Before:</span>
+                                          {oldVal ? (
+                                            <img src={oldVal} alt="Before" className="w-32 h-32 object-cover rounded border" />
+                                          ) : (
+                                            <div className="w-32 h-32 bg-slate-100 rounded flex items-center justify-center text-slate-400 text-xs">No image</div>
+                                          )}
+                                        </div>
+                                        <div>
+                                          <span className="text-xs text-green-600 font-medium uppercase tracking-wide block mb-1">After:</span>
+                                          {newVal ? (
+                                            <img src={newVal} alt="After" className="w-32 h-32 object-cover rounded border border-green-300" />
+                                          ) : (
+                                            <div className="w-32 h-32 bg-slate-100 rounded flex items-center justify-center text-slate-400 text-xs">No image</div>
+                                          )}
+                                        </div>
+                                      </div>
+                                    ) : isGalleryImages ? (
+                                      <div>
+                                        <span className="text-xs text-green-600 font-medium uppercase tracking-wide block mb-1">New Gallery ({Array.isArray(newVal) ? newVal.length : 0} images):</span>
+                                        <div className="flex gap-2 flex-wrap">
+                                          {Array.isArray(newVal) && newVal.slice(0, 6).map((url, idx) => (
+                                            <img key={idx} src={url} alt={`Gallery ${idx + 1}`} className="w-20 h-20 object-cover rounded border" />
+                                          ))}
+                                          {Array.isArray(newVal) && newVal.length > 6 && (
+                                            <div className="w-20 h-20 bg-slate-100 rounded flex items-center justify-center text-slate-600 text-xs font-medium">
+                                              +{newVal.length - 6} more
+                                            </div>
+                                          )}
+                                        </div>
+                                      </div>
+                                    ) : (
+                                      <>
+                                        <div className="flex items-start gap-2">
+                                          <span className="text-xs text-slate-500 font-medium uppercase tracking-wide min-w-[60px]">Before:</span>
+                                          <span className="text-sm text-slate-600">{formatValue(oldVal)}</span>
+                                        </div>
+                                        <div className="flex items-start gap-2">
+                                          <span className="text-xs text-green-600 font-medium uppercase tracking-wide min-w-[60px]">After:</span>
+                                          <span className="text-sm text-slate-900 font-medium">{formatValue(newVal)}</span>
+                                        </div>
+                                      </>
+                                    )}
                                   </div>
                                 </div>
                               );
