@@ -17,24 +17,32 @@ export default function VendorSignup() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const authenticated = await base44.auth.isAuthenticated();
-      if (!authenticated) {
-        base44.auth.redirectToLogin(window.location.href);
-        return;
-      }
-      const currentUser = await base44.auth.me();
+      try {
+        const authenticated = await base44.auth.isAuthenticated();
+        if (!authenticated) {
+          base44.auth.redirectToLogin(window.location.href);
+          return;
+        }
+        const currentUser = await base44.auth.me();
         setUser(currentUser);
 
         // Check if user already has a vendor listing
-      const vendors = await base44.entities.Vendor.list();
-      const existingVendor = vendors.find(v => v.user_id === currentUser.id);
-      
-      if (existingVendor) {
-        // Redirect to Manage Listing if already exists
-        navigate(createPageUrl("ManageListing"));
+        const vendors = await base44.entities.Vendor.list();
+        const existingVendor = vendors.find(v => v.user_id === currentUser.id);
+        
+        if (existingVendor) {
+          // Redirect to Manage Listing if already exists
+          navigate(createPageUrl("ManageListing"));
+        }
+        
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Auth or data fetch error:", error);
+        toast.error("Failed to load page. Please try again.");
+        setTimeout(() => {
+          navigate(createPageUrl("VendorMarketplace"));
+        }, 2000);
       }
-      
-      setIsLoading(false);
     };
     checkAuth();
   }, [navigate]);
