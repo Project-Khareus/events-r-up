@@ -19,14 +19,15 @@ export default function UserProfile() {
   const [currentUser, setCurrentUser] = useState(null);
 
   // Fetch Profile
-  const { data: profile, isLoading: profileLoading } = useQuery({
+  const { data: profile, isLoading: profileLoading, error: profileError } = useQuery({
     queryKey: ['user_profile', userId],
     queryFn: async () => {
         if (!userId) return null;
         const profiles = await base44.entities.UserProfile.list();
         return profiles.find(p => p.user_id === userId);
     },
-    enabled: !!userId
+    enabled: !!userId,
+    retry: 1
   });
 
   // Fetch User's Events
