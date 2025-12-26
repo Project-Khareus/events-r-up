@@ -50,37 +50,45 @@ export default function ManageListing() {
 
   const updateVendorMutation = useMutation({
     mutationFn: async (data) => {
+      // Track changes
+      const changes = [];
+      Object.keys(data).forEach(key => {
+        const oldVal = vendor[key];
+        const newVal = data[key];
+        if (JSON.stringify(oldVal) !== JSON.stringify(newVal)) {
+          changes.push(key);
+        }
+      });
+
       const vendorData = {
         ...data,
         starting_price: data.starting_price ? parseFloat(data.starting_price) : undefined,
         years_in_business: data.years_in_business ? parseInt(data.years_in_business) : undefined,
-        // services, event_type, category are already arrays from the form
+        status: 'pending', // Reset to pending for admin review
       };
-      // Keep existing status unless specifically changing logic (e.g., re-approval needed?)
-      // For now, we'll keep the existing status or let it be handled by admin
-      return base44.entities.Vendor.update(vendor.id, vendorData);
+      
+      return { updated: await base44.entities.Vendor.update(vendor.id, vendorData), changes };
     },
-    onSuccess: async () => {
-      toast.success("Your listing has been updated successfully!");
+    onSuccess: async ({ updated, changes }) => {
+      toast.success("Your listing has been submitted for review!");
       queryClient.invalidateQueries(['vendor', vendor.id]);
       
-      // Notify admins if this was an approved listing being edited
-      if (vendor.status === 'approved') {
-        try {
-          const adminUsers = await base44.entities.User.filter({ role: 'admin' });
-          const notificationPromises = adminUsers.map(admin =>
-            base44.entities.Notification.create({
-              user_id: admin.id,
-              type: 'system',
-              title: 'Approved Vendor Updated',
-              message: `${vendor.business_name} (approved listing) has been updated and may need review.`,
-              link: `VendorDetail?id=${vendor.id}`
-            })
-          );
-          await Promise.all(notificationPromises);
-        } catch (error) {
-          console.error('Failed to notify admins:', error);
-        }
+      // Notify admins about the update
+      try {
+        const adminUsers = await base44.entities.User.filter({ role: 'admin' });
+        const changesText = changes.length > 0 ? `Updated fields: ${changes.join(', ')}` : 'Minor updates made';
+        const notificationPromises = adminUsers.map(admin =>
+          base44.entities.Notification.create({
+            user_id: admin.id,
+            type: 'system',
+            title: 'Vendor Listing Updated',
+            message: `${vendor.business_name} has submitted updates for review. ${changesText}`,
+            link: `VendorDetail?id=${vendor.id}`
+          })
+        );
+        await Promise.all(notificationPromises);
+      } catch (error) {
+        console.error('Failed to notify admins:', error);
       }
     },
     onError: () => {
