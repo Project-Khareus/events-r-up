@@ -56,9 +56,20 @@ export default function UserProfile() {
     return <div className="min-h-screen flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-indigo-600" /></div>;
   }
 
+  if (profileError) {
+    console.error("Profile fetch error:", profileError);
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6">
+          <h2 className="text-xl font-bold text-slate-900 mb-2">Error Loading Profile</h2>
+          <p className="text-slate-500 mb-4">There was an error loading this profile. Please try again later.</p>
+          <Link to={createPageUrl("Classifieds")}>
+              <Button>Back to Events</Button>
+          </Link>
+      </div>
+    );
+  }
+
   if (!profile && !profileLoading) {
-      // If no profile exists yet, but we have a userId, maybe show a basic fallback or "User not found"
-      // Or if it's ME, prompt to create one.
       return (
         <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6">
             <h2 className="text-xl font-bold text-slate-900 mb-2">Profile Not Found</h2>
