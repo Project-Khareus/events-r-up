@@ -60,30 +60,36 @@ export default function ManageListing() {
         }
       });
 
-      const vendorData = {
+      const pendingChanges = {
         ...data,
         starting_price: data.starting_price ? parseFloat(data.starting_price) : undefined,
         years_in_business: data.years_in_business ? parseInt(data.years_in_business) : undefined,
-        status: 'pending', // Reset to pending for admin review
       };
       
-      return { updated: await base44.entities.Vendor.update(vendor.id, vendorData), changes };
+      // Store changes in pending_changes field, don't update main listing yet
+      return { 
+        updated: await base44.entities.Vendor.update(vendor.id, {
+          pending_changes: pendingChanges,
+          has_pending_changes: true
+        }), 
+        changes 
+      };
     },
     onSuccess: async ({ updated, changes }) => {
-      toast.success("Your listing has been submitted for review!");
+      toast.success("Your changes have been submitted for admin review!");
       queryClient.invalidateQueries(['vendor', vendor.id]);
       
-      // Notify admins about the update
+      // Notify admins about the pending changes
       try {
         const adminUsers = await base44.entities.User.filter({ role: 'admin' });
-        const changesText = changes.length > 0 ? `Updated fields: ${changes.join(', ')}` : 'Minor updates made';
+        const changesText = changes.length > 0 ? `Updated fields: ${changes.join(', ')}` : 'Updates submitted';
         const notificationPromises = adminUsers.map(admin =>
           base44.entities.Notification.create({
             user_id: admin.id,
             type: 'system',
-            title: 'Vendor Listing Updated',
-            message: `${vendor.business_name} has submitted updates for review. ${changesText}`,
-            link: `VendorDetail?id=${vendor.id}`
+            title: 'Vendor Update Pending Approval',
+            message: `${vendor.business_name} has submitted changes for review. ${changesText}`,
+            link: `AdminVendors`
           })
         );
         await Promise.all(notificationPromises);
@@ -92,7 +98,7 @@ export default function ManageListing() {
       }
     },
     onError: () => {
-      toast.error("Failed to update listing. Please try again.");
+      toast.error("Failed to submit changes. Please try again.");
     }
   });
 
