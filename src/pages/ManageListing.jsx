@@ -83,6 +83,8 @@ export default function ManageListing() {
       try {
         const adminUsers = await base44.entities.User.filter({ role: 'admin' });
         const changesText = changes.length > 0 ? `Updated fields: ${changes.join(', ')}` : 'Updates submitted';
+        
+        // Create notifications
         const notificationPromises = adminUsers.map(admin =>
           base44.entities.Notification.create({
             user_id: admin.id,
@@ -93,6 +95,20 @@ export default function ManageListing() {
           })
         );
         await Promise.all(notificationPromises);
+
+        // Send email notification to first admin
+        if (adminUsers.length > 0) {
+          await base44.integrations.Core.SendEmail({
+            to: adminUsers[0].email,
+            subject: `Vendor Update: ${vendor.business_name}`,
+            body: `
+              <h1>Vendor Update Pending Review</h1>
+              <p><strong>${vendor.business_name}</strong> has submitted changes for approval.</p>
+              <p><strong>Fields updated:</strong> ${changesText}</p>
+              <p>Please log in to the admin dashboard to review and approve these changes.</p>
+            `
+          });
+        }
       } catch (error) {
         console.error('Failed to notify admins:', error);
       }
