@@ -228,6 +228,90 @@ export default function AdminVendors() {
             ))}
           </div>
         )}
+          </TabsContent>
+
+          <TabsContent value="updates">
+            {vendorsWithChanges.length === 0 ? (
+              <Card className="p-12 text-center bg-white">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle className="h-8 w-8 text-green-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900">All caught up!</h3>
+                <p className="text-slate-500">No pending vendor updates to review.</p>
+              </Card>
+            ) : (
+              <div className="grid gap-4">
+                {vendorsWithChanges.map((vendor) => (
+                  <Card key={vendor.id} className="p-6 bg-white">
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <h3 className="text-xl font-bold text-slate-900">{vendor.business_name}</h3>
+                          <Badge className="bg-orange-100 text-orange-800">
+                            <AlertCircle className="h-3 w-3 mr-1" />
+                            Changes Pending
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-slate-500">Updated {new Date(vendor.updated_date).toLocaleString()}</p>
+                      </div>
+                      <Link to={`${createPageUrl("VendorDetail")}?id=${vendor.id}`} target="_blank">
+                        <Button variant="ghost" size="sm" className="gap-2">
+                          View Live <ExternalLink className="h-4 w-4" />
+                        </Button>
+                      </Link>
+                    </div>
+
+                    {vendor.pending_changes && (
+                      <div className="bg-slate-50 rounded-lg p-4 mb-4">
+                        <h4 className="font-semibold text-slate-900 mb-3">Proposed Changes:</h4>
+                        <div className="grid grid-cols-2 gap-4 text-sm">
+                          {Object.keys(vendor.pending_changes).map(key => {
+                            const oldVal = vendor[key];
+                            const newVal = vendor.pending_changes[key];
+                            if (JSON.stringify(oldVal) === JSON.stringify(newVal)) return null;
+                            
+                            return (
+                              <div key={key} className="border-l-2 border-orange-400 pl-3">
+                                <span className="font-medium text-slate-700 capitalize">{key.replace(/_/g, ' ')}:</span>
+                                <div className="text-slate-500 line-through text-xs">{typeof oldVal === 'object' ? JSON.stringify(oldVal) : String(oldVal || 'N/A')}</div>
+                                <div className="text-slate-900 font-medium">{typeof newVal === 'object' ? JSON.stringify(newVal) : String(newVal || 'N/A')}</div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex gap-3 pt-4 border-t border-slate-100">
+                      <Button 
+                        onClick={() => approveChangesMutation.mutate(vendor)}
+                        disabled={approveChangesMutation.isPending}
+                        className="bg-green-600 hover:bg-green-700 text-white gap-2"
+                      >
+                        {approveChangesMutation.isPending ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <CheckCircle className="h-4 w-4" />
+                        )}
+                        Approve Changes
+                      </Button>
+                      
+                      <Button 
+                        variant="outline"
+                        onClick={() => rejectChangesMutation.mutate(vendor.id)}
+                        disabled={rejectChangesMutation.isPending}
+                        className="text-red-600 hover:bg-red-50 border-red-200 gap-2"
+                      >
+                        <XCircle className="h-4 w-4" />
+                        Reject Changes
+                      </Button>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
