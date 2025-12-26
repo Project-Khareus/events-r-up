@@ -78,20 +78,24 @@ export default function ManageListing() {
     onSuccess: async ({ updated, changes }) => {
       toast.success("Your changes have been submitted for admin review!");
       queryClient.invalidateQueries(['vendor', vendor.id]);
-      
+
       // Notify admins about the pending changes
       try {
         const adminUsers = await base44.entities.User.filter({ role: 'admin' });
         const changesText = changes.length > 0 ? `Updated fields: ${changes.join(', ')}` : 'Updates submitted';
-        
+
         // Create notifications
         const notificationPromises = adminUsers.map(admin =>
           base44.entities.Notification.create({
             user_id: admin.id,
             type: 'system',
             title: 'Vendor Update Pending Approval',
-            message: `${vendor.business_name} has submitted changes for review. ${changesText}`,
-            link: `AdminVendors`
+            message: `${vendor.business_name} has submitted changes for review.`,
+            link: `AdminVendors`,
+            vendor_id: vendor.id,
+            vendor_name: vendor.business_name,
+            changes_summary: changes,
+            action_by: user.full_name || user.email
           })
         );
         await Promise.all(notificationPromises);
