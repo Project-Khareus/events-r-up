@@ -74,8 +74,8 @@ export default function AdminVendors() {
       return base44.entities.Vendor.update(vendor.id, updatedData);
     },
     onSuccess: async (result, vendor) => {
-      const manageLink = `${window.location.origin}${createPageUrl("ManageListing")}`;
-      const viewLink = `${window.location.origin}${createPageUrl("VendorDetail")}?id=${vendor.id}`;
+      const manageLink = `https://eventsrup.com${createPageUrl("ManageListing")}`;
+      const viewLink = `https://eventsrup.com${createPageUrl("VendorDetail")}?id=${vendor.id}`;
       
       // Send email notification to vendor
       try {
@@ -114,9 +114,9 @@ export default function AdminVendors() {
       });
     },
     onSuccess: async (result, { vendor, reason }) => {
-      const manageLink = `${window.location.origin}${createPageUrl("ManageListing")}`;
-      const viewLink = `${window.location.origin}${createPageUrl("VendorDetail")}?id=${vendor.id}`;
-      const messageLink = `${window.location.origin}${createPageUrl("Messages")}?admin=true`;
+      const manageLink = `https://eventsrup.com${createPageUrl("ManageListing")}`;
+      const viewLink = `https://eventsrup.com${createPageUrl("VendorDetail")}?id=${vendor.id}`;
+      const messageLink = `https://eventsrup.com${createPageUrl("Messages")}?admin=true`;
       
       // Send email notification to vendor
       try {
