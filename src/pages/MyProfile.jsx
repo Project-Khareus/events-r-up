@@ -70,6 +70,7 @@ export default function MyProfile() {
         
         setIsLoading(false);
       } catch (error) {
+        console.error("Profile load error:", error);
         toast.error("Please log in to view your profile");
         base44.auth.redirectToLogin(window.location.pathname);
       }
