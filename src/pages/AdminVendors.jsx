@@ -22,6 +22,16 @@ export default function AdminVendors() {
     },
   });
 
+  // Fetch vendors with pending changes
+  const { data: vendorsWithChanges = [] } = useQuery({
+    queryKey: ['admin_vendors_with_changes'],
+    queryFn: async () => {
+       const user = await base44.auth.me();
+       if (user.role !== 'admin') throw new Error("Unauthorized");
+       return base44.entities.Vendor.filter({ has_pending_changes: true }, '-updated_date', 100);
+    },
+  });
+
   const approveMutation = useMutation({
     mutationFn: async (vendorId) => {
       return base44.functions.invoke('approveVendor', { vendor_id: vendorId });
