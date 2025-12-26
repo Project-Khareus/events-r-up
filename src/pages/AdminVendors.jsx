@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -12,6 +14,9 @@ import { createPageUrl } from "../utils";
 
 export default function AdminVendors() {
   const queryClient = useQueryClient();
+  const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
+  const [rejectingVendor, setRejectingVendor] = useState(null);
+  const [rejectionReason, setRejectionReason] = useState("");
 
   // Fetch pending vendors
   const { data: pendingVendors = [], isLoading } = useQuery({
@@ -69,19 +74,32 @@ export default function AdminVendors() {
       return base44.entities.Vendor.update(vendor.id, updatedData);
     },
     onSuccess: async (result, vendor) => {
+      const manageLink = `${window.location.origin}${createPageUrl("ManageListing")}`;
+      const viewLink = `${window.location.origin}${createPageUrl("VendorDetail")}?id=${vendor.id}`;
+      
       // Send email notification to vendor
       try {
         await base44.integrations.Core.SendEmail({
           to: vendor.contact_email,
-          subject: 'Your Vendor Changes Have Been Approved',
+          subject: 'Your Vendor Changes Have Been Approved ✅',
           body: `
             <h1>Changes Approved!</h1>
-            <p>Great news! Your recent changes to ${vendor.business_name} have been approved and are now live.</p>
-            <p>Visit your listing to see the updates.</p>
+            <p>Great news! Your recent changes to <strong>${vendor.business_name}</strong> have been approved and are now live.</p>
+            <p><a href="${viewLink}" style="color: #4F46E5; text-decoration: none;">View Your Public Listing →</a></p>
+            <p><a href="${manageLink}" style="color: #4F46E5; text-decoration: none;">Manage Your Listing →</a></p>
           `
         });
+
+        // Create in-app notification
+        await base44.entities.Notification.create({
+          user_id: vendor.user_id,
+          type: 'system',
+          title: 'Changes Approved',
+          message: `Your updates to ${vendor.business_name} have been approved and are now live.`,
+          link: 'ManageListing'
+        });
       } catch (error) {
-        console.error('Failed to send approval email:', error);
+        console.error('Failed to send approval notifications:', error);
       }
       toast.success("Changes approved and vendor notified!");
       queryClient.invalidateQueries(['admin_vendors_with_changes']);
@@ -89,17 +107,67 @@ export default function AdminVendors() {
   });
 
   const rejectChangesMutation = useMutation({
-    mutationFn: async (vendorId) => {
-      return base44.entities.Vendor.update(vendorId, { 
+    mutationFn: async ({ vendor, reason }) => {
+      return base44.entities.Vendor.update(vendor.id, { 
         pending_changes: null,
         has_pending_changes: false 
       });
     },
-    onSuccess: () => {
-      toast.success("Changes rejected");
+    onSuccess: async (result, { vendor, reason }) => {
+      const manageLink = `${window.location.origin}${createPageUrl("ManageListing")}`;
+      const viewLink = `${window.location.origin}${createPageUrl("VendorDetail")}?id=${vendor.id}`;
+      const messageLink = `${window.location.origin}${createPageUrl("Messages")}`;
+      
+      // Send email notification to vendor
+      try {
+        await base44.integrations.Core.SendEmail({
+          to: vendor.contact_email,
+          subject: 'Vendor Changes Require Revision',
+          body: `
+            <h1>Changes Need Revision</h1>
+            <p>Your recent changes to <strong>${vendor.business_name}</strong> could not be approved at this time.</p>
+            <h3>Reason:</h3>
+            <p style="background: #f1f5f9; padding: 12px; border-radius: 8px;">${reason || 'No specific reason provided'}</p>
+            <p>Please review and resubmit your changes:</p>
+            <p><a href="${manageLink}" style="color: #4F46E5; text-decoration: none;">Edit Your Listing →</a></p>
+            <p><a href="${viewLink}" style="color: #4F46E5; text-decoration: none;">View Current Public Listing →</a></p>
+            <p><a href="${messageLink}" style="color: #4F46E5; text-decoration: none;">Message Admin for Clarification →</a></p>
+          `
+        });
+
+        // Create in-app notification
+        await base44.entities.Notification.create({
+          user_id: vendor.user_id,
+          type: 'system',
+          title: 'Changes Require Revision',
+          message: `Your updates to ${vendor.business_name} need revision. Reason: ${reason || 'No specific reason provided'}`,
+          link: 'ManageListing'
+        });
+      } catch (error) {
+        console.error('Failed to send rejection notifications:', error);
+      }
+
+      toast.success("Changes rejected and vendor notified");
       queryClient.invalidateQueries(['admin_vendors_with_changes']);
+      setRejectDialogOpen(false);
+      setRejectingVendor(null);
+      setRejectionReason("");
     },
   });
+
+  const handleRejectClick = (vendor) => {
+    setRejectingVendor(vendor);
+    setRejectDialogOpen(true);
+  };
+
+  const handleRejectConfirm = () => {
+    if (rejectingVendor) {
+      rejectChangesMutation.mutate({ 
+        vendor: rejectingVendor, 
+        reason: rejectionReason 
+      });
+    }
+  };
 
   if (isLoading) {
     return (
@@ -280,9 +348,7 @@ export default function AdminVendors() {
                                 return val.join(', ');
                               }
                               if (typeof val === 'object') return JSON.stringify(val);
-                              if (typeof val === 'string' && val.startsWith('http')) {
-                                return '(URL updated)';
-                              }
+                              // Show actual value for text, even if it's a URL
                               return String(val);
                             };
                             
@@ -320,7 +386,7 @@ export default function AdminVendors() {
                       
                       <Button 
                         variant="outline"
-                        onClick={() => rejectChangesMutation.mutate(vendor.id)}
+                        onClick={() => handleRejectClick(vendor)}
                         disabled={rejectChangesMutation.isPending}
                         className="text-red-600 hover:bg-red-50 border-red-200 gap-2"
                       >
@@ -334,6 +400,51 @@ export default function AdminVendors() {
             )}
           </TabsContent>
         </Tabs>
+
+        {/* Rejection Dialog */}
+        <Dialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Reject Vendor Changes</DialogTitle>
+              <DialogDescription>
+                Please provide a reason for rejecting the changes to <strong>{rejectingVendor?.business_name}</strong>. 
+                This will be sent to the vendor.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="py-4">
+              <Textarea
+                placeholder="Explain why these changes cannot be approved..."
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                rows={4}
+                className="w-full"
+              />
+            </div>
+            <DialogFooter>
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setRejectDialogOpen(false);
+                  setRejectionReason("");
+                  setRejectingVendor(null);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleRejectConfirm}
+                disabled={rejectChangesMutation.isPending}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                {rejectChangesMutation.isPending ? (
+                  <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Rejecting...</>
+                ) : (
+                  'Reject Changes'
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
