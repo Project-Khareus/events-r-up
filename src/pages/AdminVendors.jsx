@@ -56,6 +56,50 @@ export default function AdminVendors() {
     },
   });
 
+  const approveChangesMutation = useMutation({
+    mutationFn: async (vendor) => {
+      // Apply pending changes to the main vendor record
+      const { pending_changes, ...rest } = vendor;
+      const updatedData = {
+        ...pending_changes,
+        pending_changes: null,
+        has_pending_changes: false
+      };
+      return base44.entities.Vendor.update(vendor.id, updatedData);
+    },
+    onSuccess: async (result, vendor) => {
+      // Send email notification to vendor
+      try {
+        await base44.integrations.Core.SendEmail({
+          to: vendor.contact_email,
+          subject: 'Your Vendor Changes Have Been Approved',
+          body: `
+            <h1>Changes Approved!</h1>
+            <p>Great news! Your recent changes to ${vendor.business_name} have been approved and are now live.</p>
+            <p>Visit your listing to see the updates.</p>
+          `
+        });
+      } catch (error) {
+        console.error('Failed to send approval email:', error);
+      }
+      toast.success("Changes approved and vendor notified!");
+      queryClient.invalidateQueries(['admin_vendors_with_changes']);
+    },
+  });
+
+  const rejectChangesMutation = useMutation({
+    mutationFn: async (vendorId) => {
+      return base44.entities.Vendor.update(vendorId, { 
+        pending_changes: null,
+        has_pending_changes: false 
+      });
+    },
+    onSuccess: () => {
+      toast.success("Changes rejected");
+      queryClient.invalidateQueries(['admin_vendors_with_changes']);
+    },
+  });
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
