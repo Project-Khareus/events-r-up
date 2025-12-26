@@ -333,39 +333,51 @@ export default function AdminVendors() {
                       <div className="bg-slate-50 rounded-lg p-4 mb-4 max-w-full overflow-hidden">
                         <h4 className="font-semibold text-slate-900 mb-3">Proposed Changes:</h4>
                         <div className="space-y-3">
-                          {Object.keys(vendor.pending_changes).map(key => {
-                            const oldVal = vendor[key];
-                            const newVal = vendor.pending_changes[key];
-                            if (JSON.stringify(oldVal) === JSON.stringify(newVal)) return null;
-                            
-                            // Format display values
-                            const formatValue = (val) => {
-                              if (!val) return 'N/A';
-                              if (Array.isArray(val)) {
-                                if (key === 'gallery_images' || key === 'gallery_videos') {
-                                  return `${val.length} file(s)`;
+                          {Object.keys(vendor.pending_changes)
+                            .filter(key => JSON.stringify(vendor[key]) !== JSON.stringify(vendor.pending_changes[key]))
+                            .map(key => {
+                              const oldVal = vendor[key];
+                              const newVal = vendor.pending_changes[key];
+                              
+                              // Format display values
+                              const formatValue = (val) => {
+                                if (val === null || val === undefined || val === '') return 'Not set';
+                                if (Array.isArray(val)) {
+                                  if (key === 'gallery_images' || key === 'gallery_videos') {
+                                    return `${val.length} file(s)`;
+                                  }
+                                  return val.length > 0 ? val.join(', ') : 'None';
                                 }
-                                return val.join(', ');
-                              }
-                              if (typeof val === 'object') return JSON.stringify(val);
-                              // Show actual value for text, even if it's a URL
-                              return String(val);
-                            };
-                            
-                            return (
-                              <div key={key} className="border-l-2 border-orange-400 pl-3 py-2">
-                                <span className="font-medium text-slate-700 capitalize block mb-1">
-                                  {key.replace(/_/g, ' ')}:
-                                </span>
-                                <div className="text-slate-500 line-through text-xs mb-1 break-words">
-                                  {formatValue(oldVal)}
+                                if (typeof val === 'boolean') return val ? 'Yes' : 'No';
+                                if (typeof val === 'number') return val.toLocaleString();
+                                if (typeof val === 'object') return 'Complex data';
+                                // Truncate long text
+                                const str = String(val);
+                                return str.length > 150 ? str.substring(0, 150) + '...' : str;
+                              };
+                              
+                              const fieldLabel = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                              
+                              return (
+                                <div key={key} className="bg-white rounded-md border border-orange-200 p-3">
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+                                    <span className="font-semibold text-slate-900">{fieldLabel}</span>
+                                  </div>
+                                  <div className="ml-4 space-y-1">
+                                    <div className="flex items-start gap-2">
+                                      <span className="text-xs text-slate-500 font-medium uppercase tracking-wide min-w-[60px]">Before:</span>
+                                      <span className="text-sm text-slate-600">{formatValue(oldVal)}</span>
+                                    </div>
+                                    <div className="flex items-start gap-2">
+                                      <span className="text-xs text-green-600 font-medium uppercase tracking-wide min-w-[60px]">After:</span>
+                                      <span className="text-sm text-slate-900 font-medium">{formatValue(newVal)}</span>
+                                    </div>
+                                  </div>
                                 </div>
-                                <div className="text-slate-900 font-medium text-sm break-words">
-                                  {formatValue(newVal)}
-                                </div>
-                              </div>
-                            );
-                          })}
+                              );
+                            })
+                          }
                         </div>
                       </div>
                     )}
