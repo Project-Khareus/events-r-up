@@ -144,6 +144,11 @@ export default function ManageListing() {
                   Your listing is currently pending approval.
               </div>
           )}
+          {vendor.status === 'approved' && (
+              <div className="mt-4 p-3 bg-blue-50 text-blue-800 rounded-lg inline-block text-sm font-medium">
+                  Any changes will be submitted for admin review before going live.
+              </div>
+          )}
         </div>
 
         <VendorForm 
