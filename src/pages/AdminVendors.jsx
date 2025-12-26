@@ -372,23 +372,13 @@ export default function AdminVendors() {
                                   </div>
                                   <div className="ml-4 space-y-2">
                                     {isImageField ? (
-                                      <div className="flex gap-4">
-                                        <div>
-                                          <span className="text-xs text-slate-500 font-medium uppercase tracking-wide block mb-1">Before:</span>
-                                          {oldVal ? (
-                                            <img src={oldVal} alt="Before" className="w-32 h-32 object-cover rounded border" />
-                                          ) : (
-                                            <div className="w-32 h-32 bg-slate-100 rounded flex items-center justify-center text-slate-400 text-xs">No image</div>
-                                          )}
-                                        </div>
-                                        <div>
-                                          <span className="text-xs text-green-600 font-medium uppercase tracking-wide block mb-1">After:</span>
-                                          {newVal ? (
-                                            <img src={newVal} alt="After" className="w-32 h-32 object-cover rounded border border-green-300" />
-                                          ) : (
-                                            <div className="w-32 h-32 bg-slate-100 rounded flex items-center justify-center text-slate-400 text-xs">No image</div>
-                                          )}
-                                        </div>
+                                      <div>
+                                        <span className="text-xs text-green-600 font-medium uppercase tracking-wide block mb-1">New Image:</span>
+                                        {newVal ? (
+                                          <img src={newVal} alt="New image" className="w-48 h-48 object-cover rounded border border-green-300" />
+                                        ) : (
+                                          <div className="w-48 h-48 bg-slate-100 rounded flex items-center justify-center text-slate-400 text-xs">Image removed</div>
+                                        )}
                                       </div>
                                     ) : isGalleryImages ? (
                                       <div>
