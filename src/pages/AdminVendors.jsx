@@ -114,25 +114,41 @@ export default function AdminVendors() {
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Vendor Approvals</h1>
-            <p className="text-slate-600">Review and approve new vendor listings</p>
+            <h1 className="text-3xl font-bold text-slate-900">Vendor Management</h1>
+            <p className="text-slate-600">Review new listings and changes</p>
           </div>
-          <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200">
-            <span className="font-semibold text-indigo-600">{pendingVendors.length}</span> Pending
+          <div className="flex gap-3">
+            <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200">
+              <span className="font-semibold text-indigo-600">{pendingVendors.length}</span> New
+            </div>
+            <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-orange-200">
+              <span className="font-semibold text-orange-600">{vendorsWithChanges.length}</span> Updates
+            </div>
           </div>
         </div>
 
-        {pendingVendors.length === 0 ? (
-          <Card className="p-12 text-center bg-white">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <CheckCircle className="h-8 w-8 text-green-600" />
-            </div>
-            <h3 className="text-lg font-semibold text-slate-900">All caught up!</h3>
-            <p className="text-slate-500">No pending vendor listings to review.</p>
-          </Card>
-        ) : (
-          <div className="grid gap-4">
-            {pendingVendors.map((vendor) => (
+        <Tabs defaultValue="new" className="w-full">
+          <TabsList className="mb-6">
+            <TabsTrigger value="new" className="gap-2">
+              New Listings ({pendingVendors.length})
+            </TabsTrigger>
+            <TabsTrigger value="updates" className="gap-2">
+              Pending Updates ({vendorsWithChanges.length})
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="new">
+            {pendingVendors.length === 0 ? (
+              <Card className="p-12 text-center bg-white">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle className="h-8 w-8 text-green-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900">All caught up!</h3>
+                <p className="text-slate-500">No pending vendor listings to review.</p>
+              </Card>
+            ) : (
+              <div className="grid gap-4">
+                {pendingVendors.map((vendor) => (
               <Card key={vendor.id} className="p-6 bg-white overflow-hidden">
                 <div className="flex flex-col md:flex-row gap-6">
                   {/* Image */}
