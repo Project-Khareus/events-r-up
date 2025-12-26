@@ -42,6 +42,7 @@ Deno.serve(async (req) => {
                     <li><strong>Vendor ID:</strong> ${vendor_id}</li>
                 </ul>
                 <p>Please log in to the admin dashboard to review and approve this listing.</p>
+                <p><a href="https://eventsrup.com/AdminVendors" style="display: inline-block; padding: 12px 24px; background-color: #4F46E5; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0;">Review Listing</a></p>
             `
         });
 

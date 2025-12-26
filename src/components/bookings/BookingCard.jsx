@@ -49,7 +49,7 @@ export default function BookingCard({ booking, isVendor, currentUserId }) {
               <li><strong>Guest Count:</strong> ${booking.guest_count}</li>
             </ul>
             
-            <p><a href="${window.location.origin}${createPageUrl('Bookings')}" style="display: inline-block; padding: 12px 24px; background-color: #4F46E5; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0;">View Booking</a></p>
+            <p><a href="https://eventsrup.com${createPageUrl('Bookings')}" style="display: inline-block; padding: 12px 24px; background-color: #4F46E5; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0;">View Booking</a></p>
           `
         });
       } catch (emailError) {

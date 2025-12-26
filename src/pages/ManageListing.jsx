@@ -106,6 +106,7 @@ export default function ManageListing() {
               <p><strong>${vendor.business_name}</strong> has submitted changes for approval.</p>
               <p><strong>Fields updated:</strong> ${changesText}</p>
               <p>Please log in to the admin dashboard to review and approve these changes.</p>
+              <p><a href="https://eventsrup.com${createPageUrl('AdminVendors')}" style="display: inline-block; padding: 12px 24px; background-color: #4F46E5; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0;">Review Changes</a></p>
             `
           });
         }
