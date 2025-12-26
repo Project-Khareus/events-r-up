@@ -262,19 +262,41 @@ export default function AdminVendors() {
                     </div>
 
                     {vendor.pending_changes && (
-                      <div className="bg-slate-50 rounded-lg p-4 mb-4">
+                      <div className="bg-slate-50 rounded-lg p-4 mb-4 max-w-full overflow-hidden">
                         <h4 className="font-semibold text-slate-900 mb-3">Proposed Changes:</h4>
-                        <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div className="space-y-3">
                           {Object.keys(vendor.pending_changes).map(key => {
                             const oldVal = vendor[key];
                             const newVal = vendor.pending_changes[key];
                             if (JSON.stringify(oldVal) === JSON.stringify(newVal)) return null;
                             
+                            // Format display values
+                            const formatValue = (val) => {
+                              if (!val) return 'N/A';
+                              if (Array.isArray(val)) {
+                                if (key === 'gallery_images' || key === 'gallery_videos') {
+                                  return `${val.length} file(s)`;
+                                }
+                                return val.join(', ');
+                              }
+                              if (typeof val === 'object') return JSON.stringify(val);
+                              if (typeof val === 'string' && val.startsWith('http')) {
+                                return '(URL updated)';
+                              }
+                              return String(val);
+                            };
+                            
                             return (
-                              <div key={key} className="border-l-2 border-orange-400 pl-3">
-                                <span className="font-medium text-slate-700 capitalize">{key.replace(/_/g, ' ')}:</span>
-                                <div className="text-slate-500 line-through text-xs">{typeof oldVal === 'object' ? JSON.stringify(oldVal) : String(oldVal || 'N/A')}</div>
-                                <div className="text-slate-900 font-medium">{typeof newVal === 'object' ? JSON.stringify(newVal) : String(newVal || 'N/A')}</div>
+                              <div key={key} className="border-l-2 border-orange-400 pl-3 py-2">
+                                <span className="font-medium text-slate-700 capitalize block mb-1">
+                                  {key.replace(/_/g, ' ')}:
+                                </span>
+                                <div className="text-slate-500 line-through text-xs mb-1 break-words">
+                                  {formatValue(oldVal)}
+                                </div>
+                                <div className="text-slate-900 font-medium text-sm break-words">
+                                  {formatValue(newVal)}
+                                </div>
                               </div>
                             );
                           })}
