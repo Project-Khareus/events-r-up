@@ -30,7 +30,9 @@ export default function MyFavorites() {
       try {
         // RLS already filters by user_id, so just list all (which returns only user's favorites)
         const favorites = await base44.entities.Favorite.list('-created_date', 100);
-        console.log('Fetched favorites:', favorites);
+        console.log('Raw favorites fetched:', favorites);
+        console.log('User ID:', user.id);
+        console.log('Normalized favorites:', favorites.map(normalizeData));
         return favorites;
       } catch (error) {
         console.error('Error fetching favorites:', error);
