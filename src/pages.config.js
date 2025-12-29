@@ -35,6 +35,7 @@ import VendorDetail from './pages/VendorDetail';
 import VendorMarketplace from './pages/VendorMarketplace';
 import VendorSignup from './pages/VendorSignup';
 import Weddings from './pages/Weddings';
+import EditVendor from './pages/EditVendor';
 import __Layout from './Layout.jsx';
 
 
@@ -76,6 +77,7 @@ export const PAGES = {
     "VendorMarketplace": VendorMarketplace,
     "VendorSignup": VendorSignup,
     "Weddings": Weddings,
+    "EditVendor": EditVendor,
 }
 
 export const pagesConfig = {

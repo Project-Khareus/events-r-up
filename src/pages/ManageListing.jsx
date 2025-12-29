@@ -1,131 +1,39 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { useNavigate, Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Store, Loader2, ArrowLeft, ExternalLink } from "lucide-react";
-import VendorForm from "../components/vendor/VendorForm";
+import { Store, Loader2, Plus, Edit2, ExternalLink, Clock, CheckCircle2 } from "lucide-react";
 
 export default function ManageListing() {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const [user, setUser] = useState(null);
-  const [vendor, setVendor] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const authenticated = await base44.auth.isAuthenticated();
-        if (!authenticated) {
-          base44.auth.redirectToLogin(window.location.href);
-          return;
-        }
-        const currentUser = await base44.auth.me();
-        setUser(currentUser);
-        
-        const vendors = await base44.entities.Vendor.list();
-        const existingVendor = vendors.find(v => v.user_id === currentUser.id);
-        
-        if (!existingVendor) {
-          toast.error("You don't have a vendor listing yet.");
-          navigate(createPageUrl("VendorSignup"));
-          return;
-        }
-        
-        setVendor(existingVendor);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Auth or data fetch error:", error);
-        toast.error("Failed to load your listing. Please try again.");
-        setTimeout(() => {
-          navigate(createPageUrl("VendorMarketplace"));
-        }, 2000);
+  
+  const { data: user, isLoading: isLoadingUser } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: async () => {
+      const authenticated = await base44.auth.isAuthenticated();
+      if (!authenticated) {
+        base44.auth.redirectToLogin(window.location.href);
+        return null;
       }
-    };
-    checkAuth();
-  }, [navigate]);
-
-  const updateVendorMutation = useMutation({
-    mutationFn: async (data) => {
-      // Track changes
-      const changes = [];
-      Object.keys(data).forEach(key => {
-        const oldVal = vendor[key];
-        const newVal = data[key];
-        if (JSON.stringify(oldVal) !== JSON.stringify(newVal)) {
-          changes.push(key);
-        }
-      });
-
-      const pendingChanges = {
-        ...data,
-        starting_price: data.starting_price ? parseFloat(data.starting_price) : undefined,
-        years_in_business: data.years_in_business ? parseInt(data.years_in_business) : undefined,
-      };
-      
-      // Store changes in pending_changes field, don't update main listing yet
-      return { 
-        updated: await base44.entities.Vendor.update(vendor.id, {
-          pending_changes: pendingChanges,
-          has_pending_changes: true
-        }), 
-        changes 
-      };
+      return base44.auth.me();
     },
-    onSuccess: async ({ updated, changes }) => {
-      toast.success("Your changes have been submitted for admin review!");
-      queryClient.invalidateQueries(['vendor', vendor.id]);
-
-      // Notify admins about the pending changes
-      try {
-        const adminUsers = await base44.entities.User.filter({ role: 'admin' });
-        const changesText = changes.length > 0 ? `Updated fields: ${changes.join(', ')}` : 'Updates submitted';
-
-        // Create notifications
-        const notificationPromises = adminUsers.map(admin =>
-          base44.entities.Notification.create({
-            user_id: admin.id,
-            type: 'system',
-            title: 'Vendor Update Pending Approval',
-            message: `${vendor.business_name} has submitted changes for review.`,
-            link: `AdminVendors`,
-            vendor_id: vendor.id,
-            vendor_name: vendor.business_name,
-            changes_summary: changes,
-            action_by: user.full_name || user.email
-          })
-        );
-        await Promise.all(notificationPromises);
-
-        // Send email notification to first admin
-        if (adminUsers.length > 0) {
-          await base44.integrations.Core.SendEmail({
-            to: adminUsers[0].email,
-            subject: `Vendor Update: ${vendor.business_name}`,
-            body: `
-              <h1>Vendor Update Pending Review</h1>
-              <p><strong>${vendor.business_name}</strong> has submitted changes for approval.</p>
-              <p><strong>Fields updated:</strong> ${changesText}</p>
-              <p>Please log in to the admin dashboard to review and approve these changes.</p>
-              <p><a href="https://eventsrup.com${createPageUrl('AdminVendors')}" style="display: inline-block; padding: 12px 24px; background-color: #4F46E5; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0;">Review Changes</a></p>
-            `
-          });
-        }
-      } catch (error) {
-        console.error('Failed to notify admins:', error);
-      }
-    },
-    onError: () => {
-      toast.error("Failed to submit changes. Please try again.");
-    }
   });
 
-  const handleSubmit = (formData) => {
-    updateVendorMutation.mutate(formData);
-  };
+  const { data: vendors = [], isLoading: isLoadingVendors } = useQuery({
+    queryKey: ['userVendors', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      return base44.entities.Vendor.filter({ user_id: user.id }, '-created_date', 100);
+    },
+    enabled: !!user,
+  });
+
+  const isLoading = isLoadingUser || isLoadingVendors;
 
   if (isLoading) {
     return (
@@ -135,60 +43,109 @@ export default function ManageListing() {
     );
   }
 
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 py-12 px-6">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-8">
-            <Button 
-                variant="ghost" 
-                onClick={() => navigate(createPageUrl("VendorMarketplace"))}
-                className="flex items-center gap-2"
-            >
-                <ArrowLeft className="h-4 w-4" />
-                Back to Marketplace
-            </Button>
-            {vendor && (
-                <Button 
-                    variant="outline" 
-                    onClick={() => navigate(`${createPageUrl("VendorDetail")}?id=${vendor.id}`)}
-                    className="flex items-center gap-2"
-                >
-                    View Public Listing
-                    <ExternalLink className="h-4 w-4" />
-                </Button>
-            )}
-        </div>
-
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-700 mb-6">
-            <Store className="h-8 w-8 text-white" />
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900 mb-2">My Vendor Listings</h1>
+            <p className="text-slate-600">Manage your business listings</p>
           </div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Manage Your Listing</h1>
-          <p className="text-slate-600">Update your business information, photos, and services</p>
-          
-          {vendor.status === 'pending' && (
-              <div className="mt-4 p-3 bg-yellow-50 text-yellow-800 rounded-lg inline-block text-sm font-medium">
-                  Your listing is currently pending approval.
-              </div>
-          )}
-          {vendor.status === 'approved' && !vendor.has_pending_changes && (
-              <div className="mt-4 p-3 bg-blue-50 text-blue-800 rounded-lg inline-block text-sm font-medium">
-                  Any changes will be submitted for admin review before going live.
-              </div>
-          )}
-          {vendor.has_pending_changes && (
-              <div className="mt-4 p-3 bg-orange-50 text-orange-800 rounded-lg inline-block text-sm font-medium">
-                  You have pending changes awaiting admin approval. Your current listing remains active.
-              </div>
-          )}
+          <Link to={createPageUrl("VendorSignup")}>
+            <Button className="bg-indigo-600 hover:bg-indigo-700">
+              <Plus className="h-4 w-4 mr-2" />
+              Add New Listing
+            </Button>
+          </Link>
         </div>
 
-        <VendorForm 
-          initialData={vendor}
-          onSubmit={handleSubmit}
-          isSubmitting={updateVendorMutation.isPending}
-          submitLabel="Save Changes"
-        />
+        {vendors.length === 0 ? (
+          <Card className="p-12 text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-100 mb-4">
+              <Store className="h-8 w-8 text-slate-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-slate-900 mb-2">No vendor listings yet</h3>
+            <p className="text-slate-600 mb-6">Create your first vendor listing to start getting bookings.</p>
+            <Link to={createPageUrl("VendorSignup")}>
+              <Button className="bg-indigo-600 hover:bg-indigo-700">
+                <Plus className="h-4 w-4 mr-2" />
+                Create Your First Listing
+              </Button>
+            </Link>
+          </Card>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {vendors.map((vendor) => (
+              <Card key={vendor.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                <div className="aspect-video bg-slate-200 relative">
+                  {vendor.image_url ? (
+                    <img 
+                      src={vendor.image_url} 
+                      alt={vendor.business_name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Store className="h-12 w-12 text-slate-400" />
+                    </div>
+                  )}
+                  <div className="absolute top-3 right-3">
+                    {vendor.status === 'pending' && (
+                      <Badge className="bg-yellow-500 text-white">
+                        <Clock className="h-3 w-3 mr-1" />
+                        Pending
+                      </Badge>
+                    )}
+                    {vendor.status === 'approved' && (
+                      <Badge className="bg-green-500 text-white">
+                        <CheckCircle2 className="h-3 w-3 mr-1" />
+                        Approved
+                      </Badge>
+                    )}
+                    {vendor.status === 'rejected' && (
+                      <Badge variant="destructive">Rejected</Badge>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="p-5">
+                  <h3 className="font-bold text-lg text-slate-900 mb-1 truncate">
+                    {vendor.business_name}
+                  </h3>
+                  {vendor.slogan && (
+                    <p className="text-sm text-slate-600 mb-3 line-clamp-2">
+                      {vendor.slogan}
+                    </p>
+                  )}
+                  
+                  {vendor.has_pending_changes && (
+                    <Badge variant="outline" className="mb-3 text-orange-600 border-orange-300">
+                      Changes Pending Review
+                    </Badge>
+                  )}
+
+                  <div className="flex gap-2">
+                    <Link to={`${createPageUrl("EditVendor")}?id=${vendor.id}`} className="flex-1">
+                      <Button variant="outline" className="w-full">
+                        <Edit2 className="h-4 w-4 mr-2" />
+                        Edit
+                      </Button>
+                    </Link>
+                    <Link to={`${createPageUrl("VendorDetail")}?id=${vendor.id}`}>
+                      <Button variant="ghost" size="icon">
+                        <ExternalLink className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
