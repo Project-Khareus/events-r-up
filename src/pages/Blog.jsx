@@ -43,30 +43,10 @@ export default function Blog() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950">
-      {/* Blog Header */}
+      {/* Categories Nav */}
       <div className="border-b border-slate-100 dark:border-slate-800 sticky top-0 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md z-10">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="h-10 w-10 bg-indigo-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-serif font-bold text-xl">Ob</span>
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-slate-900 dark:text-white">Omnievents Blog</h1>
-              <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                <span>12k followers</span>
-                <span>•</span>
-                <span>5 editors</span>
-              </div>
-            </div>
-          </div>
-          <Button className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200">
-            Follow
-          </Button>
-        </div>
-        
-        {/* Categories Nav */}
         <div className="max-w-7xl mx-auto px-6 overflow-x-auto no-scrollbar">
-          <div className="flex items-center gap-8 h-12 text-sm font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap">
+          <div className="flex items-center gap-8 h-14 text-sm font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap">
             {categories.map(cat => (
               <button key={cat} className="hover:text-slate-900 dark:hover:text-white transition-colors">
                 {cat}
