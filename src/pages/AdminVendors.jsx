@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, Store, Edit2, Clock, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 
@@ -18,25 +18,19 @@ export default function AdminVendors() {
   const [rejectingVendor, setRejectingVendor] = useState(null);
   const [rejectionReason, setRejectionReason] = useState("");
 
-  // Fetch pending vendors
-  const { data: pendingVendors = [], isLoading } = useQuery({
-    queryKey: ['admin_pending_vendors'],
+  // Fetch all vendors
+  const { data: allVendors = [], isLoading } = useQuery({
+    queryKey: ['admin_all_vendors'],
     queryFn: async () => {
        const user = await base44.auth.me();
        if (user.role !== 'admin') throw new Error("Unauthorized");
-       return base44.entities.Vendor.filter({ status: 'pending' }, '-created_date', 100);
+       return base44.entities.Vendor.list('-created_date', 200);
     },
   });
 
-  // Fetch vendors with pending changes
-  const { data: vendorsWithChanges = [] } = useQuery({
-    queryKey: ['admin_vendors_with_changes'],
-    queryFn: async () => {
-       const user = await base44.auth.me();
-       if (user.role !== 'admin') throw new Error("Unauthorized");
-       return base44.entities.Vendor.filter({ has_pending_changes: true }, '-updated_date', 100);
-    },
-  });
+  const pendingVendors = allVendors.filter(v => v.status === 'pending');
+  const vendorsWithChanges = allVendors.filter(v => v.has_pending_changes);
+  const approvedVendors = allVendors.filter(v => v.status === 'approved' && !v.has_pending_changes);
 
   const approveMutation = useMutation({
     mutationFn: async (vendorId) => {
@@ -262,6 +256,9 @@ export default function AdminVendors() {
             </TabsTrigger>
             <TabsTrigger value="updates" className="gap-2">
               Pending Updates ({vendorsWithChanges.length})
+            </TabsTrigger>
+            <TabsTrigger value="all" className="gap-2">
+              All Vendors ({approvedVendors.length})
             </TabsTrigger>
           </TabsList>
 
@@ -505,6 +502,63 @@ export default function AdminVendors() {
                         <XCircle className="h-4 w-4" />
                         Reject Changes
                       </Button>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="all">
+            {approvedVendors.length === 0 ? (
+              <Card className="p-12 text-center bg-white">
+                <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Store className="h-8 w-8 text-slate-400" />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900">No vendors yet</h3>
+                <p className="text-slate-500">Approved vendors will appear here.</p>
+              </Card>
+            ) : (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {approvedVendors.map((vendor) => (
+                  <Card key={vendor.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                    <div className="aspect-video bg-slate-200 relative">
+                      {vendor.image_url ? (
+                        <img 
+                          src={vendor.image_url} 
+                          alt={vendor.business_name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Store className="h-12 w-12 text-slate-400" />
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="p-5">
+                      <h3 className="font-bold text-lg text-slate-900 mb-1 truncate">
+                        {vendor.business_name}
+                      </h3>
+                      {vendor.slogan && (
+                        <p className="text-sm text-slate-600 mb-3 line-clamp-2">
+                          {vendor.slogan}
+                        </p>
+                      )}
+
+                      <div className="flex gap-2">
+                        <Link to={`${createPageUrl("AdminVendorDetail")}?id=${vendor.id}`} className="flex-1">
+                          <Button variant="outline" className="w-full">
+                            <Eye className="h-4 w-4 mr-2" />
+                            Review
+                          </Button>
+                        </Link>
+                        <Link to={`${createPageUrl("VendorDetail")}?id=${vendor.id}`} target="_blank">
+                          <Button variant="ghost" size="icon">
+                            <ExternalLink className="h-4 w-4" />
+                          </Button>
+                        </Link>
+                      </div>
                     </div>
                   </Card>
                 ))}
