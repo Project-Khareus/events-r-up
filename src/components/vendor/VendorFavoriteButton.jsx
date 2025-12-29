@@ -23,7 +23,16 @@ export default function VendorFavoriteButton({ vendorId, className, variant = "o
     queryKey: ['vendorFavorites', vendorId],
     queryFn: async () => {
       if (!user) return [];
-      return base44.entities.Favorite.filter({ vendor_id: vendorId, item_type: 'vendor' });
+      try {
+        const allFavorites = await base44.entities.Favorite.list();
+        return allFavorites.filter(f => {
+          const fav = normalizeData(f);
+          return fav.vendor_id === vendorId && fav.item_type === 'vendor';
+        });
+      } catch (error) {
+        console.error('Error fetching vendor favorites:', error);
+        return [];
+      }
     },
     enabled: !!user && !!vendorId,
   });

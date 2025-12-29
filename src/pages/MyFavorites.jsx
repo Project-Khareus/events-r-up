@@ -28,7 +28,9 @@ export default function MyFavorites() {
     queryFn: async () => {
       if (!user) return [];
       try {
-        const favorites = await base44.entities.Favorite.filter({ user_id: user.id }, '-created_date', 100);
+        // RLS already filters by user_id, so just list all (which returns only user's favorites)
+        const favorites = await base44.entities.Favorite.list('-created_date', 100);
+        console.log('Fetched favorites:', favorites);
         return favorites;
       } catch (error) {
         console.error('Error fetching favorites:', error);

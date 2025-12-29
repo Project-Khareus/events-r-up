@@ -27,7 +27,16 @@ export default function FavoriteButton({ eventId, className, variant = "outline"
     queryKey: ['favorites', eventId],
     queryFn: async () => {
       if (!user) return [];
-      return base44.entities.Favorite.filter({ event_id: eventId, item_type: 'event' });
+      try {
+        const allFavorites = await base44.entities.Favorite.list();
+        return allFavorites.filter(f => {
+          const fav = normalizeData(f);
+          return fav.event_id === eventId && fav.item_type === 'event';
+        });
+      } catch (error) {
+        console.error('Error fetching event favorites:', error);
+        return [];
+      }
     },
     enabled: !!user && !!eventId,
   });
