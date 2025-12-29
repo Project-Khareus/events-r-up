@@ -24,10 +24,10 @@ export default function MyFavorites() {
 
   // 1. Fetch user's favorites
   const { data: rawFavorites = [], isLoading: isLoadingFavorites } = useQuery({
-    queryKey: ['myFavorites'],
+    queryKey: ['myFavorites', user?.id],
     queryFn: async () => {
       if (!user) return [];
-      return base44.entities.Favorite.filter({ user_id: user.id });
+      return base44.entities.Favorite.list('-created_date', 100);
     },
     enabled: !!user,
   });
