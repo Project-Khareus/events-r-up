@@ -3,9 +3,11 @@ import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { createPageUrl } from "../utils";
 import { Link } from "react-router-dom";
-import { Heart, Loader2, Calendar } from "lucide-react";
+import { Heart, Loader2, Calendar, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import EventCard from "../components/events/EventCard";
+import VendorCard from "../components/marketplace/VendorCard";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Helper to handle potential nested data structure
@@ -32,16 +34,19 @@ export default function MyFavorites() {
 
   const favorites = useMemo(() => rawFavorites.map(normalizeData), [rawFavorites]);
 
-  // 2. Fetch the actual events for those favorites
+  // Separate favorites by type
+  const eventFavorites = favorites.filter(f => f.item_type === 'event');
+  const vendorFavorites = favorites.filter(f => f.item_type === 'vendor');
+
+  // 2. Fetch the actual events for event favorites
   const { data: events = [], isLoading: isLoadingEvents } = useQuery({
-    queryKey: ['favoritedEvents', favorites],
+    queryKey: ['favoritedEvents', eventFavorites],
     queryFn: async () => {
-      if (favorites.length === 0) return [];
+      if (eventFavorites.length === 0) return [];
       
-      const eventPromises = favorites.map(async (fav) => {
+      const eventPromises = eventFavorites.map(async (fav) => {
         if (!fav || !fav.event_id) return null;
         try {
-          // Attempt to filter by ID
           const results = await base44.entities.EventListing.filter({ id: fav.event_id });
           if (results && results.length > 0) {
             return normalizeData(results[0]);
@@ -54,12 +59,40 @@ export default function MyFavorites() {
       });
       
       const results = await Promise.all(eventPromises);
-      return results.filter(e => !!e); // Remove any nulls (deleted events or errors)
+      return results.filter(e => !!e);
     },
-    enabled: favorites.length > 0,
+    enabled: eventFavorites.length > 0,
   });
 
-  const isLoading = isLoadingFavorites || (favorites.length > 0 && isLoadingEvents);
+  // 3. Fetch the actual vendors for vendor favorites
+  const { data: vendors = [], isLoading: isLoadingVendors } = useQuery({
+    queryKey: ['favoritedVendors', vendorFavorites],
+    queryFn: async () => {
+      if (vendorFavorites.length === 0) return [];
+      
+      const vendorPromises = vendorFavorites.map(async (fav) => {
+        if (!fav || !fav.vendor_id) return null;
+        try {
+          const results = await base44.entities.Vendor.filter({ id: fav.vendor_id });
+          if (results && results.length > 0) {
+            return normalizeData(results[0]);
+          }
+          return null;
+        } catch (err) {
+          console.error("Error fetching vendor", fav.vendor_id, err);
+          return null;
+        }
+      });
+      
+      const results = await Promise.all(vendorPromises);
+      return results.filter(v => !!v);
+    },
+    enabled: vendorFavorites.length > 0,
+  });
+
+  const isLoading = isLoadingFavorites || 
+    (eventFavorites.length > 0 && isLoadingEvents) || 
+    (vendorFavorites.length > 0 && isLoadingVendors);
 
   if (!user) {
     return (
@@ -105,21 +138,64 @@ export default function MyFavorites() {
             </div>
             <h3 className="text-xl font-semibold text-slate-900 mb-2">No favorites yet</h3>
             <p className="text-slate-600 mb-6 max-w-md mx-auto">
-              Start exploring events and tap the heart icon to save them here for easy access.
+              Start exploring vendors and events, then tap the heart icon to save them here for easy access.
             </p>
-            <Link to={createPageUrl("Classifieds")}>
-              <Button className="bg-indigo-600 hover:bg-indigo-700">
-                <Calendar className="mr-2 h-4 w-4" />
-                Browse Events
-              </Button>
-            </Link>
+            <div className="flex gap-3 justify-center">
+              <Link to={createPageUrl("VendorMarketplace")}>
+                <Button className="bg-indigo-600 hover:bg-indigo-700">
+                  <Store className="mr-2 h-4 w-4" />
+                  Browse Vendors
+                </Button>
+              </Link>
+              <Link to={createPageUrl("Classifieds")}>
+                <Button variant="outline">
+                  <Calendar className="mr-2 h-4 w-4" />
+                  Browse Events
+                </Button>
+              </Link>
+            </div>
           </div>
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {events.map(event => (
-              <EventCard key={event.id} event={event} />
-            ))}
-          </div>
+          <Tabs defaultValue="vendors" className="space-y-6">
+            <TabsList className="grid w-full max-w-md grid-cols-2">
+              <TabsTrigger value="vendors">
+                Vendors ({vendors.length})
+              </TabsTrigger>
+              <TabsTrigger value="events">
+                Events ({events.length})
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="vendors" className="space-y-6">
+              {vendors.length === 0 ? (
+                <div className="text-center py-12 bg-white rounded-2xl border border-slate-200">
+                  <Store className="h-12 w-12 text-slate-300 mx-auto mb-3" />
+                  <p className="text-slate-600">No favorite vendors yet</p>
+                </div>
+              ) : (
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {vendors.map(vendor => (
+                    <VendorCard key={vendor.id} vendor={vendor} />
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="events" className="space-y-6">
+              {events.length === 0 ? (
+                <div className="text-center py-12 bg-white rounded-2xl border border-slate-200">
+                  <Calendar className="h-12 w-12 text-slate-300 mx-auto mb-3" />
+                  <p className="text-slate-600">No favorite events yet</p>
+                </div>
+              ) : (
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {events.map(event => (
+                    <EventCard key={event.id} event={event} />
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
         )}
       </div>
     </div>

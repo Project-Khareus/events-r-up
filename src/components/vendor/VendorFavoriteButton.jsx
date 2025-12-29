@@ -6,55 +6,49 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
-// Helper to handle potential nested data structure
 const normalizeData = (item) => {
   if (!item) return null;
   return item.data ? { id: item.id, ...item.data } : item;
 };
 
-export default function FavoriteButton({ eventId, className, variant = "outline", size = "icon" }) {
+export default function VendorFavoriteButton({ vendorId, className, variant = "outline", size = "icon" }) {
   const queryClient = useQueryClient();
 
-  // 1. Get current user
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => base44.auth.me().catch(() => null),
   });
 
-  // 2. Check if favorited
-  // We fetch the user's favorites for this specific event
   const { data: rawFavorites = [] } = useQuery({
-    queryKey: ['favorites', eventId],
+    queryKey: ['vendorFavorites', vendorId],
     queryFn: async () => {
       if (!user) return [];
-      // RLS ensures we only see our own, but filtering by event_id is good practice
-      return base44.entities.Favorite.filter({ event_id: eventId });
+      return base44.entities.Favorite.filter({ vendor_id: vendorId, item_type: 'vendor' });
     },
-    enabled: !!user && !!eventId,
+    enabled: !!user && !!vendorId,
   });
 
   const favorites = useMemo(() => rawFavorites.map(normalizeData), [rawFavorites]);
   const myFavorite = favorites[0];
   const isFavorited = !!myFavorite;
 
-  // 3. Mutations
   const toggleMutation = useMutation({
     mutationFn: async () => {
       if (!user) {
-        throw new Error("Please log in to favorite events");
+        throw new Error("Please log in to favorite vendors");
       }
       if (isFavorited) {
         return base44.entities.Favorite.delete(myFavorite.id);
       } else {
         return base44.entities.Favorite.create({
           user_id: user.id,
-          event_id: eventId,
-          item_type: 'event'
+          vendor_id: vendorId,
+          item_type: 'vendor'
         });
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['favorites', eventId] });
+      queryClient.invalidateQueries({ queryKey: ['vendorFavorites', vendorId] });
       queryClient.invalidateQueries({ queryKey: ['myFavorites'] });
       toast.success(isFavorited ? "Removed from favorites" : "Added to favorites");
     },
@@ -76,7 +70,7 @@ export default function FavoriteButton({ eventId, className, variant = "outline"
         className
       )}
       onClick={(e) => {
-        e.preventDefault(); // Prevent navigating if inside a link
+        e.preventDefault();
         e.stopPropagation();
         toggleMutation.mutate();
       }}
