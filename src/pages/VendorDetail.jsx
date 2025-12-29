@@ -29,6 +29,7 @@ import RelatedVendors from "../components/vendor/RelatedVendors";
 import ContactBookingModal from "../components/vendor/ContactBookingModal";
 import ShareButton from "../components/shared/ShareButton";
 import MetaTags from "../components/shared/MetaTags";
+import VendorFavoriteButton from "../components/vendor/VendorFavoriteButton";
 
 const CATEGORY_LABELS = {
   venue: "Venue",
@@ -232,9 +233,7 @@ export default function VendorDetail() {
                     }
                   />
                 </div>
-                <Button variant="outline" className="h-12 w-12 p-0 rounded-lg border-slate-300 hover:bg-slate-50 shrink-0">
-                  <Heart className="h-5 w-5" />
-                </Button>
+                <VendorFavoriteButton vendorId={vendor.id} size="icon" className="h-12 w-12 rounded-lg border-slate-300" />
               </div>
               <ShareButton 
                 url={window.location.href}
