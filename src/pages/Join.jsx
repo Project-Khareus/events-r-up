@@ -1,13 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { Facebook, Instagram, Mail } from "lucide-react";
+import BiometricLogin from "../components/auth/BiometricLogin";
 
 export default function Join() {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -88,6 +90,8 @@ export default function Join() {
               <span className="bg-white px-2 text-slate-400 font-medium tracking-wider">Or continue with</span>
             </div>
           </div>
+
+          <BiometricLogin email={email} onSuccess={() => navigate(createPageUrl("VendorSignup"))} />
 
            <Button 
             variant="secondary" 
