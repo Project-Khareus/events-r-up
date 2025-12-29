@@ -3,6 +3,7 @@ import Navbar from "./components/layout/Navbar";
 import MobileBottomNav from "./components/layout/MobileBottomNav";
 import Footer from "./components/layout/Footer";
 import CookieConsent from "./components/layout/CookieConsent";
+import DeviceCheck from "./components/auth/DeviceCheck";
 import { Toaster } from "@/components/ui/sonner";
 
 export default function Layout({ children }) {
@@ -53,6 +54,7 @@ export default function Layout({ children }) {
                     }
                     `}</style>
                     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />
+      <DeviceCheck />
       <Navbar />
       <main className="pb-20 md:pb-0 flex-1">{children}</main>
       <Footer />
