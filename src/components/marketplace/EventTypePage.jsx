@@ -10,16 +10,17 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 
 export default function EventTypePage({ eventType, title, description, categories = [] }) {
-  const urlParams = new URLSearchParams(window.location.search);
-  const initialCategory = urlParams.get("category") || "all";
+  const location = useLocation();
+  const urlParams = new URLSearchParams(location.search);
+  const categoryFromUrl = urlParams.get("category") || "all";
   
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+  const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl);
 
-  // Update selected category if URL changes (e.g. navigation from navbar)
+  // Update selected category when URL changes (e.g. navigation from navbar)
   React.useEffect(() => {
-    setSelectedCategory(initialCategory);
-  }, [initialCategory]);
+    setSelectedCategory(categoryFromUrl);
+  }, [categoryFromUrl, location.search]);
 
   const { data: rawVendors = [], isLoading } = useQuery({
     queryKey: ['vendors'],
