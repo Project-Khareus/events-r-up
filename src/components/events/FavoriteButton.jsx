@@ -27,8 +27,7 @@ export default function FavoriteButton({ eventId, className, variant = "outline"
     queryKey: ['favorites', eventId],
     queryFn: async () => {
       if (!user) return [];
-      // RLS ensures we only see our own, but filtering by event_id is good practice
-      return base44.entities.Favorite.filter({ event_id: eventId });
+      return base44.entities.Favorite.filter({ event_id: eventId, item_type: 'event' });
     },
     enabled: !!user && !!eventId,
   });

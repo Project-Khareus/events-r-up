@@ -34,9 +34,9 @@ export default function MyFavorites() {
 
   const favorites = useMemo(() => rawFavorites.map(normalizeData), [rawFavorites]);
 
-  // Separate favorites by type
-  const eventFavorites = favorites.filter(f => f.item_type === 'event');
-  const vendorFavorites = favorites.filter(f => f.item_type === 'vendor');
+  // Separate favorites by type (handle legacy favorites without item_type)
+  const eventFavorites = favorites.filter(f => f.item_type === 'event' || (f.event_id && !f.item_type));
+  const vendorFavorites = favorites.filter(f => f.item_type === 'vendor' || (f.vendor_id && !f.item_type));
 
   // 2. Fetch the actual events for event favorites
   const { data: events = [], isLoading: isLoadingEvents } = useQuery({
