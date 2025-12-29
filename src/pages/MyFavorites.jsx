@@ -27,7 +27,13 @@ export default function MyFavorites() {
     queryKey: ['myFavorites', user?.id],
     queryFn: async () => {
       if (!user) return [];
-      return base44.entities.Favorite.list('-created_date', 100);
+      try {
+        const favorites = await base44.entities.Favorite.filter({ user_id: user.id }, '-created_date', 100);
+        return favorites;
+      } catch (error) {
+        console.error('Error fetching favorites:', error);
+        return [];
+      }
     },
     enabled: !!user,
   });
