@@ -23,11 +23,11 @@ export default function UserProfile() {
     queryKey: ['user_profile', userId],
     queryFn: async () => {
         if (!userId) return null;
-        const profiles = await base44.entities.UserProfile.list();
-        return profiles.find(p => p.user_id === userId);
+        const profiles = await base44.entities.UserProfile.filter({ user_id: userId });
+        return profiles[0] || null;
     },
     enabled: !!userId,
-    retry: 1
+    retry: 2
   });
 
   // Fetch User's Events
