@@ -286,24 +286,15 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
     }));
   };
 
-  const handleBusinessNameChange = (newName) => {
-    // Check if this is an edit (initialData exists) and name is changing
-    if (initialData && initialData.business_name && newName !== initialData.business_name) {
-      setPendingNameChange(newName);
-      setNameChangeDialogOpen(true);
-    } else {
-      setFormData({ ...formData, business_name: newName });
-    }
-  };
-
   const confirmNameChange = () => {
     if (nameChangeReasons.length === 0) {
       toast.error("Please select at least one reason for the name change");
       return;
     }
-    setFormData({ ...formData, business_name: pendingNameChange, name_change_reasons: nameChangeReasons });
+    // Add reasons to form data and submit
+    const dataWithReasons = { ...formData, name_change_reasons: nameChangeReasons };
     setNameChangeDialogOpen(false);
-    toast.success("Name change will be submitted for admin approval");
+    onSubmit(dataWithReasons);
   };
 
   const handleSubmit = (e) => {
@@ -312,6 +303,13 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
       toast.error("Please fill in all required fields (Business Name, Event Type, Category)");
       return;
     }
+    
+    // Check if name has changed and this is an edit
+    if (initialData && initialData.business_name && formData.business_name !== initialData.business_name) {
+      setNameChangeDialogOpen(true);
+      return;
+    }
+    
     onSubmit(formData);
   };
 
@@ -532,7 +530,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
            <Label>Business Name *</Label>
            <Input
              value={formData.business_name}
-             onChange={(e) => handleBusinessNameChange(e.target.value)}
+             onChange={(e) => setFormData({ ...formData, business_name: e.target.value })}
              placeholder="Your business name"
              className="mt-1"
            />
@@ -921,7 +919,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
               Business Name Change
             </DialogTitle>
             <DialogDescription>
-              You're changing your business name from <strong>{initialData?.business_name}</strong> to <strong>{pendingNameChange}</strong>.
+              You're changing your business name from <strong>{initialData?.business_name}</strong> to <strong>{formData.business_name}</strong>.
               This requires admin approval. Please select the reason(s) for this change:
             </DialogDescription>
           </DialogHeader>
@@ -956,7 +954,6 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
               onClick={() => {
                 setNameChangeDialogOpen(false);
                 setNameChangeReasons([]);
-                setPendingNameChange("");
               }}
             >
               Cancel
