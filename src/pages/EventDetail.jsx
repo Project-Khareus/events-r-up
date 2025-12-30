@@ -111,9 +111,9 @@ export default function EventDetail() {
          <img 
             src={event.image_url || "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=80&w=2000"} 
             alt={event.title}
-            className="w-full h-full object-cover opacity-80"
+            className="w-full h-full object-cover opacity-60"
          />
-         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
+         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-transparent" />
          
          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12 max-w-7xl mx-auto">
             <Link to={createPageUrl("Classifieds")} className="inline-flex items-center text-white/80 hover:text-white mb-6 transition-colors">
@@ -127,17 +127,17 @@ export default function EventDetail() {
                     {event.is_paid ? (event.price ? `$${event.price}` : 'Paid') : 'Free Entry'}
                 </Badge>
             </div>
-            <h1 className="text-4xl md:text-6xl font-serif font-bold text-white mb-4 shadow-sm">
+            <h1 className="text-3xl md:text-5xl font-serif font-bold text-white mb-4 drop-shadow-lg">
                 {event.title}
             </h1>
-            <div className="flex flex-wrap gap-6 text-white/90 text-lg">
+            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-6 text-white/90 text-base sm:text-lg">
                 <div className="flex items-center gap-2">
-                    <Calendar className="h-5 w-5" />
-                    {format(new Date(event.event_date), 'EEEE, MMMM d, yyyy • h:mm a')}
+                    <Calendar className="h-5 w-5 shrink-0" />
+                    <span>{format(new Date(event.event_date), 'EEEE, MMMM d, yyyy • h:mm a')}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <MapPin className="h-5 w-5" />
-                    {event.location_address}
+                    <MapPin className="h-5 w-5 shrink-0" />
+                    <span>{event.location_address}</span>
                 </div>
             </div>
          </div>
