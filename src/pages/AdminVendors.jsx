@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, Store, Edit2, Clock, Eye, Search } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, Store, Edit2, Clock, Eye, Search, Ban } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 
@@ -19,6 +19,9 @@ export default function AdminVendors() {
   const [rejectingVendor, setRejectingVendor] = useState(null);
   const [rejectionReason, setRejectionReason] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [suspendDialogOpen, setSuspendDialogOpen] = useState(false);
+  const [suspendingVendor, setSuspendingVendor] = useState(null);
+  const [suspensionReason, setSuspensionReason] = useState("");
 
   // Fetch all vendors
   const { data: allVendors = [], isLoading } = useQuery({
@@ -233,6 +236,74 @@ export default function AdminVendors() {
       rejectChangesMutation.mutate({ 
         vendor: rejectingVendor, 
         reason: rejectionReason 
+      });
+    }
+  };
+
+  const suspendVendorMutation = useMutation({
+    mutationFn: async ({ vendor, reason }) => {
+      return await base44.entities.Vendor.update(vendor.id, { 
+        status: 'suspended',
+        suspension_reason: reason
+      });
+    },
+    onSuccess: async (result, { vendor, reason }) => {
+      const currentUser = await base44.auth.me();
+      const manageLink = `https://eventsrup.com${createPageUrl("ManageListing")}`;
+      const messageLink = `https://eventsrup.com${createPageUrl("Messages")}?admin=true`;
+
+      try {
+        await base44.integrations.Core.SendEmail({
+          to: vendor.contact_email,
+          subject: 'Your Vendor Listing Has Been Suspended',
+          body: `
+            <h1>Listing Suspended</h1>
+            <p>Your vendor listing <strong>${vendor.business_name}</strong> has been suspended and is no longer visible to users.</p>
+            <p><strong>Suspended by:</strong> ${currentUser.full_name || 'Admin'}</p>
+            <h3>Reason:</h3>
+            <p style="background: #fef2f2; padding: 12px; border-radius: 8px; border-left: 4px solid #ef4444;">${reason || 'No specific reason provided'}</p>
+            <p>If you believe this is a mistake or would like to resolve the issues, please contact us:</p>
+            <p><a href="${messageLink}" style="display: inline-block; padding: 12px 24px; background-color: #4F46E5; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0;">Contact Admin</a></p>
+          `
+        });
+
+        await base44.entities.Notification.create({
+          user_id: vendor.user_id,
+          type: 'system',
+          title: 'Listing Suspended',
+          message: `Your vendor listing "${vendor.business_name}" has been suspended.`,
+          link: 'ManageListing',
+          action_by: currentUser.full_name || currentUser.email,
+          action_type: 'rejected',
+          vendor_id: vendor.id,
+          vendor_name: vendor.business_name,
+          reason: reason || 'No specific reason provided'
+        });
+      } catch (error) {
+        console.error('Failed to send suspension notifications:', error);
+      }
+
+      toast.success("Vendor suspended and notified");
+      queryClient.invalidateQueries(['admin_all_vendors']);
+      setSuspendDialogOpen(false);
+      setSuspendingVendor(null);
+      setSuspensionReason("");
+    },
+    onError: (error) => {
+      toast.error("Failed to suspend vendor: " + error.message);
+    }
+  });
+
+  const handleSuspendClick = (vendor) => {
+    setSuspendingVendor(vendor);
+    setSuspendDialogOpen(true);
+  };
+
+  const handleSuspendConfirm = () => {
+    if (suspendingVendor) {
+      suspendVendorMutation.mutate({ 
+        vendor: suspendingVendor, 
+        reason: suspensionReason 
       });
     }
   };
@@ -579,18 +650,28 @@ export default function AdminVendors() {
                         </p>
                       )}
 
-                      <div className="flex gap-2">
-                        <Link to={`${createPageUrl("AdminVendorDetail")}?id=${vendor.id}`} className="flex-1">
-                          <Button variant="outline" className="w-full">
-                            <Eye className="h-4 w-4 mr-2" />
-                            Review
-                          </Button>
-                        </Link>
-                        <Link to={`${createPageUrl("VendorDetail")}?id=${vendor.id}`} target="_blank">
-                          <Button variant="ghost" size="icon">
-                            <ExternalLink className="h-4 w-4" />
-                          </Button>
-                        </Link>
+                      <div className="space-y-2">
+                        <div className="flex gap-2">
+                          <Link to={`${createPageUrl("AdminVendorDetail")}?id=${vendor.id}`} className="flex-1">
+                            <Button variant="outline" className="w-full">
+                              <Eye className="h-4 w-4 mr-2" />
+                              Review
+                            </Button>
+                          </Link>
+                          <Link to={`${createPageUrl("VendorDetail")}?id=${vendor.id}`} target="_blank">
+                            <Button variant="ghost" size="icon">
+                              <ExternalLink className="h-4 w-4" />
+                            </Button>
+                          </Link>
+                        </div>
+                        <Button 
+                          variant="outline" 
+                          className="w-full text-red-600 hover:bg-red-50 border-red-200"
+                          onClick={() => handleSuspendClick(vendor)}
+                        >
+                          <Ban className="h-4 w-4 mr-2" />
+                          Suspend Listing
+                        </Button>
                       </div>
                     </div>
                   </Card>
@@ -639,6 +720,51 @@ export default function AdminVendors() {
                   <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Rejecting...</>
                 ) : (
                   'Reject Changes'
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Suspension Dialog */}
+        <Dialog open={suspendDialogOpen} onOpenChange={setSuspendDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Suspend Vendor Listing</DialogTitle>
+              <DialogDescription>
+                Please provide a reason for suspending <strong>{suspendingVendor?.business_name}</strong>. 
+                The vendor will be notified and their listing will be hidden from public view.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="py-4">
+              <Textarea
+                placeholder="Explain why this listing is being suspended (e.g., policy violations, complaints, etc.)..."
+                value={suspensionReason}
+                onChange={(e) => setSuspensionReason(e.target.value)}
+                rows={4}
+                className="w-full"
+              />
+            </div>
+            <DialogFooter>
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setSuspendDialogOpen(false);
+                  setSuspensionReason("");
+                  setSuspendingVendor(null);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleSuspendConfirm}
+                disabled={suspendVendorMutation.isPending || !suspensionReason.trim()}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                {suspendVendorMutation.isPending ? (
+                  <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Suspending...</>
+                ) : (
+                  'Suspend Listing'
                 )}
               </Button>
             </DialogFooter>
