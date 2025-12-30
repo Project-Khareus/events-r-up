@@ -1,6 +1,7 @@
 import AdminBlog from './pages/AdminBlog';
 import AdminEvents from './pages/AdminEvents';
 import AdminLegal from './pages/AdminLegal';
+import AdminVendorDetail from './pages/AdminVendorDetail';
 import AdminVendors from './pages/AdminVendors';
 import Blog from './pages/Blog';
 import BlogPostDetail from './pages/BlogPostDetail';
@@ -12,6 +13,7 @@ import Conference from './pages/Conference';
 import CookiePolicy from './pages/CookiePolicy';
 import CreateEvent from './pages/CreateEvent';
 import EditEvent from './pages/EditEvent';
+import EditVendor from './pages/EditVendor';
 import EventDetail from './pages/EventDetail';
 import EventPlanning from './pages/EventPlanning';
 import Funeral from './pages/Funeral';
@@ -35,8 +37,7 @@ import VendorDetail from './pages/VendorDetail';
 import VendorMarketplace from './pages/VendorMarketplace';
 import VendorSignup from './pages/VendorSignup';
 import Weddings from './pages/Weddings';
-import EditVendor from './pages/EditVendor';
-import AdminVendorDetail from './pages/AdminVendorDetail';
+import Settings from './pages/Settings';
 import __Layout from './Layout.jsx';
 
 
@@ -44,6 +45,7 @@ export const PAGES = {
     "AdminBlog": AdminBlog,
     "AdminEvents": AdminEvents,
     "AdminLegal": AdminLegal,
+    "AdminVendorDetail": AdminVendorDetail,
     "AdminVendors": AdminVendors,
     "Blog": Blog,
     "BlogPostDetail": BlogPostDetail,
@@ -55,6 +57,7 @@ export const PAGES = {
     "CookiePolicy": CookiePolicy,
     "CreateEvent": CreateEvent,
     "EditEvent": EditEvent,
+    "EditVendor": EditVendor,
     "EventDetail": EventDetail,
     "EventPlanning": EventPlanning,
     "Funeral": Funeral,
@@ -78,8 +81,7 @@ export const PAGES = {
     "VendorMarketplace": VendorMarketplace,
     "VendorSignup": VendorSignup,
     "Weddings": Weddings,
-    "EditVendor": EditVendor,
-    "AdminVendorDetail": AdminVendorDetail,
+    "Settings": Settings,
 }
 
 export const pagesConfig = {

@@ -250,6 +250,12 @@ export default function Navbar() {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
+                      <Link to={createPageUrl("Settings")}>
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>Settings</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
                       <Link to={createPageUrl("ManageListing")}>
                         <Store className="mr-2 h-4 w-4" />
                         <span>Manage Vendor Listing</span>
@@ -425,6 +431,14 @@ export default function Navbar() {
                           >
                             <User className="h-5 w-5 group-hover:scale-110 transition-transform" />
                             <span className="font-medium">My Profile</span>
+                          </Link>
+                          
+                          <Link 
+                            to={createPageUrl("Settings")} 
+                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
+                          >
+                            <Settings className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                            <span className="font-medium">Settings</span>
                           </Link>
                           
                           <Link 
