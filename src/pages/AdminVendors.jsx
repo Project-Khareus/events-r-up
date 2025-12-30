@@ -37,7 +37,6 @@ export default function AdminVendors() {
     return vendors.filter(v => 
       v.business_name?.toLowerCase().includes(query) ||
       v.contact_email?.toLowerCase().includes(query) ||
-      v.category?.toLowerCase().includes(query) ||
       v.location?.toLowerCase().includes(query) ||
       (Array.isArray(v.category) && v.category.some(cat => cat.toLowerCase().includes(query)))
     );
