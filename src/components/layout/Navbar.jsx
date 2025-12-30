@@ -50,7 +50,7 @@ const EVENT_MENUS = [
     ]
   },
   {
-    title: "Conference",
+    title: "Conferences",
     categories: [
       { name: "Conference Facilities", id: "conference_facilities" },
       { name: "Catering", id: "catering" },
@@ -61,7 +61,7 @@ const EVENT_MENUS = [
     ]
   },
   {
-    title: "Funeral",
+    title: "Funerals",
     categories: [
       { name: "Caskets", id: "caskets" },
       { name: "Catering & Drinks", id: "catering_drinks" },
@@ -390,7 +390,7 @@ export default function Navbar() {
                         className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
                       >
                         <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform">🎤</div>
-                        <span className="font-medium">Conference</span>
+                        <span className="font-medium">Conferences</span>
                       </Link>
                       
                       <Link 
@@ -398,7 +398,7 @@ export default function Navbar() {
                         className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
                       >
                         <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform">🕊️</div>
-                        <span className="font-medium">Funeral</span>
+                        <span className="font-medium">Funerals</span>
                       </Link>
                       
                       <Link 
