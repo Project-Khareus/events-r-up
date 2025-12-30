@@ -56,36 +56,7 @@ Deno.serve(async (req) => {
     });
 
     if (existingDevices.length === 0) {
-      // New device detected - create notification
-      await base44.asServiceRole.entities.Notification.create({
-        user_id: user.id,
-        type: 'system',
-        title: '🔐 New Device Login',
-        message: `A login was detected from a new device: ${deviceName}. If this wasn't you, please secure your account immediately.`,
-        link: 'MyProfile'
-      });
-
-      // Send email notification
-      await base44.integrations.Core.SendEmail({
-        to: user.email,
-        subject: 'New Device Login Detected',
-        body: `
-          Hello ${user.full_name},
-          
-          We detected a login to your Omnievents account from a new device:
-          
-          Device: ${deviceName}
-          IP Address: ${ipAddress}
-          Time: ${new Date().toLocaleString()}
-          
-          If this was you, you can safely ignore this email. If you don't recognize this login, please secure your account immediately by changing your password.
-          
-          Best regards,
-          The Omnievents Team
-        `
-      });
-
-      // Store the new device
+      // Store the new device first
       await base44.entities.UserDevice.create({
         user_id: user.id,
         device_fingerprint: deviceFingerprint,
@@ -94,6 +65,41 @@ Deno.serve(async (req) => {
         device_name: deviceName,
         last_login: new Date().toISOString()
       });
+
+      // Check if user has any other devices (to determine if this is truly a new device for an existing account)
+      const allUserDevices = await base44.entities.UserDevice.filter({ user_id: user.id });
+      
+      // Only send notifications if this is NOT the first device (meaning account already existed)
+      if (allUserDevices.length > 1) {
+        // New device detected on existing account - create notification
+        await base44.asServiceRole.entities.Notification.create({
+          user_id: user.id,
+          type: 'system',
+          title: '🔐 New Device Login',
+          message: `A login was detected from a new device: ${deviceName}. If this wasn't you, please secure your account immediately.`,
+          link: 'MyProfile'
+        });
+
+        // Send email notification
+        await base44.integrations.Core.SendEmail({
+          to: user.email,
+          subject: 'New Device Login Detected',
+          body: `
+            Hello ${user.full_name},
+            
+            We detected a login to your Omnievents account from a new device:
+            
+            Device: ${deviceName}
+            IP Address: ${ipAddress}
+            Time: ${new Date().toLocaleString()}
+            
+            If this was you, you can safely ignore this email. If you don't recognize this login, please secure your account immediately by changing your password.
+            
+            Best regards,
+            The Omnievents Team
+          `
+        });
+      }
 
       return Response.json({ 
         success: true, 
