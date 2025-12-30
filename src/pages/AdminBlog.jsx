@@ -254,7 +254,7 @@ export default function AdminBlog() {
                     <div className="flex items-center gap-2 text-sm text-slate-500 mt-1">
                         <span className="flex items-center gap-1"><FileText className="h-3 w-3" /> {post.category}</span>
                         <span>•</span>
-                        <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {format(new Date(post.created_date), 'MMM d, yyyy')}</span>
+                        <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {format(new Date(post.created_date), 'MMMM d, yyyy h:mm a')}</span>
                         {isAdmin && post.author_name && (
                             <>
                                 <span>•</span>
