@@ -319,7 +319,14 @@ export default function AdminVendors() {
                       </div>
                       <div>
                         <span className="block font-medium text-slate-700">Submitted</span>
-                        {new Date(vendor.created_date).toLocaleDateString()}
+                        {new Date(vendor.created_date).toLocaleDateString('en-US', { 
+                          month: 'long', 
+                          day: 'numeric', 
+                          year: 'numeric',
+                          hour: 'numeric',
+                          minute: '2-digit',
+                          hour12: true
+                        })}
                       </div>
                     </div>
 
@@ -379,7 +386,7 @@ export default function AdminVendors() {
                         </div>
                         <p className="text-sm text-slate-500">
                           Updated {new Date(vendor.updated_date).toLocaleString('en-US', { 
-                            month: 'short', 
+                            month: 'long', 
                             day: 'numeric', 
                             year: 'numeric', 
                             hour: 'numeric', 
