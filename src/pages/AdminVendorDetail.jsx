@@ -275,10 +275,10 @@ export default function AdminVendorDetail() {
           )}
 
           {/* Vendor Details */}
-          <div className="grid grid-cols-2 gap-6 mb-6">
+          <div className="space-y-4 mb-6">
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Email</h3>
-              <p className="text-slate-600">{vendor.contact_email || 'N/A'}</p>
+              <p className="text-slate-600 break-words">{vendor.contact_email || 'N/A'}</p>
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Phone</h3>
@@ -290,7 +290,7 @@ export default function AdminVendorDetail() {
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Starting Price</h3>
-              <p className="text-slate-600">{vendor.starting_price ? `$${vendor.starting_price}` : 'N/A'}</p>
+              <p className="text-slate-600 font-bold text-lg">{vendor.starting_price ? `$${vendor.starting_price}` : 'N/A'}</p>
             </div>
           </div>
 
