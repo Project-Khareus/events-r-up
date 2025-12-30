@@ -245,9 +245,10 @@ export default function AdminVendorDetail() {
 
         <Card className="p-8 bg-white">
           <div className="flex items-start justify-between mb-6">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-3xl font-bold text-slate-900">{vendor.business_name}</h1>
+            <div className="flex-1 mr-4">
+              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2 break-words">{vendor.business_name}</h1>
+              {vendor.slogan && <p className="text-slate-600 italic mb-3">{vendor.slogan}</p>}
+              <div className="flex flex-wrap items-center gap-2">
                 {vendor.status === 'pending' && <Badge className="bg-yellow-500 text-white">Pending</Badge>}
                 {vendor.status === 'approved' && <Badge className="bg-green-500 text-white">Approved</Badge>}
                 {vendor.status === 'rejected' && <Badge variant="destructive">Rejected</Badge>}
@@ -258,10 +259,9 @@ export default function AdminVendorDetail() {
                   </Badge>
                 )}
               </div>
-              {vendor.slogan && <p className="text-slate-600 italic">{vendor.slogan}</p>}
             </div>
             <Link to={`${createPageUrl("VendorDetail")}?id=${vendor.id}`} target="_blank">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="shrink-0">
                 View Public <ExternalLink className="h-4 w-4 ml-2" />
               </Button>
             </Link>
