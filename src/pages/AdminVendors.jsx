@@ -7,8 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, Store, Edit2, Clock, Eye } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, Store, Edit2, Clock, Eye, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 
@@ -17,6 +18,7 @@ export default function AdminVendors() {
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
   const [rejectingVendor, setRejectingVendor] = useState(null);
   const [rejectionReason, setRejectionReason] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Fetch all vendors
   const { data: allVendors = [], isLoading } = useQuery({
@@ -28,9 +30,22 @@ export default function AdminVendors() {
     },
   });
 
-  const pendingVendors = allVendors.filter(v => v.status === 'pending');
-  const vendorsWithChanges = allVendors.filter(v => v.has_pending_changes);
-  const approvedVendors = allVendors.filter(v => v.status === 'approved' && !v.has_pending_changes);
+  // Filter vendors by search query
+  const filterVendors = (vendors) => {
+    if (!searchQuery.trim()) return vendors;
+    const query = searchQuery.toLowerCase();
+    return vendors.filter(v => 
+      v.business_name?.toLowerCase().includes(query) ||
+      v.contact_email?.toLowerCase().includes(query) ||
+      v.category?.toLowerCase().includes(query) ||
+      v.location?.toLowerCase().includes(query) ||
+      (Array.isArray(v.category) && v.category.some(cat => cat.toLowerCase().includes(query)))
+    );
+  };
+
+  const pendingVendors = filterVendors(allVendors.filter(v => v.status === 'pending'));
+  const vendorsWithChanges = filterVendors(allVendors.filter(v => v.has_pending_changes));
+  const approvedVendors = filterVendors(allVendors.filter(v => v.status === 'approved' && !v.has_pending_changes));
 
   const approveMutation = useMutation({
     mutationFn: async (vendorId) => {
@@ -234,7 +249,7 @@ export default function AdminVendors() {
   return (
     <div className="min-h-screen bg-slate-50 p-8">
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-3xl font-bold text-slate-900">Vendor Management</h1>
             <p className="text-slate-600">Review new listings and changes</p>
@@ -247,6 +262,18 @@ export default function AdminVendors() {
               <span className="font-semibold text-orange-600">{vendorsWithChanges.length}</span> Updates
             </div>
           </div>
+        </div>
+
+        {/* Search Bar */}
+        <div className="relative mb-6">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+          <Input
+            type="text"
+            placeholder="Search by business name, email, category, or location..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10 h-12 text-base"
+          />
         </div>
 
         <Tabs defaultValue="new" className="w-full">
