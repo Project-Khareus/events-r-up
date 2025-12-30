@@ -334,38 +334,146 @@ export default function Navbar() {
           <div className="lg:hidden flex items-center gap-4">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu className="h-6 w-6 text-slate-900 dark:text-white" />
+                <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
+                  <Menu className="h-5 w-5 text-slate-700 dark:text-slate-300" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                <div className="flex flex-col gap-6 mt-8">
-                  <Link to={createPageUrl("VendorMarketplace")} className="text-lg font-medium">Home</Link>
-                  {/* Marketplace link removed since Home now points there */}
-                  <Link to={createPageUrl("Weddings")} className="text-lg font-medium">Weddings</Link>
-                  <Link to={createPageUrl("Parties")} className="text-lg font-medium">Parties</Link>
-                  <Link to={createPageUrl("Conference")} className="text-lg font-medium">Conference</Link>
-                  <Link to={createPageUrl("Funeral")} className="text-lg font-medium">Funeral</Link>
-                  <Link to={createPageUrl("Blog")} className="text-lg font-medium">Blog</Link>
-                  <Link to={createPageUrl("Classifieds")} className="text-lg font-medium">Classifieds</Link>
+              <SheetContent side="right" className="w-[280px] p-0 border-0">
+                <div className="flex flex-col h-full bg-gradient-to-b from-white to-slate-50 dark:from-slate-900 dark:to-slate-950">
+                  {/* Header */}
+                  <div className="p-6 border-b border-slate-200 dark:border-slate-800">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-xl flex items-center justify-center text-white font-serif font-bold text-lg shadow-lg">
+                        Ob
+                      </div>
+                      <span className="font-serif font-bold text-xl text-slate-900 dark:text-white">
+                        Menu
+                      </span>
+                    </div>
+                  </div>
 
-                  {user ? (
-                    <>
-                      <div className="h-px bg-slate-200 dark:bg-slate-800 my-2" />
-                      <Link to={createPageUrl("MyProfile")} className="text-lg font-medium">My Profile</Link>
-                      <Link to={createPageUrl("ManageListing")} className="text-lg font-medium">Manage Listing</Link>
-                      {user.role === 'admin' && (
-                          <Link to={createPageUrl("AdminVendors")} className="text-lg font-medium text-indigo-600">Admin: Approvals</Link>
-                      )}
-                      <button onClick={handleLogout} className="text-lg font-medium text-left text-red-600">Log out</button>
-                    </>
-                  ) : (
-                    <>
-                       <div className="h-px bg-slate-200 dark:bg-slate-800 my-2" />
-                       <Link to={createPageUrl("Join")} className="text-lg font-medium text-indigo-600">Sign Up / Login</Link>
-                       <Link to={createPageUrl("VendorSignup")} className="text-lg font-medium">List Your Business</Link>
-                    </>
-                  )}
+                  {/* Nav Links */}
+                  <div className="flex-1 overflow-y-auto py-6 px-4">
+                    <div className="space-y-1">
+                      <Link 
+                        to={createPageUrl("VendorMarketplace")} 
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
+                      >
+                        <Home className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                        <span className="font-medium">Home</span>
+                      </Link>
+                      
+                      <Link 
+                        to={createPageUrl("Weddings")} 
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
+                      >
+                        <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform">💍</div>
+                        <span className="font-medium">Weddings</span>
+                      </Link>
+                      
+                      <Link 
+                        to={createPageUrl("Parties")} 
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
+                      >
+                        <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform">🎉</div>
+                        <span className="font-medium">Parties</span>
+                      </Link>
+                      
+                      <Link 
+                        to={createPageUrl("Conference")} 
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
+                      >
+                        <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform">🎤</div>
+                        <span className="font-medium">Conference</span>
+                      </Link>
+                      
+                      <Link 
+                        to={createPageUrl("Funeral")} 
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
+                      >
+                        <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform">🕊️</div>
+                        <span className="font-medium">Funeral</span>
+                      </Link>
+                      
+                      <Link 
+                        to={createPageUrl("Blog")} 
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
+                      >
+                        <FileText className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                        <span className="font-medium">Blog</span>
+                      </Link>
+                      
+                      <Link 
+                        to={createPageUrl("Classifieds")} 
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
+                      >
+                        <CalendarDays className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                        <span className="font-medium">Classifieds</span>
+                      </Link>
+                    </div>
+
+                    {user && (
+                      <>
+                        <div className="my-6 px-4">
+                          <div className="h-px bg-gradient-to-r from-transparent via-slate-300 dark:via-slate-700 to-transparent" />
+                        </div>
+                        
+                        <div className="space-y-1">
+                          <Link 
+                            to={createPageUrl("MyProfile")} 
+                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
+                          >
+                            <User className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                            <span className="font-medium">My Profile</span>
+                          </Link>
+                          
+                          <Link 
+                            to={createPageUrl("ManageListing")} 
+                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
+                          >
+                            <Store className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                            <span className="font-medium">Manage Listing</span>
+                          </Link>
+                          
+                          {user.role === 'admin' && (
+                            <Link 
+                              to={createPageUrl("AdminVendors")} 
+                              className="flex items-center gap-3 px-4 py-3 rounded-xl text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-all group"
+                            >
+                              <ShieldCheck className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                              <span className="font-medium">Admin Panel</span>
+                            </Link>
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Footer */}
+                  <div className="p-4 border-t border-slate-200 dark:border-slate-800">
+                    {user ? (
+                      <button 
+                        onClick={handleLogout} 
+                        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-950/50 transition-all font-medium"
+                      >
+                        <LogOut className="h-5 w-5" />
+                        <span>Log out</span>
+                      </button>
+                    ) : (
+                      <div className="space-y-2">
+                        <Link to={createPageUrl("Join")} className="block">
+                          <button className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 text-white hover:from-indigo-700 hover:to-indigo-800 transition-all font-medium shadow-lg shadow-indigo-200 dark:shadow-none">
+                            Sign Up / Login
+                          </button>
+                        </Link>
+                        <Link to={createPageUrl("VendorSignup")} className="block">
+                          <button className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-indigo-300 dark:hover:border-indigo-700 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all font-medium">
+                            List Your Business
+                          </button>
+                        </Link>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>
