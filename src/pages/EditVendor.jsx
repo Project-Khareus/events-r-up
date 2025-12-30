@@ -81,32 +81,45 @@ export default function EditVendor() {
         starting_price: data.starting_price ? parseFloat(data.starting_price) : undefined,
         years_in_business: data.years_in_business ? parseInt(data.years_in_business) : undefined,
       };
+
+      // Check if business_name is being changed
+      const nameChanged = vendor.business_name !== data.business_name;
+      const nameChangeReasons = data.name_change_reasons || [];
       
       // Store changes in pending_changes field, don't update main listing yet
       return { 
         updated: await base44.entities.Vendor.update(vendor.id, {
           pending_changes: pendingChanges,
-          has_pending_changes: true
+          has_pending_changes: true,
+          ...(nameChanged && { name_change_reasons: nameChangeReasons })
         }), 
-        changes 
+        changes,
+        nameChanged,
+        nameChangeReasons
       };
     },
-    onSuccess: async ({ updated, changes }) => {
-      toast.success("Your changes have been submitted for admin review!");
+    onSuccess: async ({ updated, changes, nameChanged, nameChangeReasons }) => {
+      const message = nameChanged 
+        ? "Your changes, including the name change, have been submitted for admin review!"
+        : "Your changes have been submitted for admin review!";
+      toast.success(message);
       queryClient.invalidateQueries(['vendor', vendor.id]);
 
       // Notify admins about the pending changes
       try {
         const adminUsers = await base44.entities.User.filter({ role: 'admin' });
         const changesText = changes.length > 0 ? `Updated fields: ${changes.join(', ')}` : 'Updates submitted';
+        const nameChangeInfo = nameChanged 
+          ? `\nName change reasons: ${nameChangeReasons.join(', ')}`
+          : '';
 
         // Create notifications
         const notificationPromises = adminUsers.map(admin =>
           base44.entities.Notification.create({
             user_id: admin.id,
             type: 'system',
-            title: 'Vendor Update Pending Approval',
-            message: `${vendor.business_name} has submitted changes for review.`,
+            title: nameChanged ? 'Vendor Name Change Pending' : 'Vendor Update Pending Approval',
+            message: `${vendor.business_name} has submitted changes for review.${nameChangeInfo}`,
             link: `AdminVendors`,
             vendor_id: vendor.id,
             vendor_name: vendor.business_name,
@@ -118,16 +131,31 @@ export default function EditVendor() {
 
         // Send email notification to first admin
         if (adminUsers.length > 0) {
+          const emailSubject = nameChanged 
+            ? `Vendor Name Change Request: ${vendor.business_name}`
+            : `Vendor Update: ${vendor.business_name}`;
+          
+          const emailBody = `
+            <h1>${nameChanged ? 'Vendor Name Change Request' : 'Vendor Update Pending Review'}</h1>
+            <p><strong>${vendor.business_name}</strong> has submitted changes for approval.</p>
+            <p><strong>Fields updated:</strong> ${changesText}</p>
+            ${nameChanged ? `
+              <div style="background: #fef3c7; padding: 16px; border-radius: 8px; margin: 16px 0; border-left: 4px solid #f59e0b;">
+                <h3 style="margin: 0 0 8px 0; color: #92400e;">⚠️ Business Name Change</h3>
+                <p style="margin: 0; color: #78350f;"><strong>Reasons:</strong></p>
+                <ul style="margin: 8px 0; color: #78350f;">
+                  ${nameChangeReasons.map(reason => `<li>${reason}</li>`).join('')}
+                </ul>
+              </div>
+            ` : ''}
+            <p>Please log in to the admin dashboard to review and approve these changes.</p>
+            <p><a href="https://eventsrup.com${createPageUrl('AdminVendors')}" style="display: inline-block; padding: 12px 24px; background-color: #4F46E5; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0;">Review Changes</a></p>
+          `;
+
           await base44.integrations.Core.SendEmail({
             to: adminUsers[0].email,
-            subject: `Vendor Update: ${vendor.business_name}`,
-            body: `
-              <h1>Vendor Update Pending Review</h1>
-              <p><strong>${vendor.business_name}</strong> has submitted changes for approval.</p>
-              <p><strong>Fields updated:</strong> ${changesText}</p>
-              <p>Please log in to the admin dashboard to review and approve these changes.</p>
-              <p><a href="https://eventsrup.com${createPageUrl('AdminVendors')}" style="display: inline-block; padding: 12px 24px; background-color: #4F46E5; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0;">Review Changes</a></p>
-            `
+            subject: emailSubject,
+            body: emailBody
           });
         }
       } catch (error) {

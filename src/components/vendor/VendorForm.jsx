@@ -10,8 +10,10 @@ import { toast } from "sonner";
 import { 
   Store, Upload, Loader2, X, Plus, 
   Instagram, Facebook, Twitter, Linkedin, Globe, Phone, Mail,
-  Check
+  Check, AlertCircle
 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
@@ -102,12 +104,24 @@ const DEFAULT_FORM_DATA = {
   subscription_type: "monthly", // Default to monthly
 };
 
+const NAME_CHANGE_REASONS = [
+  "Rebranding / Business name change",
+  "Spelling correction",
+  "Legal name change",
+  "Merger or acquisition",
+  "Franchise name update",
+  "Other"
+];
+
 export default function VendorForm({ initialData, onSubmit, isSubmitting, submitLabel = "Submit Listing" }) {
   const [formData, setFormData] = useState(DEFAULT_FORM_DATA);
   const [imageUploading, setImageUploading] = useState(false);
   const [galleryUploading, setGalleryUploading] = useState(false);
   const [videoUploading, setVideoUploading] = useState(false);
   const [serviceInput, setServiceInput] = useState("");
+  const [nameChangeDialogOpen, setNameChangeDialogOpen] = useState(false);
+  const [nameChangeReasons, setNameChangeReasons] = useState([]);
+  const [pendingNameChange, setPendingNameChange] = useState("");
 
   useEffect(() => {
     if (initialData) {
@@ -270,6 +284,26 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
       ...prev,
       gallery_videos: prev.gallery_videos.filter((_, i) => i !== index)
     }));
+  };
+
+  const handleBusinessNameChange = (newName) => {
+    // Check if this is an edit (initialData exists) and name is changing
+    if (initialData && initialData.business_name && newName !== initialData.business_name) {
+      setPendingNameChange(newName);
+      setNameChangeDialogOpen(true);
+    } else {
+      setFormData({ ...formData, business_name: newName });
+    }
+  };
+
+  const confirmNameChange = () => {
+    if (nameChangeReasons.length === 0) {
+      toast.error("Please select at least one reason for the name change");
+      return;
+    }
+    setFormData({ ...formData, business_name: pendingNameChange, name_change_reasons: nameChangeReasons });
+    setNameChangeDialogOpen(false);
+    toast.success("Name change will be submitted for admin approval");
   };
 
   const handleSubmit = (e) => {
@@ -498,11 +532,16 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
            <Label>Business Name *</Label>
            <Input
              value={formData.business_name}
-             onChange={(e) => setFormData({ ...formData, business_name: e.target.value })}
+             onChange={(e) => handleBusinessNameChange(e.target.value)}
              placeholder="Your business name"
              className="mt-1"
-             // Removed required attribute to rely on custom validation
            />
+           {initialData && initialData.business_name && (
+             <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
+               <AlertCircle className="h-3 w-3" />
+               Name changes require admin approval
+             </p>
+           )}
           </div>
           <div>
             <Label>Slogan / Tagline</Label>
@@ -872,6 +911,65 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
           submitLabel
         )}
       </Button>
+
+      {/* Name Change Dialog */}
+      <Dialog open={nameChangeDialogOpen} onOpenChange={setNameChangeDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-amber-500" />
+              Business Name Change
+            </DialogTitle>
+            <DialogDescription>
+              You're changing your business name from <strong>{initialData?.business_name}</strong> to <strong>{pendingNameChange}</strong>.
+              This requires admin approval. Please select the reason(s) for this change:
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-3 py-4">
+            {NAME_CHANGE_REASONS.map((reason) => (
+              <div key={reason} className="flex items-start space-x-3">
+                <Checkbox
+                  id={reason}
+                  checked={nameChangeReasons.includes(reason)}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setNameChangeReasons([...nameChangeReasons, reason]);
+                    } else {
+                      setNameChangeReasons(nameChangeReasons.filter(r => r !== reason));
+                    }
+                  }}
+                />
+                <label
+                  htmlFor={reason}
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                >
+                  {reason}
+                </label>
+              </div>
+            ))}
+          </div>
+
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setNameChangeDialogOpen(false);
+                setNameChangeReasons([]);
+                setPendingNameChange("");
+              }}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={confirmNameChange}
+              className="bg-indigo-600 hover:bg-indigo-700"
+            >
+              Confirm & Submit for Approval
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </form>
   );
 }
