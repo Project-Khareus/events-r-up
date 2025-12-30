@@ -30,6 +30,7 @@ import MyProfile from './pages/MyProfile';
 import Notifications from './pages/Notifications';
 import Parties from './pages/Parties';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import Settings from './pages/Settings';
 import SocialCallback from './pages/SocialCallback';
 import TestBackend from './pages/TestBackend';
 import UserProfile from './pages/UserProfile';
@@ -37,7 +38,8 @@ import VendorDetail from './pages/VendorDetail';
 import VendorMarketplace from './pages/VendorMarketplace';
 import VendorSignup from './pages/VendorSignup';
 import Weddings from './pages/Weddings';
-import Settings from './pages/Settings';
+import Conferences from './pages/Conferences';
+import Funerals from './pages/Funerals';
 import __Layout from './Layout.jsx';
 
 
@@ -74,6 +76,7 @@ export const PAGES = {
     "Notifications": Notifications,
     "Parties": Parties,
     "PrivacyPolicy": PrivacyPolicy,
+    "Settings": Settings,
     "SocialCallback": SocialCallback,
     "TestBackend": TestBackend,
     "UserProfile": UserProfile,
@@ -81,7 +84,8 @@ export const PAGES = {
     "VendorMarketplace": VendorMarketplace,
     "VendorSignup": VendorSignup,
     "Weddings": Weddings,
-    "Settings": Settings,
+    "Conferences": Conferences,
+    "Funerals": Funerals,
 }
 
 export const pagesConfig = {
