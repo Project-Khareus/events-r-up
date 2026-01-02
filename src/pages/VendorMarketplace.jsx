@@ -56,7 +56,7 @@ export default function VendorMarketplace() {
 
   const { data: rawVendors = [], isLoading, isFetching } = useQuery({
     queryKey: ['vendors', vendorPage],
-    queryFn: () => base44.entities.Vendor.list('-created_date', 200),
+    queryFn: () => base44.entities.Vendor.list('-created_date', vendorsPerPage * vendorPage),
     staleTime: 600000, // 10 minutes
     cacheTime: 1800000, // 30 minutes
     refetchOnWindowFocus: false,
@@ -344,7 +344,7 @@ export default function VendorMarketplace() {
             </div>
 
             {/* Load More Button */}
-            {regularVendors.length >= vendorsPerPage * vendorPage && (
+            {rawVendors.length >= vendorsPerPage * vendorPage && (
               <div className="flex justify-center mt-8">
                 <Button 
                   onClick={() => setVendorPage(p => p + 1)}
