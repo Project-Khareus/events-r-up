@@ -10,6 +10,7 @@ import CategoryPage from './pages/CategoryPage';
 import Classifieds from './pages/Classifieds';
 import CompleteProfile from './pages/CompleteProfile';
 import Conference from './pages/Conference';
+import Conferences from './pages/Conferences';
 import CookiePolicy from './pages/CookiePolicy';
 import CreateEvent from './pages/CreateEvent';
 import EditEvent from './pages/EditEvent';
@@ -17,6 +18,7 @@ import EditVendor from './pages/EditVendor';
 import EventDetail from './pages/EventDetail';
 import EventPlanning from './pages/EventPlanning';
 import Funeral from './pages/Funeral';
+import Funerals from './pages/Funerals';
 import HelpCenter from './pages/HelpCenter';
 import Home from './pages/Home';
 import Join from './pages/Join';
@@ -38,8 +40,6 @@ import VendorDetail from './pages/VendorDetail';
 import VendorMarketplace from './pages/VendorMarketplace';
 import VendorSignup from './pages/VendorSignup';
 import Weddings from './pages/Weddings';
-import Conferences from './pages/Conferences';
-import Funerals from './pages/Funerals';
 import __Layout from './Layout.jsx';
 
 
@@ -56,6 +56,7 @@ export const PAGES = {
     "Classifieds": Classifieds,
     "CompleteProfile": CompleteProfile,
     "Conference": Conference,
+    "Conferences": Conferences,
     "CookiePolicy": CookiePolicy,
     "CreateEvent": CreateEvent,
     "EditEvent": EditEvent,
@@ -63,6 +64,7 @@ export const PAGES = {
     "EventDetail": EventDetail,
     "EventPlanning": EventPlanning,
     "Funeral": Funeral,
+    "Funerals": Funerals,
     "HelpCenter": HelpCenter,
     "Home": Home,
     "Join": Join,
@@ -84,8 +86,6 @@ export const PAGES = {
     "VendorMarketplace": VendorMarketplace,
     "VendorSignup": VendorSignup,
     "Weddings": Weddings,
-    "Conferences": Conferences,
-    "Funerals": Funerals,
 }
 
 export const pagesConfig = {
