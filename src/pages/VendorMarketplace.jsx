@@ -56,11 +56,11 @@ export default function VendorMarketplace() {
 
   const { data: rawVendors = [], isLoading, isFetching } = useQuery({
     queryKey: ['vendors', vendorPage],
-    queryFn: () => base44.entities.Vendor.list('-created_date', vendorsPerPage * vendorPage),
-    staleTime: 600000, // 10 minutes
-    cacheTime: 1800000, // 30 minutes
+    queryFn: () => base44.entities.Vendor.list('-created_date', 200),
+    staleTime: 60000, // 1 minute
+    cacheTime: 300000, // 5 minutes
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnReconnect: false,
     retry: 1,
     keepPreviousData: true,
@@ -82,7 +82,7 @@ export default function VendorMarketplace() {
   const vendors = useMemo(() => {
     return rawVendors
       .map(v => v.data ? { id: v.id, ...v.data } : v)
-      .filter(v => !v.status || v.status === 'approved');
+      .filter(v => v.status === 'approved' || !v.status);
   }, [rawVendors]);
 
   const filteredVendors = useMemo(() => {
@@ -152,9 +152,9 @@ export default function VendorMarketplace() {
     });
 
     // Return groups in the specified order (Weddings, Parties, Conference, Funeral)
+    // Always return weddings and parties, even if empty
     return eventOrder
-      .map(eventType => grouped[eventType])
-      .filter(group => group.vendors.length > 0);
+      .map(eventType => grouped[eventType]);
   }, [vendors, isHomepage]);
 
   const handleClearFilters = () => {
@@ -253,7 +253,7 @@ export default function VendorMarketplace() {
           </div>
         ) : isHomepage ? (
           /* Homepage - Grouped by Category with Carousels */
-          vendorsByEvent.length > 0 ? (
+          true ? (
             <div className="space-y-3 sm:space-y-4">
               {/* Promo Ad Banner */}
               <div className="-mx-4 sm:-mx-6 lg:mx-auto mb-2">
