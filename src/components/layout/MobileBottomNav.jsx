@@ -16,7 +16,7 @@ export default function MobileBottomNav() {
   const currentPath = location.pathname;
 
   return (
-    <nav aria-label="Mobile navigation" className="md:hidden fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-slate-200/50 dark:border-slate-800/50 z-50">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-slate-200/50 dark:border-slate-800/50 z-50">
       <div className="flex justify-around items-center h-16 px-2">
         {NAV_ITEMS.map((item) => {
           const pageUrl = createPageUrl(item.page);
@@ -27,9 +27,7 @@ export default function MobileBottomNav() {
             <Link
               key={item.name}
               to={pageUrl}
-              aria-label={item.name}
-              aria-current={isActive ? "page" : undefined}
-              className="relative flex flex-col items-center justify-center flex-1 py-2 group min-h-[44px] focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-inset focus-visible:outline-none rounded-lg"
+              className="relative flex flex-col items-center justify-center flex-1 py-2 group"
             >
               <div className={`flex flex-col items-center justify-center gap-1 transition-all duration-300 ${
                 isActive 
@@ -44,13 +42,13 @@ export default function MobileBottomNav() {
                   <item.icon className={`h-5 w-5 transition-all duration-300 ${
                     isActive 
                       ? "text-white stroke-[2.5]" 
-                      : "text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-slate-200"
+                      : "text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200"
                   }`} />
                 </div>
                 <span className={`text-[10px] font-medium transition-all duration-300 ${
                   isActive 
                     ? "text-indigo-600 dark:text-indigo-400" 
-                    : "text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-slate-200"
+                    : "text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200"
                 }`}>
                   {item.name}
                 </span>

@@ -116,13 +116,13 @@ export default function Navbar() {
   };
 
   return (
-    <nav aria-label="Main navigation" className="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200 dark:border-slate-800">
+    <nav className="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200 dark:border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           
           {/* Logo */}
           <Link to={createPageUrl("VendorMarketplace")} className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-xl flex items-center justify-center text-white font-serif font-bold text-xl shadow-lg shadow-indigo-200 dark:shadow-none group-hover:scale-105 transition-transform" aria-label="Omnievents logo" role="img">
+            <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-xl flex items-center justify-center text-white font-serif font-bold text-xl shadow-lg shadow-indigo-200 dark:shadow-none group-hover:scale-105 transition-transform">
               Ob
             </div>
             <span className="font-serif font-bold text-2xl text-slate-900 dark:text-white tracking-tight">
@@ -179,7 +179,7 @@ export default function Navbar() {
                 <div className="flex items-center gap-2">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="rounded-full relative" aria-label="View notifications">
+                      <Button variant="ghost" size="icon" className="rounded-full relative">
                         <Bell className="h-5 w-5 text-slate-600 dark:text-slate-300" />
                         {unreadCount > 0 && (
                           <span className="absolute top-2 right-2 h-2.5 w-2.5 bg-red-500 rounded-full border-2 border-white dark:border-slate-900 animate-pulse" />
@@ -212,7 +212,7 @@ export default function Navbar() {
                   </DropdownMenu>
 
                   <Link to={createPageUrl("Messages")}>
-                    <Button variant="ghost" size="icon" className="rounded-full" aria-label="View messages">
+                    <Button variant="ghost" size="icon" className="rounded-full">
                       <MessageCircle className="h-5 w-5 text-slate-600 dark:text-slate-300" />
                     </Button>
                   </Link>
@@ -340,7 +340,7 @@ export default function Navbar() {
           <div className="lg:hidden flex items-center gap-4">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:outline-none" aria-label="Open navigation menu">
+                <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
                   <Menu className="h-5 w-5 text-slate-700 dark:text-slate-300" />
                 </Button>
               </SheetTrigger>
@@ -363,7 +363,7 @@ export default function Navbar() {
                     <div className="space-y-1">
                       <Link 
                         to={createPageUrl("VendorMarketplace")} 
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-inset focus-visible:outline-none"
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
                       >
                         <Home className="h-5 w-5 group-hover:scale-110 transition-transform" />
                         <span className="font-medium">Home</span>
@@ -371,39 +371,39 @@ export default function Navbar() {
                       
                       <Link 
                         to={createPageUrl("Weddings")} 
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-inset focus-visible:outline-none"
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
                       >
-                        <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform" role="img" aria-hidden="true">💍</div>
+                        <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform">💍</div>
                         <span className="font-medium">Weddings</span>
                       </Link>
                       
                       <Link 
                         to={createPageUrl("Parties")} 
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-inset focus-visible:outline-none"
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
                       >
-                        <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform" role="img" aria-hidden="true">🎉</div>
+                        <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform">🎉</div>
                         <span className="font-medium">Parties</span>
                       </Link>
                       
                       <Link 
                         to={createPageUrl("Conference")} 
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-inset focus-visible:outline-none"
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
                       >
-                        <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform" role="img" aria-hidden="true">🎤</div>
+                        <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform">🎤</div>
                         <span className="font-medium">Conferences</span>
                       </Link>
                       
                       <Link 
                         to={createPageUrl("Funeral")} 
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-inset focus-visible:outline-none"
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
                       >
-                        <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform" role="img" aria-hidden="true">🕊️</div>
+                        <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform">🕊️</div>
                         <span className="font-medium">Funerals</span>
                       </Link>
                       
                       <Link 
                         to={createPageUrl("Blog")} 
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-inset focus-visible:outline-none"
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
                       >
                         <FileText className="h-5 w-5 group-hover:scale-110 transition-transform" />
                         <span className="font-medium">Blog</span>
@@ -411,7 +411,7 @@ export default function Navbar() {
                       
                       <Link 
                         to={createPageUrl("Classifieds")} 
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-inset focus-visible:outline-none"
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
                       >
                         <CalendarDays className="h-5 w-5 group-hover:scale-110 transition-transform" />
                         <span className="font-medium">Classifieds</span>
@@ -427,7 +427,7 @@ export default function Navbar() {
                         <div className="space-y-1">
                           <Link 
                             to={createPageUrl("MyProfile")} 
-                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-inset focus-visible:outline-none"
+                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
                           >
                             <User className="h-5 w-5 group-hover:scale-110 transition-transform" />
                             <span className="font-medium">My Profile</span>
@@ -435,7 +435,7 @@ export default function Navbar() {
                           
                           <Link 
                             to={createPageUrl("Settings")} 
-                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-inset focus-visible:outline-none"
+                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
                           >
                             <Settings className="h-5 w-5 group-hover:scale-110 transition-transform" />
                             <span className="font-medium">Settings</span>
@@ -443,7 +443,7 @@ export default function Navbar() {
                           
                           <Link 
                             to={createPageUrl("ManageListing")} 
-                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-inset focus-visible:outline-none"
+                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
                           >
                             <Store className="h-5 w-5 group-hover:scale-110 transition-transform" />
                             <span className="font-medium">Manage Listing</span>
@@ -452,7 +452,7 @@ export default function Navbar() {
                           {user.role === 'admin' && (
                             <Link 
                               to={createPageUrl("AdminVendors")} 
-                              className="flex items-center gap-3 px-4 py-3 rounded-xl text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-all group focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-inset focus-visible:outline-none"
+                              className="flex items-center gap-3 px-4 py-3 rounded-xl text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-all group"
                             >
                               <ShieldCheck className="h-5 w-5 group-hover:scale-110 transition-transform" />
                               <span className="font-medium">Admin Panel</span>
@@ -468,8 +468,7 @@ export default function Navbar() {
                     {user ? (
                       <button 
                         onClick={handleLogout} 
-                        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-950/50 transition-all font-medium focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:outline-none"
-                        aria-label="Log out of your account"
+                        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-950/50 transition-all font-medium"
                       >
                         <LogOut className="h-5 w-5" />
                         <span>Log out</span>
