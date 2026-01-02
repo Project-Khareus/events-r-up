@@ -76,7 +76,7 @@ export default function Footer() {
           href={item.url} 
           target="_blank" 
           rel="noopener noreferrer"
-          className="text-slate-500 hover:text-slate-700 transition-colors text-sm"
+          className="text-slate-400 hover:text-white transition-colors text-sm"
         >
           {item.label}
         </a>
@@ -85,7 +85,7 @@ export default function Footer() {
     return (
       <Link 
         to={createPageUrl(item.url)}
-        className="text-slate-500 hover:text-slate-700 transition-colors text-sm"
+        className="text-slate-400 hover:text-white transition-colors text-sm"
       >
         {item.label}
       </Link>
@@ -93,13 +93,13 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-white border-t border-slate-200">
+    <footer className="bg-slate-900 border-t border-slate-800">
       {/* Main Footer */}
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {Object.entries(sections).map(([key, section]) => (
             <div key={key}>
-              <h4 className="font-semibold text-slate-900 mb-4">{section.title}</h4>
+              <h4 className="font-semibold text-white mb-4">{section.title}</h4>
               <ul className="space-y-2">
                 {section.items.map((item, idx) => (
                   <li key={idx}>{renderLink(item)}</li>
@@ -111,23 +111,23 @@ export default function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-slate-200">
+      <div className="border-t border-slate-800">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-slate-500 text-sm">
+            <p className="text-slate-400 text-sm">
               © {new Date().getFullYear()} Omnievents. All Rights Reserved.
             </p>
             <div className="flex items-center gap-4 text-sm">
-              <Link to={createPageUrl("LegalPage?slug=privacy")} className="text-slate-500 hover:text-slate-700">
+              <Link to={createPageUrl("LegalPage?slug=privacy")} className="text-slate-400 hover:text-white transition-colors">
                 Privacy
               </Link>
-              <Link to={createPageUrl("LegalPage?slug=terms")} className="text-slate-500 hover:text-slate-700">
+              <Link to={createPageUrl("LegalPage?slug=terms")} className="text-slate-400 hover:text-white transition-colors">
                 Terms
               </Link>
-              <Link to={createPageUrl("LegalPage?slug=cookies")} className="text-slate-500 hover:text-slate-700">
+              <Link to={createPageUrl("LegalPage?slug=cookies")} className="text-slate-400 hover:text-white transition-colors">
                 Cookies
               </Link>
-              <Link to={createPageUrl("LegalPage?slug=contact")} className="text-slate-500 hover:text-slate-700">
+              <Link to={createPageUrl("LegalPage?slug=contact")} className="text-slate-400 hover:text-white transition-colors">
                 Contact
               </Link>
             </div>
