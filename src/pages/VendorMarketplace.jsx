@@ -82,7 +82,7 @@ export default function VendorMarketplace() {
   const vendors = useMemo(() => {
     return rawVendors
       .map(v => v.data ? { id: v.id, ...v.data } : v)
-      .filter(v => v.status === 'approved' || !v.status);
+      .filter(v => !v.status || v.status === 'approved');
   }, [rawVendors]);
 
   const filteredVendors = useMemo(() => {
@@ -152,9 +152,9 @@ export default function VendorMarketplace() {
     });
 
     // Return groups in the specified order (Weddings, Parties, Conference, Funeral)
-    // Always return weddings and parties, even if empty
     return eventOrder
-      .map(eventType => grouped[eventType]);
+      .map(eventType => grouped[eventType])
+      .filter(group => group.vendors.length > 0);
   }, [vendors, isHomepage]);
 
   const handleClearFilters = () => {
@@ -253,7 +253,7 @@ export default function VendorMarketplace() {
           </div>
         ) : isHomepage ? (
           /* Homepage - Grouped by Category with Carousels */
-          true ? (
+          vendorsByEvent.length > 0 ? (
             <div className="space-y-3 sm:space-y-4">
               {/* Promo Ad Banner */}
               <div className="-mx-4 sm:-mx-6 lg:mx-auto mb-2">
@@ -344,7 +344,7 @@ export default function VendorMarketplace() {
             </div>
 
             {/* Load More Button */}
-            {rawVendors.length >= vendorsPerPage * vendorPage && (
+            {regularVendors.length >= vendorsPerPage * vendorPage && (
               <div className="flex justify-center mt-8">
                 <Button 
                   onClick={() => setVendorPage(p => p + 1)}
