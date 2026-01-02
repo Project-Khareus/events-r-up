@@ -47,7 +47,7 @@ export default function VendorMarketplace() {
   const [category, setCategory] = useState(categoryParam);
   const [priceRange, setPriceRange] = useState("all");
   const [vendorPage, setVendorPage] = useState(1);
-  const vendorsPerPage = 32;
+  const vendorsPerPage = 100;
 
   useEffect(() => {
     setEventType(eventParam);
@@ -152,9 +152,15 @@ export default function VendorMarketplace() {
     });
 
     // Return groups in the specified order (Weddings, Parties, Conference, Funeral)
+    // Always show Weddings and Parties sections, even if empty
     return eventOrder
       .map(eventType => grouped[eventType])
-      .filter(group => group.vendors.length > 0);
+      .filter(group => {
+        // Always include weddings and parties
+        if (group.eventType === 'weddings' || group.eventType === 'parties') return true;
+        // For other event types, only show if they have vendors
+        return group.vendors.length > 0;
+      });
   }, [vendors, isHomepage]);
 
   const handleClearFilters = () => {
