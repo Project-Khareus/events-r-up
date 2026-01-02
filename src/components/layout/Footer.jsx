@@ -76,7 +76,7 @@ export default function Footer() {
           href={item.url} 
           target="_blank" 
           rel="noopener noreferrer"
-          className="text-slate-500 hover:text-slate-700 transition-colors text-sm"
+          className="text-slate-600 hover:text-slate-900 transition-colors text-sm"
         >
           {item.label}
         </a>
@@ -85,7 +85,7 @@ export default function Footer() {
     return (
       <Link 
         to={createPageUrl(item.url)}
-        className="text-slate-500 hover:text-slate-700 transition-colors text-sm"
+        className="text-slate-600 hover:text-slate-900 transition-colors text-sm"
       >
         {item.label}
       </Link>
@@ -93,7 +93,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-white border-t border-slate-200">
+    <footer role="contentinfo" className="bg-white border-t border-slate-200">
       {/* Main Footer */}
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -118,16 +118,16 @@ export default function Footer() {
               © {new Date().getFullYear()} Omnievents. All Rights Reserved.
             </p>
             <div className="flex items-center gap-4 text-sm">
-              <Link to={createPageUrl("LegalPage?slug=privacy")} className="text-slate-500 hover:text-slate-700">
+              <Link to={createPageUrl("LegalPage?slug=privacy")} className="text-slate-600 hover:text-slate-900">
                 Privacy
               </Link>
-              <Link to={createPageUrl("LegalPage?slug=terms")} className="text-slate-500 hover:text-slate-700">
+              <Link to={createPageUrl("LegalPage?slug=terms")} className="text-slate-600 hover:text-slate-900">
                 Terms
               </Link>
-              <Link to={createPageUrl("LegalPage?slug=cookies")} className="text-slate-500 hover:text-slate-700">
+              <Link to={createPageUrl("LegalPage?slug=cookies")} className="text-slate-600 hover:text-slate-900">
                 Cookies
               </Link>
-              <Link to={createPageUrl("LegalPage?slug=contact")} className="text-slate-500 hover:text-slate-700">
+              <Link to={createPageUrl("LegalPage?slug=contact")} className="text-slate-600 hover:text-slate-900">
                 Contact
               </Link>
             </div>
