@@ -132,7 +132,7 @@ export default function VendorMarketplace() {
   
   const vendorsByEvent = useMemo(() => {
     if (!isHomepage) return [];
-    const eventOrder = ["weddings", "parties", "conference", "funeral"];
+    const eventOrder = ["weddings", "parties"];
     const grouped = {};
 
     // Initialize groups
