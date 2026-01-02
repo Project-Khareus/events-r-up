@@ -48,6 +48,7 @@ export default function VendorMarketplace() {
   const [priceRange, setPriceRange] = useState("all");
   const [vendorPage, setVendorPage] = useState(1);
   const vendorsPerPage = 32;
+  const vendorsPerSection = 12; // Limit per event type section for performance
 
   useEffect(() => {
     setEventType(eventParam);
@@ -56,7 +57,7 @@ export default function VendorMarketplace() {
 
   const { data: rawVendors = [], isLoading, isFetching } = useQuery({
     queryKey: ['vendors', vendorPage],
-    queryFn: () => base44.entities.Vendor.list('-created_date', vendorsPerPage * vendorPage),
+    queryFn: () => base44.entities.Vendor.list('-created_date', 200), // Fetch more vendors to ensure all event types are covered
     staleTime: 600000, // 10 minutes
     cacheTime: 1800000, // 30 minutes
     refetchOnWindowFocus: false,
@@ -152,10 +153,21 @@ export default function VendorMarketplace() {
     });
 
     // Return groups in the specified order (Weddings, Parties, Conference, Funeral)
+    // ALWAYS show weddings and parties, limit vendors per section for performance
     return eventOrder
-      .map(eventType => grouped[eventType])
-      .filter(group => group.vendors.length > 0);
-  }, [vendors, isHomepage]);
+      .map(eventType => ({
+        ...grouped[eventType],
+        vendors: grouped[eventType].vendors.slice(0, vendorsPerSection) // Limit to first 12 vendors per section
+      }))
+      .filter(group => {
+        // Always show Weddings and Parties even if empty
+        if (group.eventType === 'weddings' || group.eventType === 'parties') {
+          return true;
+        }
+        // Show other sections only if they have vendors
+        return group.vendors.length > 0;
+      });
+  }, [vendors, isHomepage, vendorsPerSection]);
 
   const handleClearFilters = () => {
     setEventType("all");
@@ -253,8 +265,7 @@ export default function VendorMarketplace() {
           </div>
         ) : isHomepage ? (
           /* Homepage - Grouped by Category with Carousels */
-          vendorsByEvent.length > 0 ? (
-            <div className="space-y-3 sm:space-y-4">
+          <div className="space-y-3 sm:space-y-4">
               {/* Promo Ad Banner */}
               <div className="-mx-4 sm:-mx-6 lg:mx-auto mb-2">
                 <PromoAdBanner vendor={promoVendor} className="lg:max-w-7xl lg:mx-auto lg:rounded-2xl" />
@@ -263,13 +274,23 @@ export default function VendorMarketplace() {
               {/* Event Type Sections with Horizontal Ads */}
               {vendorsByEvent.map((group, index) => (
                 <React.Fragment key={group.eventType}>
-                  <VendorCategorySection
-                    title={EVENT_LABELS[group.eventType] || group.eventType}
-                    eventType={group.eventType}
-                    category="all"
-                    vendors={group.vendors}
-                    allReviews={allReviews}
-                  />
+                  {group.vendors.length > 0 ? (
+                    <VendorCategorySection
+                      title={EVENT_LABELS[group.eventType] || group.eventType}
+                      eventType={group.eventType}
+                      category="all"
+                      vendors={group.vendors}
+                      allReviews={allReviews}
+                    />
+                  ) : (
+                    /* Show empty state for Weddings/Parties if no vendors */
+                    <div className="px-2 py-8">
+                      <h2 className="text-2xl font-bold text-slate-900 mb-4">{EVENT_LABELS[group.eventType]}</h2>
+                      <div className="text-center py-12 bg-slate-50 rounded-2xl">
+                        <p className="text-slate-600">New {EVENT_LABELS[group.eventType].toLowerCase()} vendors coming soon!</p>
+                      </div>
+                    </div>
+                  )}
                   {/* Insert horizontal ad after every 2 sections */}
                   {(index + 1) % 2 === 0 && index < vendorsByEvent.length - 1 && (
                     <HorizontalAdPlaceholder size="medium" />
@@ -280,21 +301,6 @@ export default function VendorMarketplace() {
               {/* Bottom Horizontal Ad */}
               <HorizontalAdPlaceholder size="large" />
             </div>
-          ) : (
-            /* Show all vendors when no event type grouping available */
-            <div className="space-y-8 sm:space-y-12 px-2">
-              <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4 sm:mb-6">All Vendors</h2>
-                <div className="columns-1 sm:columns-2 lg:columns-4 gap-2 sm:gap-3 space-y-2 sm:space-y-3">
-                  {vendors.map((vendor) => (
-                    <div key={vendor.id} className="break-inside-avoid">
-                      <VendorCard vendor={vendor} reviews={allReviews.filter(r => r.vendor_id === vendor.id)} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )
         ) : (
           /* Filtered View - Grid Layout */
           <div className="space-y-8 sm:space-y-12 px-2">
