@@ -150,8 +150,9 @@ export default function VendorMarketplace() {
       });
     });
 
-    // Return all groups that have vendors
-    return Object.values(grouped)
+    // Return groups in the specified order (Weddings, Parties, Conference, Funeral)
+    return eventOrder
+      .map(eventType => grouped[eventType])
       .filter(group => group.vendors.length > 0);
   }, [vendors, isHomepage]);
 
