@@ -30,11 +30,7 @@ export default function CreateEvent() {
     is_paid: false,
     price: "",
     theme: "Other",
-    event_date: "",
-    is_recurring: false,
-    recurrence_frequency: "weekly",
-    recurrence_custom_days: "",
-    recurrence_end_date: ""
+    event_date: ""
   });
   
   const [mapPosition, setMapPosition] = useState(null); // { lat: 0, lng: 0 }
@@ -96,11 +92,6 @@ export default function CreateEvent() {
         return;
     }
 
-    if (formData.is_recurring && formData.recurrence_frequency === "custom" && !formData.recurrence_custom_days) {
-        toast.error("Please specify custom recurrence interval");
-        return;
-    }
-
     setIsLoading(true);
     
     // Check for duplicates
@@ -126,7 +117,6 @@ export default function CreateEvent() {
       location_lat: mapPosition.lat,
       location_lng: mapPosition.lng,
       price: formData.is_paid ? parseFloat(formData.price) : 0,
-      recurrence_custom_days: formData.recurrence_custom_days ? parseInt(formData.recurrence_custom_days) : null,
       status: 'pending' // Explicitly set pending
     };
 
@@ -271,72 +261,6 @@ export default function CreateEvent() {
                     placeholder="Tell people what your event is about..."
                     rows={5}
                 />
-            </div>
-
-            {/* Recurring Event */}
-            <div className="space-y-4 pt-2 border-t border-slate-100">
-                <div className="flex items-center space-x-2">
-                    <Switch 
-                        id="recurring-mode"
-                        checked={formData.is_recurring}
-                        onCheckedChange={(checked) => setFormData(prev => ({ 
-                            ...prev, 
-                            is_recurring: checked,
-                            recurrence_frequency: checked ? "weekly" : "",
-                            recurrence_custom_days: "",
-                            recurrence_end_date: ""
-                        }))}
-                    />
-                    <Label htmlFor="recurring-mode">This is a recurring event</Label>
-                </div>
-                
-                {formData.is_recurring && (
-                    <div className="grid md:grid-cols-2 gap-4 pl-4 border-l-2 border-indigo-200">
-                        <div className="space-y-2">
-                            <Label>Frequency *</Label>
-                            <Select 
-                                value={formData.recurrence_frequency}
-                                onValueChange={(val) => setFormData(prev => ({ ...prev, recurrence_frequency: val }))}
-                            >
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="daily">Daily</SelectItem>
-                                    <SelectItem value="weekly">Weekly</SelectItem>
-                                    <SelectItem value="biweekly">Bi-weekly</SelectItem>
-                                    <SelectItem value="monthly">Monthly</SelectItem>
-                                    <SelectItem value="custom">Custom</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        {formData.recurrence_frequency === "custom" && (
-                            <div className="space-y-2">
-                                <Label>Repeat Every (days) *</Label>
-                                <Input 
-                                    type="number"
-                                    min="1"
-                                    value={formData.recurrence_custom_days}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, recurrence_custom_days: e.target.value }))}
-                                    placeholder="e.g., 3"
-                                    required
-                                />
-                            </div>
-                        )}
-
-                        <div className="space-y-2">
-                            <Label>End Date (optional)</Label>
-                            <Input 
-                                type="date"
-                                value={formData.recurrence_end_date}
-                                onChange={(e) => setFormData(prev => ({ ...prev, recurrence_end_date: e.target.value }))}
-                                min={formData.event_date ? formData.event_date.split('T')[0] : ""}
-                            />
-                            <p className="text-xs text-slate-500">Leave blank for ongoing events</p>
-                        </div>
-                    </div>
-                )}
             </div>
 
             <div className="pt-6">

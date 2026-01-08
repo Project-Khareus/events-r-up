@@ -12,6 +12,7 @@ import CompleteProfile from './pages/CompleteProfile';
 import Conference from './pages/Conference';
 import Conferences from './pages/Conferences';
 import CookiePolicy from './pages/CookiePolicy';
+import CreateEvent from './pages/CreateEvent';
 import EditEvent from './pages/EditEvent';
 import EditVendor from './pages/EditVendor';
 import EventDetail from './pages/EventDetail';
@@ -36,10 +37,9 @@ import SocialCallback from './pages/SocialCallback';
 import TestBackend from './pages/TestBackend';
 import UserProfile from './pages/UserProfile';
 import VendorDetail from './pages/VendorDetail';
-import VendorMarketplace from './pages/VendorMarketplace';
 import VendorSignup from './pages/VendorSignup';
 import Weddings from './pages/Weddings';
-import CreateEvent from './pages/CreateEvent';
+import VendorMarketplace from './pages/VendorMarketplace';
 import __Layout from './Layout.jsx';
 
 
@@ -58,6 +58,7 @@ export const PAGES = {
     "Conference": Conference,
     "Conferences": Conferences,
     "CookiePolicy": CookiePolicy,
+    "CreateEvent": CreateEvent,
     "EditEvent": EditEvent,
     "EditVendor": EditVendor,
     "EventDetail": EventDetail,
@@ -82,10 +83,9 @@ export const PAGES = {
     "TestBackend": TestBackend,
     "UserProfile": UserProfile,
     "VendorDetail": VendorDetail,
-    "VendorMarketplace": VendorMarketplace,
     "VendorSignup": VendorSignup,
     "Weddings": Weddings,
-    "CreateEvent": CreateEvent,
+    "VendorMarketplace": VendorMarketplace,
 }
 
 export const pagesConfig = {
