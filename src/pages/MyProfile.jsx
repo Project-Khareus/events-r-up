@@ -65,13 +65,23 @@ export default function MyProfile() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/20">
       <div className="max-w-4xl mx-auto px-6 py-12">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-100 to-indigo-50">
-            <User className="h-6 w-6 text-indigo-600" />
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-100 to-indigo-50">
+              <User className="h-6 w-6 text-indigo-600" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-slate-900">My Profile</h1>
+              <p className="text-slate-600">Manage your account settings</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900">My Profile</h1>
-            <p className="text-slate-600">Manage your account settings</p>
+          <div className="flex gap-3">
+            <Button variant="outline" onClick={() => navigate(createPageUrl("UserProfile") + `?userId=${user?.id}`)}>
+              View Public Profile
+            </Button>
+            <Button onClick={() => navigate(createPageUrl("Settings"))}>
+              Edit Profile
+            </Button>
           </div>
         </div>
 
