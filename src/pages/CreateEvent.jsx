@@ -30,7 +30,11 @@ export default function CreateEvent() {
     is_paid: false,
     price: "",
     theme: "Other",
-    event_date: ""
+    event_date: "",
+    is_recurring: false,
+    recurrence_frequency: "weekly",
+    recurrence_pattern: "",
+    recurrence_end_date: ""
   });
   
   const [mapPosition, setMapPosition] = useState(null); // { lat: 0, lng: 0 }
@@ -247,6 +251,62 @@ export default function CreateEvent() {
                                 className="pl-9"
                                 placeholder="0.00"
                             />
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            {/* Recurring Event */}
+            <div className="space-y-4 pt-2 border-t border-slate-100">
+                <div className="flex items-center space-x-2">
+                    <Switch 
+                        id="recurring-mode"
+                        checked={formData.is_recurring}
+                        onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_recurring: checked }))}
+                    />
+                    <Label htmlFor="recurring-mode">This is a recurring event</Label>
+                </div>
+                
+                {formData.is_recurring && (
+                    <div className="space-y-4 pl-4 border-l-2 border-indigo-200">
+                        <div className="space-y-2">
+                            <Label>Frequency</Label>
+                            <Select 
+                                value={formData.recurrence_frequency}
+                                onValueChange={(val) => setFormData(prev => ({ ...prev, recurrence_frequency: val }))}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="daily">Daily</SelectItem>
+                                    <SelectItem value="weekly">Weekly</SelectItem>
+                                    <SelectItem value="monthly">Monthly</SelectItem>
+                                    <SelectItem value="custom">Custom</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        {formData.recurrence_frequency === "custom" && (
+                            <div className="space-y-2">
+                                <Label>Custom Pattern</Label>
+                                <Input 
+                                    value={formData.recurrence_pattern}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, recurrence_pattern: e.target.value }))}
+                                    placeholder="e.g., Every Monday and Wednesday, First Friday of each month"
+                                />
+                                <p className="text-xs text-slate-500">Describe when the event repeats</p>
+                            </div>
+                        )}
+
+                        <div className="space-y-2">
+                            <Label>End Date (Optional)</Label>
+                            <Input 
+                                type="datetime-local"
+                                value={formData.recurrence_end_date}
+                                onChange={(e) => setFormData(prev => ({ ...prev, recurrence_end_date: e.target.value }))}
+                            />
+                            <p className="text-xs text-slate-500">When does this recurring event series end?</p>
                         </div>
                     </div>
                 )}
