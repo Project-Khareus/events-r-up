@@ -18,13 +18,36 @@ export default function UserProfile() {
   
   const [currentUser, setCurrentUser] = useState(null);
 
-  // Fetch Profile
+  // Fetch or Create Profile
   const { data: profile, isLoading: profileLoading, error: profileError } = useQuery({
     queryKey: ['user_profile', userId],
     queryFn: async () => {
         if (!userId) return null;
+        
+        // Check if profile exists
         const profiles = await base44.entities.UserProfile.filter({ user_id: userId });
-        return profiles[0] || null;
+        if (profiles && profiles.length > 0) {
+            return profiles[0];
+        }
+        
+        // If no profile exists, get user info and create a basic profile
+        try {
+            const users = await base44.entities.User.filter({ id: userId });
+            if (users && users.length > 0) {
+                const user = users[0];
+                const newProfile = await base44.entities.UserProfile.create({
+                    user_id: userId,
+                    display_name: user.full_name || "User",
+                    bio: "",
+                    avatar_url: user.profile_picture_url || ""
+                });
+                return newProfile;
+            }
+        } catch (err) {
+            console.error("Error creating profile:", err);
+        }
+        
+        return null;
     },
     enabled: !!userId,
     retry: 2
