@@ -30,12 +30,7 @@ export default function CreateEvent() {
     is_paid: false,
     price: "",
     theme: "Other",
-    event_date: "",
-    is_recurring: false,
-    recurrence_frequency: "weekly",
-    recurrence_interval: 1,
-    recurrence_unit: "weeks",
-    recurrence_end_date: ""
+    event_date: ""
   });
   
   const [mapPosition, setMapPosition] = useState(null); // { lat: 0, lng: 0 }
@@ -266,100 +261,6 @@ export default function CreateEvent() {
                     placeholder="Tell people what your event is about..."
                     rows={5}
                 />
-            </div>
-
-            {/* Recurring Event */}
-            <div className="space-y-4 pt-2 border-t border-slate-100">
-                <div className="flex items-center space-x-2">
-                    <Switch 
-                        id="recurring-mode"
-                        checked={formData.is_recurring}
-                        onCheckedChange={(checked) => setFormData(prev => ({ 
-                            ...prev, 
-                            is_recurring: checked,
-                            recurrence_frequency: checked ? "weekly" : "",
-                            recurrence_interval: 1,
-                            recurrence_unit: "weeks"
-                        }))}
-                    />
-                    <Label htmlFor="recurring-mode">This is a recurring event</Label>
-                </div>
-                
-                {formData.is_recurring && (
-                    <div className="space-y-4 pl-2 border-l-2 border-indigo-100">
-                        <div className="grid md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label>Frequency</Label>
-                                <Select 
-                                    value={formData.recurrence_frequency}
-                                    onValueChange={(val) => setFormData(prev => ({ 
-                                        ...prev, 
-                                        recurrence_frequency: val,
-                                        recurrence_interval: val === 'custom' ? 1 : undefined,
-                                        recurrence_unit: val === 'custom' ? 'weeks' : undefined
-                                    }))}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="daily">Daily</SelectItem>
-                                        <SelectItem value="weekly">Weekly</SelectItem>
-                                        <SelectItem value="monthly">Monthly</SelectItem>
-                                        <SelectItem value="custom">Custom</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label>End Date (Optional)</Label>
-                                <Input 
-                                    type="date"
-                                    value={formData.recurrence_end_date}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, recurrence_end_date: e.target.value }))}
-                                />
-                            </div>
-                        </div>
-
-                        {formData.recurrence_frequency === 'custom' && (
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label>Repeat Every</Label>
-                                    <Input 
-                                        type="number"
-                                        min="1"
-                                        value={formData.recurrence_interval}
-                                        onChange={(e) => setFormData(prev => ({ ...prev, recurrence_interval: parseInt(e.target.value) || 1 }))}
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Unit</Label>
-                                    <Select 
-                                        value={formData.recurrence_unit}
-                                        onValueChange={(val) => setFormData(prev => ({ ...prev, recurrence_unit: val }))}
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="days">Days</SelectItem>
-                                            <SelectItem value="weeks">Weeks</SelectItem>
-                                            <SelectItem value="months">Months</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </div>
-                        )}
-
-                        <p className="text-xs text-slate-500">
-                            {formData.recurrence_frequency === 'daily' && "Event will repeat every day"}
-                            {formData.recurrence_frequency === 'weekly' && "Event will repeat every week"}
-                            {formData.recurrence_frequency === 'monthly' && "Event will repeat every month"}
-                            {formData.recurrence_frequency === 'custom' && `Event will repeat every ${formData.recurrence_interval} ${formData.recurrence_unit}`}
-                            {formData.recurrence_end_date && ` until ${new Date(formData.recurrence_end_date).toLocaleDateString()}`}
-                        </p>
-                    </div>
-                )}
             </div>
 
             <div className="pt-6">
