@@ -4,9 +4,6 @@ Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
         
-        // Get all admin users
-        const users = await base44.asServiceRole.entities.User.filter({ role: 'admin' });
-        
         const featuresList = `
 • Payment Integration (Stripe)
 • Vendor Analytics Dashboard
@@ -30,21 +27,27 @@ Deno.serve(async (req) => {
 • Event Check-in System
         `.trim();
 
-        // Create notification for each admin
-        for (const user of users) {
-            await base44.asServiceRole.entities.Notification.create({
-                user_id: user.id,
-                type: 'system',
-                title: '💡 Daily Feature Recommendations',
-                message: `Here are enhancement opportunities for your platform:\n\n${featuresList}\n\nReady to implement any of these? Let me know!`,
-                link: null,
-                is_read: false
-            });
-        }
+        const emailBody = `
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+    <h2 style="color: #4F46E5;">💡 Daily Feature Recommendations</h2>
+    <p>Here are enhancement opportunities for your platform:</p>
+    <div style="background: #F8FAFC; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        ${featuresList.split('\n').map(line => `<p style="margin: 8px 0;">${line}</p>`).join('')}
+    </div>
+    <p style="color: #64748B;">Ready to implement any of these? Just let me know!</p>
+</div>
+        `;
+
+        // Send email
+        await base44.asServiceRole.integrations.Core.SendEmail({
+            to: 'annerquaye@gmail.com',
+            subject: '💡 Daily Feature Recommendations for Your Platform',
+            body: emailBody
+        });
 
         return Response.json({ 
             success: true, 
-            message: `Sent reminders to ${users.length} admin(s)` 
+            message: 'Sent reminder email to annerquaye@gmail.com' 
         });
     } catch (error) {
         console.error('Error sending feature reminder:', error);
