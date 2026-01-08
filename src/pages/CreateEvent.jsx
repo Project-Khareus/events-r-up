@@ -48,8 +48,8 @@ export default function CreateEvent() {
         return;
       }
       
-      // Check for required profile fields and approved status
-      if (!currentUser.phone_number || !currentUser.profile_picture_url || currentUser.status !== 'approved') {
+      // Check for required profile fields
+      if (!currentUser.phone_number || !currentUser.profile_picture_url) {
         toast.info("Please complete your profile to publish events");
         navigate(`${createPageUrl("CompleteProfile")}?next=${encodeURIComponent(createPageUrl("CreateEvent"))}`);
         return;
