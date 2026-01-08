@@ -11,7 +11,9 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Settings as SettingsIcon, User, Shield, Bell, MapPin, Trash2, Loader2, AlertTriangle, Store } from "lucide-react";
+import { Settings as SettingsIcon, User, Shield, Bell, MapPin, Trash2, Loader2, AlertTriangle, Store, Edit3, Upload, Globe, Twitter, Instagram, Linkedin } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -110,8 +112,12 @@ export default function Settings() {
           </div>
         </div>
 
-        <Tabs defaultValue="account" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-flex">
+        <Tabs defaultValue="profile" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-flex">
+            <TabsTrigger value="profile" className="gap-2">
+              <Edit3 className="h-4 w-4" />
+              <span className="hidden sm:inline">Profile</span>
+            </TabsTrigger>
             <TabsTrigger value="account" className="gap-2">
               <User className="h-4 w-4" />
               <span className="hidden sm:inline">Account</span>
@@ -129,6 +135,198 @@ export default function Settings() {
               <span className="hidden sm:inline">Vendor</span>
             </TabsTrigger>
           </TabsList>
+
+          {/* Profile Settings */}
+          <TabsContent value="profile">
+            <Card className="p-6">
+              <h2 className="text-xl font-semibold mb-6 text-slate-900 dark:text-white">Edit Public Profile</h2>
+              <div className="space-y-6">
+                {/* Profile Pictures */}
+                <div className="space-y-4">
+                  <div>
+                    <Label>Profile Picture</Label>
+                    <div className="flex items-center gap-4 mt-2">
+                      <Avatar className="w-20 h-20">
+                        <AvatarImage src={userProfile?.avatar_url || user?.profile_picture_url} />
+                        <AvatarFallback className="text-2xl bg-indigo-100 text-indigo-700">
+                          {(userProfile?.display_name || user?.full_name)?.[0] || 'U'}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <Input 
+                          type="file" 
+                          accept="image/*"
+                          className="w-full max-w-xs"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            toast.info("Uploading image...");
+                            try {
+                              const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                              await updateProfileMutation.mutateAsync({ avatar_url: file_url });
+                              toast.success("Profile picture updated");
+                            } catch (error) {
+                              toast.error("Failed to upload image");
+                            }
+                          }}
+                        />
+                        <p className="text-xs text-slate-500 mt-1">Recommended: Square image, at least 400x400px</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label>Cover Photo</Label>
+                    <div className="mt-2">
+                      {userProfile?.cover_image_url && (
+                        <div className="relative w-full h-32 rounded-lg overflow-hidden mb-2 border border-slate-200">
+                          <img src={userProfile.cover_image_url} alt="Cover" className="w-full h-full object-cover" />
+                        </div>
+                      )}
+                      <Input 
+                        type="file" 
+                        accept="image/*"
+                        className="w-full max-w-xs"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          toast.info("Uploading cover photo...");
+                          try {
+                            const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                            await updateProfileMutation.mutateAsync({ cover_image_url: file_url });
+                            toast.success("Cover photo updated");
+                          } catch (error) {
+                            toast.error("Failed to upload image");
+                          }
+                        }}
+                      />
+                      <p className="text-xs text-slate-500 mt-1">Recommended: 1500x500px</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Display Name */}
+                <div>
+                  <Label>Display Name</Label>
+                  <Input 
+                    defaultValue={userProfile?.display_name || user?.full_name || ''} 
+                    placeholder="Your public display name"
+                    onBlur={(e) => {
+                      if (e.target.value !== userProfile?.display_name) {
+                        updateProfileMutation.mutate({ display_name: e.target.value });
+                      }
+                    }}
+                  />
+                  <p className="text-xs text-slate-500 mt-1">This is the name people will see on your profile</p>
+                </div>
+
+                {/* Bio */}
+                <div>
+                  <Label>Bio</Label>
+                  <Textarea 
+                    defaultValue={userProfile?.bio || ''} 
+                    placeholder="Tell people about yourself..."
+                    rows={4}
+                    onBlur={(e) => {
+                      if (e.target.value !== userProfile?.bio) {
+                        updateProfileMutation.mutate({ bio: e.target.value });
+                      }
+                    }}
+                  />
+                  <p className="text-xs text-slate-500 mt-1">Write a short bio about yourself</p>
+                </div>
+
+                {/* Location */}
+                <div>
+                  <Label>Location</Label>
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <Input 
+                      defaultValue={userProfile?.location || ''} 
+                      placeholder="e.g., Accra, Ghana"
+                      className="pl-10"
+                      onBlur={(e) => {
+                        if (e.target.value !== userProfile?.location) {
+                          updateProfileMutation.mutate({ location: e.target.value });
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Website */}
+                <div>
+                  <Label>Website</Label>
+                  <div className="relative">
+                    <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <Input 
+                      defaultValue={userProfile?.website || ''} 
+                      placeholder="https://yourwebsite.com"
+                      className="pl-10"
+                      onBlur={(e) => {
+                        if (e.target.value !== userProfile?.website) {
+                          updateProfileMutation.mutate({ website: e.target.value });
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Social Links */}
+                <div className="space-y-3">
+                  <Label>Social Links</Label>
+                  <div className="relative">
+                    <Twitter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <Input 
+                      defaultValue={userProfile?.social_links?.twitter || ''} 
+                      placeholder="Twitter/X username"
+                      className="pl-10"
+                      onBlur={(e) => {
+                        const social_links = { ...(userProfile?.social_links || {}), twitter: e.target.value };
+                        updateProfileMutation.mutate({ social_links });
+                      }}
+                    />
+                  </div>
+                  <div className="relative">
+                    <Instagram className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <Input 
+                      defaultValue={userProfile?.social_links?.instagram || ''} 
+                      placeholder="Instagram username"
+                      className="pl-10"
+                      onBlur={(e) => {
+                        const social_links = { ...(userProfile?.social_links || {}), instagram: e.target.value };
+                        updateProfileMutation.mutate({ social_links });
+                      }}
+                    />
+                  </div>
+                  <div className="relative">
+                    <Linkedin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <Input 
+                      defaultValue={userProfile?.social_links?.linkedin || ''} 
+                      placeholder="LinkedIn profile URL"
+                      className="pl-10"
+                      onBlur={(e) => {
+                        const social_links = { ...(userProfile?.social_links || {}), linkedin: e.target.value };
+                        updateProfileMutation.mutate({ social_links });
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Preview Button */}
+                <div className="pt-4 border-t border-slate-200">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => navigate(createPageUrl("UserProfile") + `?userId=${user.id}`)}
+                    className="w-full sm:w-auto"
+                  >
+                    <User className="h-4 w-4 mr-2" />
+                    View Public Profile
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          </TabsContent>
 
           {/* Account Settings */}
           <TabsContent value="account">
