@@ -1,0 +1,776 @@
+import React, { useState } from "react";
+import { base44 } from "@/api/base44Client";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, Store, Edit2, Clock, Eye, Search, Ban } from "lucide-react";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "../utils";
+
+export default function AdminVendors() {
+  const queryClient = useQueryClient();
+  const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
+  const [rejectingVendor, setRejectingVendor] = useState(null);
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [suspendDialogOpen, setSuspendDialogOpen] = useState(false);
+  const [suspendingVendor, setSuspendingVendor] = useState(null);
+  const [suspensionReason, setSuspensionReason] = useState("");
+
+  // Fetch all vendors
+  const { data: allVendors = [], isLoading } = useQuery({
+    queryKey: ['admin_all_vendors'],
+    queryFn: async () => {
+       const user = await base44.auth.me();
+       if (user.role !== 'admin') throw new Error("Unauthorized");
+       return base44.entities.Vendor.list('-created_date', 200);
+    },
+  });
+
+  // Filter vendors by search query
+  const filterVendors = (vendors) => {
+    if (!searchQuery.trim()) return vendors;
+    const query = searchQuery.toLowerCase();
+    return vendors.filter(v => 
+      v.business_name?.toLowerCase().includes(query) ||
+      v.contact_email?.toLowerCase().includes(query) ||
+      v.location?.toLowerCase().includes(query) ||
+      (Array.isArray(v.category) && v.category.some(cat => cat.toLowerCase().includes(query)))
+    );
+  };
+
+  const pendingVendors = filterVendors(allVendors.filter(v => v.status === 'pending'));
+  const vendorsWithChanges = filterVendors(allVendors.filter(v => v.has_pending_changes));
+  const approvedVendors = filterVendors(allVendors.filter(v => v.status === 'approved' && !v.has_pending_changes));
+
+  const approveMutation = useMutation({
+    mutationFn: async (vendorId) => {
+      const currentUser = await base44.auth.me();
+      const vendor = pendingVendors.find(v => v.id === vendorId);
+      const result = await base44.functions.invoke('approveVendor', { vendor_id: vendorId });
+
+      // Create in-app notification
+      if (vendor) {
+        await base44.entities.Notification.create({
+          user_id: vendor.user_id,
+          type: 'vendor_approved',
+          title: 'Vendor Approved!',
+          message: `Congratulations! Your vendor listing "${vendor.business_name}" has been approved and is now live.`,
+          link: `VendorDetail?id=${vendor.id}`,
+          action_by: currentUser.full_name || currentUser.email,
+          action_type: 'approved',
+          vendor_id: vendor.id,
+          vendor_name: vendor.business_name
+        });
+      }
+
+      return result;
+    },
+    onSuccess: () => {
+      toast.success("Vendor approved and notified!");
+      queryClient.invalidateQueries(['admin_pending_vendors']);
+    },
+    onError: (error) => {
+      toast.error("Failed to approve vendor: " + error.message);
+    }
+  });
+
+  const rejectMutation = useMutation({
+    mutationFn: async (vendorId) => {
+      const currentUser = await base44.auth.me();
+      const vendor = pendingVendors.find(v => v.id === vendorId);
+      const result = await base44.entities.Vendor.update(vendorId, { status: 'rejected' });
+
+      // Create in-app notification
+      if (vendor) {
+        await base44.entities.Notification.create({
+          user_id: vendor.user_id,
+          type: 'vendor_rejected',
+          title: 'Vendor Submission Not Approved',
+          message: `Unfortunately, your vendor listing "${vendor.business_name}" could not be approved at this time. Please contact admin for details.`,
+          link: 'Messages?admin=true',
+          action_by: currentUser.full_name || currentUser.email,
+          action_type: 'rejected',
+          vendor_id: vendor.id,
+          vendor_name: vendor.business_name
+        });
+      }
+
+      return result;
+    },
+    onSuccess: () => {
+      toast.success("Vendor rejected");
+      queryClient.invalidateQueries(['admin_pending_vendors']);
+    },
+  });
+
+  const approveChangesMutation = useMutation({
+    mutationFn: async (vendor) => {
+      // Apply pending changes to the main vendor record
+      const { pending_changes, ...rest } = vendor;
+      const updatedData = {
+        ...pending_changes,
+        pending_changes: null,
+        has_pending_changes: false
+      };
+      return { updated: await base44.entities.Vendor.update(vendor.id, updatedData), vendor };
+    },
+    onSuccess: async ({ updated, vendor }) => {
+      const currentUser = await base44.auth.me();
+      const manageLink = `https://eventsrup.com${createPageUrl("ManageListing")}`;
+      const viewLink = `https://eventsrup.com${createPageUrl("VendorDetail")}?id=${vendor.id}`;
+
+      // Get the list of changed fields
+      const changes = Object.keys(vendor.pending_changes || {})
+        .filter(key => JSON.stringify(vendor[key]) !== JSON.stringify(vendor.pending_changes[key]));
+
+      // Send email notification to vendor
+      try {
+        await base44.integrations.Core.SendEmail({
+          to: vendor.contact_email,
+          subject: 'Your Vendor Changes Have Been Approved ✅',
+          body: `
+            <h1>Changes Approved!</h1>
+            <p>Great news! Your recent changes to <strong>${vendor.business_name}</strong> have been approved and are now live.</p>
+            <p><strong>Approved by:</strong> ${currentUser.full_name || 'Admin'}</p>
+            <p><a href="${viewLink}" style="color: #4F46E5; text-decoration: none;">View Your Public Listing →</a></p>
+            <p><a href="${manageLink}" style="color: #4F46E5; text-decoration: none;">Manage Your Listing →</a></p>
+          `
+        });
+
+        // Create in-app notification
+        await base44.entities.Notification.create({
+          user_id: vendor.user_id,
+          type: 'changes_approved',
+          title: 'Changes Approved',
+          message: `Your updates to ${vendor.business_name} have been approved and are now live.`,
+          link: 'ManageListing',
+          action_by: currentUser.full_name || currentUser.email,
+          action_type: 'approved',
+          vendor_id: vendor.id,
+          vendor_name: vendor.business_name,
+          changes_summary: changes
+        });
+      } catch (error) {
+        console.error('Failed to send approval notifications:', error);
+      }
+      toast.success("Changes approved and vendor notified!");
+      queryClient.invalidateQueries(['admin_vendors_with_changes']);
+    },
+  });
+
+  const rejectChangesMutation = useMutation({
+    mutationFn: async ({ vendor, reason }) => {
+      return { updated: await base44.entities.Vendor.update(vendor.id, { 
+        pending_changes: null,
+        has_pending_changes: false 
+      }), vendor, reason };
+    },
+    onSuccess: async ({ updated, vendor, reason }) => {
+      const currentUser = await base44.auth.me();
+      const manageLink = `https://eventsrup.com${createPageUrl("ManageListing")}`;
+      const viewLink = `https://eventsrup.com${createPageUrl("VendorDetail")}?id=${vendor.id}`;
+      const messageLink = `https://eventsrup.com${createPageUrl("Messages")}?admin=true`;
+
+      // Get the list of changed fields
+      const changes = Object.keys(vendor.pending_changes || {})
+        .filter(key => JSON.stringify(vendor[key]) !== JSON.stringify(vendor.pending_changes[key]));
+
+      // Send email notification to vendor
+      try {
+        await base44.integrations.Core.SendEmail({
+          to: vendor.contact_email,
+          subject: 'Vendor Changes Require Revision',
+          body: `
+            <h1>Changes Need Revision</h1>
+            <p>Your recent changes to <strong>${vendor.business_name}</strong> could not be approved at this time.</p>
+            <p><strong>Reviewed by:</strong> ${currentUser.full_name || 'Admin'}</p>
+            <h3>Reason:</h3>
+            <p style="background: #f1f5f9; padding: 12px; border-radius: 8px;">${reason || 'No specific reason provided'}</p>
+            <p>Please review and resubmit your changes:</p>
+            <p><a href="${manageLink}" style="color: #4F46E5; text-decoration: none;">Edit Your Listing →</a></p>
+            <p><a href="${viewLink}" style="color: #4F46E5; text-decoration: none;">View Current Public Listing →</a></p>
+            <p><a href="${messageLink}" style="color: #4F46E5; text-decoration: none;">Message Admin for Clarification →</a></p>
+          `
+        });
+
+        // Create in-app notification
+        await base44.entities.Notification.create({
+          user_id: vendor.user_id,
+          type: 'changes_rejected',
+          title: 'Changes Require Revision',
+          message: `Your updates to ${vendor.business_name} need revision.`,
+          link: 'ManageListing',
+          action_by: currentUser.full_name || currentUser.email,
+          action_type: 'requested_changes',
+          vendor_id: vendor.id,
+          vendor_name: vendor.business_name,
+          changes_summary: changes,
+          reason: reason || 'No specific reason provided'
+        });
+      } catch (error) {
+        console.error('Failed to send rejection notifications:', error);
+      }
+
+      toast.success("Changes rejected and vendor notified");
+      queryClient.invalidateQueries(['admin_vendors_with_changes']);
+      setRejectDialogOpen(false);
+      setRejectingVendor(null);
+      setRejectionReason("");
+    },
+  });
+
+  const handleRejectClick = (vendor) => {
+    setRejectingVendor(vendor);
+    setRejectDialogOpen(true);
+  };
+
+  const handleRejectConfirm = () => {
+    if (rejectingVendor) {
+      rejectChangesMutation.mutate({ 
+        vendor: rejectingVendor, 
+        reason: rejectionReason 
+      });
+    }
+  };
+
+  const suspendVendorMutation = useMutation({
+    mutationFn: async ({ vendor, reason }) => {
+      return await base44.entities.Vendor.update(vendor.id, { 
+        status: 'suspended',
+        suspension_reason: reason
+      });
+    },
+    onSuccess: async (result, { vendor, reason }) => {
+      const currentUser = await base44.auth.me();
+      const manageLink = `https://eventsrup.com${createPageUrl("ManageListing")}`;
+      const messageLink = `https://eventsrup.com${createPageUrl("Messages")}?admin=true`;
+
+      try {
+        await base44.integrations.Core.SendEmail({
+          to: vendor.contact_email,
+          subject: 'Your Vendor Listing Has Been Suspended',
+          body: `
+            <h1>Listing Suspended</h1>
+            <p>Your vendor listing <strong>${vendor.business_name}</strong> has been suspended and is no longer visible to users.</p>
+            <p><strong>Suspended by:</strong> ${currentUser.full_name || 'Admin'}</p>
+            <h3>Reason:</h3>
+            <p style="background: #fef2f2; padding: 12px; border-radius: 8px; border-left: 4px solid #ef4444;">${reason || 'No specific reason provided'}</p>
+            <p>If you believe this is a mistake or would like to resolve the issues, please contact us:</p>
+            <p><a href="${messageLink}" style="display: inline-block; padding: 12px 24px; background-color: #4F46E5; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0;">Contact Admin</a></p>
+          `
+        });
+
+        await base44.entities.Notification.create({
+          user_id: vendor.user_id,
+          type: 'system',
+          title: 'Listing Suspended',
+          message: `Your vendor listing "${vendor.business_name}" has been suspended.`,
+          link: 'ManageListing',
+          action_by: currentUser.full_name || currentUser.email,
+          action_type: 'rejected',
+          vendor_id: vendor.id,
+          vendor_name: vendor.business_name,
+          reason: reason || 'No specific reason provided'
+        });
+      } catch (error) {
+        console.error('Failed to send suspension notifications:', error);
+      }
+
+      toast.success("Vendor suspended and notified");
+      queryClient.invalidateQueries(['admin_all_vendors']);
+      setSuspendDialogOpen(false);
+      setSuspendingVendor(null);
+      setSuspensionReason("");
+    },
+    onError: (error) => {
+      toast.error("Failed to suspend vendor: " + error.message);
+    }
+  });
+
+  const handleSuspendClick = (vendor) => {
+    setSuspendingVendor(vendor);
+    setSuspendDialogOpen(true);
+  };
+
+  const handleSuspendConfirm = () => {
+    if (suspendingVendor) {
+      suspendVendorMutation.mutate({ 
+        vendor: suspendingVendor, 
+        reason: suspensionReason 
+      });
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-50 p-8">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900">Vendor Management</h1>
+            <p className="text-slate-600">Review new listings and changes</p>
+          </div>
+          <div className="flex gap-3">
+            <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200">
+              <span className="font-semibold text-indigo-600">{pendingVendors.length}</span> New
+            </div>
+            <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-orange-200">
+              <span className="font-semibold text-orange-600">{vendorsWithChanges.length}</span> Updates
+            </div>
+          </div>
+        </div>
+
+        {/* Search Bar */}
+        <div className="relative mb-6">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+          <Input
+            type="text"
+            placeholder="Search by business name, email, category, or location..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10 h-12 text-base"
+          />
+        </div>
+
+        <Tabs defaultValue="new" className="w-full">
+          <TabsList className="mb-6">
+            <TabsTrigger value="new" className="gap-2">
+              New Listings ({pendingVendors.length})
+            </TabsTrigger>
+            <TabsTrigger value="updates" className="gap-2">
+              Pending Updates ({vendorsWithChanges.length})
+            </TabsTrigger>
+            <TabsTrigger value="all" className="gap-2">
+              All Vendors ({approvedVendors.length})
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="new">
+            {pendingVendors.length === 0 ? (
+              <Card className="p-12 text-center bg-white">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle className="h-8 w-8 text-green-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900">All caught up!</h3>
+                <p className="text-slate-500">No pending vendor listings to review.</p>
+              </Card>
+            ) : (
+              <div className="grid gap-4">
+                {pendingVendors.map((vendor) => (
+              <Card key={vendor.id} className="p-6 bg-white overflow-hidden">
+                <div className="flex flex-col md:flex-row gap-6">
+                  {/* Image */}
+                  <div className="w-full md:w-48 h-32 flex-shrink-0 bg-slate-100 rounded-lg overflow-hidden">
+                    {vendor.image_url ? (
+                      <img src={vendor.image_url} alt={vendor.business_name} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-slate-400">No Image</div>
+                    )}
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h3 className="text-xl font-bold text-slate-900">{vendor.business_name}</h3>
+                        <div className="flex gap-2 mt-1 mb-2">
+                          <Badge variant="secondary">{vendor.event_type}</Badge>
+                          <Badge variant="outline">{vendor.category}</Badge>
+                        </div>
+                      </div>
+                      <Link to={`${createPageUrl("VendorDetail")}?id=${vendor.id}`} target="_blank">
+                        <Button variant="ghost" size="sm" className="gap-2">
+                          View Details <ExternalLink className="h-4 w-4" />
+                        </Button>
+                      </Link>
+                    </div>
+                    
+                    <p className="text-slate-600 line-clamp-2 mb-4">{vendor.description}</p>
+                    
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-slate-500 mb-4">
+                      <div>
+                        <span className="block font-medium text-slate-700">Email</span>
+                        {vendor.contact_email}
+                      </div>
+                      <div>
+                        <span className="block font-medium text-slate-700">Phone</span>
+                        {vendor.contact_phone || 'N/A'}
+                      </div>
+                      <div>
+                        <span className="block font-medium text-slate-700">Price</span>
+                        {vendor.price_range} ({vendor.starting_price ? `$${vendor.starting_price}+` : 'N/A'})
+                      </div>
+                      <div>
+                        <span className="block font-medium text-slate-700">Submitted</span>
+                        {new Date(vendor.created_date).toLocaleDateString('en-US', { 
+                          month: 'long', 
+                          day: 'numeric', 
+                          year: 'numeric',
+                          hour: 'numeric',
+                          minute: '2-digit',
+                          hour12: true
+                        })}
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3 pt-4 border-t border-slate-100">
+                      <Button 
+                        onClick={() => approveMutation.mutate(vendor.id)}
+                        disabled={approveMutation.isPending}
+                        className="bg-green-600 hover:bg-green-700 text-white gap-2"
+                      >
+                        {approveMutation.isPending && approveMutation.variables === vendor.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <CheckCircle className="h-4 w-4" />
+                        )}
+                        Approve & Notify
+                      </Button>
+                      
+                      <Button 
+                        variant="outline"
+                        onClick={() => rejectMutation.mutate(vendor.id)}
+                        disabled={rejectMutation.isPending}
+                        className="text-red-600 hover:bg-red-50 border-red-200 gap-2"
+                      >
+                        <XCircle className="h-4 w-4" />
+                        Reject
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="updates">
+            {vendorsWithChanges.length === 0 ? (
+              <Card className="p-12 text-center bg-white">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle className="h-8 w-8 text-green-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900">All caught up!</h3>
+                <p className="text-slate-500">No pending vendor updates to review.</p>
+              </Card>
+            ) : (
+              <div className="grid gap-4">
+                {vendorsWithChanges.map((vendor) => (
+                  <Card key={vendor.id} className="p-6 bg-white">
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <h3 className="text-xl font-bold text-slate-900">{vendor.business_name}</h3>
+                          <Badge className="bg-orange-100 text-orange-800">
+                            <AlertCircle className="h-3 w-3 mr-1" />
+                            Changes Pending
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-slate-500">
+                          Updated {new Date(vendor.updated_date).toLocaleString('en-US', { 
+                            month: 'long', 
+                            day: 'numeric', 
+                            year: 'numeric', 
+                            hour: 'numeric', 
+                            minute: '2-digit',
+                            hour12: true 
+                          })}
+                        </p>
+                      </div>
+                      <Link to={`${createPageUrl("VendorDetail")}?id=${vendor.id}`} target="_blank">
+                        <Button variant="ghost" size="sm" className="gap-2">
+                          View Live <ExternalLink className="h-4 w-4" />
+                        </Button>
+                      </Link>
+                    </div>
+
+                    {vendor.pending_changes && (
+                      <div className="bg-slate-50 rounded-lg p-4 mb-4 max-w-full overflow-hidden">
+                        <h4 className="font-semibold text-slate-900 mb-3">Proposed Changes:</h4>
+                        <div className="space-y-3">
+                          {Object.keys(vendor.pending_changes)
+                            .filter(key => JSON.stringify(vendor[key]) !== JSON.stringify(vendor.pending_changes[key]))
+                            .map(key => {
+                              const oldVal = vendor[key];
+                              const newVal = vendor.pending_changes[key];
+                              
+                              // Check if this is an image field
+                              const isImageField = key === 'image_url' || key === 'logo_url' || key === 'profile_picture_url';
+                              const isGalleryImages = key === 'gallery_images';
+                              
+                              // Format display values
+                              const formatValue = (val) => {
+                                if (val === null || val === undefined || val === '') return 'Not set';
+                                if (Array.isArray(val)) {
+                                  if (key === 'gallery_images' || key === 'gallery_videos') {
+                                    return `${val.length} file(s)`;
+                                  }
+                                  return val.length > 0 ? val.join(', ') : 'None';
+                                }
+                                if (typeof val === 'boolean') return val ? 'Yes' : 'No';
+                                if (typeof val === 'number') return val.toLocaleString();
+                                if (typeof val === 'object') return 'Complex data';
+                                // Truncate long text
+                                const str = String(val);
+                                return str.length > 150 ? str.substring(0, 150) + '...' : str;
+                              };
+                              
+                              const fieldLabel = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                              
+                              return (
+                                <div key={key} className="bg-white rounded-md border border-orange-200 p-3">
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+                                    <span className="font-semibold text-slate-900">{fieldLabel}</span>
+                                  </div>
+                                  <div className="ml-4 space-y-2">
+                                    {isImageField ? (
+                                      <div>
+                                        <span className="text-xs text-green-600 font-medium uppercase tracking-wide block mb-1">New Image:</span>
+                                        {newVal ? (
+                                          <img src={newVal} alt="New image" className="w-48 h-48 object-cover rounded border border-green-300" />
+                                        ) : (
+                                          <div className="w-48 h-48 bg-slate-100 rounded flex items-center justify-center text-slate-400 text-xs">Image removed</div>
+                                        )}
+                                      </div>
+                                    ) : isGalleryImages ? (
+                                      <div>
+                                        <span className="text-xs text-green-600 font-medium uppercase tracking-wide block mb-1">New Gallery ({Array.isArray(newVal) ? newVal.length : 0} images):</span>
+                                        <div className="flex gap-2 flex-wrap">
+                                          {Array.isArray(newVal) && newVal.slice(0, 6).map((url, idx) => (
+                                            <img key={idx} src={url} alt={`Gallery ${idx + 1}`} className="w-20 h-20 object-cover rounded border" />
+                                          ))}
+                                          {Array.isArray(newVal) && newVal.length > 6 && (
+                                            <div className="w-20 h-20 bg-slate-100 rounded flex items-center justify-center text-slate-600 text-xs font-medium">
+                                              +{newVal.length - 6} more
+                                            </div>
+                                          )}
+                                        </div>
+                                      </div>
+                                    ) : (
+                                      <>
+                                        <div className="flex items-start gap-2">
+                                          <span className="text-xs text-slate-500 font-medium uppercase tracking-wide min-w-[60px]">Before:</span>
+                                          <span className="text-sm text-slate-600">{formatValue(oldVal)}</span>
+                                        </div>
+                                        <div className="flex items-start gap-2">
+                                          <span className="text-xs text-green-600 font-medium uppercase tracking-wide min-w-[60px]">After:</span>
+                                          <span className="text-sm text-slate-900 font-medium">{formatValue(newVal)}</span>
+                                        </div>
+                                      </>
+                                    )}
+                                  </div>
+                                </div>
+                              );
+                            })
+                          }
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex gap-3 pt-4 border-t border-slate-100">
+                      <Button 
+                        onClick={() => approveChangesMutation.mutate(vendor)}
+                        disabled={approveChangesMutation.isPending}
+                        className="bg-green-600 hover:bg-green-700 text-white gap-2"
+                      >
+                        {approveChangesMutation.isPending ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <CheckCircle className="h-4 w-4" />
+                        )}
+                        Approve Changes
+                      </Button>
+                      
+                      <Button 
+                        variant="outline"
+                        onClick={() => handleRejectClick(vendor)}
+                        disabled={rejectChangesMutation.isPending}
+                        className="text-red-600 hover:bg-red-50 border-red-200 gap-2"
+                      >
+                        <XCircle className="h-4 w-4" />
+                        Reject Changes
+                      </Button>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="all">
+            {approvedVendors.length === 0 ? (
+              <Card className="p-12 text-center bg-white">
+                <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Store className="h-8 w-8 text-slate-400" />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900">No vendors yet</h3>
+                <p className="text-slate-500">Approved vendors will appear here.</p>
+              </Card>
+            ) : (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {approvedVendors.map((vendor) => (
+                  <Card key={vendor.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                    <div className="aspect-video bg-slate-200 relative">
+                      {vendor.image_url ? (
+                        <img 
+                          src={vendor.image_url} 
+                          alt={vendor.business_name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Store className="h-12 w-12 text-slate-400" />
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="p-5">
+                      <h3 className="font-bold text-lg text-slate-900 mb-1 truncate">
+                        {vendor.business_name}
+                      </h3>
+                      {vendor.slogan && (
+                        <p className="text-sm text-slate-600 mb-3 line-clamp-2">
+                          {vendor.slogan}
+                        </p>
+                      )}
+
+                      <div className="space-y-2">
+                        <div className="flex gap-2">
+                          <Link to={`${createPageUrl("AdminVendorDetail")}?id=${vendor.id}`} className="flex-1">
+                            <Button variant="outline" className="w-full">
+                              <Eye className="h-4 w-4 mr-2" />
+                              Review
+                            </Button>
+                          </Link>
+                          <Link to={`${createPageUrl("VendorDetail")}?id=${vendor.id}`} target="_blank">
+                            <Button variant="ghost" size="icon">
+                              <ExternalLink className="h-4 w-4" />
+                            </Button>
+                          </Link>
+                        </div>
+                        <Button 
+                          variant="outline" 
+                          className="w-full text-red-600 hover:bg-red-50 border-red-200"
+                          onClick={() => handleSuspendClick(vendor)}
+                        >
+                          <Ban className="h-4 w-4 mr-2" />
+                          Suspend Listing
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
+
+        {/* Rejection Dialog */}
+        <Dialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Reject Vendor Changes</DialogTitle>
+              <DialogDescription>
+                Please provide a reason for rejecting the changes to <strong>{rejectingVendor?.business_name}</strong>. 
+                This will be sent to the vendor.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="py-4">
+              <Textarea
+                placeholder="Explain why these changes cannot be approved..."
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                rows={4}
+                className="w-full"
+              />
+            </div>
+            <DialogFooter>
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setRejectDialogOpen(false);
+                  setRejectionReason("");
+                  setRejectingVendor(null);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleRejectConfirm}
+                disabled={rejectChangesMutation.isPending}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                {rejectChangesMutation.isPending ? (
+                  <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Rejecting...</>
+                ) : (
+                  'Reject Changes'
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Suspension Dialog */}
+        <Dialog open={suspendDialogOpen} onOpenChange={setSuspendDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Suspend Vendor Listing</DialogTitle>
+              <DialogDescription>
+                Please provide a reason for suspending <strong>{suspendingVendor?.business_name}</strong>. 
+                The vendor will be notified and their listing will be hidden from public view.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="py-4">
+              <Textarea
+                placeholder="Explain why this listing is being suspended (e.g., policy violations, complaints, etc.)..."
+                value={suspensionReason}
+                onChange={(e) => setSuspensionReason(e.target.value)}
+                rows={4}
+                className="w-full"
+              />
+            </div>
+            <DialogFooter>
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setSuspendDialogOpen(false);
+                  setSuspensionReason("");
+                  setSuspendingVendor(null);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleSuspendConfirm}
+                disabled={suspendVendorMutation.isPending || !suspensionReason.trim()}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                {suspendVendorMutation.isPending ? (
+                  <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Suspending...</>
+                ) : (
+                  'Suspend Listing'
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+    </div>
+  );
+}
