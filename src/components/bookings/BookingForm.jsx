@@ -44,6 +44,16 @@ export default function BookingForm({ vendorId, vendorName, compact = false }) {
       setMessage("");
       toast.success("Booking request submitted successfully!");
       
+      // Track metrics
+      try {
+        await base44.functions.invoke('trackBookingMetrics', { 
+          bookingId: booking.id, 
+          action: 'created' 
+        });
+      } catch (metricsError) {
+        console.error("Failed to track booking metrics:", metricsError);
+      }
+      
       // Send email notification to vendor
       try {
         const vendors = await base44.entities.Vendor.filter({ id: vendorId });
