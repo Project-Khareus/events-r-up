@@ -38,12 +38,17 @@ export default function ReviewForm({ vendorId, vendorName }) {
     queryKey: ['user-bookings', vendorId, user?.id],
     queryFn: async () => {
       if (!user?.id) return [];
-      const allBookings = await base44.entities.Booking.list();
-      return allBookings.filter(b => 
-        b.vendor_id === vendorId && 
-        (b.status === "confirmed" || b.status === "completed") &&
-        (b.user_id === user.id || b.created_by === user.email)
-      );
+      try {
+        const allBookings = await base44.entities.Booking.list('-created_date', 500);
+        return allBookings.filter(b => 
+          b.vendor_id === vendorId && 
+          (b.status === "confirmed" || b.status === "completed") &&
+          (b.user_id === user.id || b.created_by === user.email)
+        );
+      } catch (error) {
+        console.error('Error fetching bookings:', error);
+        return [];
+      }
     },
     enabled: !!user?.id,
   });
@@ -53,11 +58,16 @@ export default function ReviewForm({ vendorId, vendorName }) {
     queryKey: ['user-review', vendorId, user?.id],
     queryFn: async () => {
       if (!user?.id) return [];
-      const allReviews = await base44.entities.Review.list();
-      return allReviews.filter(r => 
-        r.vendor_id === vendorId && 
-        r.created_by === user.email
-      );
+      try {
+        const allReviews = await base44.entities.Review.list('-created_date', 500);
+        return allReviews.filter(r => 
+          r.vendor_id === vendorId && 
+          r.created_by === user.email
+        );
+      } catch (error) {
+        console.error('Error fetching reviews:', error);
+        return [];
+      }
     },
     enabled: !!user?.id,
   });
