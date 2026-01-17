@@ -26,6 +26,17 @@ export default function BookingCard({ booking, isVendor, currentUserId }) {
     mutationFn: async (newStatus) => {
       await base44.entities.Booking.update(booking.id, { status: newStatus });
       
+      // Track metrics
+      try {
+        const action = newStatus === 'confirmed' ? 'confirmed' : 'updated';
+        await base44.functions.invoke('trackBookingMetrics', { 
+          bookingId: booking.id, 
+          action 
+        });
+      } catch (metricsError) {
+        console.error("Failed to track metrics:", metricsError);
+      }
+      
       // Send email notification
       try {
         const statusMessages = {
