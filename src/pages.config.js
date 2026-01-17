@@ -36,11 +36,11 @@ import Settings from './pages/Settings';
 import SocialCallback from './pages/SocialCallback';
 import TestBackend from './pages/TestBackend';
 import UserProfile from './pages/UserProfile';
+import VendorAnalytics from './pages/VendorAnalytics';
 import VendorDetail from './pages/VendorDetail';
 import VendorMarketplace from './pages/VendorMarketplace';
 import VendorSignup from './pages/VendorSignup';
 import Weddings from './pages/Weddings';
-import VendorAnalytics from './pages/VendorAnalytics';
 import __Layout from './Layout.jsx';
 
 
@@ -83,11 +83,11 @@ export const PAGES = {
     "SocialCallback": SocialCallback,
     "TestBackend": TestBackend,
     "UserProfile": UserProfile,
+    "VendorAnalytics": VendorAnalytics,
     "VendorDetail": VendorDetail,
     "VendorMarketplace": VendorMarketplace,
     "VendorSignup": VendorSignup,
     "Weddings": Weddings,
-    "VendorAnalytics": VendorAnalytics,
 }
 
 export const pagesConfig = {

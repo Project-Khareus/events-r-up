@@ -30,6 +30,7 @@ import ContactBookingModal from "../components/vendor/ContactBookingModal";
 import ShareButton from "../components/shared/ShareButton";
 import MetaTags from "../components/shared/MetaTags";
 import VendorFavoriteButton from "../components/vendor/VendorFavoriteButton";
+import AvailabilityCalendar from "../components/vendor/AvailabilityCalendar";
 
 const CATEGORY_LABELS = {
   venue: "Venue",
@@ -92,6 +93,15 @@ export default function VendorDetail() {
     queryFn: () => base44.entities.Vendor.list(),
   });
 
+  const { data: currentUser } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: async () => {
+      const authenticated = await base44.auth.isAuthenticated();
+      if (!authenticated) return null;
+      return base44.auth.me();
+    },
+  });
+
   const { data: reviews = [] } = useQuery({
     queryKey: ['reviews', vendorId],
     queryFn: () => base44.entities.Review.filter({ vendor_id: vendorId }, '-created_date', 50),
@@ -143,7 +153,27 @@ export default function VendorDetail() {
     ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
     : (vendor.rating || 0);
     
-  const reviewCount = reviews.length > 0 ? reviews.length : (Math.floor(Math.random() * 100) + 5); // Fallback to fake count if 0 for better UI matching screenshot
+  const reviewCount = reviews.length > 0 ? reviews.length : (Math.floor(Math.random() * 100) + 5);
+  
+  // Categories that need availability calendar
+  const BOOKING_CATEGORIES = [
+    'makeup_artistes',
+    'event_grounds',
+    'photography_videography',
+    'catering',
+    'music_karaoke_mc',
+    'conference_facilities',
+    'decor_logistics',
+    'car_rentals'
+  ];
+  
+  const needsCalendar = vendor.category && (
+    Array.isArray(vendor.category) 
+      ? vendor.category.some(cat => BOOKING_CATEGORIES.includes(cat))
+      : BOOKING_CATEGORIES.includes(vendor.category)
+  );
+  
+  const isVendorOwner = currentUser && vendor.user_id === currentUser.id;
 
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans">
@@ -401,6 +431,12 @@ export default function VendorDetail() {
           <div className="lg:col-span-5 space-y-6">
              <div className="sticky top-24">
                 <RatingStats reviews={reviews} />
+                
+                {needsCalendar && (
+                  <div className="mt-6">
+                    <AvailabilityCalendar vendorId={vendor.id} isOwner={isVendorOwner} />
+                  </div>
+                )}
                 
                 <div className="mt-8">
                    <h3 className="font-serif font-bold text-slate-900 mb-4 text-xl">You might also like</h3>
