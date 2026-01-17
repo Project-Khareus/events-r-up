@@ -75,6 +75,16 @@ export default function ReviewForm({ vendorId, vendorName }) {
   const hasCompletedBooking = bookings.length > 0;
   const hasAlreadyReviewed = existingReviews.length > 0;
 
+  console.log('Review eligibility check:', {
+    isAuthenticated,
+    userId: user?.id,
+    vendorId,
+    bookingsCount: bookings.length,
+    hasCompletedBooking,
+    existingReviewsCount: existingReviews.length,
+    hasAlreadyReviewed
+  });
+
   const createReviewMutation = useMutation({
     mutationFn: (reviewData) => base44.entities.Review.create(reviewData),
     onSuccess: async () => {
