@@ -19,6 +19,7 @@ import {
   RotateCcw,
   Lock
 } from "lucide-react";
+import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import RatingStats from "../components/reviews/RatingStats";
@@ -71,6 +72,41 @@ export default function VendorDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   const vendorId = urlParams.get("id");
   const [showAllCategories, setShowAllCategories] = React.useState(false);
+
+  // Track profile view
+  React.useEffect(() => {
+    const trackView = async () => {
+      if (!vendorId) return;
+      
+      try {
+        const today = format(new Date(), 'yyyy-MM-dd');
+        
+        // Check if analytics entry exists for today
+        const existing = await base44.entities.VendorAnalytics.filter({ 
+          vendor_id: vendorId, 
+          date: today 
+        });
+        
+        if (existing.length > 0) {
+          // Update existing entry
+          await base44.entities.VendorAnalytics.update(existing[0].id, {
+            profile_views: (existing[0].profile_views || 0) + 1
+          });
+        } else {
+          // Create new entry
+          await base44.entities.VendorAnalytics.create({
+            vendor_id: vendorId,
+            date: today,
+            profile_views: 1
+          });
+        }
+      } catch (error) {
+        console.error('Error tracking view:', error);
+      }
+    };
+    
+    trackView();
+  }, [vendorId]);
 
   const { data: vendors = [], isLoading } = useQuery({
     queryKey: ['vendors'],
