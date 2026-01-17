@@ -33,24 +33,52 @@ export default function ReviewForm({ vendorId, vendorName }) {
     checkAuth();
   }, []);
 
-  // Check if user has a completed booking with this vendor
+  // Check if user has a confirmed or completed booking with this vendor
   const { data: bookings = [] } = useQuery({
     queryKey: ['user-bookings', vendorId, user?.id],
-    queryFn: () => base44.entities.Booking.filter({ 
-      vendor_id: vendorId, 
-      status: "completed" 
-    }),
+    queryFn: async () => {
+      if (!user?.id) return [];
+      const allBookings = await base44.entities.Booking.list();
+      return allBookings.filter(b => 
+        b.vendor_id === vendorId && 
+        (b.status === "confirmed" || b.status === "completed") &&
+        (b.user_id === user.id || b.created_by === user.email)
+      );
+    },
     enabled: !!user?.id,
   });
 
-  const hasCompletedBooking = bookings.some(
-    booking => booking.user_id === user?.id || booking.created_by === user?.email
-  );
+  // Check if user already reviewed this vendor
+  const { data: existingReviews = [] } = useQuery({
+    queryKey: ['user-review', vendorId, user?.id],
+    queryFn: async () => {
+      if (!user?.id) return [];
+      const allReviews = await base44.entities.Review.list();
+      return allReviews.filter(r => 
+        r.vendor_id === vendorId && 
+        r.created_by === user.email
+      );
+    },
+    enabled: !!user?.id,
+  });
+
+  const hasCompletedBooking = bookings.length > 0;
+  const hasAlreadyReviewed = existingReviews.length > 0;
 
   const createReviewMutation = useMutation({
     mutationFn: (reviewData) => base44.entities.Review.create(reviewData),
-    onSuccess: () => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['reviews', vendorId] });
+      queryClient.invalidateQueries({ queryKey: ['user-review', vendorId, user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['vendors'] });
+      
+      // Update vendor rating
+      try {
+        await base44.functions.invoke('updateVendorRating', { vendorId });
+      } catch (error) {
+        console.error('Failed to update vendor rating:', error);
+      }
+      
       setRating(0);
       setReviewText("");
       setEventType("");
@@ -104,7 +132,22 @@ export default function ReviewForm({ vendorId, vendorName }) {
     );
   }
 
-  // No completed booking
+  // Already reviewed
+  if (hasAlreadyReviewed) {
+    return (
+      <Card className="p-8 rounded-2xl border-slate-200 shadow-sm">
+        <div className="text-center">
+          <ShieldCheck className="h-12 w-12 text-green-600 mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-slate-900 mb-2">Thank You!</h2>
+          <p className="text-slate-600">
+            You have already submitted a review for this vendor.
+          </p>
+        </div>
+      </Card>
+    );
+  }
+
+  // No confirmed/completed booking
   if (!hasCompletedBooking) {
     return (
       <Card className="p-8 rounded-2xl border-slate-200 shadow-sm">
@@ -112,7 +155,7 @@ export default function ReviewForm({ vendorId, vendorName }) {
           <ShieldCheck className="h-12 w-12 text-slate-400 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-slate-900 mb-2">Verified Reviews Only</h2>
           <p className="text-slate-600">
-            Only customers who have completed a booking with this vendor can leave a review.
+            Only customers who have confirmed or completed bookings with this vendor can leave a review.
             This ensures all reviews are from genuine customers.
           </p>
         </div>
