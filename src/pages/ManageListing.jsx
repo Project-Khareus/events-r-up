@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Store, Loader2, Plus, Edit2, ExternalLink, Clock, CheckCircle2 } from "lucide-react";
+import { Store, Loader2, Plus, Edit2, ExternalLink, Clock, CheckCircle2, BarChart3 } from "lucide-react";
 
 export default function ManageListing() {
   const navigate = useNavigate();
@@ -55,12 +55,22 @@ export default function ManageListing() {
             <h1 className="text-3xl font-bold text-slate-900 mb-2">My Vendor Listings</h1>
             <p className="text-slate-600">Manage your business listings</p>
           </div>
-          <Link to={createPageUrl("VendorSignup")}>
-            <Button className="bg-indigo-600 hover:bg-indigo-700">
-              <Plus className="h-4 w-4 mr-2" />
-              Add New Listing
-            </Button>
-          </Link>
+          <div className="flex gap-3">
+            {vendors.length > 0 && (
+              <Link to={createPageUrl("VendorAnalytics")}>
+                <Button variant="outline" className="border-indigo-200 text-indigo-700 hover:bg-indigo-50">
+                  <BarChart3 className="h-4 w-4 mr-2" />
+                  Analytics
+                </Button>
+              </Link>
+            )}
+            <Link to={createPageUrl("VendorSignup")}>
+              <Button className="bg-indigo-600 hover:bg-indigo-700">
+                <Plus className="h-4 w-4 mr-2" />
+                Add New Listing
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {vendors.length === 0 ? (
@@ -138,6 +148,11 @@ export default function ManageListing() {
                     <Link to={`${createPageUrl("VendorDetail")}?id=${vendor.id}`}>
                       <Button variant="ghost" size="icon">
                         <ExternalLink className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                    <Link to={createPageUrl("VendorAnalytics")}>
+                      <Button variant="ghost" size="icon" className="text-indigo-600">
+                        <BarChart3 className="h-4 w-4" />
                       </Button>
                     </Link>
                   </div>
