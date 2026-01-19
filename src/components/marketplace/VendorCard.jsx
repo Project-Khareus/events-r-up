@@ -65,6 +65,8 @@ export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               onError={() => setImageError(true)}
               loading="lazy"
+              width="400"
+              height="300"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">

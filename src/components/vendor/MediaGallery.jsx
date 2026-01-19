@@ -56,6 +56,8 @@ export default function MediaGallery({ images = [], videos = [], businessName })
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}
+                  width="88"
+                  height="88"
                 />
               )}
               {index === 4 && allMedia.length > 5 && (
@@ -85,6 +87,8 @@ export default function MediaGallery({ images = [], videos = [], businessName })
             src={currentMedia.url}
             alt={`${businessName} - Media ${selectedIndex + 1}`}
             className="w-full h-full object-cover"
+            width="800"
+            height="600"
           />
         )}
         
@@ -137,6 +141,8 @@ export default function MediaGallery({ images = [], videos = [], businessName })
             alt={`${businessName} - Image ${selectedIndex + 1}`}
             className="max-h-[85vh] max-w-[90vw] object-contain"
             onClick={(e) => e.stopPropagation()}
+            width="1200"
+            height="900"
           />
           
           <button

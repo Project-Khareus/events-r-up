@@ -21,6 +21,8 @@ export default function EventCard({ event }) {
               alt={event.title}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               loading="lazy"
+              width="800"
+              height="400"
             />
             {event.status === 'pending' && (
                <Badge className="absolute top-3 left-3 bg-yellow-500 text-white border-0 shadow-sm z-10">
