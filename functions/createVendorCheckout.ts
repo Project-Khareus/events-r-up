@@ -14,16 +14,29 @@ Deno.serve(async (req) => {
 
     const { subscription_type, vendorData } = await req.json();
 
-    // Pricing
+    // Pricing - matches Stripe products
     const prices = {
-      monthly: { amount: 4900, interval: 'month' }, // $49/month
-      annual: { amount: 49000, interval: 'year' }   // $490/year (10 months price)
+      explorer: { amount: 100, interval: 'month' },  // $1/month
+      monthly: { amount: 90, interval: 'month' },    // $0.9/month
+      annual: { amount: 1000, interval: 'year' }     // $10/year
     };
 
     const selectedPrice = prices[subscription_type];
     if (!selectedPrice) {
       return Response.json({ error: 'Invalid subscription type' }, { status: 400 });
     }
+
+    const planNames = {
+      explorer: 'Explorer Plan',
+      monthly: 'Monthly Plan',
+      annual: 'Annual Plan'
+    };
+
+    const planDescriptions = {
+      explorer: 'Basic access to Omnievents vendor marketplace',
+      monthly: 'Full access to Omnievents vendor marketplace - billed monthly',
+      annual: 'Full access to Omnievents vendor marketplace - billed annually'
+    };
 
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
@@ -34,10 +47,8 @@ Deno.serve(async (req) => {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: subscription_type === 'monthly' ? 'Monthly Vendor Subscription' : 'Annual Vendor Subscription',
-              description: subscription_type === 'monthly' 
-                ? 'Access to Omnievents vendor marketplace - billed monthly'
-                : 'Access to Omnievents vendor marketplace - 12 months for the price of 10',
+              name: planNames[subscription_type],
+              description: planDescriptions[subscription_type],
             },
             recurring: {
               interval: selectedPrice.interval,
