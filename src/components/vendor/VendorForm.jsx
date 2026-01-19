@@ -113,7 +113,7 @@ const NAME_CHANGE_REASONS = [
   "Other"
 ];
 
-export default function VendorForm({ initialData, onSubmit, isSubmitting, submitLabel = "Submit Listing" }) {
+export default function VendorForm({ initialData, onSubmit, isSubmitting, submitLabel = "Submit Listing", submitIcon = null }) {
   const [formData, setFormData] = useState(DEFAULT_FORM_DATA);
   const [imageUploading, setImageUploading] = useState(false);
   const [galleryUploading, setGalleryUploading] = useState(false);
@@ -903,10 +903,13 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
         {isSubmitting ? (
           <>
             <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-            Submitting...
+            Processing...
           </>
         ) : (
-          submitLabel
+          <>
+            {submitIcon && <span className="mr-2">{submitIcon}</span>}
+            {submitLabel}
+          </>
         )}
       </Button>
 
