@@ -5,15 +5,19 @@ Deno.serve(async (req) => {
         const base44 = createClientFromRequest(req);
         
         // This function should be called by a scheduled automation
-        // Check for vendors whose subscription is expiring in 7 days or 1 day
+        // Check for vendors whose subscription is expiring in 14 days, 7 days, or 1 day
         
         const today = new Date();
+        const fourteenDaysFromNow = new Date(today);
+        fourteenDaysFromNow.setDate(fourteenDaysFromNow.getDate() + 14);
+        
         const sevenDaysFromNow = new Date(today);
         sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
         
         const oneDayFromNow = new Date(today);
         oneDayFromNow.setDate(oneDayFromNow.getDate() + 1);
 
+        const fourteenDaysDate = fourteenDaysFromNow.toISOString().split('T')[0];
         const sevenDaysDate = sevenDaysFromNow.toISOString().split('T')[0];
         const oneDayDate = oneDayFromNow.toISOString().split('T')[0];
 
@@ -29,7 +33,10 @@ Deno.serve(async (req) => {
             let daysUntilExpiry = null;
             let urgency = '';
 
-            if (endDate === sevenDaysDate) {
+            if (endDate === fourteenDaysDate) {
+                daysUntilExpiry = 14;
+                urgency = 'early';
+            } else if (endDate === sevenDaysDate) {
                 daysUntilExpiry = 7;
                 urgency = 'reminder';
             } else if (endDate === oneDayDate) {
