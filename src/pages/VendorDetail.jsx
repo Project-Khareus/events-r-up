@@ -153,7 +153,7 @@ export default function VendorDetail() {
     ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
     : (vendor.rating || 0);
     
-  const reviewCount = reviews.length > 0 ? reviews.length : (Math.floor(Math.random() * 100) + 5);
+  const reviewCount = reviews.length;
   
   // Categories that need availability calendar
   const BOOKING_CATEGORIES = [
