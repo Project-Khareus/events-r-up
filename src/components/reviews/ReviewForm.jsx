@@ -87,7 +87,7 @@ export default function ReviewForm({ vendorId, vendorName }) {
 
   const createReviewMutation = useMutation({
     mutationFn: (reviewData) => base44.entities.Review.create(reviewData),
-    onSuccess: async () => {
+    onSuccess: async (review) => {
       queryClient.invalidateQueries({ queryKey: ['reviews', vendorId] });
       queryClient.invalidateQueries({ queryKey: ['user-review', vendorId, user?.id] });
       queryClient.invalidateQueries({ queryKey: ['vendors'] });
@@ -97,6 +97,13 @@ export default function ReviewForm({ vendorId, vendorName }) {
         await base44.functions.invoke('updateVendorRating', { vendorId });
       } catch (error) {
         console.error('Failed to update vendor rating:', error);
+      }
+      
+      // Send email notification to vendor
+      try {
+        await base44.functions.invoke('notifyNewReview', { reviewId: review.id });
+      } catch (error) {
+        console.error('Failed to send review notification:', error);
       }
       
       setRating(0);

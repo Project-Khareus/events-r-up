@@ -54,40 +54,11 @@ export default function BookingForm({ vendorId, vendorName, compact = false }) {
         console.error("Failed to track booking metrics:", metricsError);
       }
       
-      // Send email notification to vendor
+      // Send email notifications
       try {
-        const vendors = await base44.entities.Vendor.filter({ id: vendorId });
-        const vendor = vendors[0];
-        
-        if (vendor?.contact_email) {
-          await base44.integrations.Core.SendEmail({
-            to: vendor.contact_email,
-            subject: `New Booking Request from ${booking.user_name}`,
-            body: `
-              <h2>New Booking Request</h2>
-              <p>You have received a new booking request.</p>
-              
-              <h3>Customer Details:</h3>
-              <ul>
-                <li><strong>Name:</strong> ${booking.user_name}</li>
-                <li><strong>Email:</strong> ${booking.user_email}</li>
-              </ul>
-              
-              <h3>Event Details:</h3>
-              <ul>
-                <li><strong>Date:</strong> ${booking.event_date}</li>
-                <li><strong>Guest Count:</strong> ${booking.guest_count}</li>
-                ${booking.message ? `<li><strong>Message:</strong> ${booking.message}</li>` : ''}
-              </ul>
-              
-              <p><a href="${window.location.origin}/Bookings" style="display: inline-block; padding: 12px 24px; background-color: #4F46E5; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0;">View in Dashboard</a></p>
-              
-              <p>Please log in to your dashboard to respond to this booking request.</p>
-            `
-          });
-        }
+        await base44.functions.invoke('notifyNewBooking', { bookingId: booking.id });
       } catch (emailError) {
-        console.error("Failed to send vendor notification:", emailError);
+        console.error("Failed to send booking notifications:", emailError);
       }
     },
     onError: (error) => {
