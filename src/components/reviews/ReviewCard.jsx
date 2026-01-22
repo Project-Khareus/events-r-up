@@ -1,10 +1,52 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Star, User, MessageSquare, Send } from "lucide-react";
 import { format } from "date-fns";
+import { base44 } from "@/api/base44Client";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export default function ReviewCard({ review }) {
+  const [showResponseForm, setShowResponseForm] = useState(false);
+  const [responseText, setResponseText] = useState("");
+  const queryClient = useQueryClient();
+
+  const { data: user } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: () => base44.auth.me(),
+    staleTime: 300000,
+  });
+
+  const { data: userVendors = [] } = useQuery({
+    queryKey: ['userVendors', user?.id],
+    queryFn: () => base44.entities.Vendor.filter({ user_id: user.id }),
+    enabled: !!user?.id,
+    staleTime: 300000,
+  });
+
+  const isVendorOwner = userVendors.some(v => v.id === review.vendor_id);
+
+  const respondMutation = useMutation({
+    mutationFn: async (response) => {
+      await base44.entities.Review.update(review.id, {
+        vendor_response: response,
+        vendor_response_date: new Date().toISOString()
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['reviews'] });
+      queryClient.invalidateQueries({ queryKey: ['vendor_reviews'] });
+      toast.success("Response posted successfully");
+      setShowResponseForm(false);
+      setResponseText("");
+    },
+    onError: () => {
+      toast.error("Failed to post response");
+    }
+  });
   return (
     <Card className="p-6 rounded-2xl border-slate-200 hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between gap-4 mb-4">
@@ -35,6 +77,67 @@ export default function ReviewCard({ review }) {
       )}
 
       <p className="text-slate-700 leading-relaxed">{review.review_text}</p>
+
+      {/* Vendor Response */}
+      {review.vendor_response && (
+        <div className="mt-4 pl-4 border-l-2 border-indigo-200 bg-indigo-50/50 p-4 rounded-r-lg">
+          <div className="flex items-center gap-2 mb-2">
+            <MessageSquare className="h-4 w-4 text-indigo-600" />
+            <span className="font-semibold text-sm text-indigo-900">Vendor Response</span>
+            <span className="text-xs text-slate-500">
+              • {format(new Date(review.vendor_response_date), "MMM d, yyyy 'at' h:mm a")}
+            </span>
+          </div>
+          <p className="text-slate-700 text-sm leading-relaxed">{review.vendor_response}</p>
+        </div>
+      )}
+
+      {/* Response Form for Vendor */}
+      {isVendorOwner && !review.vendor_response && (
+        <div className="mt-4 pt-4 border-t border-slate-200">
+          {!showResponseForm ? (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowResponseForm(true)}
+              className="gap-2"
+            >
+              <MessageSquare className="h-4 w-4" />
+              Respond to Review
+            </Button>
+          ) : (
+            <div className="space-y-3">
+              <Textarea
+                placeholder="Thank the customer and address their feedback..."
+                value={responseText}
+                onChange={(e) => setResponseText(e.target.value)}
+                className="min-h-[100px]"
+              />
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => respondMutation.mutate(responseText)}
+                  disabled={!responseText.trim() || respondMutation.isLoading}
+                  size="sm"
+                  className="gap-2"
+                >
+                  <Send className="h-4 w-4" />
+                  {respondMutation.isLoading ? "Posting..." : "Post Response"}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setShowResponseForm(false);
+                    setResponseText("");
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </Card>
   );
 }
