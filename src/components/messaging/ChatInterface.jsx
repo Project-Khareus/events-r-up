@@ -44,10 +44,17 @@ export default function ChatInterface({ conversationId, onBack }) {
       });
       return msg;
     },
-    onSuccess: () => {
+    onSuccess: async (message) => {
       queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
       setMessageText("");
+      
+      // Send email notification to recipient
+      try {
+        await base44.functions.invoke('notifyNewMessage', { messageId: message.id });
+      } catch (error) {
+        console.error("Failed to send message notification:", error);
+      }
     },
     onError: () => {
       toast.error("Failed to send message");
