@@ -50,6 +50,13 @@ export default function VendorMarketplace() {
   const [vendorPage, setVendorPage] = useState(1);
   const vendorsPerPage = 32;
   const vendorsPerSection = 12; // Limit per event type section for performance
+  
+  // Advanced filters
+  const [sortBy, setSortBy] = useState("relevance");
+  const [location, setLocation] = useState("");
+  const [availableDate, setAvailableDate] = useState(undefined);
+  const [minRating, setMinRating] = useState(0);
+  const [minYears, setMinYears] = useState(0);
 
   useEffect(() => {
     setEventType(eventParam);
@@ -88,7 +95,7 @@ export default function VendorMarketplace() {
   }, [rawVendors]);
 
   const filteredVendors = useMemo(() => {
-    return vendors.filter((vendor) => {
+    let filtered = vendors.filter((vendor) => {
       const matchesSearch = !searchQuery || 
         vendor.business_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         vendor.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -100,10 +107,34 @@ export default function VendorMarketplace() {
       const matchesEvent = eventType === "all" || vendorEvents.length === 0 || vendorEvents.includes(eventType);
       const matchesCategory = category === "all" || vendorCategories.length === 0 || vendorCategories.includes(category);
       const matchesPrice = priceRange === "all" || !vendor.price_range || vendor.price_range === priceRange;
+      
+      // Advanced filters
+      const matchesLocation = !location || 
+        vendor.location?.toLowerCase().includes(location.toLowerCase());
+      
+      const matchesRating = minRating === 0 || 
+        (vendor.rating && vendor.rating >= minRating);
+      
+      const matchesYears = minYears === 0 || 
+        (vendor.years_in_business && vendor.years_in_business >= minYears);
 
-      return matchesSearch && matchesEvent && matchesCategory && matchesPrice;
+      return matchesSearch && matchesEvent && matchesCategory && matchesPrice && 
+             matchesLocation && matchesRating && matchesYears;
     });
-  }, [vendors, searchQuery, eventType, category, priceRange]);
+
+    // Apply sorting
+    if (sortBy === "rating") {
+      filtered = filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    } else if (sortBy === "price_low") {
+      filtered = filtered.sort((a, b) => (a.starting_price || Infinity) - (b.starting_price || Infinity));
+    } else if (sortBy === "price_high") {
+      filtered = filtered.sort((a, b) => (b.starting_price || 0) - (a.starting_price || 0));
+    } else if (sortBy === "newest") {
+      filtered = filtered.sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+    }
+
+    return filtered;
+  }, [vendors, searchQuery, eventType, category, priceRange, sortBy, location, minRating, minYears]);
 
   const featuredVendors = useMemo(() => {
     return filteredVendors.filter(v => v.rating >= 4).slice(0, 4); // Display up to 4 featured
@@ -175,6 +206,11 @@ export default function VendorMarketplace() {
     setCategory("all");
     setPriceRange("all");
     setSearchQuery("");
+    setSortBy("relevance");
+    setLocation("");
+    setAvailableDate(undefined);
+    setMinRating(0);
+    setMinYears(0);
   };
 
   return (
@@ -223,6 +259,16 @@ export default function VendorMarketplace() {
                 onCategoryChange={setCategory}
                 onPriceChange={setPriceRange}
                 onClearFilters={handleClearFilters}
+                sortBy={sortBy}
+                onSortChange={setSortBy}
+                location={location}
+                onLocationChange={setLocation}
+                availableDate={availableDate}
+                onAvailableDateChange={setAvailableDate}
+                minRating={minRating}
+                onMinRatingChange={setMinRating}
+                minYears={minYears}
+                onMinYearsChange={setMinYears}
               />
           </div>
         </div>
