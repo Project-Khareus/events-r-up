@@ -39,29 +39,9 @@ export default function BookingCard({ booking, isVendor, currentUserId }) {
       
       // Send email notification
       try {
-        const statusMessages = {
-          confirmed: "Your booking request has been confirmed!",
-          declined: "Unfortunately, your booking request has been declined.",
-          completed: "Your booking has been marked as completed."
-        };
-        
-        await base44.integrations.Core.SendEmail({
-          to: booking.user_email,
-          subject: `Booking Update: ${statusMessages[newStatus]}`,
-          body: `
-            <h2>Booking Status Update</h2>
-            <p>Dear ${booking.user_name},</p>
-            <p>${statusMessages[newStatus]}</p>
-            
-            <h3>Booking Details:</h3>
-            <ul>
-              <li><strong>Vendor:</strong> ${booking.vendor_name}</li>
-              <li><strong>Event Date:</strong> ${format(new Date(booking.event_date), "MMMM d, yyyy")}</li>
-              <li><strong>Guest Count:</strong> ${booking.guest_count}</li>
-            </ul>
-            
-            <p><a href="https://eventsrup.com${createPageUrl('Bookings')}" style="display: inline-block; padding: 12px 24px; background-color: #4F46E5; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0;">View Booking</a></p>
-          `
+        await base44.functions.invoke('notifyBookingStatusChange', { 
+          bookingId: booking.id, 
+          newStatus 
         });
       } catch (emailError) {
         console.error("Failed to send email:", emailError);
