@@ -121,13 +121,8 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-20">
           
           {/* Logo */}
-          <Link to={createPageUrl("VendorMarketplace")} className="flex items-center gap-3 group">
-            <img 
-              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69224d81efa2f499554b5019/6ebbeaf2d_khareus.png"
-              alt="Khareus Logo"
-              className="h-10 w-auto group-hover:scale-105 transition-transform"
-            />
-            <span className="font-sans font-semibold text-2xl text-stone-800 dark:text-stone-100 tracking-[0.15em] uppercase">
+          <Link to={createPageUrl("VendorMarketplace")} className="flex items-center group">
+            <span className="font-sans font-semibold text-2xl text-stone-800 dark:text-stone-100 tracking-[0.15em] uppercase group-hover:scale-105 transition-transform">
               Khareus
             </span>
           </Link>
@@ -350,12 +345,7 @@ export default function Navbar() {
                 <div className="flex flex-col h-full bg-gradient-to-b from-white to-slate-50 dark:from-slate-900 dark:to-slate-950">
                 {/* Header */}
                 <div className="p-6 border-b border-slate-200 dark:border-slate-800">
-                  <div className="flex items-center gap-3">
-                    <img 
-                      src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69224d81efa2f499554b5019/6ebbeaf2d_khareus.png"
-                      alt="Khareus Logo"
-                      className="h-10 w-auto"
-                    />
+                  <div className="flex items-center">
                     <span className="font-sans font-semibold text-xl text-stone-800 dark:text-stone-100 tracking-[0.15em] uppercase">
                       Khareus
                     </span>
