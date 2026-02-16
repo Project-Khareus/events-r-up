@@ -14,6 +14,7 @@ import { format } from "date-fns";
 import EventCard from "../components/events/EventCard";
 import FavoriteButton from "../components/events/FavoriteButton";
 import AddToCalendarButton from "../components/events/AddToCalendarButton";
+import MobileHeader from "../components/layout/MobileHeader";
 
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   var R = 6371; // Radius of the earth in km
@@ -101,6 +102,7 @@ export default function EventDetail() {
         url={window.location.href}
         type="event"
       />
+      <MobileHeader title={event.title} />
       {/* Hero Image */}
       {(isPending || isRejected) && (
         <div className={`w-full py-3 px-6 text-center text-white font-medium ${isPending ? 'bg-yellow-500' : 'bg-red-500'}`}>
@@ -116,7 +118,7 @@ export default function EventDetail() {
          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-transparent" />
          
          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12 max-w-7xl mx-auto">
-            <Link to={createPageUrl("Classifieds")} className="inline-flex items-center text-white/80 hover:text-white mb-6 transition-colors">
+            <Link to={createPageUrl("Classifieds")} className="hidden md:inline-flex items-center text-white/80 hover:text-white mb-6 transition-colors">
                 <ArrowLeft className="h-4 w-4 mr-2" /> Back to Classifieds
             </Link>
             <div className="flex flex-wrap gap-3 mb-4">

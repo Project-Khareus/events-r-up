@@ -31,6 +31,7 @@ import ShareButton from "../components/shared/ShareButton";
 import MetaTags from "../components/shared/MetaTags";
 import VendorFavoriteButton from "../components/vendor/VendorFavoriteButton";
 import AvailabilityCalendar from "../components/vendor/AvailabilityCalendar";
+import MobileHeader from "../components/layout/MobileHeader";
 
 const CATEGORY_LABELS = {
   venue: "Venue",
@@ -184,9 +185,10 @@ export default function VendorDetail() {
         url={window.location.href}
         type="business.business"
       />
+      <MobileHeader title={vendor.business_name} />
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-3 sm:py-4">
         {/* Breadcrumbs */}
-        <nav className="flex items-center gap-2 text-xs sm:text-sm text-slate-500 mb-4 sm:mb-5">
+        <nav className="hidden md:flex items-center gap-2 text-xs sm:text-sm text-slate-500 mb-4 sm:mb-5">
           <Link to={createPageUrl("VendorMarketplace")} className="hover:text-slate-900 transition-colors shrink-0">Home</Link>
           <ChevronRight className="h-3 w-3 shrink-0" />
           <Link to={createPageUrl("VendorMarketplace")} className="hover:text-slate-900 transition-colors shrink-0">Vendors</Link>

@@ -45,7 +45,7 @@ export default function FavoriteButton({ eventId, className, variant = "outline"
   const myFavorite = favorites[0];
   const isFavorited = !!myFavorite;
 
-  // 3. Mutations
+  // 3. Mutations with optimistic updates
   const toggleMutation = useMutation({
     mutationFn: async () => {
       if (!user) {
@@ -61,16 +61,35 @@ export default function FavoriteButton({ eventId, className, variant = "outline"
         });
       }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['favorites', eventId] });
-      queryClient.invalidateQueries({ queryKey: ['myFavorites'] });
-      toast.success(isFavorited ? "Removed from favorites" : "Added to favorites");
+    onMutate: async () => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['favorites', eventId] });
+      
+      // Snapshot previous value
+      const previousFavorites = queryClient.getQueryData(['favorites', eventId]);
+      
+      // Optimistically update
+      queryClient.setQueryData(['favorites', eventId], (old = []) => {
+        if (isFavorited) {
+          return old.filter(f => normalizeData(f).id !== myFavorite.id);
+        } else {
+          return [...old, { id: 'temp', user_id: user.id, event_id: eventId, item_type: 'event' }];
+        }
+      });
+      
+      return { previousFavorites };
     },
-    onError: (err) => {
+    onError: (err, variables, context) => {
+      // Rollback on error
+      queryClient.setQueryData(['favorites', eventId], context.previousFavorites);
       toast.error(err.message);
       if (err.message.includes("log in")) {
         base44.auth.redirectToLogin(window.location.href);
       }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['favorites', eventId] });
+      queryClient.invalidateQueries({ queryKey: ['myFavorites'] });
     }
   });
 

@@ -56,16 +56,35 @@ export default function VendorFavoriteButton({ vendorId, className, variant = "o
         });
       }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['vendorFavorites', vendorId] });
-      queryClient.invalidateQueries({ queryKey: ['myFavorites'] });
-      toast.success(isFavorited ? "Removed from favorites" : "Added to favorites");
+    onMutate: async () => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['vendorFavorites', vendorId] });
+      
+      // Snapshot previous value
+      const previousFavorites = queryClient.getQueryData(['vendorFavorites', vendorId]);
+      
+      // Optimistically update
+      queryClient.setQueryData(['vendorFavorites', vendorId], (old = []) => {
+        if (isFavorited) {
+          return old.filter(f => normalizeData(f).id !== myFavorite.id);
+        } else {
+          return [...old, { id: 'temp', user_id: user.id, vendor_id: vendorId, item_type: 'vendor' }];
+        }
+      });
+      
+      return { previousFavorites };
     },
-    onError: (err) => {
+    onError: (err, variables, context) => {
+      // Rollback on error
+      queryClient.setQueryData(['vendorFavorites', vendorId], context.previousFavorites);
       toast.error(err.message);
       if (err.message.includes("log in")) {
         base44.auth.redirectToLogin(window.location.href);
       }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['vendorFavorites', vendorId] });
+      queryClient.invalidateQueries({ queryKey: ['myFavorites'] });
     }
   });
 
