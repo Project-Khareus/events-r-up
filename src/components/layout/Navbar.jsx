@@ -123,10 +123,10 @@ export default function Navbar() {
           {/* Logo */}
           <Link to={createPageUrl("VendorMarketplace")} className="flex items-center gap-3 group">
             <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-xl flex items-center justify-center text-white font-serif font-bold text-xl shadow-lg shadow-indigo-200 dark:shadow-none group-hover:scale-105 transition-transform">
-              Ob
+              K
             </div>
             <span className="font-serif font-bold text-2xl text-slate-900 dark:text-white tracking-tight">
-              Omnievents
+              Khareus
             </span>
           </Link>
 
@@ -346,17 +346,17 @@ export default function Navbar() {
               </SheetTrigger>
               <SheetContent side="right" className="w-[280px] p-0 border-0">
                 <div className="flex flex-col h-full bg-gradient-to-b from-white to-slate-50 dark:from-slate-900 dark:to-slate-950">
-                  {/* Header */}
-                  <div className="p-6 border-b border-slate-200 dark:border-slate-800">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-xl flex items-center justify-center text-white font-serif font-bold text-lg shadow-lg">
-                        Ob
-                      </div>
-                      <span className="font-serif font-bold text-xl text-slate-900 dark:text-white">
-                        Menu
-                      </span>
+                {/* Header */}
+                <div className="p-6 border-b border-slate-200 dark:border-slate-800">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-xl flex items-center justify-center text-white font-serif font-bold text-lg shadow-lg">
+                      K
                     </div>
+                    <span className="font-serif font-bold text-xl text-slate-900 dark:text-white">
+                      Menu
+                    </span>
                   </div>
+                </div>
 
                   {/* Nav Links */}
                   <div className="flex-1 overflow-y-auto py-6 px-4">

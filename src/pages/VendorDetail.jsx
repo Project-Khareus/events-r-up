@@ -285,7 +285,7 @@ export default function VendorDetail() {
               <ShareButton 
                 url={window.location.href}
                 title={`${vendor.business_name} - Event Vendor`}
-                description={vendor.description || `Check out ${vendor.business_name} on Omnievents!`}
+                description={vendor.description || `Check out ${vendor.business_name} on Khareus!`}
                 variant="outline"
                 className="w-full h-11"
               />

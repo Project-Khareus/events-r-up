@@ -115,7 +115,7 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-slate-400 text-sm">
-              © {new Date().getFullYear()} Omnievents. All Rights Reserved.
+              © {new Date().getFullYear()} Khareus. All Rights Reserved.
             </p>
             <div className="flex items-center gap-4 text-sm">
               <Link to={createPageUrl("LegalPage?slug=privacy")} className="text-slate-400 hover:text-white transition-colors">

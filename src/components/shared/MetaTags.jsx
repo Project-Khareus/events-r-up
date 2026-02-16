@@ -10,7 +10,7 @@ export default function MetaTags({
   useEffect(() => {
     // Update page title
     if (title) {
-      document.title = `${title} | Omnievents`;
+      document.title = `${title} | Khareus`;
     }
 
     // Helper to set or update meta tag
@@ -39,12 +39,12 @@ export default function MetaTags({
     setMetaTag('og:image:alt', title);
     setMetaTag('og:url', url || window.location.href);
     setMetaTag('og:type', type);
-    setMetaTag('og:site_name', 'Omnievents');
+    setMetaTag('og:site_name', 'Khareus');
     setMetaTag('og:locale', 'en_US');
 
     // Twitter Card tags
     setMetaTag('twitter:card', image ? 'summary_large_image' : 'summary', true);
-    setMetaTag('twitter:site', '@omnievents', true);
+    setMetaTag('twitter:site', '@khareus', true);
     setMetaTag('twitter:title', title, true);
     setMetaTag('twitter:description', description, true);
     setMetaTag('twitter:image', image, true);
@@ -61,7 +61,7 @@ export default function MetaTags({
     // Cleanup function to remove added tags when component unmounts
     return () => {
       // Optional: Reset to default values or remove tags
-      document.title = 'Omnievents';
+      document.title = 'Khareus';
     };
   }, [title, description, image, url, type]);
 
