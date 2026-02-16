@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Badge } from "@/components/ui/badge";
 import VendorFavoriteButton from "../vendor/VendorFavoriteButton";
-import { formatPrice, detectUserCurrency } from "../utils/currency";
+import { formatPrice, detectUserCurrency } from "@/components/utils/currency";
 
 const CATEGORY_LABELS = {
   bridal_fashion: "Bridal Fashion",
