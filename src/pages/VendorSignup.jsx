@@ -33,15 +33,6 @@ export default function VendorSignup() {
           setPaymentSuccess(true);
           setIsSubmitted(true);
         }
-
-        // Check if user already has a vendor listing
-        const vendors = await base44.entities.Vendor.list();
-        const existingVendor = vendors.find(v => v.user_id === currentUser.id);
-        
-        if (existingVendor) {
-          // Redirect to Manage Listing if already exists
-          navigate(createPageUrl("ManageListing"));
-        }
         
         setIsLoading(false);
       } catch (error) {
@@ -63,6 +54,34 @@ export default function VendorSignup() {
         years_in_business: data.years_in_business ? parseInt(data.years_in_business) : undefined,
       };
 
+      // Check if trial is selected
+      if (data.subscription_type === 'trial') {
+        // Count existing trial listings for this user
+        const allVendors = await base44.entities.Vendor.filter({ user_id: user.id });
+        const trialCount = allVendors.filter(v => v.is_trial === true).length;
+        
+        if (trialCount >= 3) {
+          throw new Error("You've reached the maximum of 3 trial listings. Please choose a paid plan.");
+        }
+
+        // Create trial vendor directly without payment
+        const trialEndDate = new Date();
+        trialEndDate.setMonth(trialEndDate.getMonth() + 1);
+
+        const newVendor = await base44.entities.Vendor.create({
+          ...vendorData,
+          user_id: user.id,
+          subscription_type: 'trial',
+          is_trial: true,
+          subscription_start_date: new Date().toISOString().split('T')[0],
+          subscription_end_date: trialEndDate.toISOString().split('T')[0],
+          status: 'pending'
+        });
+
+        return { trial: true, vendorId: newVendor.id };
+      }
+
+      // For paid plans, use checkout
       const response = await base44.functions.invoke('createVendorCheckout', {
         subscription_type: data.subscription_type,
         vendorData
@@ -71,8 +90,16 @@ export default function VendorSignup() {
       return response.data;
     },
     onSuccess: (data) => {
-      // Redirect to Stripe checkout
-      window.location.href = data.url;
+      if (data.trial) {
+        // Trial created successfully, redirect to manage listing
+        toast.success("Trial listing created! We'll review it shortly.");
+        setTimeout(() => {
+          navigate(createPageUrl("ManageListing"));
+        }, 1500);
+      } else {
+        // Redirect to Stripe checkout
+        window.location.href = data.url;
+      }
     },
     onError: (error) => {
       console.error("Checkout error:", error);

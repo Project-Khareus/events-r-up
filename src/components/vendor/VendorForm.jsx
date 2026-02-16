@@ -101,7 +101,7 @@ const DEFAULT_FORM_DATA = {
   gallery_videos: [],
   services: [], // Changed to array
   years_in_business: "",
-  subscription_type: "explorer", // Default to explorer
+  subscription_type: "trial", // Default to trial
 };
 
 const NAME_CHANGE_REASONS = [
@@ -770,7 +770,29 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
           Subscription Plan
         </h2>
         
-        <div className="grid md:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-4 gap-4">
+          <button
+            type="button"
+            onClick={() => setFormData({ ...formData, subscription_type: "trial" })}
+            className={cn(
+              "p-5 border-2 rounded-xl transition-all text-left",
+              formData.subscription_type === "trial"
+                ? "border-green-600 bg-green-50 shadow-md"
+                : "border-slate-200 hover:border-slate-300"
+            )}
+          >
+            <div className="flex items-start justify-between mb-3">
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-slate-900 mb-1">Trial</h3>
+                <p className="text-xs text-slate-600">1 month free (max 3 listings)</p>
+              </div>
+              {formData.subscription_type === "trial" && (
+                <Check className="h-5 w-5 text-green-600" />
+              )}
+            </div>
+            <div className="text-2xl font-bold text-slate-900">Free<span className="text-sm text-slate-500 font-normal">/mo</span></div>
+          </button>
+
           <button
             type="button"
             onClick={() => setFormData({ ...formData, subscription_type: "explorer" })}

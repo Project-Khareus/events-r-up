@@ -64,12 +64,18 @@ export default function ManageListing() {
                 </Button>
               </Link>
             )}
-            <Link to={createPageUrl("VendorSignup")}>
-              <Button className="bg-indigo-600 hover:bg-indigo-700">
-                <Plus className="h-4 w-4 mr-2" />
-                Add New Listing
-              </Button>
-            </Link>
+            {(() => {
+              const trialCount = vendors.filter(v => v.is_trial === true).length;
+              const canAddTrial = trialCount < 3;
+              return (
+                <Link to={createPageUrl("VendorSignup")}>
+                  <Button className="bg-indigo-600 hover:bg-indigo-700">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add New Listing {canAddTrial && `(${3 - trialCount} trial${3 - trialCount !== 1 ? 's' : ''} left)`}
+                  </Button>
+                </Link>
+              );
+            })()}
           </div>
         </div>
 
@@ -104,6 +110,11 @@ export default function ManageListing() {
                     </div>
                   )}
                   <div className="absolute top-3 right-3">
+                    {vendor.is_trial && (
+                      <Badge className="bg-blue-500 text-white mr-1">
+                        Trial
+                      </Badge>
+                    )}
                     {vendor.status === 'pending' && (
                       <Badge className="bg-yellow-500 text-white">
                         <Clock className="h-3 w-3 mr-1" />
