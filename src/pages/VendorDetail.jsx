@@ -32,7 +32,7 @@ import MetaTags from "../components/shared/MetaTags";
 import VendorFavoriteButton from "../components/vendor/VendorFavoriteButton";
 import AvailabilityCalendar from "../components/vendor/AvailabilityCalendar";
 import MobileHeader from "../components/layout/MobileHeader";
-import { formatPrice, detectUserCurrency } from "../utils/currency";
+import { formatPrice, detectUserCurrency } from "../components/utils/currency";
 
 const CATEGORY_LABELS = {
   venue: "Venue",
