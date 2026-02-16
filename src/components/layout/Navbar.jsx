@@ -122,10 +122,10 @@ export default function Navbar() {
           
           {/* Logo */}
           <Link to={createPageUrl("VendorMarketplace")} className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-xl flex items-center justify-center text-white font-serif font-bold text-xl shadow-lg shadow-indigo-200 dark:shadow-none group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 bg-gradient-to-br from-amber-700 to-amber-900 rounded-xl flex items-center justify-center text-white font-serif font-bold text-xl shadow-lg shadow-amber-200 dark:shadow-none group-hover:scale-105 transition-transform">
               K
             </div>
-            <span className="font-serif font-bold text-2xl text-slate-900 dark:text-white tracking-tight">
+            <span className="font-sans font-semibold text-2xl text-stone-800 dark:text-stone-100 tracking-[0.15em] uppercase">
               Khareus
             </span>
           </Link>
@@ -349,11 +349,11 @@ export default function Navbar() {
                 {/* Header */}
                 <div className="p-6 border-b border-slate-200 dark:border-slate-800">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-xl flex items-center justify-center text-white font-serif font-bold text-lg shadow-lg">
+                    <div className="w-10 h-10 bg-gradient-to-br from-amber-700 to-amber-900 rounded-xl flex items-center justify-center text-white font-serif font-bold text-lg shadow-lg">
                       K
                     </div>
-                    <span className="font-serif font-bold text-xl text-slate-900 dark:text-white">
-                      Menu
+                    <span className="font-sans font-semibold text-xl text-stone-800 dark:text-stone-100 tracking-[0.15em] uppercase">
+                      Khareus
                     </span>
                   </div>
                 </div>
