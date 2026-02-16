@@ -160,7 +160,7 @@ export default function Navbar() {
             </div>
 
             <Link to={createPageUrl("Classifieds")} className="text-sm font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-white transition-colors">
-              Classifieds
+              Public Events
             </Link>
             <Link to={createPageUrl("Blog")} className="text-sm font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-white transition-colors">
               Blog
@@ -408,7 +408,7 @@ export default function Navbar() {
                         className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
                       >
                         <CalendarDays className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                        <span className="font-medium">Classifieds</span>
+                        <span className="font-medium">Public Events</span>
                       </Link>
                     </div>
 
