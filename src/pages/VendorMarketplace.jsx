@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Sparkles, TrendingUp, Wand2, Loader2, Calendar } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { Button } from "@/components/ui/button";
 import SearchBar from "../components/marketplace/SearchBar";
@@ -39,12 +39,6 @@ const CATEGORY_LABELS = {
 };
 
 export default function VendorMarketplace() {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    navigate(createPageUrl("Home"), { replace: true });
-  }, [navigate]);
-
   const urlParams = new URLSearchParams(window.location.search);
   const eventParam = urlParams.get("event") || "all";
   const categoryParam = urlParams.get("category") || "all";
