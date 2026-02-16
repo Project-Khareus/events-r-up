@@ -32,6 +32,7 @@ import MetaTags from "../components/shared/MetaTags";
 import VendorFavoriteButton from "../components/vendor/VendorFavoriteButton";
 import AvailabilityCalendar from "../components/vendor/AvailabilityCalendar";
 import MobileHeader from "../components/layout/MobileHeader";
+import { formatPrice, detectUserCurrency } from "../utils/currency";
 
 const CATEGORY_LABELS = {
   venue: "Venue",
@@ -73,6 +74,11 @@ export default function VendorDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   const vendorId = urlParams.get("id");
   const [showAllCategories, setShowAllCategories] = React.useState(false);
+  const [currency, setCurrency] = React.useState(null);
+
+  React.useEffect(() => {
+    detectUserCurrency().then(setCurrency);
+  }, []);
 
   // Track profile view
   React.useEffect(() => {
@@ -257,7 +263,7 @@ export default function VendorDetail() {
             <div className="mb-4">
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl sm:text-3xl font-bold text-slate-900">
-                  {vendor.starting_price ? `$${vendor.starting_price.toLocaleString()}` : "Price varies"}
+                  {vendor.starting_price && currency ? formatPrice(vendor.starting_price, currency) : "Price varies"}
                 </span>
                 {vendor.starting_price && <span className="text-slate-500 text-xs sm:text-sm font-normal">starting price</span>}
               </div>

@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Badge } from "@/components/ui/badge";
 import VendorFavoriteButton from "../vendor/VendorFavoriteButton";
+import { formatPrice, detectUserCurrency } from "../../utils/currency";
 
 const CATEGORY_LABELS = {
   bridal_fashion: "Bridal Fashion",
@@ -36,6 +37,11 @@ export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
   if (!vendor) return null;
   
   const [imageError, setImageError] = React.useState(false);
+  const [currency, setCurrency] = React.useState(null);
+
+  React.useEffect(() => {
+    detectUserCurrency().then(setCurrency);
+  }, []);
 
   const averageRating = reviews.length > 0
     ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
@@ -88,9 +94,9 @@ export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
             <VendorFavoriteButton vendorId={vendor.id} size="icon" className="bg-white/90 hover:bg-white" />
           </div>
 
-          {vendor.starting_price && (
+          {vendor.starting_price && currency && (
             <div className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 bg-slate-800 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded-md sm:rounded-lg shadow-lg font-semibold text-xs sm:text-sm">
-              ${vendor.starting_price.toLocaleString()}
+              {formatPrice(vendor.starting_price, currency)}
             </div>
           )}
 
