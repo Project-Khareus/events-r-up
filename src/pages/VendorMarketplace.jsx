@@ -1,8 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Sparkles, TrendingUp, Wand2, Loader2 } from "lucide-react";
-import PullToRefresh from "../components/shared/PullToRefresh";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { Button } from "@/components/ui/button";
@@ -40,7 +39,6 @@ const CATEGORY_LABELS = {
 };
 
 export default function VendorMarketplace() {
-  const queryClient = useQueryClient();
   const urlParams = new URLSearchParams(window.location.search);
   const eventParam = urlParams.get("event") || "all";
   const categoryParam = urlParams.get("category") || "all";
@@ -215,14 +213,8 @@ export default function VendorMarketplace() {
     setMinYears(0);
   };
 
-  const handleRefresh = async () => {
-    await queryClient.invalidateQueries(['vendors']);
-    await queryClient.invalidateQueries(['all_reviews']);
-  };
-
   return (
-    <PullToRefresh onRefresh={handleRefresh}>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
       {/* Hero Section */}
       <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
         <div className="max-w-7xl mx-auto px-6 py-20 lg:py-28">
@@ -434,7 +426,6 @@ export default function VendorMarketplace() {
           </div>
           </div>
           </div>
-      </div>
-    </PullToRefresh>
+    </div>
   );
 }
