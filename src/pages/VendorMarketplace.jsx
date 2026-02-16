@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
-import { Sparkles, TrendingUp, Wand2, Loader2 } from "lucide-react";
+import { Sparkles, TrendingUp, Wand2, Loader2, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { Button } from "@/components/ui/button";
@@ -220,7 +220,7 @@ export default function VendorMarketplace() {
         <div className="max-w-7xl mx-auto px-6 py-20 lg:py-28">
           <div className="max-w-3xl">
             <div className="flex items-center gap-2 mb-6">
-              <Sparkles className="h-6 w-6 text-slate-400" />
+              <Calendar className="h-6 w-6 text-slate-400" />
               <span className="text-slate-400 font-medium tracking-wide">Khareus, lasting memories</span>
             </div>
             <h1 className="text-5xl lg:text-6xl font-serif font-bold mb-6 leading-tight tracking-tight">
