@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import PullToRefresh from "../components/shared/PullToRefresh";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { Button } from "@/components/ui/button";
@@ -42,6 +43,7 @@ const deg2rad = (deg) => {
 };
 
 export default function Classifieds() {
+  const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTheme, setSelectedTheme] = useState("All");
   const [page, setPage] = useState(1);
@@ -219,8 +221,13 @@ export default function Classifieds() {
     return { displayEvents: approvedEvents, usingFallback: true };
   }, [filteredEvents, approvedEvents]);
 
+  const handleRefresh = async () => {
+    await queryClient.invalidateQueries(['events']);
+  };
+
   return (
-    <div className="min-h-screen bg-white">
+    <PullToRefresh onRefresh={handleRefresh}>
+      <div className="min-h-screen bg-white">
       {/* Search Header - Sticky */}
       <div className="sticky top-0 z-30 bg-white border-b border-slate-200 shadow-sm">
         <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-4">
@@ -378,6 +385,7 @@ export default function Classifieds() {
         <div>Fallback active: {usingFallback ? 'yes' : 'no'}</div>
       </div>
     )}
-    </div>
-    );
-    }
+      </div>
+    </PullToRefresh>
+  );
+}
