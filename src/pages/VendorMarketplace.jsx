@@ -50,7 +50,7 @@ export default function VendorMarketplace() {
   const [vendorPage, setVendorPage] = useState(1);
   const vendorsPerPage = 32;
   const vendorsPerSection = 12; // Limit per event type section for performance
-  
+
   // Advanced filters
   const [sortBy, setSortBy] = useState("relevance");
   const [location, setLocation] = useState("");
@@ -72,7 +72,7 @@ export default function VendorMarketplace() {
     refetchOnMount: false,
     refetchOnReconnect: false,
     retry: 1,
-    keepPreviousData: true,
+    keepPreviousData: true
   });
 
   // Batch fetch reviews with pagination
@@ -84,42 +84,42 @@ export default function VendorMarketplace() {
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
-    retry: 1,
+    retry: 1
   });
-  
+
   // Normalize vendor data - handle both flat and nested data structures
   const vendors = useMemo(() => {
-    return rawVendors
-      .map(v => v.data ? { id: v.id, ...v.data } : v)
-      .filter(v => !v.status || v.status === 'approved');
+    return rawVendors.
+    map((v) => v.data ? { id: v.id, ...v.data } : v).
+    filter((v) => !v.status || v.status === 'approved');
   }, [rawVendors]);
 
   const filteredVendors = useMemo(() => {
     let filtered = vendors.filter((vendor) => {
-      const matchesSearch = !searchQuery || 
-        vendor.business_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        vendor.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        vendor.services?.some(s => s.toLowerCase().includes(searchQuery.toLowerCase()));
-      
-      const vendorEvents = vendor.event_type ? (Array.isArray(vendor.event_type) ? vendor.event_type : [vendor.event_type]) : [];
-      const vendorCategories = vendor.category ? (Array.isArray(vendor.category) ? vendor.category : [vendor.category]) : [];
+      const matchesSearch = !searchQuery ||
+      vendor.business_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      vendor.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      vendor.services?.some((s) => s.toLowerCase().includes(searchQuery.toLowerCase()));
+
+      const vendorEvents = vendor.event_type ? Array.isArray(vendor.event_type) ? vendor.event_type : [vendor.event_type] : [];
+      const vendorCategories = vendor.category ? Array.isArray(vendor.category) ? vendor.category : [vendor.category] : [];
 
       const matchesEvent = eventType === "all" || vendorEvents.length === 0 || vendorEvents.includes(eventType);
       const matchesCategory = category === "all" || vendorCategories.length === 0 || vendorCategories.includes(category);
       const matchesPrice = priceRange === "all" || !vendor.price_range || vendor.price_range === priceRange;
-      
-      // Advanced filters
-      const matchesLocation = !location || 
-        vendor.location?.toLowerCase().includes(location.toLowerCase());
-      
-      const matchesRating = minRating === 0 || 
-        (vendor.rating && vendor.rating >= minRating);
-      
-      const matchesYears = minYears === 0 || 
-        (vendor.years_in_business && vendor.years_in_business >= minYears);
 
-      return matchesSearch && matchesEvent && matchesCategory && matchesPrice && 
-             matchesLocation && matchesRating && matchesYears;
+      // Advanced filters
+      const matchesLocation = !location ||
+      vendor.location?.toLowerCase().includes(location.toLowerCase());
+
+      const matchesRating = minRating === 0 ||
+      vendor.rating && vendor.rating >= minRating;
+
+      const matchesYears = minYears === 0 ||
+      vendor.years_in_business && vendor.years_in_business >= minYears;
+
+      return matchesSearch && matchesEvent && matchesCategory && matchesPrice &&
+      matchesLocation && matchesRating && matchesYears;
     });
 
     // Apply sorting
@@ -137,17 +137,17 @@ export default function VendorMarketplace() {
   }, [vendors, searchQuery, eventType, category, priceRange, sortBy, location, minRating, minYears]);
 
   const featuredVendors = useMemo(() => {
-    return filteredVendors.filter(v => v.rating >= 4).slice(0, 4); // Display up to 4 featured
+    return filteredVendors.filter((v) => v.rating >= 4).slice(0, 4); // Display up to 4 featured
   }, [filteredVendors]);
 
   const regularVendors = useMemo(() => {
-    const featuredIds = new Set(featuredVendors.map(v => v.id));
-    return filteredVendors.filter(v => !featuredIds.has(v.id));
+    const featuredIds = new Set(featuredVendors.map((v) => v.id));
+    return filteredVendors.filter((v) => !featuredIds.has(v.id));
   }, [filteredVendors, featuredVendors]);
 
   // Pick a random vendor for promo (vendors with high ratings)
   const promoVendor = useMemo(() => {
-    const eligibleVendors = vendors.filter(v => v.rating >= 4 && v.image_url);
+    const eligibleVendors = vendors.filter((v) => v.rating >= 4 && v.image_url);
     if (eligibleVendors.length === 0) return null;
     const randomIndex = Math.floor(Date.now() / 86400000) % eligibleVendors.length; // Changes daily
     return eligibleVendors[randomIndex];
@@ -155,50 +155,50 @@ export default function VendorMarketplace() {
 
   // Group vendors by event type for homepage display
   const isHomepage = eventType === "all" && category === "all" && !searchQuery;
-  
+
   const EVENT_LABELS = {
     weddings: "Weddings",
     parties: "Parties",
     conference: "Conference",
     funeral: "Funeral"
   };
-  
+
   const vendorsByEvent = useMemo(() => {
     if (!isHomepage) return [];
     const eventOrder = ["weddings", "parties", "conference", "funeral"];
     const grouped = {};
 
     // Initialize groups
-    eventOrder.forEach(e => {
-        grouped[e] = { eventType: e, vendors: [] };
+    eventOrder.forEach((e) => {
+      grouped[e] = { eventType: e, vendors: [] };
     });
 
     vendors.forEach((vendor) => {
       // After normalization, event_type is directly on vendor
-      const vendorEvents = vendor.event_type ? (Array.isArray(vendor.event_type) ? vendor.event_type : [vendor.event_type]) : [];
+      const vendorEvents = vendor.event_type ? Array.isArray(vendor.event_type) ? vendor.event_type : [vendor.event_type] : [];
       if (vendorEvents.length === 0) return; // Skip vendors without event type
-      vendorEvents.forEach(eventType => {
-          if (grouped[eventType]) {
-              grouped[eventType].vendors.push(vendor);
-          }
+      vendorEvents.forEach((eventType) => {
+        if (grouped[eventType]) {
+          grouped[eventType].vendors.push(vendor);
+        }
       });
     });
 
     // Return groups in the specified order (Weddings, Parties, Conference, Funeral)
     // ALWAYS show weddings and parties, limit vendors per section for performance
-    return eventOrder
-      .map(eventType => ({
-        ...grouped[eventType],
-        vendors: grouped[eventType].vendors.slice(0, vendorsPerSection) // Limit to first 12 vendors per section
-      }))
-      .filter(group => {
-        // Always show Weddings and Parties even if empty
-        if (group.eventType === 'weddings' || group.eventType === 'parties') {
-          return true;
-        }
-        // Show other sections only if they have vendors
-        return group.vendors.length > 0;
-      });
+    return eventOrder.
+    map((eventType) => ({
+      ...grouped[eventType],
+      vendors: grouped[eventType].vendors.slice(0, vendorsPerSection) // Limit to first 12 vendors per section
+    })).
+    filter((group) => {
+      // Always show Weddings and Parties even if empty
+      if (group.eventType === 'weddings' || group.eventType === 'parties') {
+        return true;
+      }
+      // Show other sections only if they have vendors
+      return group.vendors.length > 0;
+    });
   }, [vendors, isHomepage, vendorsPerSection]);
 
   const handleClearFilters = () => {
@@ -221,7 +221,7 @@ export default function VendorMarketplace() {
           <div className="max-w-3xl">
             <div className="flex items-center gap-2 mb-6">
               <Sparkles className="h-6 w-6 text-slate-400" />
-              <span className="text-slate-400 font-medium tracking-wide">Omnievents, lasting memories</span>
+              <span className="text-slate-400 font-medium tracking-wide">Khareus, lasting memories</span>
             </div>
             <h1 className="text-5xl lg:text-6xl font-serif font-bold mb-6 leading-tight tracking-tight">
               Find Your Perfect
@@ -252,24 +252,24 @@ export default function VendorMarketplace() {
               </Link>
             </div>
             <FilterControls
-                eventType={eventType}
-                category={category}
-                priceRange={priceRange}
-                onEventChange={setEventType}
-                onCategoryChange={setCategory}
-                onPriceChange={setPriceRange}
-                onClearFilters={handleClearFilters}
-                sortBy={sortBy}
-                onSortChange={setSortBy}
-                location={location}
-                onLocationChange={setLocation}
-                availableDate={availableDate}
-                onAvailableDateChange={setAvailableDate}
-                minRating={minRating}
-                onMinRatingChange={setMinRating}
-                minYears={minYears}
-                onMinYearsChange={setMinYears}
-              />
+              eventType={eventType}
+              category={category}
+              priceRange={priceRange}
+              onEventChange={setEventType}
+              onCategoryChange={setCategory}
+              onPriceChange={setPriceRange}
+              onClearFilters={handleClearFilters}
+              sortBy={sortBy}
+              onSortChange={setSortBy}
+              location={location}
+              onLocationChange={setLocation}
+              availableDate={availableDate}
+              onAvailableDateChange={setAvailableDate}
+              minRating={minRating}
+              onMinRatingChange={setMinRating}
+              minYears={minYears}
+              onMinYearsChange={setMinYears} />
+
           </div>
         </div>
       </div>
@@ -283,113 +283,113 @@ export default function VendorMarketplace() {
 
           <div className="flex-1 min-w-0">
         {/* Results Count - only show when searching */}
-        {searchQuery && (
-          <div className="mb-6 sm:mb-8 px-2">
+        {searchQuery &&
+            <div className="mb-6 sm:mb-8 px-2">
             <p className="text-sm sm:text-base text-slate-600">
               <span className="font-semibold text-slate-900">{filteredVendors.length}</span> vendors found
             </p>
           </div>
-        )}
+            }
 
-        {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 px-2">
-            {[...Array(6)].map((_, i) => (
+        {isLoading ?
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 px-2">
+            {[...Array(6)].map((_, i) =>
               <div key={i} className="space-y-3 sm:space-y-4">
                 <Skeleton className="h-48 sm:h-56 lg:h-64 rounded-xl sm:rounded-2xl" />
                 <Skeleton className="h-5 sm:h-6 w-3/4" />
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-2/3" />
               </div>
-            ))}
-          </div>
-        ) : filteredVendors.length === 0 ? (
-          <div className="text-center py-12 sm:py-20 px-4">
+              )}
+          </div> :
+            filteredVendors.length === 0 ?
+            <div className="text-center py-12 sm:py-20 px-4">
             <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-slate-100 mb-3 sm:mb-4">
               <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-slate-400" />
             </div>
             <h3 className="text-lg sm:text-xl font-semibold text-slate-900 mb-2">No vendors found</h3>
             <p className="text-sm sm:text-base text-slate-600">Try adjusting your filters or search terms</p>
-          </div>
-        ) : isHomepage ? (
-          /* Homepage - Grouped by Category with Carousels */
-          <div className="space-y-3 sm:space-y-4">
+          </div> :
+            isHomepage ? (
+            /* Homepage - Grouped by Category with Carousels */
+            <div className="space-y-3 sm:space-y-4">
               {/* Promo Ad Banner */}
               <div className="-mx-4 sm:-mx-6 lg:mx-auto mb-2">
                 <PromoAdBanner vendor={promoVendor} className="lg:max-w-7xl lg:mx-auto lg:rounded-2xl" />
               </div>
 
               {/* Event Type Sections with Horizontal Ads */}
-              {vendorsByEvent.map((group, index) => (
-                <React.Fragment key={group.eventType}>
-                  {group.vendors.length > 0 ? (
-                    <VendorCategorySection
-                      title={EVENT_LABELS[group.eventType] || group.eventType}
-                      eventType={group.eventType}
-                      category="all"
-                      vendors={group.vendors}
-                      allReviews={allReviews}
-                    />
-                  ) : (
-                    /* Show empty state for Weddings/Parties if no vendors */
-                    <div className="px-2 py-8">
+              {vendorsByEvent.map((group, index) =>
+              <React.Fragment key={group.eventType}>
+                  {group.vendors.length > 0 ?
+                <VendorCategorySection
+                  title={EVENT_LABELS[group.eventType] || group.eventType}
+                  eventType={group.eventType}
+                  category="all"
+                  vendors={group.vendors}
+                  allReviews={allReviews} /> : (
+
+
+                /* Show empty state for Weddings/Parties if no vendors */
+                <div className="px-2 py-8">
                       <h2 className="text-2xl font-bold text-slate-900 mb-4">{EVENT_LABELS[group.eventType]}</h2>
                       <div className="text-center py-12 bg-slate-50 rounded-2xl">
                         <p className="text-slate-600">New {EVENT_LABELS[group.eventType].toLowerCase()} vendors coming soon!</p>
                       </div>
-                    </div>
-                  )}
+                    </div>)
+                }
                   {/* Insert horizontal ad after every 2 sections */}
-                  {(index + 1) % 2 === 0 && index < vendorsByEvent.length - 1 && (
-                    <HorizontalAdPlaceholder size="medium" />
-                  )}
+                  {(index + 1) % 2 === 0 && index < vendorsByEvent.length - 1 &&
+                <HorizontalAdPlaceholder size="medium" />
+                }
                 </React.Fragment>
-              ))}
+              )}
               
               {/* Bottom Horizontal Ad */}
               <HorizontalAdPlaceholder size="large" />
-            </div>
-        ) : (
-          /* Filtered View - Grid Layout */
-          <div className="space-y-8 sm:space-y-12 px-2">
+            </div>) : (
+
+            /* Filtered View - Grid Layout */
+            <div className="space-y-8 sm:space-y-12 px-2">
             {/* Featured Vendors */}
-            {featuredVendors.length > 0 && (
+            {featuredVendors.length > 0 &&
               <div>
                 <div className="flex items-center gap-2 mb-4 sm:mb-6">
                   <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-slate-500" />
                   <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Featured Vendors</h2>
                 </div>
                 <div className="columns-1 sm:columns-2 lg:columns-4 gap-2 sm:gap-3 space-y-2 sm:space-y-3">
-                  {featuredVendors.map((vendor) => (
-                    <div key={vendor.id} className="break-inside-avoid">
-                      <VendorCard vendor={vendor} reviews={allReviews.filter(r => r.vendor_id === vendor.id)} />
+                  {featuredVendors.map((vendor) =>
+                  <div key={vendor.id} className="break-inside-avoid">
+                      <VendorCard vendor={vendor} reviews={allReviews.filter((r) => r.vendor_id === vendor.id)} />
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
-            )}
+              }
 
             {/* Horizontal Ad between sections - Hidden on mobile */}
-            {featuredVendors.length > 0 && regularVendors.length > 0 && (
+            {featuredVendors.length > 0 && regularVendors.length > 0 &&
               <div className="hidden sm:block">
                 <HorizontalAdPlaceholder size="small" />
               </div>
-            )}
+              }
 
             {/* Regular Vendors */}
-            {regularVendors.length > 0 && (
+            {regularVendors.length > 0 &&
               <div>
-                {featuredVendors.length > 0 && (
-                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4 sm:mb-6">All Vendors</h2>
-                )}
+                {featuredVendors.length > 0 &&
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4 sm:mb-6">All Vendors</h2>
+                }
                 <div className="columns-1 sm:columns-2 lg:columns-4 gap-2 sm:gap-3 space-y-2 sm:space-y-3">
-                    {regularVendors.map((vendor) => (
-                      <div key={vendor.id} className="break-inside-avoid">
-                        <VendorCard vendor={vendor} reviews={allReviews.filter(r => r.vendor_id === vendor.id)} />
+                    {regularVendors.map((vendor) =>
+                  <div key={vendor.id} className="break-inside-avoid">
+                        <VendorCard vendor={vendor} reviews={allReviews.filter((r) => r.vendor_id === vendor.id)} />
                       </div>
-                    ))}
+                  )}
                   </div>
               </div>
-            )}
+              }
 
             {/* Bottom Horizontal Ad - Hidden on mobile */}
             <div className="hidden sm:block">
@@ -397,27 +397,27 @@ export default function VendorMarketplace() {
             </div>
 
             {/* Load More Button */}
-            {regularVendors.length >= vendorsPerPage * vendorPage && (
+            {regularVendors.length >= vendorsPerPage * vendorPage &&
               <div className="flex justify-center mt-8">
-                <Button 
-                  onClick={() => setVendorPage(p => p + 1)}
+                <Button
+                  onClick={() => setVendorPage((p) => p + 1)}
                   disabled={isFetching}
                   size="lg"
-                  className="bg-slate-900 hover:bg-black"
-                >
-                  {isFetching ? (
-                    <>
+                  className="bg-slate-900 hover:bg-black">
+
+                  {isFetching ?
+                  <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                       Loading...
-                    </>
-                  ) : (
-                    'Load More Vendors'
-                  )}
+                    </> :
+
+                  'Load More Vendors'
+                  }
                 </Button>
               </div>
-            )}
-            </div>
-            )}
+              }
+            </div>)
+            }
             </div>
 
           {/* Right Side Ad - Hidden on mobile */}
@@ -426,6 +426,6 @@ export default function VendorMarketplace() {
           </div>
           </div>
           </div>
-    </div>
-  );
+    </div>);
+
 }
