@@ -34,7 +34,7 @@ export default function LegalPage() {
     },
     contact: {
       title: "Contact Us",
-      content: "For inquiries, please email us at support@omnievents.com"
+      content: "For inquiries, please email us at richard@khareus.com"
     },
     cookies: {
       title: "Cookie Policy",
