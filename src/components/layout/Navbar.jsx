@@ -122,7 +122,7 @@ export default function Navbar() {
           
           {/* Logo */}
           <Link to={createPageUrl("VendorMarketplace")} className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-amber-700 to-amber-900 rounded-xl flex items-center justify-center text-white font-serif font-bold text-xl shadow-lg shadow-amber-200 dark:shadow-none group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl flex items-center justify-center text-white font-serif font-bold text-xl group-hover:scale-105 transition-transform">
               K
             </div>
             <span className="font-sans font-semibold text-2xl text-stone-800 dark:text-stone-100 tracking-[0.15em] uppercase">
@@ -349,7 +349,7 @@ export default function Navbar() {
                 {/* Header */}
                 <div className="p-6 border-b border-slate-200 dark:border-slate-800">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-amber-700 to-amber-900 rounded-xl flex items-center justify-center text-white font-serif font-bold text-lg shadow-lg">
+                    <div className="w-10 h-10 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-xl flex items-center justify-center text-white font-serif font-bold text-lg">
                       K
                     </div>
                     <span className="font-sans font-semibold text-xl text-stone-800 dark:text-stone-100 tracking-[0.15em] uppercase">
