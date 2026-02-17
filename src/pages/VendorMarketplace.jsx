@@ -392,9 +392,9 @@ export default function VendorMarketplace() {
               }
 
             {/* Bottom Horizontal Ad - Hidden on mobile */}
-            <div className="hidden sm:block">
+            {/* <div className="hidden sm:block">
               <HorizontalAdPlaceholder size="large" />
-            </div>
+            </div> */}
 
             {/* Load More Button */}
             {regularVendors.length >= vendorsPerPage * vendorPage &&
