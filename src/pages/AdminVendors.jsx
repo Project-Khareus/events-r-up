@@ -456,6 +456,43 @@ export default function AdminVendors() {
                       </div>
                     </div>
 
+                    {/* Ghana Card Section */}
+                    <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <CreditCard className="h-4 w-4 text-amber-600" />
+                          <span className="text-sm font-semibold text-slate-700">Ghana Card</span>
+                          {ghanaCardStatusBadge(vendor.ghana_card_status)}
+                        </div>
+                        <div className="flex gap-2">
+                          {vendor.ghana_card_image_url && (
+                            <Button size="sm" variant="outline" onClick={() => setGhanaCardDialogVendor(vendor)} className="text-xs h-7">
+                              View Card
+                            </Button>
+                          )}
+                          <Button
+                            size="sm"
+                            onClick={() => verifyGhanaCardMutation.mutate(vendor.id)}
+                            disabled={verifyingCardVendorId === vendor.id}
+                            className="bg-amber-600 hover:bg-amber-700 text-white gap-1 text-xs h-7"
+                          >
+                            {verifyingCardVendorId === vendor.id ? (
+                              <Loader2 className="h-3 w-3 animate-spin" />
+                            ) : (
+                              <ShieldCheck className="h-3 w-3" />
+                            )}
+                            Verify ID
+                          </Button>
+                        </div>
+                      </div>
+                      <p className="text-xs text-slate-600">
+                        Card No: <span className="font-mono font-medium">{vendor.ghana_card_number || 'Not provided'}</span>
+                      </p>
+                      {vendor.ghana_card_verification_message && (
+                        <p className="text-xs text-slate-500 mt-1 italic">{vendor.ghana_card_verification_message}</p>
+                      )}
+                    </div>
+
                     <div className="flex gap-3 pt-4 border-t border-slate-100">
                       <Button 
                         onClick={() => approveMutation.mutate(vendor.id)}
