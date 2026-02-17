@@ -319,7 +319,7 @@ export default function Navbar() {
                 </Link>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button className="bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 rounded-full px-6">
+                    <Button className="bg-white text-slate-900 hover:bg-slate-100 rounded-full px-6">
                       For Vendors
                     </Button>
                   </DropdownMenuTrigger>
