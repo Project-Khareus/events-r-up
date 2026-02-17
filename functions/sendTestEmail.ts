@@ -5,9 +5,20 @@ Deno.serve(async (req) => {
 
     await base44.asServiceRole.integrations.Core.SendEmail({
         to: 'annerquaye@gmail.com',
-        subject: 'Test Email from Khareus',
-        body: `<h2>Hello!</h2><p>This is a test email from the Khareus platform. Everything is working correctly!</p><p>Sent on: ${new Date().toLocaleString()}</p>`
+        subject: 'Your Vendor Listing Has Been Approved! 🎉',
+        body: `
+            <h1>Congratulations! Your Listing is Live</h1>
+            <p>Great news! Your vendor listing <strong>Test Business</strong> has been approved and is now visible to thousands of event planners on Khareus.</p>
+            <p>You can now:</p>
+            <ul>
+                <li>Receive booking requests from clients</li>
+                <li>Manage your availability calendar</li>
+                <li>Respond to inquiries via messages</li>
+            </ul>
+            <p><a href="https://eventsrup.com/ManageListing" style="display: inline-block; padding: 12px 24px; background-color: #4F46E5; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0;">Manage Your Listing →</a></p>
+            <p>Thank you for joining Khareus!</p>
+        `
     });
 
-    return Response.json({ success: true, message: 'Test email sent to annerquaye@gmail.com' });
+    return Response.json({ success: true, message: 'Test vendor approval email sent to annerquaye@gmail.com' });
 });
