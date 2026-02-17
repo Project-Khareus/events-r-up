@@ -320,7 +320,7 @@ export default function VendorMarketplace() {
 
               {/* Event Type Sections with Horizontal Ads */}
               {vendorsByEvent.map((group, index) =>
-              <React.Fragment key={group.eventType}>
+              <div key={group.eventType}>
                   {group.vendors.length > 0 ?
                 <VendorCategorySection
                   title={EVENT_LABELS[group.eventType] || group.eventType}
@@ -342,7 +342,7 @@ export default function VendorMarketplace() {
                   {(index + 1) % 2 === 0 && index < vendorsByEvent.length - 1 &&
                 <HorizontalAdPlaceholder size="medium" />
                 }
-                </React.Fragment>
+                </div>
               )}
               
               {/* Bottom Horizontal Ad */}
