@@ -177,7 +177,7 @@ export default function Navbar() {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon" className="rounded-full relative">
-                        <Bell className="h-5 w-5 text-slate-600 dark:text-slate-300" />
+                        <Bell className="h-5 w-5 text-slate-200" />
                         {unreadCount > 0 && (
                           <span className="absolute top-2 right-2 h-2.5 w-2.5 bg-red-500 rounded-full border-2 border-white dark:border-slate-900 animate-pulse" />
                         )}
