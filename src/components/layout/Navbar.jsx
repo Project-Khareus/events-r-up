@@ -313,7 +313,7 @@ export default function Navbar() {
             ) : (
               <>
                 <Link to={createPageUrl("Join")}>
-                  <Button variant="ghost" className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">
+                  <Button variant="ghost" className="text-slate-700 hover:text-slate-900 dark:text-slate-200 dark:hover:text-white font-semibold">
                     Log in
                   </Button>
                 </Link>
