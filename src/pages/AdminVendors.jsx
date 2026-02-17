@@ -792,6 +792,52 @@ export default function AdminVendors() {
           </DialogContent>
         </Dialog>
 
+        {/* Ghana Card Preview Dialog */}
+        <Dialog open={!!ghanaCardDialogVendor} onOpenChange={(open) => !open && setGhanaCardDialogVendor(null)}>
+          <DialogContent className="max-w-lg">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <CreditCard className="h-5 w-5 text-amber-600" />
+                Ghana Card — {ghanaCardDialogVendor?.business_name}
+              </DialogTitle>
+              <DialogDescription>
+                Card No: <span className="font-mono font-semibold text-slate-800">{ghanaCardDialogVendor?.ghana_card_number || 'N/A'}</span>
+              </DialogDescription>
+            </DialogHeader>
+            <div className="py-2">
+              {ghanaCardDialogVendor?.ghana_card_image_url ? (
+                <img
+                  src={ghanaCardDialogVendor.ghana_card_image_url}
+                  alt="Ghana Card"
+                  className="w-full rounded-lg border border-slate-200"
+                />
+              ) : (
+                <div className="w-full h-40 bg-slate-100 rounded-lg flex items-center justify-center text-slate-400">No image uploaded</div>
+              )}
+              <div className="mt-3 flex items-center gap-2">
+                <span className="text-sm text-slate-600">Status:</span>
+                {ghanaCardDialogVendor && ghanaCardStatusBadge(ghanaCardDialogVendor.ghana_card_status)}
+              </div>
+              {ghanaCardDialogVendor?.ghana_card_verification_message && (
+                <p className="text-xs text-slate-500 mt-2 italic">{ghanaCardDialogVendor.ghana_card_verification_message}</p>
+              )}
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setGhanaCardDialogVendor(null)}>Close</Button>
+              <Button
+                onClick={() => {
+                  verifyGhanaCardMutation.mutate(ghanaCardDialogVendor.id);
+                  setGhanaCardDialogVendor(null);
+                }}
+                className="bg-amber-600 hover:bg-amber-700 text-white gap-2"
+              >
+                <ShieldCheck className="h-4 w-4" />
+                Run Verification
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
         {/* Suspension Dialog */}
         <Dialog open={suspendDialogOpen} onOpenChange={setSuspendDialogOpen}>
           <DialogContent>
