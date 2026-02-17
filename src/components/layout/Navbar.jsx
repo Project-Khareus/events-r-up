@@ -122,7 +122,7 @@ export default function Navbar() {
           
           {/* Logo */}
           <Link to={createPageUrl("VendorMarketplace")} className="flex items-center group">
-            <span className="font-sans font-semibold text-2xl text-stone-800 dark:text-stone-100 tracking-[0.15em] uppercase group-hover:scale-105 transition-transform">
+            <span className="font-sans font-semibold text-2xl text-white tracking-[0.15em] uppercase group-hover:scale-105 transition-transform">
               Khareus
             </span>
           </Link>
