@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, Store, Edit2, Clock, Eye, Search, Ban } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, Store, Edit2, Clock, Eye, Search, Ban, CreditCard, ShieldCheck, ShieldX, ShieldAlert } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 
@@ -22,6 +22,8 @@ export default function AdminVendors() {
   const [suspendDialogOpen, setSuspendDialogOpen] = useState(false);
   const [suspendingVendor, setSuspendingVendor] = useState(null);
   const [suspensionReason, setSuspensionReason] = useState("");
+  const [verifyingCardVendorId, setVerifyingCardVendorId] = useState(null);
+  const [ghanaCardDialogVendor, setGhanaCardDialogVendor] = useState(null);
 
   // Fetch all vendors
   const { data: allVendors = [], isLoading } = useQuery({
