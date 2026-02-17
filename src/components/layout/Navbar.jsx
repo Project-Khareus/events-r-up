@@ -337,8 +337,8 @@ export default function Navbar() {
           <div className="lg:hidden flex items-center gap-4">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
-                  <Menu className="h-5 w-5 text-slate-700 dark:text-slate-300" />
+                <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-700">
+                  <Menu className="h-5 w-5 text-slate-200" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[280px] p-0 border-0">
