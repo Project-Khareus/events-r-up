@@ -496,11 +496,11 @@ export default function AdminVendors() {
 
                     <div className="flex gap-3 pt-4 border-t border-slate-100">
                       <Button 
-                        onClick={() => approveMutation.mutate(vendor.id)}
+                        onClick={() => approveMutation.mutate(vendor)}
                         disabled={approveMutation.isPending}
                         className="bg-green-600 hover:bg-green-700 text-white gap-2"
                       >
-                        {approveMutation.isPending && approveMutation.variables === vendor.id ? (
+                        {approveMutation.isPending && approveMutation.variables?.id === vendor.id ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
                         ) : (
                           <CheckCircle className="h-4 w-4" />
