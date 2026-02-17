@@ -129,7 +129,7 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <div className="hidden lg:flex items-center gap-8">
-            <Link to={createPageUrl("VendorMarketplace")} className="text-sm font-semibold text-slate-700 hover:text-indigo-600 dark:text-slate-200 dark:hover:text-white transition-colors">
+            <Link to={createPageUrl("VendorMarketplace")} className="text-sm font-semibold text-slate-200 hover:text-white transition-colors">
               Home
             </Link>
             
@@ -138,7 +138,7 @@ export default function Navbar() {
                 <div key={menu.title} className="relative group">
                   <Link 
                     to={createPageUrl(menu.title)}
-                    className="text-sm font-semibold text-slate-700 hover:text-indigo-600 dark:text-slate-200 dark:hover:text-white transition-colors py-2 flex items-center gap-1"
+                    className="text-sm font-semibold text-slate-200 hover:text-white transition-colors py-2 flex items-center gap-1"
                   >
                     {menu.title}
                   </Link>
