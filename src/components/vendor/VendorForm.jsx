@@ -299,10 +299,31 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
     onSubmit(dataWithReasons);
   };
 
+  const [ghanaCardUploading, setGhanaCardUploading] = useState(false);
+
+  const handleGhanaCardUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setGhanaCardUploading(true);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      setFormData(prev => ({ ...prev, ghana_card_image_url: file_url }));
+      toast.success("Ghana Card uploaded!");
+    } catch (error) {
+      toast.error("Failed to upload Ghana Card image");
+    } finally {
+      setGhanaCardUploading(false);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.business_name || formData.event_type.length === 0 || formData.category.length === 0) {
       toast.error("Please fill in all required fields (Business Name, Event Type, Category)");
+      return;
+    }
+    if (!formData.ghana_card_number || !formData.ghana_card_image_url) {
+      toast.error("Ghana Card number and image are required for verification");
       return;
     }
     
