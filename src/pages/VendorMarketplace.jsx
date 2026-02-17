@@ -339,9 +339,9 @@ export default function VendorMarketplace() {
                     </div>)
                 }
                   {/* Insert horizontal ad after every 2 sections */}
-                  {(index + 1) % 2 === 0 && index < vendorsByEvent.length - 1 &&
+                  {/* {(index + 1) % 2 === 0 && index < vendorsByEvent.length - 1 &&
                 <HorizontalAdPlaceholder size="medium" />
-                }
+                } */}
                 </div>
               )}
               
