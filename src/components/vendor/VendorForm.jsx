@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { 
   Store, Upload, Loader2, X, Plus, 
   Instagram, Facebook, Twitter, Linkedin, Globe, Phone, Mail,
-  Check, AlertCircle
+  Check, AlertCircle, CreditCard
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -83,8 +83,8 @@ const COMMON_SERVICES = [
 const DEFAULT_FORM_DATA = {
   business_name: "",
   slogan: "",
-  event_type: [], // Changed to array
-  category: [],   // Changed to array
+  event_type: [],
+  category: [],
   description: "",
   location: "",
   starting_price: "",
@@ -99,9 +99,11 @@ const DEFAULT_FORM_DATA = {
   image_url: "",
   gallery_images: [],
   gallery_videos: [],
-  services: [], // Changed to array
+  services: [],
   years_in_business: "",
-  subscription_type: "trial", // Default to trial
+  subscription_type: "trial",
+  ghana_card_number: "",
+  ghana_card_image_url: "",
 };
 
 const NAME_CHANGE_REASONS = [
