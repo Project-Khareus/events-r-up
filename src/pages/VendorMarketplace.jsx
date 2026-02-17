@@ -346,7 +346,7 @@ export default function VendorMarketplace() {
               )}
               
               {/* Bottom Horizontal Ad */}
-              <HorizontalAdPlaceholder size="large" />
+              {/* <HorizontalAdPlaceholder size="large" /> */}
             </div>) : (
 
             /* Filtered View - Grid Layout */
