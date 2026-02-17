@@ -291,7 +291,8 @@ export default function VendorMarketplace() {
           </div>
             }
 
-        {isLoading ?
+        {/* Vendor listings commented out */}
+        {/* {isLoading ?
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 px-2">
             {[...Array(6)].map((_, i) =>
               <div key={i} className="space-y-3 sm:space-y-4">
@@ -311,14 +312,10 @@ export default function VendorMarketplace() {
             <p className="text-sm sm:text-base text-slate-600">Try adjusting your filters or search terms</p>
           </div> :
             isHomepage ? (
-            /* Homepage - Grouped by Category with Carousels */
             <div className="space-y-3 sm:space-y-4">
-              {/* Promo Ad Banner */}
               <div className="-mx-4 sm:-mx-6 lg:mx-auto mb-2">
                 <PromoAdBanner vendor={promoVendor} className="lg:max-w-7xl lg:mx-auto lg:rounded-2xl" />
               </div>
-
-              {/* Event Type Sections with Horizontal Ads */}
               {vendorsByEvent.map((group, index) =>
               <div key={group.eventType}>
                   {group.vendors.length > 0 ?
@@ -328,9 +325,6 @@ export default function VendorMarketplace() {
                   category="all"
                   vendors={group.vendors}
                   allReviews={allReviews} /> : (
-
-
-                /* Show empty state for Weddings/Parties if no vendors */
                 <div className="px-2 py-8">
                       <h2 className="text-2xl font-bold text-slate-900 mb-4">{EVENT_LABELS[group.eventType]}</h2>
                       <div className="text-center py-12 bg-slate-50 rounded-2xl">
@@ -338,20 +332,10 @@ export default function VendorMarketplace() {
                       </div>
                     </div>)
                 }
-                  {/* Insert horizontal ad after every 2 sections */}
-                  {/* {(index + 1) % 2 === 0 && index < vendorsByEvent.length - 1 &&
-                <HorizontalAdPlaceholder size="medium" />
-                } */}
                 </div>
               )}
-              
-              {/* Bottom Horizontal Ad */}
-              {/* <HorizontalAdPlaceholder size="large" /> */}
             </div>) : (
-
-            /* Filtered View - Grid Layout */
             <div className="space-y-8 sm:space-y-12 px-2">
-            {/* Featured Vendors */}
             {featuredVendors.length > 0 &&
               <div>
                 <div className="flex items-center gap-2 mb-4 sm:mb-6">
@@ -367,15 +351,6 @@ export default function VendorMarketplace() {
                 </div>
               </div>
               }
-
-            {/* Horizontal Ad between sections - Hidden on mobile */}
-            {/* {featuredVendors.length > 0 && regularVendors.length > 0 &&
-              <div className="hidden sm:block">
-                <HorizontalAdPlaceholder size="small" />
-              </div>
-              } */}
-
-            {/* Regular Vendors */}
             {regularVendors.length > 0 &&
               <div>
                 {featuredVendors.length > 0 &&
@@ -390,13 +365,6 @@ export default function VendorMarketplace() {
                   </div>
               </div>
               }
-
-            {/* Bottom Horizontal Ad - Hidden on mobile */}
-            {/* <div className="hidden sm:block">
-              <HorizontalAdPlaceholder size="large" />
-            </div> */}
-
-            {/* Load More Button */}
             {regularVendors.length >= vendorsPerPage * vendorPage &&
               <div className="flex justify-center mt-8">
                 <Button
@@ -404,20 +372,18 @@ export default function VendorMarketplace() {
                   disabled={isFetching}
                   size="lg"
                   className="bg-slate-900 hover:bg-black">
-
                   {isFetching ?
                   <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                       Loading...
                     </> :
-
                   'Load More Vendors'
                   }
                 </Button>
               </div>
               }
             </div>)
-            }
+            } */}
             </div>
 
           {/* Right Side Ad - Hidden on mobile */}
