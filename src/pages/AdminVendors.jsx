@@ -76,7 +76,7 @@ export default function AdminVendors() {
     },
     onSuccess: () => {
       toast.success("Vendor approved and notified!");
-      queryClient.invalidateQueries(['admin_pending_vendors']);
+      queryClient.invalidateQueries(['admin_all_vendors']);
     },
     onError: (error) => {
       toast.error("Failed to approve vendor: " + error.message);
@@ -108,7 +108,7 @@ export default function AdminVendors() {
     },
     onSuccess: () => {
       toast.success("Vendor rejected");
-      queryClient.invalidateQueries(['admin_pending_vendors']);
+      queryClient.invalidateQueries(['admin_all_vendors']);
     },
   });
 
@@ -163,7 +163,7 @@ export default function AdminVendors() {
         console.error('Failed to send approval notifications:', error);
       }
       toast.success("Changes approved and vendor notified!");
-      queryClient.invalidateQueries(['admin_vendors_with_changes']);
+      queryClient.invalidateQueries(['admin_all_vendors']);
     },
   });
 
@@ -221,7 +221,7 @@ export default function AdminVendors() {
       }
 
       toast.success("Changes rejected and vendor notified");
-      queryClient.invalidateQueries(['admin_vendors_with_changes']);
+      queryClient.invalidateQueries(['admin_all_vendors']);
       setRejectDialogOpen(false);
       setRejectingVendor(null);
       setRejectionReason("");
