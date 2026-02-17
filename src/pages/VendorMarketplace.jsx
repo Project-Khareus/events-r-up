@@ -369,11 +369,11 @@ export default function VendorMarketplace() {
               }
 
             {/* Horizontal Ad between sections - Hidden on mobile */}
-            {featuredVendors.length > 0 && regularVendors.length > 0 &&
+            {/* {featuredVendors.length > 0 && regularVendors.length > 0 &&
               <div className="hidden sm:block">
                 <HorizontalAdPlaceholder size="small" />
               </div>
-              }
+              } */}
 
             {/* Regular Vendors */}
             {regularVendors.length > 0 &&
