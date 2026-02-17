@@ -33,7 +33,7 @@ export default function VendorSignup() {
           setPaymentSuccess(true);
           setIsSubmitted(true);
         }
-        
+
         setIsLoading(false);
       } catch (error) {
         console.error("Auth or data fetch error:", error);
@@ -51,15 +51,15 @@ export default function VendorSignup() {
       const vendorData = {
         ...data,
         starting_price: data.starting_price ? parseFloat(data.starting_price) : undefined,
-        years_in_business: data.years_in_business ? parseInt(data.years_in_business) : undefined,
+        years_in_business: data.years_in_business ? parseInt(data.years_in_business) : undefined
       };
 
       // Check if trial is selected
       if (data.subscription_type === 'trial') {
         // Count existing trial listings for this user
         const allVendors = await base44.entities.Vendor.filter({ user_id: user.id });
-        const trialCount = allVendors.filter(v => v.is_trial === true).length;
-        
+        const trialCount = allVendors.filter((v) => v.is_trial === true).length;
+
         if (trialCount >= 3) {
           throw new Error("You've reached the maximum of 3 trial listings. Please choose a paid plan.");
         }
@@ -115,8 +115,8 @@ export default function VendorSignup() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
-      </div>
-    );
+      </div>);
+
   }
 
   if (isSubmitted && paymentSuccess) {
@@ -133,15 +133,15 @@ export default function VendorSignup() {
           <p className="text-slate-600 mb-6">
             We'll notify you once it's approved and published.
           </p>
-          <Button 
+          <Button
             onClick={() => navigate(createPageUrl("ManageListing"))}
-            className="bg-indigo-600 hover:bg-indigo-700"
-          >
+            className="bg-indigo-600 hover:bg-indigo-700">
+
             Go to Dashboard
           </Button>
         </Card>
-      </div>
-    );
+      </div>);
+
   }
 
   return (
@@ -152,11 +152,11 @@ export default function VendorSignup() {
             <Store className="h-8 w-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-slate-900 mb-2">Create Your Vendor Profile</h1>
-          <p className="text-slate-600">Join Omnievents and reach thousands of event planners</p>
+          <p className="text-slate-600">Join Khareus and reach thousands of event planners</p>
         </div>
 
-        <VendorForm 
-          initialData={{ 
+        <VendorForm
+          initialData={{
             contact_email: user?.email,
             image_url: user?.avatar_url,
             business_name: user?.full_name
@@ -164,9 +164,9 @@ export default function VendorSignup() {
           onSubmit={handleSubmit}
           isSubmitting={createCheckoutMutation.isPending}
           submitLabel="Continue to Payment"
-          submitIcon={<CreditCard className="h-5 w-5" />}
-        />
+          submitIcon={<CreditCard className="h-5 w-5" />} />
+
       </div>
-    </div>
-  );
+    </div>);
+
 }
