@@ -310,6 +310,33 @@ export default function AdminVendors() {
     }
   };
 
+  const verifyGhanaCardMutation = useMutation({
+    mutationFn: async (vendorId) => {
+      setVerifyingCardVendorId(vendorId);
+      const result = await base44.functions.invoke('verifyGhanaCard', { vendor_id: vendorId });
+      return result.data;
+    },
+    onSuccess: (data, vendorId) => {
+      if (data.verified) {
+        toast.success("Ghana Card verified successfully!");
+      } else {
+        toast.error("Ghana Card verification failed: " + data.message);
+      }
+      queryClient.invalidateQueries(['admin_all_vendors']);
+      setVerifyingCardVendorId(null);
+    },
+    onError: (error) => {
+      toast.error("Verification error: " + error.message);
+      setVerifyingCardVendorId(null);
+    }
+  });
+
+  const ghanaCardStatusBadge = (status) => {
+    if (status === 'verified') return <Badge className="bg-green-100 text-green-800 gap-1"><ShieldCheck className="h-3 w-3" />Verified</Badge>;
+    if (status === 'failed') return <Badge className="bg-red-100 text-red-800 gap-1"><ShieldX className="h-3 w-3" />Failed</Badge>;
+    return <Badge className="bg-amber-100 text-amber-800 gap-1"><ShieldAlert className="h-3 w-3" />Pending</Badge>;
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
