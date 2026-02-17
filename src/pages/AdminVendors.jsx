@@ -52,23 +52,24 @@ export default function AdminVendors() {
   const approvedVendors = filterVendors(allVendors.filter(v => v.status === 'approved' && !v.has_pending_changes));
 
   const approveMutation = useMutation({
-    mutationFn: async (vendorId) => {
+    mutationFn: async (vendor) => {
+      const vendorId = typeof vendor === 'string' ? vendor : vendor.id;
+      const vendorObj = typeof vendor === 'object' ? vendor : pendingVendors.find(v => v.id === vendorId) || allVendors.find(v => v.id === vendorId);
       const currentUser = await base44.auth.me();
-      const vendor = pendingVendors.find(v => v.id === vendorId);
       const result = await base44.functions.invoke('approveVendor', { vendor_id: vendorId });
 
       // Create in-app notification
-      if (vendor) {
+      if (vendorObj) {
         await base44.entities.Notification.create({
-          user_id: vendor.user_id,
+          user_id: vendorObj.user_id,
           type: 'vendor_approved',
           title: 'Vendor Approved!',
-          message: `Congratulations! Your vendor listing "${vendor.business_name}" has been approved and is now live.`,
-          link: `VendorDetail?id=${vendor.id}`,
+          message: `Congratulations! Your vendor listing "${vendorObj.business_name}" has been approved and is now live.`,
+          link: `VendorDetail?id=${vendorObj.id}`,
           action_by: currentUser.full_name || currentUser.email,
           action_type: 'approved',
-          vendor_id: vendor.id,
-          vendor_name: vendor.business_name
+          vendor_id: vendorObj.id,
+          vendor_name: vendorObj.business_name
         });
       }
 
