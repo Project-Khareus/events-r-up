@@ -960,6 +960,75 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
         </div>
       </Card>
 
+      {/* Ghana Card Verification */}
+      <Card className="p-6 rounded-2xl border-amber-200 bg-amber-50/40">
+        <h2 className="text-lg font-semibold text-slate-900 mb-1 flex items-center gap-2">
+          <CreditCard className="h-5 w-5 text-amber-600" />
+          Ghana Card Verification <span className="text-red-500">*</span>
+        </h2>
+        <p className="text-sm text-slate-500 mb-4">
+          A valid Ghana National ID Card is required to list your business. Your details will be verified by our team.
+        </p>
+
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <Label>Ghana Card Number *</Label>
+            <Input
+              value={formData.ghana_card_number}
+              onChange={(e) => setFormData({ ...formData, ghana_card_number: e.target.value })}
+              placeholder="e.g. GHA-XXXXXXXXX-X"
+              className="mt-1"
+            />
+          </div>
+
+          <div>
+            <Label className="mb-2 block">Ghana Card Image (Front) *</Label>
+            <div className="border-2 border-dashed border-amber-300 rounded-xl p-4 text-center hover:border-amber-400 transition-colors bg-white">
+              {formData.ghana_card_image_url ? (
+                <div className="relative">
+                  <img
+                    src={formData.ghana_card_image_url}
+                    alt="Ghana Card"
+                    className="w-full h-32 object-cover rounded-lg"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, ghana_card_image_url: "" }))}
+                    className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ) : (
+                <label className="cursor-pointer block py-4">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleGhanaCardUpload}
+                    className="hidden"
+                    disabled={ghanaCardUploading}
+                  />
+                  {ghanaCardUploading ? (
+                    <Loader2 className="h-8 w-8 mx-auto text-amber-600 animate-spin" />
+                  ) : (
+                    <>
+                      <Upload className="h-8 w-8 mx-auto text-amber-400 mb-1" />
+                      <p className="text-sm text-slate-600">Click to upload card image</p>
+                      <p className="text-xs text-slate-400 mt-0.5">Front side of your Ghana Card</p>
+                    </>
+                  )}
+                </label>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-3 flex items-start gap-2 text-xs text-slate-500 bg-white rounded-lg p-3 border border-amber-200">
+          <AlertCircle className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" />
+          <span>Your Ghana Card information is used solely for identity verification and will be kept confidential. It will not be displayed publicly.</span>
+        </div>
+      </Card>
+
       {/* Submit Button */}
       <Button
         type="submit"
