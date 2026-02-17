@@ -210,7 +210,7 @@ export default function Navbar() {
 
                   <Link to={createPageUrl("Messages")}>
                     <Button variant="ghost" size="icon" className="rounded-full">
-                      <MessageCircle className="h-5 w-5 text-slate-600 dark:text-slate-300" />
+                      <MessageCircle className="h-5 w-5 text-slate-200" />
                     </Button>
                   </Link>
                 </div>
