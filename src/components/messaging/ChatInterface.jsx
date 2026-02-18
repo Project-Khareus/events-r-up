@@ -114,7 +114,7 @@ export default function ChatInterface({ conversationId, onBack }) {
             </span>
           </div>
           <div>
-            <h3 className="font-semibold text-slate-900">
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100">
               {(() => {
                 const isVendor = conversation?.vendor_id === currentUser?.id;
                 return isVendor ? conversation?.user_name : conversation?.vendor_name;
