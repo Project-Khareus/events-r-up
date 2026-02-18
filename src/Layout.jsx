@@ -258,6 +258,29 @@ export default function Layout({ children }) {
                       :root:not(.light-mode) .divide-slate-200 > * + * {
                         border-color: #334155 !important;
                       }
+                      :root:not(.light-mode) .bg-green-50 {
+                        background-color: #052e16 !important;
+                      }
+                      :root:not(.light-mode) .bg-indigo-50 {
+                        background-color: #1e1b4b !important;
+                      }
+                      :root:not(.light-mode) .bg-amber-50\/40,
+                      :root:not(.light-mode) .bg-amber-50 {
+                        background-color: #1c1208 !important;
+                      }
+                      :root:not(.light-mode) .border-amber-200 {
+                        border-color: #78350f !important;
+                      }
+                      :root:not(.light-mode) .border-amber-300 {
+                        border-color: #92400e !important;
+                      }
+                      :root:not(.light-mode) .text-amber-600,
+                      :root:not(.light-mode) .text-amber-500 {
+                        color: #f59e0b !important;
+                      }
+                      :root:not(.light-mode) label {
+                        color: #cbd5e1 !important;
+                      }
                     }
                     `}</style>
                     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossOrigin="" />
