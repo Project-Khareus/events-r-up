@@ -32,8 +32,8 @@ export default function ConversationsList({ conversations, selectedId, onSelect,
             className={cn(
               "p-4 rounded-xl cursor-pointer transition-all hover:shadow-md",
               isSelected
-                ? "border-indigo-300 bg-indigo-50"
-                : "border-slate-200 hover:border-slate-300"
+                ? "border-indigo-300 bg-indigo-50 dark:bg-indigo-950"
+                : "border-slate-200 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800"
             )}
           >
             <div className="flex items-start gap-3">
