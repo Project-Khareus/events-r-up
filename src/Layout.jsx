@@ -126,6 +126,43 @@ export default function Layout({ children }) {
                     .dark tr:hover {
                       background-color: #1e293b !important;
                     }
+                    /* Subscription plan cards - fix dark bg blending */
+                    .dark .bg-green-50 {
+                      background-color: #052e16 !important;
+                    }
+                    .dark .bg-indigo-50 {
+                      background-color: #1e1b4b !important;
+                    }
+                    .dark .bg-amber-50\/40,
+                    .dark .bg-amber-50 {
+                      background-color: #1c1208 !important;
+                    }
+                    .dark .border-amber-200 {
+                      border-color: #78350f !important;
+                    }
+                    .dark .border-amber-300 {
+                      border-color: #92400e !important;
+                    }
+                    .dark .text-amber-600 {
+                      color: #f59e0b !important;
+                    }
+                    .dark .text-amber-500 {
+                      color: #f59e0b !important;
+                    }
+                    /* Fix "or import from" divider in dark mode */
+                    .dark .bg-white.px-2 {
+                      background-color: #1e293b !important;
+                    }
+                    /* Labels */
+                    .dark label {
+                      color: #cbd5e1 !important;
+                    }
+                    /* Combobox / popover */
+                    .dark [role="listbox"],
+                    .dark [cmdk-root] {
+                      background-color: #1e293b !important;
+                      border-color: #334155 !important;
+                    }
                     /* Leaflet CSS fix */
                     .leaflet-container {
                       z-index: 0;
