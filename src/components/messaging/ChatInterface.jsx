@@ -148,7 +148,7 @@ export default function ChatInterface({ conversationId, onBack }) {
       </div>
 
       {/* Input */}
-      <form onSubmit={handleSend} className="p-4 border-t border-slate-200 bg-white">
+      <form onSubmit={handleSend} className="p-4 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
         <div className="flex gap-3">
           <Input
             value={messageText}
