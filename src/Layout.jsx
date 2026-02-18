@@ -129,15 +129,25 @@ export default function Layout({ children }) {
                       background-color: #1e293b !important;
                     }
                     /* Subscription plan cards - fix dark bg blending */
-                    .dark .bg-green-50 {
+                    .dark .bg-green-50,
+                    .dark button.bg-green-50 {
                       background-color: #052e16 !important;
+                      color: #f0fdf4 !important;
                     }
-                    .dark .bg-indigo-50 {
+                    .dark .bg-indigo-50,
+                    .dark button.bg-indigo-50 {
                       background-color: #1e1b4b !important;
+                      color: #eef2ff !important;
                     }
                     .dark .bg-amber-50\/40,
                     .dark .bg-amber-50 {
                       background-color: #1c1208 !important;
+                    }
+                    /* Force all text inside plan buttons to be visible */
+                    .dark button h3,
+                    .dark button p,
+                    .dark button div {
+                      color: inherit;
                     }
                     .dark .border-amber-200 {
                       border-color: #78350f !important;
