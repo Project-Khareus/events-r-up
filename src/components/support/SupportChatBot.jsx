@@ -155,7 +155,7 @@ export default function SupportChatBot() {
             <input
               value={input}
               onChange={e => setInput(e.target.value)}
-              placeholder="Ask me anything about Khareus..."
+              placeholder="Ask Kharis anything about Khareus..."
               className="flex-1 text-sm border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50"
               disabled={loading}
             />
