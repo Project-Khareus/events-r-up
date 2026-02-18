@@ -4,6 +4,7 @@ import MobileBottomNav from "./components/layout/MobileBottomNav";
 import Footer from "./components/layout/Footer";
 import CookieConsent from "./components/layout/CookieConsent";
 import DeviceCheck from "./components/auth/DeviceCheck";
+import SupportChatBot from "./components/support/SupportChatBot";
 import { Toaster } from "@/components/ui/sonner";
 
 export default function Layout({ children }) {
