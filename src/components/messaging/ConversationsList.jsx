@@ -51,11 +51,11 @@ export default function ConversationsList({ conversations, selectedId, onSelect,
                     </Badge>
                   )}
                 </div>
-                <p className="text-sm text-slate-600 truncate mb-1">
+                <p className="text-sm text-slate-600 dark:text-slate-300 truncate mb-1">
                   {conversation.last_message || "No messages yet"}
                 </p>
                 {conversation.last_message_date && (
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     {format(new Date(conversation.last_message_date), "MMM d, h:mm a")}
                   </p>
                 )}
