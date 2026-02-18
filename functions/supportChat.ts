@@ -37,7 +37,9 @@ Deno.serve(async (req) => {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
 
-    const { message, history = [], notifyAdmin } = await req.json();
+    let body = {};
+    try { body = await req.json(); } catch (_) {}
+    const { message, history = [], notifyAdmin } = body;
 
     // Handle admin escalation
     if (notifyAdmin) {
