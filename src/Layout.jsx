@@ -303,6 +303,7 @@ export default function Layout({ children }) {
       <Footer />
       <MobileBottomNav />
       <CookieConsent />
+      <SupportChatBot />
       <Toaster />
     </div>
   );
