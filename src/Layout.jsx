@@ -143,7 +143,7 @@ export default function Layout({ children }) {
                       -webkit-touch-callout: none;
                     }
                     
-                    /* Dark mode support */
+                    /* Dark mode support - system preference */
                     @media (prefers-color-scheme: dark) {
                       :root:not(.light-mode) {
                         color-scheme: dark;
@@ -152,20 +152,39 @@ export default function Layout({ children }) {
                       :root:not(.light-mode) .bg-slate-50,
                       :root:not(.light-mode) .bg-white {
                         background-color: #0f172a !important;
-                        color: #e2e8f0 !important;
+                        color: #f1f5f9 !important;
                       }
                       :root:not(.light-mode) .bg-gradient-to-br {
                         background: linear-gradient(to bottom right, #0f172a, #1e293b) !important;
                       }
+                      :root:not(.light-mode) .text-slate-950,
                       :root:not(.light-mode) .text-slate-900 {
-                        color: #f1f5f9 !important;
+                        color: #f8fafc !important;
                       }
-                      :root:not(.light-mode) .text-slate-600,
+                      :root:not(.light-mode) .text-slate-800,
+                      :root:not(.light-mode) .text-slate-700 {
+                        color: #e2e8f0 !important;
+                      }
+                      :root:not(.light-mode) .text-slate-600 {
+                        color: #cbd5e1 !important;
+                      }
                       :root:not(.light-mode) .text-slate-500 {
                         color: #94a3b8 !important;
                       }
+                      :root:not(.light-mode) .border-slate-100 {
+                        border-color: #1e293b !important;
+                      }
                       :root:not(.light-mode) .border-slate-200 {
                         border-color: #334155 !important;
+                      }
+                      :root:not(.light-mode) .border-slate-300 {
+                        border-color: #475569 !important;
+                      }
+                      :root:not(.light-mode) .bg-slate-100 {
+                        background-color: #1e293b !important;
+                      }
+                      :root:not(.light-mode) .bg-slate-200 {
+                        background-color: #334155 !important;
                       }
                       :root:not(.light-mode) .bg-white {
                         background-color: #1e293b !important;
@@ -174,7 +193,33 @@ export default function Layout({ children }) {
                         background-color: #0f172a !important;
                       }
                       :root:not(.light-mode) .shadow-xl {
-                        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.3) !important;
+                        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.4) !important;
+                      }
+                      :root:not(.light-mode) .shadow-lg {
+                        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.4) !important;
+                      }
+                      :root:not(.light-mode) input,
+                      :root:not(.light-mode) textarea,
+                      :root:not(.light-mode) select {
+                        background-color: #0f172a !important;
+                        color: #f1f5f9 !important;
+                        border-color: #334155 !important;
+                      }
+                      :root:not(.light-mode) input::placeholder,
+                      :root:not(.light-mode) textarea::placeholder {
+                        color: #475569 !important;
+                      }
+                      :root:not(.light-mode) .hover\:bg-slate-50:hover {
+                        background-color: #1e293b !important;
+                      }
+                      :root:not(.light-mode) .hover\:bg-slate-100:hover {
+                        background-color: #334155 !important;
+                      }
+                      :root:not(.light-mode) .divide-slate-100 > * + * {
+                        border-color: #1e293b !important;
+                      }
+                      :root:not(.light-mode) .divide-slate-200 > * + * {
+                        border-color: #334155 !important;
                       }
                     }
                     `}</style>
