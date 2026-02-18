@@ -806,14 +806,14 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
 
             <div className="flex items-start justify-between mb-3">
               <div className="flex-1">
-                <h3 className="text-slate-950 mb-1 text-lg font-bold">Trial</h3>
-                <p className="text-slate-950 text-xs">1 month free (max 3 listings)</p>
+                <h3 className="text-slate-900 mb-1 text-lg font-bold">Trial</h3>
+                <p className="text-slate-600 text-xs">1 month free (max 3 listings)</p>
               </div>
               {formData.subscription_type === "trial" &&
               <Check className="h-5 w-5 text-green-600" />
               }
             </div>
-            <div className="text-slate-950 text-2xl font-bold">Free<span className="text-sm text-slate-500 font-normal">/mo</span></div>
+            <div className="text-slate-900 text-2xl font-bold">Free<span className="text-sm text-slate-500 font-normal">/mo</span></div>
           </button>
 
           <button
@@ -828,14 +828,14 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
 
             <div className="flex items-start justify-between mb-3">
               <div className="flex-1">
-                <h3 className="text-slate-950 mb-1 text-lg font-bold">Explorer</h3>
-                <p className="text-slate-950 text-xs">Try it out</p>
+                <h3 className="text-slate-900 mb-1 text-lg font-bold">Explorer</h3>
+                <p className="text-slate-600 text-xs">Try it out</p>
               </div>
               {formData.subscription_type === "explorer" &&
               <Check className="h-5 w-5 text-indigo-600" />
               }
             </div>
-            <div className="text-slate-950 text-2xl font-bold">$1<span className="text-sm text-slate-500 font-normal">/mo</span></div>
+            <div className="text-slate-900 text-2xl font-bold">$1<span className="text-sm text-slate-500 font-normal">/mo</span></div>
           </button>
 
           <button
@@ -850,14 +850,14 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
 
             <div className="flex items-start justify-between mb-3">
               <div className="flex-1">
-                <h3 className="text-slate-950 mb-1 text-lg font-bold">Monthly</h3>
-                <p className="text-slate-950 text-xs">Pay as you go</p>
+                <h3 className="text-slate-900 mb-1 text-lg font-bold">Monthly</h3>
+                <p className="text-slate-600 text-xs">Pay as you go</p>
               </div>
               {formData.subscription_type === "monthly" &&
               <Check className="h-5 w-5 text-indigo-600" />
               }
             </div>
-            <div className="text-slate-950 text-2xl font-bold">$0.90<span className="text-sm text-slate-500 font-normal">/mo</span></div>
+            <div className="text-slate-900 text-2xl font-bold">$0.90<span className="text-sm text-slate-500 font-normal">/mo</span></div>
           </button>
 
           <button
@@ -875,14 +875,14 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
             </Badge>
             <div className="flex items-start justify-between mb-3">
               <div className="flex-1">
-                <h3 className="text-slate-950 mb-1 text-lg font-bold">Annual</h3>
-                <p className="text-slate-950 text-xs">Save with yearly billing</p>
+                <h3 className="text-slate-900 mb-1 text-lg font-bold">Annual</h3>
+                <p className="text-slate-600 text-xs">Save with yearly billing</p>
               </div>
               {formData.subscription_type === "annual" &&
               <Check className="h-5 w-5 text-indigo-600" />
               }
             </div>
-            <div className="text-slate-950 text-2xl font-bold">$10<span className="text-sm text-slate-500 font-normal">/year</span></div>
+            <div className="text-slate-900 text-2xl font-bold">$10<span className="text-sm text-slate-500 font-normal">/year</span></div>
           </button>
         </div>
       </Card>
