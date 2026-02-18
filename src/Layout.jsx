@@ -24,29 +24,107 @@ export default function Layout({ children }) {
                     .dark .bg-slate-50,
                     .dark .bg-white {
                       background-color: #0f172a !important;
-                      color: #e2e8f0 !important;
+                      color: #f1f5f9 !important;
                     }
                     .dark .bg-gradient-to-br {
                       background: linear-gradient(to bottom right, #0f172a, #1e293b) !important;
                     }
+                    /* High contrast text */
+                    .dark .text-slate-950,
                     .dark .text-slate-900 {
-                      color: #f1f5f9 !important;
+                      color: #f8fafc !important;
                     }
-                    .dark .text-slate-600,
+                    .dark .text-slate-800,
+                    .dark .text-slate-700 {
+                      color: #e2e8f0 !important;
+                    }
+                    .dark .text-slate-600 {
+                      color: #cbd5e1 !important;
+                    }
                     .dark .text-slate-500 {
                       color: #94a3b8 !important;
+                    }
+                    .dark .text-slate-400 {
+                      color: #64748b !important;
+                    }
+                    /* Backgrounds */
+                    .dark .bg-white {
+                      background-color: #1e293b !important;
+                    }
+                    .dark .bg-slate-50 {
+                      background-color: #0f172a !important;
+                    }
+                    .dark .bg-slate-100 {
+                      background-color: #1e293b !important;
+                    }
+                    .dark .bg-slate-200 {
+                      background-color: #334155 !important;
+                    }
+                    /* Cards */
+                    .dark .rounded-2xl,
+                    .dark .rounded-xl,
+                    .dark .rounded-lg {
+                      background-color: #1e293b;
+                    }
+                    /* Borders */
+                    .dark .border-slate-100 {
+                      border-color: #1e293b !important;
                     }
                     .dark .border-slate-200 {
                       border-color: #334155 !important;
                     }
-                    .dark .bg-white {
-                      background-color: #1e293b !important;
+                    .dark .border-slate-300 {
+                      border-color: #475569 !important;
                     }
+                    /* Dividers */
+                    .dark .divide-slate-100 > * + * {
+                      border-color: #1e293b !important;
+                    }
+                    .dark .divide-slate-200 > * + * {
+                      border-color: #334155 !important;
+                    }
+                    /* Inputs */
+                    .dark input,
+                    .dark textarea,
+                    .dark select {
+                      background-color: #0f172a !important;
+                      color: #f1f5f9 !important;
+                      border-color: #334155 !important;
+                    }
+                    .dark input::placeholder,
+                    .dark textarea::placeholder {
+                      color: #475569 !important;
+                    }
+                    /* Nav */
                     .dark nav.bg-white {
                       background-color: #0f172a !important;
                     }
+                    /* Shadows */
                     .dark .shadow-xl {
-                      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.3) !important;
+                      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.4) !important;
+                    }
+                    .dark .shadow-lg {
+                      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.4) !important;
+                    }
+                    /* Badges / pills */
+                    .dark .bg-slate-100.text-slate-700 {
+                      background-color: #334155 !important;
+                      color: #e2e8f0 !important;
+                    }
+                    /* Hover states */
+                    .dark .hover\:bg-slate-50:hover {
+                      background-color: #1e293b !important;
+                    }
+                    .dark .hover\:bg-slate-100:hover {
+                      background-color: #334155 !important;
+                    }
+                    /* Muted text (prose) */
+                    .dark p, .dark span, .dark li {
+                      color: inherit;
+                    }
+                    /* Table rows */
+                    .dark tr:hover {
+                      background-color: #1e293b !important;
                     }
                     /* Leaflet CSS fix */
                     .leaflet-container {
