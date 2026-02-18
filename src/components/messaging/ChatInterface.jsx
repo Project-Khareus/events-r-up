@@ -131,7 +131,7 @@ export default function ChatInterface({ conversationId, onBack }) {
       <div className="flex-1 overflow-y-auto p-6 bg-slate-50 dark:bg-slate-900">
         {messages.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-slate-500">No messages yet. Start the conversation!</p>
+            <p className="text-slate-500 dark:text-slate-400">No messages yet. Start the conversation!</p>
           </div>
         ) : (
           <>
