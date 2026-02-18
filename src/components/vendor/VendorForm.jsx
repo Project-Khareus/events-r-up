@@ -387,9 +387,9 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* Profile Picture & Main Image */}
       <Card className="p-6 rounded-2xl border-slate-200">
-        <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
-          <Upload className="h-5 w-5 text-indigo-600" />
-          Profile & Images
+        <h2 className="text-slate-950 mb-4 text-lg font-semibold flex items-center gap-2">Profile & Images
+
+
         </h2>
         
         <div className="grid md:grid-cols-3 gap-6">
