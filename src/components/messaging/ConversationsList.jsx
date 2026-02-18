@@ -44,7 +44,7 @@ export default function ConversationsList({ conversations, selectedId, onSelect,
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2 mb-1">
-                  <h4 className="font-semibold text-slate-900 truncate">{displayName}</h4>
+                  <h4 className="font-semibold text-slate-900 dark:text-slate-100 truncate">{displayName}</h4>
                   {conversation.unread_count > 0 && (
                     <Badge className="bg-indigo-600 text-white shrink-0">
                       {conversation.unread_count}
