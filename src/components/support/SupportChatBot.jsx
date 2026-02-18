@@ -86,7 +86,7 @@ export default function SupportChatBot() {
               <Bot className="h-5 w-5" />
             </div>
             <div>
-              <p className="font-semibold text-sm">Khareus Support</p>
+              <p className="font-semibold text-sm">Kharis</p>
               <p className="text-xs text-indigo-200">AI Assistant • Always here to help</p>
             </div>
           </div>
