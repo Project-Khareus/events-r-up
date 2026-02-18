@@ -31,7 +31,9 @@ export default function Layout({ children }) {
                     }
                     /* High contrast text */
                     .dark .text-slate-950,
-                    .dark .text-slate-900 {
+                    .dark .text-slate-900,
+                    .dark [class*="text-slate-950"],
+                    .dark [class*="text-gray-900"] {
                       color: #f8fafc !important;
                     }
                     .dark .text-slate-800,
