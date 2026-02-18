@@ -97,7 +97,7 @@ export default function ChatInterface({ conversationId, onBack }) {
   return (
     <Card className="h-[600px] rounded-2xl border-slate-200 shadow-sm flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="p-4 border-b border-slate-200 bg-gradient-to-r from-indigo-50 to-white">
+      <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-gradient-to-r from-indigo-50 to-white dark:from-slate-800 dark:to-slate-900">
         <div className="flex items-center gap-3">
           {onBack && (
             <Button variant="ghost" size="icon" onClick={onBack} className="rounded-xl">
