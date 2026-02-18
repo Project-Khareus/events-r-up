@@ -120,7 +120,7 @@ export default function ChatInterface({ conversationId, onBack }) {
                 return isVendor ? conversation?.user_name : conversation?.vendor_name;
               })()}
             </h3>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               {conversation?.vendor_id === currentUser?.id ? "Customer" : "Event Vendor"}
             </p>
           </div>
