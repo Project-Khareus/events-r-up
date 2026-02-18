@@ -64,10 +64,11 @@ export default function Layout({ children }) {
                       background-color: #334155 !important;
                     }
                     /* Cards */
-                    .dark .rounded-2xl,
-                    .dark .rounded-xl,
-                    .dark .rounded-lg {
-                      background-color: #1e293b;
+                    .dark .bg-white.rounded-2xl,
+                    .dark .bg-white.rounded-xl,
+                    .dark .bg-white.rounded-lg,
+                    .dark [class*="rounded"].bg-white {
+                      background-color: #1e293b !important;
                     }
                     /* Borders */
                     .dark .border-slate-100 {
