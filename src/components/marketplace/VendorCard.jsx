@@ -152,7 +152,7 @@ export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
           </div>
 
           {vendor.description && (
-            <p className="text-slate-600 text-xs sm:text-sm line-clamp-2 leading-relaxed mt-auto">
+            <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm line-clamp-2 leading-relaxed mt-auto">
               {vendor.description}
             </p>
           )}
