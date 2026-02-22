@@ -64,7 +64,7 @@ export default function NotificationItem({ notification, onRead, compact = false
             {notification.changes_summary && notification.changes_summary.length > 0 && (
               <div className="mt-2 flex flex-wrap gap-1">
                 {notification.changes_summary.slice(0, 3).map((field, idx) => (
-                  <span key={idx} className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">
+                  <span key={idx} className="text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded">
                     {field.replace(/_/g, ' ')}
                   </span>
                 ))}
