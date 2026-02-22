@@ -236,7 +236,7 @@ export default function FilterControls({
             {/* Available Date Filter */}
             {onAvailableDateChange && (
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700 flex items-center gap-1">
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1">
                   <CalendarIcon className="h-4 w-4" />
                   Available Date
                 </label>
