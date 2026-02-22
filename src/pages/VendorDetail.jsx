@@ -183,7 +183,7 @@ export default function VendorDetail() {
   const isVendorOwner = currentUser && vendor.user_id === currentUser.id;
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans">
+    <div className="min-h-screen bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-sans">
       <MetaTags 
         title={vendor.business_name}
         description={vendor.description || `${vendor.business_name} - Professional ${CATEGORY_LABELS[vendor.category] || vendor.category} services for your special events.`}
