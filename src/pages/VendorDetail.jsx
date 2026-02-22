@@ -215,7 +215,7 @@ export default function VendorDetail() {
           {/* Right Column: Product Info (5 cols) */}
           <div className="lg:col-span-5">
             <div className="space-y-2">
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-slate-900 leading-tight break-words">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-slate-900 dark:text-slate-100 leading-tight break-words">
                 {vendor.business_name}
               </h1>
               
