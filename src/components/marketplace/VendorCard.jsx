@@ -132,7 +132,7 @@ export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
 
           <div className="space-y-1 sm:space-y-1.5 mb-2 sm:mb-3">
             {vendor.location && (
-              <div className="flex items-center gap-1 sm:gap-1.5 text-slate-500 text-xs sm:text-sm">
+              <div className="flex items-center gap-1 sm:gap-1.5 text-slate-500 dark:text-slate-400 text-xs sm:text-sm">
                 <MapPin className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
                 <span className="truncate">{vendor.location}</span>
               </div>
