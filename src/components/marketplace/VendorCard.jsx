@@ -141,7 +141,7 @@ export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
             {(averageRating || reviews.length > 0) && (
               <div className="flex items-center gap-1 sm:gap-1.5">
                 <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-amber-400 text-amber-400 shrink-0" />
-                <span className="text-xs sm:text-sm font-medium text-slate-700">
+                <span className="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">
                   {averageRating ? averageRating.toFixed(1) : 'New'}
                 </span>
                 {reviews.length > 0 && (
