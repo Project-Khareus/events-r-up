@@ -287,7 +287,7 @@ export default function FilterControls({
             {/* Years in Business Filter */}
             {onMinYearsChange && (
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700">
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                   Min. Years: {minYears > 0 ? `${minYears}+` : 'Any'}
                 </label>
                 <Slider
