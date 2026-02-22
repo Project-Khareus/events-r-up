@@ -117,7 +117,7 @@ export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
           {/* Categories Tags */}
           <div className="flex flex-wrap gap-1 mb-1.5 sm:mb-2">
             {categories.slice(0, 2).map((cat, i) => (
-               <span key={i} className="text-[10px] sm:text-xs font-medium tracking-wide uppercase text-slate-500 bg-slate-100 px-1.5 sm:px-2 py-0.5 rounded-sm">
+               <span key={i} className="text-[10px] sm:text-xs font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-1.5 sm:px-2 py-0.5 rounded-sm">
                  {CATEGORY_LABELS[cat] || cat}
                </span>
             ))}
