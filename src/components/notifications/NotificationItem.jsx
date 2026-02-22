@@ -44,10 +44,10 @@ export default function NotificationItem({ notification, onRead, compact = false
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-start gap-2">
-          <h4 className={cn("font-semibold text-slate-900 truncate", compact ? "text-sm" : "text-base")}>
+          <h4 className={cn("font-semibold text-slate-900 dark:text-slate-100 truncate", compact ? "text-sm" : "text-base")}>
             {notification.title}
           </h4>
-          <span className="text-xs text-slate-400 shrink-0 whitespace-nowrap">
+          <span className="text-xs text-slate-400 dark:text-slate-500 shrink-0 whitespace-nowrap">
             {formatDistanceToNow(new Date(notification.created_date), { addSuffix: true })}
           </span>
         </div>
