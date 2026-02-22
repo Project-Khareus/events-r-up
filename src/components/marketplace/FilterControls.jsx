@@ -220,7 +220,7 @@ export default function FilterControls({
             {/* Location Filter */}
             {onLocationChange && (
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700 flex items-center gap-1">
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1">
                   <MapPin className="h-4 w-4" />
                   Location
                 </label>
