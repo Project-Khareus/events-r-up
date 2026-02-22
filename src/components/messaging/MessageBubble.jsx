@@ -14,19 +14,19 @@ export default function MessageBubble({ message, isOwnMessage }) {
       )}
       <div className={cn("max-w-[70%]", isOwnMessage && "flex flex-col items-end")}>
         {!isOwnMessage && (
-          <p className="text-xs font-medium text-slate-600 mb-1">{message.sender_name}</p>
+          <p className="text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{message.sender_name}</p>
         )}
         <div
           className={cn(
             "rounded-2xl px-4 py-2.5 break-words",
             isOwnMessage
               ? "bg-gradient-to-r from-indigo-600 to-indigo-700 text-white"
-              : "bg-slate-100 text-slate-900"
+              : "bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100"
           )}
         >
           <p className="text-sm leading-relaxed">{message.content}</p>
         </div>
-        <p className="text-xs text-slate-500 mt-1">
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
           {format(new Date(message.created_date), "MMM d, h:mm a")}
         </p>
       </div>
