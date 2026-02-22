@@ -297,7 +297,7 @@ export default function FilterControls({
                   step={1}
                   className="mt-2"
                 />
-                <div className="flex justify-between text-xs text-slate-500">
+                <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400">
                   <span>Any</span>
                   <span>20+ years</span>
                 </div>
