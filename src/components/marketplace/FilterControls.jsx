@@ -215,7 +215,7 @@ export default function FilterControls({
 
       {/* Advanced Filters Section */}
       {showAdvanced && (
-        <div className="bg-slate-50 rounded-xl p-4 space-y-4 border border-slate-200">
+        <div className="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-4 space-y-4 border border-slate-200 dark:border-slate-700">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Location Filter */}
             {onLocationChange && (
