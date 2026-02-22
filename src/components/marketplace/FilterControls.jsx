@@ -266,7 +266,7 @@ export default function FilterControls({
             {/* Minimum Rating Filter */}
             {onMinRatingChange && (
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700 flex items-center gap-1">
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1">
                   <Star className="h-4 w-4" />
                   Min. Rating: {minRating > 0 ? `${minRating}+` : 'Any'}
                 </label>
