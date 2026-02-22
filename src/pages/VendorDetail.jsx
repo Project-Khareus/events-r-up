@@ -220,7 +220,7 @@ export default function VendorDetail() {
               </h1>
               
               {vendor.slogan && (
-                <p className="text-sm text-slate-600 italic">{vendor.slogan}</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400 italic">{vendor.slogan}</p>
               )}
               
               <div className="flex flex-wrap items-center gap-2">
