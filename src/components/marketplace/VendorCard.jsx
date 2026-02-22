@@ -62,7 +62,7 @@ export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
 
   return (
     <Link to={createPageUrl(`VendorDetail?id=${vendor.id}`)} className="block h-full">
-      <Card className="group h-full flex flex-col overflow-hidden border border-slate-200 hover:border-slate-400 transition-all duration-500 bg-white rounded-none">
+      <Card className="group h-full flex flex-col overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-500 bg-white dark:bg-slate-800 rounded-none">
         <div className="relative h-48 sm:h-56 md:h-64 overflow-hidden bg-slate-100 shrink-0">
           {vendor.image_url && !imageError ? (
             <img
