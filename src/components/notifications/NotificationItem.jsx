@@ -69,7 +69,7 @@ export default function NotificationItem({ notification, onRead, compact = false
                   </span>
                 ))}
                 {notification.changes_summary.length > 3 && (
-                  <span className="text-xs text-slate-500 px-1">+{notification.changes_summary.length - 3} more</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400 px-1">+{notification.changes_summary.length - 3} more</span>
                 )}
               </div>
             )}
