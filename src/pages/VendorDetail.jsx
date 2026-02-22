@@ -194,16 +194,16 @@ export default function VendorDetail() {
       <MobileHeader title={vendor.business_name} />
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-3 sm:py-4">
         {/* Breadcrumbs */}
-        <nav className="hidden md:flex items-center gap-2 text-xs sm:text-sm text-slate-500 mb-4 sm:mb-5">
-          <Link to={createPageUrl("VendorMarketplace")} className="hover:text-slate-900 transition-colors shrink-0">Home</Link>
+        <nav className="hidden md:flex items-center gap-2 text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-4 sm:mb-5">
+          <Link to={createPageUrl("VendorMarketplace")} className="hover:text-slate-900 dark:hover:text-slate-100 transition-colors shrink-0">Home</Link>
           <ChevronRight className="h-3 w-3 shrink-0" />
-          <Link to={createPageUrl("VendorMarketplace")} className="hover:text-slate-900 transition-colors shrink-0">Vendors</Link>
+          <Link to={createPageUrl("VendorMarketplace")} className="hover:text-slate-900 dark:hover:text-slate-100 transition-colors shrink-0">Vendors</Link>
           <ChevronRight className="h-3 w-3 shrink-0" />
-          <Link to={createPageUrl(`VendorMarketplace?category=${Array.isArray(vendor.category) ? vendor.category[0] : vendor.category}`)} className="hover:text-slate-900 transition-colors truncate">
+          <Link to={createPageUrl(`VendorMarketplace?category=${Array.isArray(vendor.category) ? vendor.category[0] : vendor.category}`)} className="hover:text-slate-900 dark:hover:text-slate-100 transition-colors truncate">
             {CATEGORY_LABELS[Array.isArray(vendor.category) ? vendor.category[0] : vendor.category] || (Array.isArray(vendor.category) ? vendor.category[0] : vendor.category)}
           </Link>
           <ChevronRight className="h-3 w-3 shrink-0" />
-          <span className="text-slate-900 font-medium truncate max-w-[200px]">{vendor.business_name}</span>
+          <span className="text-slate-900 dark:text-slate-100 font-medium truncate max-w-[200px]">{vendor.business_name}</span>
         </nav>
 
         <div className="grid lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8">
