@@ -51,7 +51,7 @@ export default function NotificationItem({ notification, onRead, compact = false
             {formatDistanceToNow(new Date(notification.created_date), { addSuffix: true })}
           </span>
         </div>
-        <p className={cn("text-slate-600 mt-1", compact ? "text-xs line-clamp-2" : "text-sm")}>
+        <p className={cn("text-slate-600 dark:text-slate-300 mt-1", compact ? "text-xs line-clamp-2" : "text-sm")}>
           {notification.message}
         </p>
         {!compact && (
