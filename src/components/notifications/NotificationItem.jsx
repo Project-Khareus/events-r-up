@@ -34,7 +34,9 @@ export default function NotificationItem({ notification, onRead, compact = false
   const Content = () => (
     <div className={cn(
       "flex gap-4 p-4 rounded-xl transition-all border",
-      notification.is_read ? "bg-white border-transparent" : "bg-blue-50/50 border-blue-100",
+      notification.is_read
+        ? "bg-white dark:bg-slate-800 border-transparent dark:border-slate-700"
+        : "bg-blue-50/50 dark:bg-blue-950/20 border-blue-100 dark:border-blue-900/40",
       !compact && "hover:shadow-md"
     )}>
       <div className={cn("h-10 w-10 rounded-full flex items-center justify-center shrink-0", colorClass)}>
