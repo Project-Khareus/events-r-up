@@ -74,7 +74,7 @@ export default function NotificationItem({ notification, onRead, compact = false
               </div>
             )}
             {notification.reason && (
-              <p className="text-xs text-orange-700 bg-orange-50 px-2 py-1 rounded mt-2">
+              <p className="text-xs text-orange-700 dark:text-orange-300 bg-orange-50 dark:bg-orange-950/40 px-2 py-1 rounded mt-2">
                 <span className="font-medium">Reason:</span> {notification.reason}
               </p>
             )}
