@@ -126,7 +126,7 @@ export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
             )}
           </div>
 
-          <h3 className="font-serif font-bold text-base sm:text-lg lg:text-xl text-slate-900 group-hover:text-slate-600 transition-colors line-clamp-1 mb-1.5 sm:mb-2 tracking-tight">
+          <h3 className="font-serif font-bold text-base sm:text-lg lg:text-xl text-slate-900 dark:text-slate-100 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors line-clamp-1 mb-1.5 sm:mb-2 tracking-tight">
             {vendor.business_name}
           </h3>
 
