@@ -57,7 +57,7 @@ export default function NotificationItem({ notification, onRead, compact = false
         {!compact && (
           <>
             {notification.action_by && (
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                 <span className="font-medium">Action by:</span> {notification.action_by}
               </p>
             )}
