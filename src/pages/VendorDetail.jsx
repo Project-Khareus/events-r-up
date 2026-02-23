@@ -413,9 +413,9 @@ export default function VendorDetail() {
                   <h3 className="text-xl font-serif font-bold text-slate-900 dark:text-slate-100 mb-3">Services Included</h3>
                   <div className="grid sm:grid-cols-2 gap-3">
                     {vendor.services.map((service, index) => (
-                      <div key={index} className="flex items-center gap-3 p-3 border border-slate-100 rounded-lg bg-white shadow-sm">
-                        <CheckCircle2 className="h-5 w-5 text-slate-900 shrink-0" />
-                        <span className="text-slate-700 font-medium">{service}</span>
+                      <div key={index} className="flex items-center gap-3 p-3 border border-slate-100 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 shadow-sm">
+                        <CheckCircle2 className="h-5 w-5 text-slate-900 dark:text-slate-300 shrink-0" />
+                        <span className="text-slate-700 dark:text-slate-300 font-medium">{service}</span>
                       </div>
                     ))}
                   </div>
