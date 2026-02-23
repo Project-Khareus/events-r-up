@@ -177,11 +177,11 @@ export default function ReviewForm({ vendorId, vendorName }) {
   // No confirmed/completed booking
   if (!hasCompletedBooking) {
     return (
-      <Card className="p-8 rounded-2xl border-slate-200 shadow-sm">
+      <Card className="p-8 rounded-2xl border-slate-200 dark:border-slate-700 shadow-sm dark:bg-slate-800">
         <div className="text-center">
           <ShieldCheck className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-slate-900 mb-2">Verified Reviews Only</h2>
-          <p className="text-slate-600">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">Verified Reviews Only</h2>
+          <p className="text-slate-600 dark:text-slate-400">
             Only customers who have confirmed or completed bookings with this vendor can leave a review.
             This ensures all reviews are from genuine customers.
           </p>
