@@ -48,25 +48,25 @@ export default function ReviewCard({ review }) {
     }
   });
   return (
-    <Card className="p-6 rounded-2xl border-slate-200 hover:shadow-md transition-shadow">
+    <Card className="p-6 rounded-2xl border-slate-200 dark:border-slate-700 hover:shadow-md transition-shadow dark:bg-slate-800">
       <div className="flex items-start justify-between gap-4 mb-4">
         <div className="flex items-start gap-3">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-50 flex items-center justify-center shrink-0">
-            <User className="h-6 w-6 text-indigo-600" />
+          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-50 dark:from-indigo-900 dark:to-indigo-800 flex items-center justify-center shrink-0">
+            <User className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
           </div>
           <div>
-            <h4 className="font-semibold text-slate-900">
+            <h4 className="font-semibold text-slate-900 dark:text-slate-100">
               {review.reviewer_name || "Anonymous"}
             </h4>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
               {format(new Date(review.created_date), "MMMM d, yyyy")}
             </p>
           </div>
         </div>
         
-        <div className="flex items-center gap-1 bg-amber-50 px-3 py-1.5 rounded-full shrink-0">
+        <div className="flex items-center gap-1 bg-amber-50 dark:bg-amber-900/30 px-3 py-1.5 rounded-full shrink-0">
           <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-          <span className="font-semibold text-slate-900">{review.rating}</span>
+          <span className="font-semibold text-slate-900 dark:text-slate-100">{review.rating}</span>
         </div>
       </div>
 
