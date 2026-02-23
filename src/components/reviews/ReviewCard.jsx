@@ -94,7 +94,7 @@ export default function ReviewCard({ review }) {
 
       {/* Response Form for Vendor */}
       {isVendorOwner && !review.vendor_response && (
-        <div className="mt-4 pt-4 border-t border-slate-200">
+        <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
           {!showResponseForm ? (
             <Button
               variant="outline"
