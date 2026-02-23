@@ -76,19 +76,19 @@ export default function ReviewCard({ review }) {
         </Badge>
       )}
 
-      <p className="text-slate-700 leading-relaxed">{review.review_text}</p>
+      <p className="text-slate-700 dark:text-slate-300 leading-relaxed">{review.review_text}</p>
 
       {/* Vendor Response */}
       {review.vendor_response && (
-        <div className="mt-4 pl-4 border-l-2 border-indigo-200 bg-indigo-50/50 p-4 rounded-r-lg">
+        <div className="mt-4 pl-4 border-l-2 border-indigo-200 dark:border-indigo-700 bg-indigo-50/50 dark:bg-indigo-900/20 p-4 rounded-r-lg">
           <div className="flex items-center gap-2 mb-2">
-            <MessageSquare className="h-4 w-4 text-indigo-600" />
-            <span className="font-semibold text-sm text-indigo-900">Vendor Response</span>
-            <span className="text-xs text-slate-500">
+            <MessageSquare className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+            <span className="font-semibold text-sm text-indigo-900 dark:text-indigo-300">Vendor Response</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400">
               • {format(new Date(review.vendor_response_date), "MMM d, yyyy 'at' h:mm a")}
             </span>
           </div>
-          <p className="text-slate-700 text-sm leading-relaxed">{review.vendor_response}</p>
+          <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">{review.vendor_response}</p>
         </div>
       )}
 
