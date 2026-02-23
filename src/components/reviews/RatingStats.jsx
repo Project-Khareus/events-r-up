@@ -5,11 +5,11 @@ import { Star } from "lucide-react";
 export default function RatingStats({ reviews }) {
   if (!reviews || reviews.length === 0) {
     return (
-      <Card className="p-6 rounded-2xl border-slate-200 shadow-sm">
+      <Card className="p-6 rounded-2xl border-slate-200 dark:border-slate-700 shadow-sm dark:bg-slate-800">
         <div className="text-center">
-          <Star className="h-12 w-12 text-slate-300 mx-auto mb-3" />
-          <p className="text-lg font-semibold text-slate-900">No ratings yet</p>
-          <p className="text-sm text-slate-600">Be the first to review!</p>
+          <Star className="h-12 w-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+          <p className="text-lg font-semibold text-slate-900 dark:text-slate-100">No ratings yet</p>
+          <p className="text-sm text-slate-600 dark:text-slate-400">Be the first to review!</p>
         </div>
       </Card>
     );
