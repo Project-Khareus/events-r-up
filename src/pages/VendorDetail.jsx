@@ -249,13 +249,13 @@ export default function VendorDetail() {
             </div>
 
             <div className="flex items-center gap-2 mt-2 mb-4">
-              <div className="flex text-slate-900">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className={`h-4 w-4 ${i < Math.round(averageRating) ? "fill-slate-900 text-slate-900" : "text-slate-300"}`} />
-                ))}
-              </div>
-              <span className="font-bold text-slate-900">{averageRating.toFixed(1)}/5</span>
-              <span className="text-slate-500 underline decoration-slate-300 underline-offset-2">
+            <div className="flex text-slate-900">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className={`h-4 w-4 ${i < Math.round(averageRating) ? "fill-slate-900 dark:fill-slate-100 text-slate-900 dark:text-slate-100" : "text-slate-300 dark:text-slate-600"}`} />
+              ))}
+            </div>
+            <span className="font-bold text-slate-900 dark:text-slate-100">{averageRating.toFixed(1)}/5</span>
+            <span className="text-slate-500 dark:text-slate-400 underline decoration-slate-300 underline-offset-2">
                 ({reviewCount} reviews)
               </span>
             </div>
