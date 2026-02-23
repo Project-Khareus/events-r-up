@@ -89,8 +89,8 @@ export default function ContactBookingModal({ vendor, trigger }) {
 
             {/* Social Media */}
             {(vendor.instagram || vendor.facebook || vendor.twitter || vendor.linkedin || vendor.tiktok) && (
-              <div className="pt-4 border-t border-slate-200">
-                <p className="text-sm font-semibold text-slate-700 mb-3">Social Media</p>
+              <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
+                <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Social Media</p>
                 <div className="flex gap-2 flex-wrap">
                   {vendor.instagram && (
                     <a href={`https://instagram.com/${vendor.instagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white hover:opacity-80 transition-opacity">
