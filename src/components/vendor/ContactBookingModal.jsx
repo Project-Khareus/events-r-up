@@ -124,7 +124,7 @@ export default function ContactBookingModal({ vendor, trigger }) {
             )}
 
             {/* Start Conversation */}
-            <div className="pt-4 border-t border-slate-200">
+            <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
               <StartConversationButton vendorId={vendor.id} vendorName={vendor.business_name} />
             </div>
           </TabsContent>
