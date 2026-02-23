@@ -423,9 +423,9 @@ export default function VendorDetail() {
              )}
 
              {/* Reviews */}
-             <section id="reviews" className="pt-6 border-t border-slate-200">
+             <section id="reviews" className="pt-6 border-t border-slate-200 dark:border-slate-700">
                 <div className="flex items-center justify-between mb-6">
-                   <h2 className="text-2xl font-serif font-bold text-slate-900">Reviews ({reviews.length})</h2>
+                   <h2 className="text-2xl font-serif font-bold text-slate-900 dark:text-slate-100">Reviews ({reviews.length})</h2>
                 </div>
                 
                 <div className="space-y-6">
