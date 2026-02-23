@@ -141,11 +141,11 @@ export default function ReviewForm({ vendorId, vendorName }) {
   // Not authenticated
   if (!isAuthenticated) {
     return (
-      <Card className="p-8 rounded-2xl border-slate-200 shadow-sm">
+      <Card className="p-8 rounded-2xl border-slate-200 dark:border-slate-700 shadow-sm dark:bg-slate-800">
         <div className="text-center">
           <AlertCircle className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-slate-900 mb-2">Sign In to Review</h2>
-          <p className="text-slate-600 mb-4">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">Sign In to Review</h2>
+          <p className="text-slate-600 dark:text-slate-400 mb-4">
             You must be signed in to leave a review.
           </p>
           <Button 
