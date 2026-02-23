@@ -162,11 +162,11 @@ export default function ReviewForm({ vendorId, vendorName }) {
   // Already reviewed
   if (hasAlreadyReviewed) {
     return (
-      <Card className="p-8 rounded-2xl border-slate-200 shadow-sm">
+      <Card className="p-8 rounded-2xl border-slate-200 dark:border-slate-700 shadow-sm dark:bg-slate-800">
         <div className="text-center">
           <ShieldCheck className="h-12 w-12 text-green-600 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-slate-900 mb-2">Thank You!</h2>
-          <p className="text-slate-600">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">Thank You!</h2>
+          <p className="text-slate-600 dark:text-slate-400">
             You have already submitted a review for this vendor.
           </p>
         </div>
