@@ -343,8 +343,8 @@ export default function VendorDetail() {
 
             {/* Social Media Links */}
             {(vendor.instagram || vendor.facebook || vendor.twitter || vendor.tiktok || vendor.linkedin || vendor.website) && (
-              <div className="pt-4 border-t border-slate-200">
-                <h3 className="text-sm font-semibold text-slate-900 mb-2">Connect with us</h3>
+              <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
+                <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">Connect with us</h3>
                 <div className="flex flex-wrap gap-2">
                   {vendor.website && (
                     <a href={vendor.website.startsWith('http') ? vendor.website : `https://${vendor.website}`} target="_blank" rel="noopener noreferrer" className="p-2.5 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
