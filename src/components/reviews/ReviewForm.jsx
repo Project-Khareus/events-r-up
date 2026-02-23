@@ -191,12 +191,12 @@ export default function ReviewForm({ vendorId, vendorName }) {
   }
 
   return (
-    <Card className="p-8 rounded-2xl border-slate-200 shadow-sm">
+    <Card className="p-8 rounded-2xl border-slate-200 dark:border-slate-700 shadow-sm dark:bg-slate-800">
       <div className="flex items-center gap-2 mb-6">
         <ShieldCheck className="h-5 w-5 text-green-600" />
         <span className="text-sm text-green-600 font-medium">Verified Purchase</span>
       </div>
-      <h2 className="text-2xl font-bold text-slate-900 mb-6">Write a Review</h2>
+      <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Write a Review</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Star Rating */}
         <div>
