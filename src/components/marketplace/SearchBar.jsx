@@ -16,7 +16,7 @@ export default function SearchBar({ value, onChange }) {
         placeholder="Search vendors by name or service..."
         value={value || ""}
         onChange={handleChange}
-        className="pl-12 h-14 text-base border-slate-200 focus:border-indigo-400 focus:ring-indigo-400 rounded-2xl shadow-sm bg-white"
+        className="pl-12 h-14 text-base border-slate-200 dark:border-slate-600 focus:border-indigo-400 focus:ring-indigo-400 rounded-2xl shadow-sm bg-white dark:bg-slate-700 dark:text-slate-100 dark:placeholder:text-slate-400"
       />
     </div>
   );
