@@ -222,7 +222,7 @@ export default function ReviewForm({ vendorId, vendorName }) {
             ))}
           </div>
           {rating > 0 && (
-            <p className="text-sm text-slate-600 mt-2">
+            <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
               {rating === 1 && "Poor"}
               {rating === 2 && "Fair"}
               {rating === 3 && "Good"}
