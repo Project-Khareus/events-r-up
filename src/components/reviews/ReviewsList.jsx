@@ -14,7 +14,7 @@ export default function ReviewsList({ vendorId }) {
 
   if (isLoading) {
     return (
-      <Card className="p-8 rounded-2xl border-slate-200 shadow-sm">
+      <Card className="p-8 rounded-2xl border-slate-200 dark:border-slate-700 shadow-sm dark:bg-slate-800">
         <Skeleton className="h-8 w-48 mb-6" />
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
