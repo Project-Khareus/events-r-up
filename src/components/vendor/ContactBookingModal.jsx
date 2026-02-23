@@ -74,7 +74,7 @@ export default function ContactBookingModal({ vendor, trigger }) {
                   href={vendor.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors"
+                  className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors"
                 >
                   <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
                     <Globe className="h-5 w-5 text-indigo-600" />
