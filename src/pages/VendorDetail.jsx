@@ -396,7 +396,7 @@ export default function VendorDetail() {
         </div>
 
         {/* Bottom Section */}
-        <div className="mt-8 sm:mt-10 lg:mt-12 grid lg:grid-cols-12 gap-6 lg:gap-8 border-t border-slate-200 pt-6 sm:pt-8 lg:pt-10">
+        <div className="mt-8 sm:mt-10 lg:mt-12 grid lg:grid-cols-12 gap-6 lg:gap-8 border-t border-slate-200 dark:border-slate-700 pt-6 sm:pt-8 lg:pt-10">
           <div className="lg:col-span-7 space-y-8">
              
              {/* Description */}
