@@ -62,15 +62,15 @@ export default function VendorCategorySection({ title, eventType, category, vend
         {/* Scroll Buttons */}
         <button
           onClick={() => scroll("left")}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white/90 rounded-full shadow-md flex items-center justify-center hover:bg-white"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white/90 dark:bg-slate-700/90 rounded-full shadow-md flex items-center justify-center hover:bg-white dark:hover:bg-slate-700"
         >
-          <ChevronLeft className="h-5 w-5 text-slate-700" />
+          <ChevronLeft className="h-5 w-5 text-slate-700 dark:text-slate-200" />
         </button>
         <button
           onClick={() => scroll("right")}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white/90 rounded-full shadow-md flex items-center justify-center hover:bg-white"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white/90 dark:bg-slate-700/90 rounded-full shadow-md flex items-center justify-center hover:bg-white dark:hover:bg-slate-700"
         >
-          <ChevronRight className="h-5 w-5 text-slate-700" />
+          <ChevronRight className="h-5 w-5 text-slate-700 dark:text-slate-200" />
         </button>
 
         {/* Scrollable Container */}
