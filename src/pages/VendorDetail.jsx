@@ -410,7 +410,7 @@ export default function VendorDetail() {
              {/* Services */}
              {vendor.services && vendor.services.length > 0 && (
                <section>
-                  <h3 className="text-xl font-serif font-bold text-slate-900 mb-3">Services Included</h3>
+                  <h3 className="text-xl font-serif font-bold text-slate-900 dark:text-slate-100 mb-3">Services Included</h3>
                   <div className="grid sm:grid-cols-2 gap-3">
                     {vendor.services.map((service, index) => (
                       <div key={index} className="flex items-center gap-3 p-3 border border-slate-100 rounded-lg bg-white shadow-sm">
