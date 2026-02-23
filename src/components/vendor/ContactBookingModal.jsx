@@ -80,8 +80,8 @@ export default function ContactBookingModal({ vendor, trigger }) {
                     <Globe className="h-5 w-5 text-indigo-600" />
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500">Website</p>
-                    <p className="text-sm font-medium text-slate-700">Visit Website</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Website</p>
+                    <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Visit Website</p>
                   </div>
                 </a>
               )}
