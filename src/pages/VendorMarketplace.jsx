@@ -285,8 +285,8 @@ export default function VendorMarketplace() {
         {/* Results Count - only show when searching */}
         {searchQuery &&
             <div className="mb-6 sm:mb-8 px-2">
-            <p className="text-sm sm:text-base text-slate-600">
-              <span className="font-semibold text-slate-900">{filteredVendors.length}</span> vendors found
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
+              <span className="font-semibold text-slate-900 dark:text-slate-100">{filteredVendors.length}</span> vendors found
             </p>
           </div>
             }
