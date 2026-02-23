@@ -238,7 +238,7 @@ export default function VendorMarketplace() {
 
       {/* Search & Filters */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-6 sm:-mt-8">
-        <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200 p-4 sm:p-6 lg:p-8">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200 dark:border-slate-700 p-4 sm:p-6 lg:p-8">
           <div className="flex flex-col gap-4 sm:gap-6">
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch">
               <div className="flex-1">
