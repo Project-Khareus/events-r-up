@@ -401,8 +401,8 @@ export default function VendorDetail() {
              
              {/* Description */}
              <section>
-                <h2 className="text-2xl font-serif font-bold text-slate-900 mb-3">Description</h2>
-                <div className="prose prose-slate max-w-none text-slate-600 leading-relaxed">
+                <h2 className="text-2xl font-serif font-bold text-slate-900 dark:text-slate-100 mb-3">Description</h2>
+                 <div className="prose prose-slate max-w-none text-slate-600 dark:text-slate-300 leading-relaxed">
                    {vendor.description || "No description provided."}
                 </div>
              </section>
