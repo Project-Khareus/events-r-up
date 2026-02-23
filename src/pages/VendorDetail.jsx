@@ -262,10 +262,10 @@ export default function VendorDetail() {
 
             <div className="mb-4">
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl sm:text-3xl font-bold text-slate-900">
+                <span className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100">
                   {vendor.starting_price && currency ? formatPrice(vendor.starting_price, currency) : "Price varies"}
                 </span>
-                {vendor.starting_price && <span className="text-slate-500 text-xs sm:text-sm font-normal">starting price</span>}
+                {vendor.starting_price && <span className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm font-normal">starting price</span>}
               </div>
               {vendor.price_range && (
                 <Badge variant="secondary" className="mt-2 bg-green-100 text-green-700 hover:bg-green-100 border-0 rounded-sm font-medium">
