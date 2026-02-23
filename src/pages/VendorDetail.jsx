@@ -140,9 +140,9 @@ export default function VendorDetail() {
 
   if (!vendor) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-slate-900 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-slate-900 mb-4">Vendor not found</h2>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">Vendor not found</h2>
           <Link to={createPageUrl("VendorMarketplace")}>
             <Button variant="outline" className="rounded-xl">
               <ArrowLeft className="h-4 w-4 mr-2" />
