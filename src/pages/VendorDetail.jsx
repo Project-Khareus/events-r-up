@@ -314,12 +314,12 @@ export default function VendorDetail() {
 
               <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100 hover:bg-slate-100 transition-colors cursor-pointer group">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center shadow-sm text-slate-700 border border-slate-100">
+                  <div className="w-9 h-9 rounded-full bg-white dark:bg-slate-700 flex items-center justify-center shadow-sm text-slate-700 dark:text-slate-300 border border-slate-100 dark:border-slate-600">
                     <Lock className="h-4 w-4" />
                   </div>
                   <div>
-                    <p className="font-semibold text-slate-900 text-sm group-hover:underline">Secure Booking Payment</p>
-                    <p className="text-xs text-slate-500">Your funds are held safely</p>
+                    <p className="font-semibold text-slate-900 dark:text-slate-100 text-sm group-hover:underline">Secure Booking Payment</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Your funds are held safely</p>
                   </div>
                 </div>
                 <ChevronRight className="h-4 w-4 text-slate-400" />
