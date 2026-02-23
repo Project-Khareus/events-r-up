@@ -447,7 +447,7 @@ export default function VendorDetail() {
                 )}
                 
                 <div className="mt-8">
-                   <h3 className="font-serif font-bold text-slate-900 mb-4 text-xl">You might also like</h3>
+                   <h3 className="font-serif font-bold text-slate-900 dark:text-slate-100 mb-4 text-xl">You might also like</h3>
                    <RelatedVendors 
                       currentVendorId={vendor.id} 
                       category={vendor.category} 
