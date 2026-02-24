@@ -220,5 +220,6 @@ export default function MyFavorites() {
         )}
       </div>
     </div>
+    </PullToRefresh>
   );
 }
