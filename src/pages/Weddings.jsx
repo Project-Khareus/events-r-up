@@ -6,7 +6,7 @@ const CATEGORIES = [
   { name: "Fashion & Accessories", id: "bridal_fashion" },
   { name: "Make-Up Artistes", id: "makeup_artistes" },
   { name: "Décor & Logistics Setup", id: "decor_logistics" },
-  { name: "Event Grounds", id: "event_grounds" },
+  { name: "Event Venues", id: "event_grounds" },
   { name: "Photography & Videography", id: "photography_videography" },
   { name: "Design & Creatives", id: "design_creatives" },
   { name: "Catering", id: "catering" },

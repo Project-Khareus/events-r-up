@@ -49,7 +49,7 @@ const CATEGORIES_BY_EVENT = {
 
   parties: [
   { value: "event_planner", label: "Event Planner" },
-  { value: "event_grounds", label: "Event Grounds" },
+  { value: "event_grounds", label: "Event Venues" },
   { value: "makeup_artistes", label: "Make-Up Artistes" },
   { value: "decor_logistics", label: "Décor & Logistics Setup" },
   { value: "photography_videography", label: "Photography & Videography" },
