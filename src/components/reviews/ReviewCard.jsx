@@ -36,14 +36,26 @@ export default function ReviewCard({ review }) {
         vendor_response_date: new Date().toISOString()
       });
     },
+    onMutate: async (response) => {
+      await queryClient.cancelQueries({ queryKey: ['reviews'] });
+      await queryClient.cancelQueries({ queryKey: ['vendor_reviews'] });
+      const previousReviews = queryClient.getQueryData(['reviews']);
+      const previousVendorReviews = queryClient.getQueryData(['vendor_reviews']);
+      // Optimistically hide form and show response
+      setShowResponseForm(false);
+      setResponseText("");
+      return { previousReviews, previousVendorReviews, optimisticResponse: response };
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reviews'] });
       queryClient.invalidateQueries({ queryKey: ['vendor_reviews'] });
       toast.success("Response posted successfully");
-      setShowResponseForm(false);
-      setResponseText("");
     },
-    onError: () => {
+    onError: (err, response, context) => {
+      if (context?.previousReviews) queryClient.setQueryData(['reviews'], context.previousReviews);
+      if (context?.previousVendorReviews) queryClient.setQueryData(['vendor_reviews'], context.previousVendorReviews);
+      setShowResponseForm(true);
+      setResponseText(context?.optimisticResponse || "");
       toast.error("Failed to post response");
     }
   });
