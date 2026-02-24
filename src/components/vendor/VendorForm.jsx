@@ -69,6 +69,7 @@ const CATEGORIES_BY_EVENT = {
   { value: "decor_logistics", label: "Décor & Logistics Setup" }],
 
   funeral: [
+  { value: "event_planner", label: "Event Planner" },
   { value: "caskets", label: "Caskets" },
   { value: "catering_drinks", label: "Catering & Drinks" },
   { value: "decor_logistics", label: "Décor & Logistics Setup" },
