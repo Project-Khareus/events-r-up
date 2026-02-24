@@ -129,8 +129,7 @@ export default function MyFavorites() {
   };
 
   return (
-    <PullToRefresh onRefresh={handleRefresh}>
-    <div className="min-h-screen bg-slate-50 py-12 px-6">
+    <PullToRefresh onRefresh={handleRefresh}><div className="min-h-screen bg-slate-50 py-12 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center gap-3 mb-8">
           <div className="h-12 w-12 bg-red-100 rounded-2xl flex items-center justify-center">
