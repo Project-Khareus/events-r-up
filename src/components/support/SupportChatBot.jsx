@@ -21,6 +21,13 @@ export default function SupportChatBot() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!open) setShowPromo(true);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const sendMessage = async (e) => {
     e?.preventDefault();
     if (!input.trim() || loading) return;
