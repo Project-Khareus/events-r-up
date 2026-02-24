@@ -15,6 +15,7 @@ import HorizontalAdPlaceholder from "../components/marketplace/HorizontalAdPlace
 import { Skeleton } from "@/components/ui/skeleton";
 
 const CATEGORY_LABELS = {
+  event_planner: "Event Planner",
   bridal_fashion: "Bridal Fashion & Accessories",
   makeup_artistes: "Make-Up Artistes",
   decor_logistics: "Décor & Logistics Setup",
