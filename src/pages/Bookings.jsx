@@ -59,7 +59,12 @@ export default function Bookings() {
     completed: roleFilteredBookings.filter(b => b.status === "completed").length,
   };
 
+  const handleRefresh = async () => {
+    await queryClient.invalidateQueries({ queryKey: ['bookings'] });
+  };
+
   return (
+    <PullToRefresh onRefresh={handleRefresh}>
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/20">
       <div className="max-w-6xl mx-auto px-6 py-12">
         <div className="flex items-center justify-between mb-8">
