@@ -14,6 +14,7 @@ export default function SupportChatBot() {
   const [escalated, setEscalated] = useState(false);
   const [showEscalate, setShowEscalate] = useState(false);
   const bottomRef = useRef(null);
+  const sessionId = useRef(`session_${Date.now()}_${Math.random().toString(36).slice(2)}`);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
