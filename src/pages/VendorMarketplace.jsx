@@ -301,7 +301,8 @@ export default function VendorMarketplace() {
           </div>
             }
 
-        {isLoading ?
+        {/* Vendor listings commented out */}
+        {/* {isLoading ?
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 px-2">
             {[...Array(6)].map((_, i) =>
               <div key={i} className="space-y-3 sm:space-y-4">
@@ -325,7 +326,7 @@ export default function VendorMarketplace() {
               <div className="-mx-4 sm:-mx-6 lg:mx-auto mb-2">
                 <PromoAdBanner vendor={promoVendor} className="lg:max-w-7xl lg:mx-auto lg:rounded-2xl" />
               </div>
-              {vendorsByEvent.map((group) =>
+              {vendorsByEvent.map((group, index) =>
               <div key={group.eventType}>
                   {group.vendors.length > 0 ?
                 <VendorCategorySection
@@ -392,7 +393,7 @@ export default function VendorMarketplace() {
               </div>
               }
             </div>)
-            }
+            } */}
             </div>
 
           {/* Right Side Ad - Hidden on mobile */}
