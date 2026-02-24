@@ -34,7 +34,8 @@ export default function SupportChatBot() {
       const history = newMessages.slice(1); // exclude initial greeting
       const { data } = await base44.functions.invoke("supportChat", {
         message: userMessage,
-        history: history.slice(-10) // last 10 messages for context
+        history: history.slice(-10),
+        sessionId: sessionId.current
       });
 
       const reply = data.reply || "Sorry, I couldn't process that. Please try again.";
