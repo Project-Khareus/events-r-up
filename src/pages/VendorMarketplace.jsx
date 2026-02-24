@@ -403,6 +403,7 @@ export default function VendorMarketplace() {
           </div> */}
           </div>
           </div>
-    </div>);
-
+    </div>
+    </PullToRefresh>
+  );
 }
