@@ -20,7 +20,6 @@ const EVENT_TYPES = [
 const CATEGORIES_BY_EVENT = {
   all: [
     { value: "all", label: "All Categories" },
-    { value: "event_planner", label: "Event Planner" },
   ],
   weddings: [
     { value: "all", label: "All Categories" },
