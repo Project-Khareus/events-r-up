@@ -4,17 +4,85 @@ import { createPageUrl } from "../../utils";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 
+// Must stay in sync with EVENT_MENUS in Navbar
+const EVENT_MENUS = [
+  {
+    title: "Weddings",
+    categories: [
+      { name: "Bridal Fashion & Accessories", id: "bridal_fashion" },
+      { name: "Make-Up Artistes", id: "makeup_artistes" },
+      { name: "Décor & Logistics Setup", id: "decor_logistics" },
+      { name: "Event Grounds", id: "event_grounds" },
+      { name: "Photography & Videography", id: "photography_videography" },
+      { name: "Design & Creatives", id: "design_creatives" },
+      { name: "Catering", id: "catering" },
+      { name: "Jewellery", id: "jewellery" },
+      { name: "Honeymoon / Destination Packages", id: "honeymoon_packages" },
+      { name: "Music / Karaoke / MCs", id: "music_karaoke_mc" },
+      { name: "Car Rentals", id: "car_rentals" },
+      { name: "Social Media Support", id: "social_media_support" },
+      { name: "Ushers", id: "ushers" },
+      { name: "Couple's First Dance Tutorials", id: "dance_tutorials" },
+      { name: "Rent-a-Team", id: "rent_a_team" },
+    ]
+  },
+  {
+    title: "Parties",
+    categories: [
+      { name: "Event Grounds", id: "event_grounds" },
+      { name: "Make-Up Artistes", id: "makeup_artistes" },
+      { name: "Décor & Logistics Setup", id: "decor_logistics" },
+      { name: "Photography & Videography", id: "photography_videography" },
+      { name: "Design & Creatives", id: "design_creatives" },
+      { name: "Catering", id: "catering" },
+      { name: "Jewellery", id: "jewellery" },
+      { name: "Music / Karaoke", id: "music_karaoke_mc" },
+      { name: "Car Rentals", id: "car_rentals" },
+    ]
+  },
+  {
+    title: "Conferences",
+    categories: [
+      { name: "Conference Facilities", id: "conference_facilities" },
+      { name: "Catering", id: "catering" },
+      { name: "Car Rentals", id: "car_rentals" },
+      { name: "Rapporteur Services", id: "rapporteur_services" },
+      { name: "Music / MC", id: "music_karaoke_mc" },
+      { name: "Décor & Logistics Setup", id: "decor_logistics" },
+    ]
+  },
+  {
+    title: "Funerals",
+    categories: [
+      { name: "Caskets", id: "caskets" },
+      { name: "Catering & Drinks", id: "catering_drinks" },
+      { name: "Décor & Logistics Setup", id: "decor_logistics" },
+      { name: "Fashion / Wreaths", id: "fashion_wreaths" },
+      { name: "Car Rentals", id: "car_rentals" },
+      { name: "Others", id: "others" },
+    ]
+  }
+];
+
+// Build a deduplicated list of all unique categories across all event menus
+const ALL_CATEGORIES = (() => {
+  const seen = new Set();
+  const result = [];
+  EVENT_MENUS.forEach(menu => {
+    menu.categories.forEach(cat => {
+      if (!seen.has(cat.id)) {
+        seen.add(cat.id);
+        result.push({ label: cat.name, url: `CategoryPage?category=${cat.id}` });
+      }
+    });
+  });
+  return result;
+})();
+
 const DEFAULT_SECTIONS = {
   categories: {
     title: "Categories",
-    items: [
-      { label: "Bridal Fashion", url: "CategoryPage?category=bridal_fashion" },
-      { label: "Photography", url: "CategoryPage?category=photography_videography" },
-      { label: "Catering", url: "CategoryPage?category=catering" },
-      { label: "Event Grounds", url: "CategoryPage?category=event_grounds" },
-      { label: "Décor & Logistics", url: "CategoryPage?category=decor_logistics" },
-      { label: "Music & Entertainment", url: "CategoryPage?category=music_karaoke_mc" },
-    ]
+    items: ALL_CATEGORIES
   },
   company: {
     title: "Company",
