@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import PullToRefresh from "../components/shared/PullToRefresh";
 import { createPageUrl } from "../utils";
 import { Link } from "react-router-dom";
 import { Heart, Loader2, Calendar, Store } from "lucide-react";
