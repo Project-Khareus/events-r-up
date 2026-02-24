@@ -60,6 +60,7 @@ const CATEGORIES_BY_EVENT = {
   { value: "car_rentals", label: "Car Rentals" }],
 
   conference: [
+  { value: "event_planner", label: "Event Planner" },
   { value: "conference_facilities", label: "Conference Facilities" },
   { value: "catering", label: "Catering" },
   { value: "car_rentals", label: "Car Rentals" },
