@@ -52,7 +52,7 @@ const CATEGORY_LABELS = {
   bridal_fashion: "Bridal Fashion",
   makeup_artistes: "Make-Up Artistes",
   decor_logistics: "Décor & Logistics",
-  event_grounds: "Event Grounds",
+  event_grounds: "Event Venues",
   photography_videography: "Photo & Video",
   design_creatives: "Design",
   jewellery: "Jewellery",
