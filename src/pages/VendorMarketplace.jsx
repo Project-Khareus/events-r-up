@@ -392,7 +392,7 @@ export default function VendorMarketplace() {
               </div>
               }
             </div>)
-            } */}
+            }
             </div>
 
           {/* Right Side Ad - Hidden on mobile */}
