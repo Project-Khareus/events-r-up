@@ -37,38 +37,50 @@ export default function BookingForm({ vendorId, vendorName, compact = false }) {
       
       return base44.entities.Booking.create(bookingPayload);
     },
-    onSuccess: async (booking) => {
-      queryClient.invalidateQueries({ queryKey: ['bookings'] });
+    onMutate: async (bookingData) => {
+      await queryClient.cancelQueries({ queryKey: ['bookings'] });
+      const previousBookings = queryClient.getQueryData(['bookings']);
+      const optimisticBooking = {
+        ...bookingData,
+        id: `optimistic_${Date.now()}`,
+        vendor_id: vendorId,
+        vendor_name: vendorName,
+        status: "pending",
+        created_date: new Date().toISOString(),
+        _optimistic: true,
+      };
+      queryClient.setQueryData(['bookings'], (old = []) => [optimisticBooking, ...old]);
+      // Immediately clear form for instant feedback
       setEventDate("");
       setGuestCount("");
       setMessage("");
-      toast.success("Booking request submitted successfully!");
-      
-      // Track metrics
+      toast.success("Booking request submitted!");
+      return { previousBookings, formSnapshot: bookingData };
+    },
+    onSuccess: async (booking) => {
+      queryClient.invalidateQueries({ queryKey: ['bookings'] });
       try {
-        await base44.functions.invoke('trackBookingMetrics', { 
-          bookingId: booking.id, 
-          action: 'created' 
-        });
-      } catch (metricsError) {
-        console.error("Failed to track booking metrics:", metricsError);
-      }
-      
-      // Send email notifications
+        await base44.functions.invoke('trackBookingMetrics', { bookingId: booking.id, action: 'created' });
+      } catch {}
       try {
         await base44.functions.invoke('notifyNewBooking', { bookingId: booking.id });
-      } catch (emailError) {
-        console.error("Failed to send booking notifications:", emailError);
-      }
+      } catch {}
     },
-    onError: (error) => {
-      console.error("Booking error:", error);
+    onError: (error, bookingData, context) => {
+      if (context?.previousBookings) {
+        queryClient.setQueryData(['bookings'], context.previousBookings);
+      }
+      // Restore form on failure
+      if (context?.formSnapshot) {
+        setEventDate(context.formSnapshot.event_date || "");
+        setGuestCount(String(context.formSnapshot.guest_count || ""));
+        setMessage(context.formSnapshot.message || "");
+      }
       if (error.message?.includes("log in")) {
         toast.error(error.message);
         setTimeout(() => base44.auth.redirectToLogin(window.location.href), 1500);
       } else {
-        const errorMsg = error.response?.data?.message || error.message || "Failed to submit booking request";
-        toast.error(errorMsg);
+        toast.error(error.response?.data?.message || error.message || "Failed to submit booking request");
       }
     }
   });
