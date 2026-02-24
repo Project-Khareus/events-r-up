@@ -402,7 +402,6 @@ export default function VendorMarketplace() {
           </div> */}
           </div>
           </div>
-    </div>
-    </PullToRefresh>
+    </div></PullToRefresh>
   );
 }
