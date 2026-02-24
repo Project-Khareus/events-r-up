@@ -49,7 +49,7 @@ const CATEGORY_LABELS = {
   transportation: "Transportation",
   rentals: "Rentals",
   bakery: "Bakery & Desserts",
-  bridal_fashion: "Bridal Fashion",
+  bridal_fashion: "Fashion & Accessories",
   makeup_artistes: "Make-Up Artistes",
   decor_logistics: "Décor & Logistics",
   event_grounds: "Event Venues",
