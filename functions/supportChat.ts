@@ -43,11 +43,25 @@ Deno.serve(async (req) => {
 
     let body = {};
     try { body = await req.json(); } catch (_) {}
-    const { message, history = [], notifyAdmin } = body;
+    const { message, history = [], notifyAdmin, sessionId } = body;
+
+    // Build user context string for personalized responses
+    let userContext = "The user is not logged in (guest).";
+    if (user) {
+      // Fetch vendor listing if user has one
+      let vendorInfo = "";
+      try {
+        const vendors = await base44.asServiceRole.entities.Vendor.filter({ user_id: user.id });
+        if (vendors.length > 0) {
+          const v = vendors[0];
+          vendorInfo = ` They are a vendor on the platform (business: "${v.business_name}", status: ${v.status}, subscription: ${v.subscription_type || "unknown"}).`;
+        }
+      } catch (_) {}
+      userContext = `The user is logged in. Name: ${user.full_name || "Unknown"}, Email: ${user.email}, Role: ${user.role || "user"}.${vendorInfo} Address them by their first name when appropriate.`;
+    }
 
     // Handle admin escalation
     if (notifyAdmin) {
-      // Get all admin users and notify them
       const allUsers = await base44.asServiceRole.entities.User.list();
       const admins = allUsers.filter(u => u.role === 'admin');
 
@@ -56,7 +70,7 @@ Deno.serve(async (req) => {
           user_id: admin.id,
           type: 'system',
           title: 'Support Chat Escalation',
-          message: `A user${user ? ` (${user.full_name || user.email})` : ''} needs admin assistance in the support chat.`,
+          message: `A user${user ? ` (${user.full_name || user.email})` : ' (guest)'} needs admin assistance in the support chat.${sessionId ? ` Session: ${sessionId}` : ''}`,
           link: '/Messages',
           is_read: false,
           action_type: 'requested_changes'
@@ -66,15 +80,16 @@ Deno.serve(async (req) => {
       return Response.json({ escalated: true, message: "An admin has been notified and will join shortly. You can also reach us via Messages." });
     }
 
-    // Build messages array for LLM
-    const messages = [
-      { role: "system", content: APP_CONTEXT },
-      ...history.map(h => ({ role: h.role, content: h.content })),
-      { role: "user", content: message }
-    ];
+    // Build prompt with full session history + user context
+    const systemPrompt = `${APP_CONTEXT}\n\nUSER CONTEXT:\n${userContext}`;
+    const conversationLines = [
+      `system: ${systemPrompt}`,
+      ...history.map(h => `${h.role}: ${h.content}`),
+      `user: ${message}`
+    ].join('\n');
 
     const response = await base44.asServiceRole.integrations.Core.InvokeLLM({
-      prompt: `Conversation history:\n${messages.map(m => `${m.role}: ${m.content}`).join('\n')}\n\nRespond as the support assistant. Follow all rules strictly.`,
+      prompt: `${conversationLines}\n\nRespond as the support assistant. Follow all rules strictly. Use the user context to personalise your response where helpful.`,
     });
 
     return Response.json({ reply: response });
