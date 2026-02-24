@@ -66,6 +66,7 @@ const EVENT_MENUS = [
   {
     title: "Funerals",
     categories: [
+      { name: "Event Planner", id: "event_planner" },
       { name: "Caskets", id: "caskets" },
       { name: "Catering & Drinks", id: "catering_drinks" },
       { name: "Décor & Logistics Setup", id: "decor_logistics" },
