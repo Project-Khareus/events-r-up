@@ -18,6 +18,7 @@ const EVENT_MENUS = [
   {
     title: "Weddings",
     categories: [
+      { name: "Event Planner", id: "event_planner" },
       { name: "Bridal Fashion & Accessories", id: "bridal_fashion" },
       { name: "Make-Up Artistes", id: "makeup_artistes" },
       { name: "Décor & Logistics Setup", id: "decor_logistics" },
