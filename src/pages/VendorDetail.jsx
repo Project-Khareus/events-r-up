@@ -35,6 +35,7 @@ import MobileHeader from "../components/layout/MobileHeader";
 import { formatPrice, detectUserCurrency } from "@/components/utils/currency";
 
 const CATEGORY_LABELS = {
+  event_planner: "Event Planner",
   venue: "Venue",
   catering: "Catering",
   photography: "Photography",
