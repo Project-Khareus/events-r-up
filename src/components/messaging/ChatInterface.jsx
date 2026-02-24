@@ -44,21 +44,35 @@ export default function ChatInterface({ conversationId, onBack }) {
       });
       return msg;
     },
+    onMutate: async (messageData) => {
+      await queryClient.cancelQueries({ queryKey: ['messages', conversationId] });
+      const previousMessages = queryClient.getQueryData(['messages', conversationId]);
+      const optimisticMessage = {
+        ...messageData,
+        id: `optimistic_${Date.now()}`,
+        created_date: new Date().toISOString(),
+        _optimistic: true,
+      };
+      queryClient.setQueryData(['messages', conversationId], (old = []) => [...old, optimisticMessage]);
+      setMessageText("");
+      return { previousMessages };
+    },
     onSuccess: async (message) => {
       queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
-      setMessageText("");
-      
-      // Send email notification to recipient
       try {
         await base44.functions.invoke('notifyNewMessage', { messageId: message.id });
       } catch (error) {
         console.error("Failed to send message notification:", error);
       }
     },
-    onError: () => {
+    onError: (err, messageData, context) => {
+      if (context?.previousMessages) {
+        queryClient.setQueryData(['messages', conversationId], context.previousMessages);
+      }
+      setMessageText(messageData.content);
       toast.error("Failed to send message");
-    }
+    },
   });
 
   useEffect(() => {
