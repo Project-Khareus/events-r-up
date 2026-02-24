@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 
 export default function SupportChatBot() {
   const [open, setOpen] = useState(false);
+  const [showPromo, setShowPromo] = useState(false);
   const [messages, setMessages] = useState([
     { role: "assistant", content: "👋 Hi! I'm Kharis, your Khareus support assistant. How can I help you today?" }
   ]);
