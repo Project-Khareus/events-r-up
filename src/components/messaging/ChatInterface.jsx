@@ -93,6 +93,7 @@ export default function ChatInterface({ conversationId, onBack }) {
       content: messageText.trim(),
       is_read: false,
     });
+    // Note: setMessageText("") is handled in onMutate for immediate feedback
   };
 
   if (isLoading) {
