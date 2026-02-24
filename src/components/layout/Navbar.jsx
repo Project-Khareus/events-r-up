@@ -54,6 +54,7 @@ const EVENT_MENUS = [
   {
     title: "Conferences",
     categories: [
+      { name: "Event Planner", id: "event_planner" },
       { name: "Conference Facilities", id: "conference_facilities" },
       { name: "Catering", id: "catering" },
       { name: "Car Rentals", id: "car_rentals" },
