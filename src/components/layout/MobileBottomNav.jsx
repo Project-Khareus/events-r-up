@@ -88,7 +88,7 @@ export default function MobileBottomNav() {
               {isActive && (
                 <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-transparent via-indigo-600 to-transparent rounded-full" />
               )}
-            </Link>
+            </button>
           );
         })}
       </div>
