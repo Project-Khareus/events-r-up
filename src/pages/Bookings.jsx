@@ -182,5 +182,6 @@ export default function Bookings() {
         )}
       </div>
     </div>
+    </PullToRefresh>
   );
 }
