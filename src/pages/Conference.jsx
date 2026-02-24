@@ -2,6 +2,7 @@ import React from 'react';
 import EventTypePage from '../components/marketplace/EventTypePage';
 
 const CATEGORIES = [
+  { name: "Event Planner", id: "event_planner" },
   { name: "Conference Facilities", id: "conference_facilities" },
   { name: "Catering", id: "catering" },
   { name: "Car Rentals", id: "car_rentals" },
