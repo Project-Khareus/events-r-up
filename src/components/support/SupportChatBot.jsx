@@ -55,7 +55,7 @@ export default function SupportChatBot() {
   const handleEscalate = async () => {
     setLoading(true);
     try {
-      await base44.functions.invoke("supportChat", { notifyAdmin: true });
+      await base44.functions.invoke("supportChat", { notifyAdmin: true, sessionId: sessionId.current });
       setEscalated(true);
       setMessages(prev => [...prev, {
         role: "assistant",
