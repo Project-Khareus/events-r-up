@@ -18,6 +18,7 @@ const normalizeData = (item) => {
 };
 
 export default function MyFavorites() {
+  const queryClient = useQueryClient();
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => base44.auth.me().catch(() => null),
