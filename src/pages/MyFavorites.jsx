@@ -218,7 +218,6 @@ export default function MyFavorites() {
           </Tabs>
         )}
       </div>
-    </div>
-    </PullToRefresh>
+    </div></PullToRefresh>
   );
 }
