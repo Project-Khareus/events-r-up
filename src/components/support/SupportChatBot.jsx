@@ -78,10 +78,30 @@ export default function SupportChatBot() {
 
   return (
     <>
+      {/* Promo Tooltip */}
+      {showPromo && !open && (
+        <div className="fixed bottom-40 md:bottom-24 right-4 z-50 flex flex-col items-end">
+          <div className="relative bg-white rounded-xl shadow-xl border border-slate-200 px-4 py-3 max-w-[220px] mb-2">
+            <button
+              onClick={() => setShowPromo(false)}
+              className="absolute top-2 right-2 text-slate-400 hover:text-slate-600"
+              aria-label="Dismiss"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            <p className="text-sm text-slate-800 pr-4">
+              <span className="font-bold">How can we help?</span> Chat with us now
+            </p>
+            {/* Tail */}
+            <div className="absolute -bottom-2 right-6 w-4 h-4 bg-white border-r border-b border-slate-200 rotate-45" />
+          </div>
+        </div>
+      )}
+
       {/* Floating Button */}
       <button
-        onClick={() => setOpen(o => !o)}
-        className="fixed bottom-24 md:bottom-6 right-4 z-50 w-14 h-14 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-xl flex items-center justify-center transition-all hover:scale-110"
+        onClick={() => { setOpen(o => !o); setShowPromo(false); }}
+        className="fixed bottom-24 md:bottom-6 right-4 z-50 w-14 h-14 rounded-full bg-teal-600 hover:bg-teal-700 text-white shadow-xl flex items-center justify-center transition-all hover:scale-110"
         aria-label="Open Support Chat"
       >
         {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
