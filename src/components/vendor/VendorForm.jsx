@@ -25,8 +25,12 @@ const EVENT_TYPES = [
 { value: "funeral", label: "Funeral" }];
 
 
+// "Event Planner" is a shared category available for all event types
+const EVENT_PLANNER_CATEGORY = { value: "event_planner", label: "Event Planner" };
+
 const CATEGORIES_BY_EVENT = {
   weddings: [
+  { value: "event_planner", label: "Event Planner" },
   { value: "bridal_fashion", label: "Bridal Fashion & Accessories" },
   { value: "makeup_artistes", label: "Make-Up Artistes" },
   { value: "decor_logistics", label: "Décor & Logistics Setup" },
