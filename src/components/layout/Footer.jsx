@@ -81,8 +81,11 @@ const ALL_CATEGORIES = (() => {
 
 const DEFAULT_SECTIONS = {
   categories: {
-    title: "Categories",
-    items: ALL_CATEGORIES
+    title: "Explore",
+    items: [
+      ...EVENT_MENUS.map(menu => ({ label: menu.title, url: menu.title })),
+      { label: "Public Events", url: "Classifieds" },
+    ]
   },
   company: {
     title: "Company",
