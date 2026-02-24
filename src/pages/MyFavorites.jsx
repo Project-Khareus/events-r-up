@@ -120,7 +120,16 @@ export default function MyFavorites() {
     );
   }
 
+  const handleRefresh = async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['myFavorites'] }),
+      queryClient.invalidateQueries({ queryKey: ['favoritedEvents'] }),
+      queryClient.invalidateQueries({ queryKey: ['favoritedVendors'] }),
+    ]);
+  };
+
   return (
+    <PullToRefresh onRefresh={handleRefresh}>
     <div className="min-h-screen bg-slate-50 py-12 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center gap-3 mb-8">
