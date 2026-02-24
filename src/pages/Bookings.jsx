@@ -10,6 +10,7 @@ import CalendarView from "../components/bookings/CalendarView";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Bookings() {
+  const queryClient = useQueryClient();
   const [currentUser, setCurrentUser] = useState(null);
   const [statusFilter, setStatusFilter] = useState("all");
   const [viewMode, setViewMode] = useState("list");
