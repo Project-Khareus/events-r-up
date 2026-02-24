@@ -301,8 +301,7 @@ export default function VendorMarketplace() {
           </div>
             }
 
-        {/* Vendor listings commented out */}
-        {/* {isLoading ?
+        {isLoading ?
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 px-2">
             {[...Array(6)].map((_, i) =>
               <div key={i} className="space-y-3 sm:space-y-4">
