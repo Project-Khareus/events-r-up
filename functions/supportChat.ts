@@ -35,7 +35,11 @@ RESPONSE RULES:
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
+    let user = null;
+    try {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (isAuth) user = await base44.auth.me();
+    } catch (_) {}
 
     let body = {};
     try { body = await req.json(); } catch (_) {}
