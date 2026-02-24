@@ -41,6 +41,7 @@ const CATEGORY_LABELS = {
 };
 
 export default function VendorMarketplace() {
+  const queryClient = useQueryClient();
   const urlParams = new URLSearchParams(window.location.search);
   const eventParam = urlParams.get("event") || "all";
   const categoryParam = urlParams.get("category") || "all";
