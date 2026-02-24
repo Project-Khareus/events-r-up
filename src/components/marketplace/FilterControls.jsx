@@ -56,6 +56,7 @@ const CATEGORIES_BY_EVENT = {
   ],
   conference: [
     { value: "all", label: "All Categories" },
+    { value: "event_planner", label: "Event Planner" },
     { value: "conference_facilities", label: "Conference Facilities" },
     { value: "catering", label: "Catering" },
     { value: "car_rentals", label: "Car Rentals" },
