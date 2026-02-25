@@ -96,9 +96,10 @@ export default function VendorDetail() {
     trackView();
   }, [vendorId]);
 
-  const { data: vendors = [], isLoading } = useQuery({
-    queryKey: ['vendors'],
-    queryFn: () => base44.entities.Vendor.list(),
+  const { data: vendor, isLoading } = useQuery({
+    queryKey: ['vendor', vendorId],
+    queryFn: () => base44.entities.Vendor.filter({ id: vendorId }).then(r => r[0] ?? null),
+    enabled: !!vendorId,
   });
 
   const { data: currentUser } = useQuery({
