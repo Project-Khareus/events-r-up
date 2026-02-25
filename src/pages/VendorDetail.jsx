@@ -117,8 +117,6 @@ export default function VendorDetail() {
     enabled: !!vendorId,
   });
 
-  const vendor = vendors.find(v => v.id === vendorId);
-
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white">
