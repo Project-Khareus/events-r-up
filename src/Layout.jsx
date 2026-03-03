@@ -1,18 +1,18 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import Navbar from "./components/layout/Navbar";
 import MobileBottomNav from "./components/layout/MobileBottomNav";
-import Footer from "./components/layout/Footer";
-import CookieConsent from "./components/layout/CookieConsent";
 import DeviceCheck from "./components/auth/DeviceCheck";
-import SupportChatBot from "./components/support/SupportChatBot";
 import { Toaster } from "@/components/ui/sonner";
+
+const Footer = lazy(() => import("./components/layout/Footer"));
+const CookieConsent = lazy(() => import("./components/layout/CookieConsent"));
+const SupportChatBot = lazy(() => import("./components/support/SupportChatBot"));
 
 export default function Layout({ children }) {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col" style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}>
       <style>{`
-                    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&display=swap');
-                    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+                    /* Fonts loaded via <link> in index.html */
 
                     .font-serif {
                       font-family: 'Playfair Display', Georgia, serif;
@@ -305,10 +305,14 @@ export default function Layout({ children }) {
       <DeviceCheck />
       <Navbar />
       <main className="pb-20 md:pb-0 flex-1">{children}</main>
-      <Footer />
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
       <MobileBottomNav />
-      <CookieConsent />
-      <SupportChatBot />
+      <Suspense fallback={null}>
+        <CookieConsent />
+        <SupportChatBot />
+      </Suspense>
       <Toaster />
     </div>
   );

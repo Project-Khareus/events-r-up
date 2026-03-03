@@ -68,7 +68,7 @@ export default function VendorMarketplace() {
 
   const { data: rawVendors = [], isLoading, isFetching } = useQuery({
     queryKey: ['vendors', vendorPage],
-    queryFn: () => base44.entities.Vendor.list('-created_date', 200), // Fetch more vendors to ensure all event types are covered
+    queryFn: () => base44.entities.Vendor.list('-created_date', 80),
     staleTime: 600000, // 10 minutes
     cacheTime: 1800000, // 30 minutes
     refetchOnWindowFocus: false,
@@ -81,7 +81,7 @@ export default function VendorMarketplace() {
   // Batch fetch reviews with pagination
   const { data: allReviews = [] } = useQuery({
     queryKey: ['all_reviews'],
-    queryFn: () => base44.entities.Review.list('-created_date', 500),
+    queryFn: () => base44.entities.Review.list('-created_date', 150),
     staleTime: 600000, // 10 minutes
     cacheTime: 1800000, // 30 minutes
     refetchOnWindowFocus: false,
