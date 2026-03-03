@@ -12,9 +12,6 @@ export default function Layout({ children }) {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col" style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}>
       <style>{`
-                    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=Inter:wght@400;500;600;700&display=swap');
-                    /* Once you add the <link> tags to index.html, remove the @import above */
-
                     .font-serif {
                       font-family: 'Playfair Display', Georgia, serif;
                     }
