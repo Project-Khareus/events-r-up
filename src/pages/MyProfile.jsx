@@ -94,7 +94,20 @@ export default function MyProfile() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
         {/* Profile Header Card */}
         <Card className="mb-6 overflow-hidden">
-          <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 h-24 sm:h-32" />
+          <div className="relative h-20 sm:h-24 group">
+            {userProfile?.cover_image_url ? (
+              <img src={userProfile.cover_image_url} alt="Cover" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-r from-indigo-600 to-indigo-500" />
+            )}
+            <label className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/30 transition-colors cursor-pointer">
+              <input type="file" accept="image/*" className="hidden" onChange={handleCoverUpload} disabled={uploadingCover} />
+              <span className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1.5 text-white text-xs font-medium bg-black/50 px-3 py-1.5 rounded-full">
+                {uploadingCover ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Camera className="h-3.5 w-3.5" />}
+                {uploadingCover ? "Uploading..." : "Change Cover"}
+              </span>
+            </label>
+          </div>
           <div className="px-4 sm:px-6 pb-5 -mt-12 sm:-mt-14">
             <div className="flex flex-col sm:flex-row sm:items-end gap-4">
               <Avatar className="h-20 w-20 sm:h-24 sm:w-24 border-4 border-white shadow-md">
