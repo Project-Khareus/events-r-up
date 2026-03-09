@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import {
   Store, Upload, Loader2, X, Plus,
   Instagram, Facebook, Twitter, Linkedin, Globe, Phone, Mail,
-  Check, AlertCircle, CreditCard } from
+  Check, CheckCircle, AlertCircle, CreditCard } from
 "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
