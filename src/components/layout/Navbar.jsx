@@ -5,7 +5,7 @@ import { createPageUrl } from "../../utils";
 import { useQuery } from "@tanstack/react-query";
 import { 
   Menu, X, Home, Compass, MessageCircle, CalendarDays, 
-  Bell, User, LogOut, Settings, PlusCircle, ShieldCheck, FileText, CheckSquare, Store, Heart, ChevronDown
+  Bell, User, LogOut, Settings, PlusCircle, ShieldCheck, FileText, CheckSquare, Store, Heart
   } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -81,7 +81,6 @@ export default function Navbar() {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [expandedMenu, setExpandedMenu] = useState(null);
   
   const { data: user, isLoading } = useQuery({
     queryKey: ['currentUser'],
@@ -370,45 +369,41 @@ export default function Navbar() {
                         <span className="font-medium">Home</span>
                       </Link>
                       
-                      {EVENT_MENUS.map((menu) => {
-                        const icons = { Weddings: "💍", Parties: "🎉", Conferences: "🎤", Funerals: "🕊️" };
-                        const pageMap = { Weddings: "Weddings", Parties: "Parties", Conferences: "Conference", Funerals: "Funeral" };
-                        const isExpanded = expandedMenu === menu.title;
-                        return (
-                          <div key={menu.title}>
-                            <div className="flex items-center">
-                              <Link 
-                                to={createPageUrl(pageMap[menu.title] || menu.title)} 
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="flex-1 flex items-center gap-3 px-4 py-3 rounded-l-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
-                              >
-                                <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform">{icons[menu.title]}</div>
-                                <span className="font-medium">{menu.title}</span>
-                              </Link>
-                              <button
-                                onClick={() => setExpandedMenu(isExpanded ? null : menu.title)}
-                                className="px-3 py-3 rounded-r-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
-                              >
-                                <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`} />
-                              </button>
-                            </div>
-                            {isExpanded && (
-                              <div className="ml-6 pl-4 border-l border-slate-700/50 space-y-0.5 py-1">
-                                {menu.categories.map((cat) => (
-                                  <Link
-                                    key={cat.id}
-                                    to={`${createPageUrl(pageMap[menu.title] || menu.title)}?category=${cat.id}`}
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className="block px-3 py-2 rounded-lg text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
-                                  >
-                                    {cat.name}
-                                  </Link>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
+                      <Link 
+                        to={createPageUrl("Weddings")} 
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
+                      >
+                        <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform">💍</div>
+                        <span className="font-medium">Weddings</span>
+                      </Link>
+                      
+                      <Link 
+                        to={createPageUrl("Parties")} 
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
+                      >
+                        <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform">🎉</div>
+                        <span className="font-medium">Parties</span>
+                      </Link>
+                      
+                      <Link 
+                        to={createPageUrl("Conference")} 
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
+                      >
+                        <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform">🎤</div>
+                        <span className="font-medium">Conferences</span>
+                      </Link>
+                      
+                      <Link 
+                        to={createPageUrl("Funeral")} 
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
+                      >
+                        <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform">🕊️</div>
+                        <span className="font-medium">Funerals</span>
+                      </Link>
                       
                       <Link 
                         to={createPageUrl("Blog")} 
