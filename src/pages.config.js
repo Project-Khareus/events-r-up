@@ -83,6 +83,7 @@ import Parties from './pages/Parties';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Settings from './pages/Settings';
 import SocialCallback from './pages/SocialCallback';
+import SplashScreen from './pages/SplashScreen';
 import TestBackend from './pages/TestBackend';
 import UserProfile from './pages/UserProfile';
 import VendorAnalytics from './pages/VendorAnalytics';
@@ -90,7 +91,6 @@ import VendorDetail from './pages/VendorDetail';
 import VendorMarketplace from './pages/VendorMarketplace';
 import VendorSignup from './pages/VendorSignup';
 import Weddings from './pages/Weddings';
-import SplashScreen from './pages/SplashScreen';
 import __Layout from './Layout.jsx';
 
 
@@ -131,6 +131,7 @@ export const PAGES = {
     "PrivacyPolicy": PrivacyPolicy,
     "Settings": Settings,
     "SocialCallback": SocialCallback,
+    "SplashScreen": SplashScreen,
     "TestBackend": TestBackend,
     "UserProfile": UserProfile,
     "VendorAnalytics": VendorAnalytics,
@@ -138,7 +139,6 @@ export const PAGES = {
     "VendorMarketplace": VendorMarketplace,
     "VendorSignup": VendorSignup,
     "Weddings": Weddings,
-    "SplashScreen": SplashScreen,
 }
 
 export const pagesConfig = {

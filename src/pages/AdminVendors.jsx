@@ -795,7 +795,7 @@ export default function AdminVendors() {
 
         {/* Ghana Card Preview Dialog */}
         <Dialog open={!!ghanaCardDialogVendor} onOpenChange={(open) => !open && setGhanaCardDialogVendor(null)}>
-          <DialogContent className="max-w-lg">
+          <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <CreditCard className="h-5 w-5 text-amber-600" />
@@ -806,15 +806,32 @@ export default function AdminVendors() {
               </DialogDescription>
             </DialogHeader>
             <div className="py-2">
-              {ghanaCardDialogVendor?.ghana_card_image_url ? (
-                <img
-                  src={ghanaCardDialogVendor.ghana_card_image_url}
-                  alt="Ghana Card"
-                  className="w-full rounded-lg border border-slate-200"
-                />
-              ) : (
-                <div className="w-full h-40 bg-slate-100 rounded-lg flex items-center justify-center text-slate-400">No image uploaded</div>
-              )}
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <p className="text-xs font-semibold text-slate-600 mb-1.5">Front</p>
+                  {ghanaCardDialogVendor?.ghana_card_image_url ? (
+                    <img src={ghanaCardDialogVendor.ghana_card_image_url} alt="Card Front" className="w-full h-40 object-cover rounded-lg border border-slate-200" />
+                  ) : (
+                    <div className="w-full h-40 bg-slate-100 rounded-lg flex items-center justify-center text-slate-400 text-xs">Not uploaded</div>
+                  )}
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-slate-600 mb-1.5">Back</p>
+                  {ghanaCardDialogVendor?.ghana_card_back_image_url ? (
+                    <img src={ghanaCardDialogVendor.ghana_card_back_image_url} alt="Card Back" className="w-full h-40 object-cover rounded-lg border border-slate-200" />
+                  ) : (
+                    <div className="w-full h-40 bg-slate-100 rounded-lg flex items-center justify-center text-slate-400 text-xs">Not uploaded</div>
+                  )}
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-slate-600 mb-1.5">Selfie</p>
+                  {ghanaCardDialogVendor?.ghana_card_selfie_url ? (
+                    <img src={ghanaCardDialogVendor.ghana_card_selfie_url} alt="Selfie" className="w-full h-40 object-cover rounded-lg border border-slate-200" />
+                  ) : (
+                    <div className="w-full h-40 bg-slate-100 rounded-lg flex items-center justify-center text-slate-400 text-xs">Not uploaded</div>
+                  )}
+                </div>
+              </div>
               <div className="mt-3 flex items-center gap-2">
                 <span className="text-sm text-slate-600">Status:</span>
                 {ghanaCardDialogVendor && ghanaCardStatusBadge(ghanaCardDialogVendor.ghana_card_status)}
