@@ -110,7 +110,9 @@ const DEFAULT_FORM_DATA = {
   years_in_business: "",
   subscription_type: "trial",
   ghana_card_number: "",
-  ghana_card_image_url: ""
+  ghana_card_image_url: "",
+  ghana_card_back_image_url: "",
+  ghana_card_selfie_url: ""
 };
 
 const NAME_CHANGE_REASONS = [
@@ -307,6 +309,8 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
   };
 
   const [ghanaCardUploading, setGhanaCardUploading] = useState(false);
+  const [ghanaCardBackUploading, setGhanaCardBackUploading] = useState(false);
+  const [selfieUploading, setSelfieUploading] = useState(false);
 
   const handleGhanaCardUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -315,11 +319,41 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
       setFormData((prev) => ({ ...prev, ghana_card_image_url: file_url }));
-      toast.success("Ghana Card uploaded!");
+      toast.success("Ghana Card front uploaded!");
     } catch (error) {
       toast.error("Failed to upload Ghana Card image");
     } finally {
       setGhanaCardUploading(false);
+    }
+  };
+
+  const handleGhanaCardBackUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setGhanaCardBackUploading(true);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      setFormData((prev) => ({ ...prev, ghana_card_back_image_url: file_url }));
+      toast.success("Ghana Card back uploaded!");
+    } catch (error) {
+      toast.error("Failed to upload Ghana Card back image");
+    } finally {
+      setGhanaCardBackUploading(false);
+    }
+  };
+
+  const handleSelfieUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setSelfieUploading(true);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      setFormData((prev) => ({ ...prev, ghana_card_selfie_url: file_url }));
+      toast.success("Selfie uploaded!");
+    } catch (error) {
+      toast.error("Failed to upload selfie");
+    } finally {
+      setSelfieUploading(false);
     }
   };
 
@@ -329,8 +363,8 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
       toast.error("Please fill in all required fields (Business Name, Event Type, Category)");
       return;
     }
-    if (!formData.ghana_card_number || !formData.ghana_card_image_url) {
-      toast.error("Ghana Card number and image are required for verification");
+    if (!formData.ghana_card_number || !formData.ghana_card_image_url || !formData.ghana_card_back_image_url || !formData.ghana_card_selfie_url) {
+      toast.error("Ghana Card number, front image, back image, and selfie are all required for verification");
       return;
     }
 
@@ -977,7 +1011,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
           A valid Ghana National ID Card is required to list your business. Your details will be verified by our team.
         </p>
 
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="space-y-4">
           <div>
             <Label>Ghana Card Number *</Label>
             <Input
@@ -985,47 +1019,82 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
               onChange={(e) => setFormData({ ...formData, ghana_card_number: e.target.value })}
               placeholder="e.g. GHA-XXXXXXXXX-X"
               className="mt-1" />
-
           </div>
 
-          <div>
-            <Label className="mb-2 block">Ghana Card Image (Front) *</Label>
-            <div className="border-2 border-dashed border-amber-300 rounded-xl p-4 text-center hover:border-amber-400 transition-colors bg-white">
-              {formData.ghana_card_image_url ?
-              <div className="relative">
-                  <img
-                  src={formData.ghana_card_image_url}
-                  alt="Ghana Card"
-                  className="w-full h-32 object-cover rounded-lg" />
-
-                  <button
-                  type="button"
-                  onClick={() => setFormData((prev) => ({ ...prev, ghana_card_image_url: "" }))}
-                  className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600">
-
-                    <X className="h-4 w-4" />
-                  </button>
-                </div> :
-
-              <label className="cursor-pointer block py-4">
-                  <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleGhanaCardUpload}
-                  className="hidden"
-                  disabled={ghanaCardUploading} />
-
-                  {ghanaCardUploading ?
-                <Loader2 className="h-8 w-8 mx-auto text-amber-600 animate-spin" /> :
-
-                <>
-                      <Upload className="h-8 w-8 mx-auto text-amber-400 mb-1" />
-                      <p className="text-sm text-slate-600">Click to upload card image</p>
-                      <p className="text-xs text-slate-400 mt-0.5">Front side of your Ghana Card</p>
-                    </>
+          <div className="grid md:grid-cols-3 gap-4">
+            {/* Front */}
+            <div>
+              <Label className="mb-2 block">Card Front *</Label>
+              <div className="border-2 border-dashed border-amber-300 rounded-xl p-4 text-center hover:border-amber-400 transition-colors bg-white">
+                {formData.ghana_card_image_url ?
+                <div className="relative">
+                    <img src={formData.ghana_card_image_url} alt="Ghana Card Front" className="w-full h-32 object-cover rounded-lg" />
+                    <button type="button" onClick={() => setFormData((prev) => ({ ...prev, ghana_card_image_url: "" }))} className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600">
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div> :
+                <label className="cursor-pointer block py-4">
+                    <input type="file" accept="image/*" onChange={handleGhanaCardUpload} className="hidden" disabled={ghanaCardUploading} />
+                    {ghanaCardUploading ?
+                      <Loader2 className="h-8 w-8 mx-auto text-amber-600 animate-spin" /> :
+                      <>
+                        <Upload className="h-8 w-8 mx-auto text-amber-400 mb-1" />
+                        <p className="text-sm text-slate-600">Front side</p>
+                      </>
+                    }
+                  </label>
                 }
-                </label>
-              }
+              </div>
+            </div>
+
+            {/* Back */}
+            <div>
+              <Label className="mb-2 block">Card Back *</Label>
+              <div className="border-2 border-dashed border-amber-300 rounded-xl p-4 text-center hover:border-amber-400 transition-colors bg-white">
+                {formData.ghana_card_back_image_url ?
+                <div className="relative">
+                    <img src={formData.ghana_card_back_image_url} alt="Ghana Card Back" className="w-full h-32 object-cover rounded-lg" />
+                    <button type="button" onClick={() => setFormData((prev) => ({ ...prev, ghana_card_back_image_url: "" }))} className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600">
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div> :
+                <label className="cursor-pointer block py-4">
+                    <input type="file" accept="image/*" onChange={handleGhanaCardBackUpload} className="hidden" disabled={ghanaCardBackUploading} />
+                    {ghanaCardBackUploading ?
+                      <Loader2 className="h-8 w-8 mx-auto text-amber-600 animate-spin" /> :
+                      <>
+                        <Upload className="h-8 w-8 mx-auto text-amber-400 mb-1" />
+                        <p className="text-sm text-slate-600">Back side</p>
+                      </>
+                    }
+                  </label>
+                }
+              </div>
+            </div>
+
+            {/* Selfie */}
+            <div>
+              <Label className="mb-2 block">Your Selfie *</Label>
+              <div className="border-2 border-dashed border-amber-300 rounded-xl p-4 text-center hover:border-amber-400 transition-colors bg-white">
+                {formData.ghana_card_selfie_url ?
+                <div className="relative">
+                    <img src={formData.ghana_card_selfie_url} alt="Selfie" className="w-full h-32 object-cover rounded-lg" />
+                    <button type="button" onClick={() => setFormData((prev) => ({ ...prev, ghana_card_selfie_url: "" }))} className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600">
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div> :
+                <label className="cursor-pointer block py-4">
+                    <input type="file" accept="image/*" onChange={handleSelfieUpload} className="hidden" disabled={selfieUploading} />
+                    {selfieUploading ?
+                      <Loader2 className="h-8 w-8 mx-auto text-amber-600 animate-spin" /> :
+                      <>
+                        <Upload className="h-8 w-8 mx-auto text-amber-400 mb-1" />
+                        <p className="text-sm text-slate-600">Clear face photo</p>
+                      </>
+                    }
+                  </label>
+                }
+              </div>
             </div>
           </div>
         </div>
