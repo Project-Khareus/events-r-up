@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
+import sharp from 'npm:sharp@0.33.2';
 
 Deno.serve(async (req) => {
   try {
@@ -14,7 +15,6 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'vendor_id is required' }, { status: 400 });
     }
 
-    // Fetch vendor record using get() by ID
     const vendor = await base44.asServiceRole.entities.Vendor.get(vendor_id);
 
     if (!vendor) {
@@ -28,15 +28,11 @@ Deno.serve(async (req) => {
     if (!frontUrl || !backUrl || !selfieUrl) {
       return Response.json({ 
         error: 'Vendor must submit card front, card back, and selfie images',
-        missing: {
-          front: !frontUrl,
-          back: !backUrl,
-          selfie: !selfieUrl
-        }
+        missing: { front: !frontUrl, back: !backUrl, selfie: !selfieUrl }
       }, { status: 400 });
     }
 
-    // Fetch all three images as binary blobs
+    // Fetch all three images
     const [frontRes, backRes, selfieRes] = await Promise.all([
       fetch(frontUrl),
       fetch(backUrl),
@@ -53,9 +49,26 @@ Deno.serve(async (req) => {
       selfieRes.arrayBuffer()
     ]);
 
-    console.log("Original image sizes - Front:", frontBuf.byteLength, "Back:", backBuf.byteLength, "Selfie:", selfieBuf.byteLength);
+    console.log("Original sizes - Front:", frontBuf.byteLength, "Back:", backBuf.byteLength, "Selfie:", selfieBuf.byteLength);
 
-    // Convert to base64 and compress by limiting size
+    // Resize images to max 800px width and compress to JPEG quality 70 to reduce payload
+    const resizeImage = async (buffer) => {
+      const resized = await sharp(new Uint8Array(buffer))
+        .resize({ width: 800, withoutEnlargement: true })
+        .jpeg({ quality: 70 })
+        .toBuffer();
+      return resized;
+    };
+
+    const [frontSmall, backSmall, selfieSmall] = await Promise.all([
+      resizeImage(frontBuf),
+      resizeImage(backBuf),
+      resizeImage(selfieBuf)
+    ]);
+
+    console.log("Resized sizes - Front:", frontSmall.length, "Back:", backSmall.length, "Selfie:", selfieSmall.length);
+
+    // Convert to base64
     const toBase64 = (buffer) => {
       const bytes = new Uint8Array(buffer);
       let binary = '';
@@ -65,48 +78,45 @@ Deno.serve(async (req) => {
       return btoa(binary);
     };
 
-    const docFront = toBase64(frontBuf);
-    const docBack = toBase64(backBuf);
-    const selfie = toBase64(selfieBuf);
+    const docFront = toBase64(frontSmall);
+    const docBack = toBase64(backSmall);
+    const selfie = toBase64(selfieSmall);
 
-    console.log("Base64 sizes - Front:", docFront.length, "Back:", docBack.length, "Selfie:", selfie.length);
-    console.log("Total payload size (approx):", docFront.length + docBack.length + selfie.length);
+    const totalSize = docFront.length + docBack.length + selfie.length;
+    console.log("Total base64 payload size:", totalSize);
 
     // Call Agregar API
     const apiKey = Deno.env.get("GHANA_CARD_API_KEY");
     const apiSecret = Deno.env.get("GHANA_CARD_API_SECRET");
 
-    console.log("API Key present:", !!apiKey, "API Secret present:", !!apiSecret);
     console.log("Calling Agregar API...");
-
-    // Try multipart/form-data with file blobs
-    const formData = new FormData();
-    formData.append("doc_front", new Blob([frontBuf], { type: "image/jpeg" }), "front.jpg");
-    formData.append("doc_back", new Blob([backBuf], { type: "image/jpeg" }), "back.jpg");
-    formData.append("selfie", new Blob([selfieBuf], { type: "image/jpeg" }), "selfie.jpg");
 
     const apiResponse = await fetch("https://api.agregartech.com/identity/document/facial/GH", {
       method: "POST",
       headers: {
+        "Content-Type": "application/json",
         "X-API-KEY": apiKey,
         "X-API-SECRET": apiSecret
       },
-      body: formData
+      body: JSON.stringify({
+        doc_front: docFront,
+        doc_back: docBack,
+        selfie: selfie
+      })
     });
 
-    // Read raw response first to handle non-JSON responses
+    // Read raw response to handle non-JSON
     const rawText = await apiResponse.text();
     console.log("Agregar API status:", apiResponse.status);
-    console.log("Agregar API raw response (first 500 chars):", rawText.substring(0, 500));
+    console.log("Agregar API response (first 500 chars):", rawText.substring(0, 500));
 
     let apiResult;
     try {
       apiResult = JSON.parse(rawText);
     } catch {
-      // API returned non-JSON (likely HTML error page)
-      console.error("API returned non-JSON response. Full response:", rawText.substring(0, 1000));
+      console.error("API returned non-JSON response:", rawText.substring(0, 1000));
       return Response.json({
-        error: "Ghana Card API returned an unexpected response. The API endpoint may be incorrect or unavailable.",
+        error: "Ghana Card API returned an unexpected response.",
         api_status: apiResponse.status,
         api_response_preview: rawText.substring(0, 200)
       }, { status: 502 });
