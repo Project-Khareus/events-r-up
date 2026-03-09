@@ -521,7 +521,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
                         <span className="w-full border-t border-slate-200" />
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
-                        <span className="bg-white px-2 text-slate-400 font-medium">Or import from</span>
+                        <span className="bg-white px-2 text-slate-500 font-medium">Or import from</span>
                     </div>
                   </div>
                   <Button
@@ -832,7 +832,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
               "p-5 border-2 rounded-xl transition-all text-left",
               formData.subscription_type === "trial" ?
               "border-green-600 bg-green-50 shadow-md" :
-              "border-slate-200 hover:border-slate-300"
+              "border-slate-300 hover:border-slate-400 bg-white"
             )}>
 
             <div className="flex items-start justify-between mb-3">
@@ -854,7 +854,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
               "p-5 border-2 rounded-xl transition-all text-left",
               formData.subscription_type === "explorer" ?
               "border-indigo-600 bg-indigo-50 shadow-md" :
-              "border-slate-200 hover:border-slate-300"
+              "border-slate-300 hover:border-slate-400 bg-white"
             )}>
 
             <div className="flex items-start justify-between mb-3">
@@ -876,7 +876,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
               "p-5 border-2 rounded-xl transition-all text-left",
               formData.subscription_type === "monthly" ?
               "border-indigo-600 bg-indigo-50 shadow-md" :
-              "border-slate-200 hover:border-slate-300"
+              "border-slate-300 hover:border-slate-400 bg-white"
             )}>
 
             <div className="flex items-start justify-between mb-3">
@@ -898,7 +898,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
               "p-5 border-2 rounded-xl transition-all text-left relative",
               formData.subscription_type === "annual" ?
               "border-indigo-600 bg-indigo-50 shadow-md" :
-              "border-slate-200 hover:border-slate-300"
+              "border-slate-300 hover:border-slate-400 bg-white"
             )}>
 
             <Badge className="absolute -top-2 -right-2 bg-green-600 text-white hover:bg-green-700 text-xs">
