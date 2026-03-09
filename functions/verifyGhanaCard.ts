@@ -36,7 +36,7 @@ Deno.serve(async (req) => {
       }, { status: 400 });
     }
 
-    // Fetch all three images and convert to base64
+    // Fetch all three images as binary blobs
     const [frontRes, backRes, selfieRes] = await Promise.all([
       fetch(frontUrl),
       fetch(backUrl),
@@ -47,41 +47,33 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Failed to fetch one or more images' }, { status: 500 });
     }
 
-    const toBase64 = async (response) => {
-      const buffer = await response.arrayBuffer();
-      const bytes = new Uint8Array(buffer);
-      let binary = '';
-      for (let i = 0; i < bytes.length; i++) {
-        binary += String.fromCharCode(bytes[i]);
-      }
-      return btoa(binary);
-    };
-
-    const [docFront, docBack, selfie] = await Promise.all([
-      toBase64(frontRes),
-      toBase64(backRes),
-      toBase64(selfieRes)
+    const [frontBlob, backBlob, selfieBlob] = await Promise.all([
+      frontRes.blob(),
+      backRes.blob(),
+      selfieRes.blob()
     ]);
 
-    // Call Agregar/Autheo API
+    console.log("Image sizes - Front:", frontBlob.size, "Back:", backBlob.size, "Selfie:", selfieBlob.size);
+
+    // Call Agregar API using multipart/form-data to avoid 413 payload too large
     const apiKey = Deno.env.get("GHANA_CARD_API_KEY");
     const apiSecret = Deno.env.get("GHANA_CARD_API_SECRET");
 
     console.log("API Key present:", !!apiKey, "API Secret present:", !!apiSecret);
-    console.log("Calling Agregar API with front/back/selfie images...");
+    console.log("Calling Agregar API with multipart form data...");
+
+    const formData = new FormData();
+    formData.append("doc_front", frontBlob, "front.jpg");
+    formData.append("doc_back", backBlob, "back.jpg");
+    formData.append("selfie", selfieBlob, "selfie.jpg");
 
     const apiResponse = await fetch("https://api.agregartech.com/identity/document/facial/GH", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         "X-API-KEY": apiKey,
         "X-API-SECRET": apiSecret
       },
-      body: JSON.stringify({
-        doc_front: docFront,
-        doc_back: docBack,
-        selfie: selfie
-      })
+      body: formData
     });
 
     // Read raw response first to handle non-JSON responses
