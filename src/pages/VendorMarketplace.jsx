@@ -252,7 +252,7 @@ export default function VendorMarketplace() {
           <div className="flex flex-col gap-4 sm:gap-6">
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch">
               <div className="flex-1">
-                <SearchBar value={searchQuery} onChange={setSearchQuery} />
+                <SearchBar value={searchQuery} onChange={setSearchQuery} location={location} onLocationChange={setLocation} />
               </div>
               <Link to={createPageUrl("EventPlanning")} className="w-full sm:w-auto">
                 <button className="w-full sm:w-auto h-full px-4 sm:px-6 py-3 bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-900 hover:to-black text-white rounded-xl font-medium shadow-lg shadow-slate-300 transition-all hover:scale-105 flex items-center gap-2 justify-center whitespace-nowrap text-sm sm:text-base">
