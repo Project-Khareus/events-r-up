@@ -80,6 +80,7 @@ const EVENT_MENUS = [
 export default function Navbar() {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const { data: user, isLoading } = useQuery({
     queryKey: ['currentUser'],
@@ -339,18 +340,18 @@ export default function Navbar() {
 
           {/* Mobile Menu Button */}
           <div className="lg:hidden flex items-center gap-4">
-            <Sheet>
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-700">
                   <Menu className="h-5 w-5 text-slate-200" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[280px] p-0 border-0">
-                <div className="flex flex-col h-full bg-gradient-to-b from-white to-slate-50 dark:from-slate-900 dark:to-slate-950">
+                <div className="flex flex-col h-full bg-gradient-to-b from-slate-900 to-slate-950">
                 {/* Header */}
-                <div className="p-6 border-b border-slate-200 dark:border-slate-800">
+                <div className="p-6 border-b border-slate-700/50">
                   <div className="flex items-center">
-                    <span className="font-sans font-semibold text-xl text-stone-800 dark:text-stone-100 tracking-[0.15em] uppercase">
+                    <span className="font-sans font-semibold text-xl text-white tracking-[0.15em] uppercase">
                       Khareus
                     </span>
                   </div>
@@ -361,7 +362,8 @@ export default function Navbar() {
                     <div className="space-y-1">
                       <Link 
                         to={createPageUrl("VendorMarketplace")} 
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
                       >
                         <Home className="h-5 w-5 group-hover:scale-110 transition-transform" />
                         <span className="font-medium">Home</span>
@@ -369,7 +371,8 @@ export default function Navbar() {
                       
                       <Link 
                         to={createPageUrl("Weddings")} 
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
                       >
                         <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform">💍</div>
                         <span className="font-medium">Weddings</span>
@@ -377,7 +380,8 @@ export default function Navbar() {
                       
                       <Link 
                         to={createPageUrl("Parties")} 
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
                       >
                         <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform">🎉</div>
                         <span className="font-medium">Parties</span>
@@ -385,7 +389,8 @@ export default function Navbar() {
                       
                       <Link 
                         to={createPageUrl("Conference")} 
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
                       >
                         <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform">🎤</div>
                         <span className="font-medium">Conferences</span>
@@ -393,7 +398,8 @@ export default function Navbar() {
                       
                       <Link 
                         to={createPageUrl("Funeral")} 
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
                       >
                         <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform">🕊️</div>
                         <span className="font-medium">Funerals</span>
@@ -401,7 +407,8 @@ export default function Navbar() {
                       
                       <Link 
                         to={createPageUrl("Blog")} 
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
                       >
                         <FileText className="h-5 w-5 group-hover:scale-110 transition-transform" />
                         <span className="font-medium">Blog</span>
@@ -409,7 +416,8 @@ export default function Navbar() {
                       
                       <Link 
                         to={createPageUrl("Classifieds")} 
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
                       >
                         <CalendarDays className="h-5 w-5 group-hover:scale-110 transition-transform" />
                         <span className="font-medium">Public Events</span>
@@ -419,13 +427,14 @@ export default function Navbar() {
                     {user && (
                       <>
                         <div className="my-6 px-4">
-                          <div className="h-px bg-gradient-to-r from-transparent via-slate-300 dark:via-slate-700 to-transparent" />
+                          <div className="h-px bg-gradient-to-r from-transparent via-slate-700 to-transparent" />
                         </div>
                         
                         <div className="space-y-1">
                           <Link 
                             to={createPageUrl("MyProfile")} 
-                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
                           >
                             <User className="h-5 w-5 group-hover:scale-110 transition-transform" />
                             <span className="font-medium">My Profile</span>
@@ -433,7 +442,8 @@ export default function Navbar() {
                           
                           <Link 
                             to={createPageUrl("Settings")} 
-                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
                           >
                             <Settings className="h-5 w-5 group-hover:scale-110 transition-transform" />
                             <span className="font-medium">Settings</span>
@@ -441,7 +451,8 @@ export default function Navbar() {
                           
                           <Link 
                             to={createPageUrl("ManageListing")} 
-                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all group"
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
                           >
                             <Store className="h-5 w-5 group-hover:scale-110 transition-transform" />
                             <span className="font-medium">Manage Listing</span>
@@ -450,7 +461,8 @@ export default function Navbar() {
                           {user.role === 'admin' && (
                             <Link 
                               to={createPageUrl("AdminVendors")} 
-                              className="flex items-center gap-3 px-4 py-3 rounded-xl text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-all group"
+                              onClick={() => setMobileMenuOpen(false)}
+                              className="flex items-center gap-3 px-4 py-3 rounded-xl text-indigo-400 hover:bg-indigo-950 hover:text-indigo-300 transition-all group"
                             >
                               <ShieldCheck className="h-5 w-5 group-hover:scale-110 transition-transform" />
                               <span className="font-medium">Admin Panel</span>
@@ -462,24 +474,24 @@ export default function Navbar() {
                   </div>
 
                   {/* Footer */}
-                  <div className="p-4 border-t border-slate-200 dark:border-slate-800">
+                  <div className="p-4 border-t border-slate-700/50">
                     {user ? (
                       <button 
-                        onClick={handleLogout} 
-                        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-950/50 transition-all font-medium"
+                        onClick={() => { setMobileMenuOpen(false); handleLogout(); }} 
+                        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-950/30 text-red-400 hover:bg-red-950/50 transition-all font-medium"
                       >
                         <LogOut className="h-5 w-5" />
                         <span>Log out</span>
                       </button>
                     ) : (
                       <div className="space-y-2">
-                        <Link to={createPageUrl("Join")} className="block">
-                          <button className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 text-white hover:from-indigo-700 hover:to-indigo-800 transition-all font-medium shadow-lg shadow-indigo-200 dark:shadow-none">
+                        <Link to={createPageUrl("Join")} onClick={() => setMobileMenuOpen(false)} className="block">
+                          <button className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 text-white hover:from-indigo-700 hover:to-indigo-800 transition-all font-medium shadow-lg shadow-indigo-900/30">
                             Sign Up / Login
                           </button>
                         </Link>
-                        <Link to={createPageUrl("VendorSignup")} className="block">
-                          <button className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-indigo-300 dark:hover:border-indigo-700 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all font-medium">
+                        <Link to={createPageUrl("VendorSignup")} onClick={() => setMobileMenuOpen(false)} className="block">
+                          <button className="w-full px-4 py-3 rounded-xl border-2 border-slate-600 text-slate-300 hover:border-indigo-500 hover:text-indigo-400 transition-all font-medium">
                             List Your Business
                           </button>
                         </Link>
