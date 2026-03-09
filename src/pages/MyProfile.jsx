@@ -51,6 +51,32 @@ export default function MyProfile() {
     enabled: !!user?.id,
   });
 
+  const { data: userProfiles = [], refetch: refetchProfile } = useQuery({
+    queryKey: ['userProfile', user?.id],
+    queryFn: () => base44.entities.UserProfile.filter({ user_id: user.id }),
+    enabled: !!user?.id,
+  });
+  const userProfile = userProfiles[0];
+
+  const handleCoverUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingCover(true);
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    if (userProfile) {
+      await base44.entities.UserProfile.update(userProfile.id, { cover_image_url: file_url });
+    } else {
+      await base44.entities.UserProfile.create({
+        user_id: user.id,
+        display_name: user.full_name || "User",
+        cover_image_url: file_url,
+      });
+    }
+    await refetchProfile();
+    setUploadingCover(false);
+    toast.success("Cover image updated");
+  };
+
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
