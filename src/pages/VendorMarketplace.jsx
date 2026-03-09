@@ -261,26 +261,31 @@ export default function VendorMarketplace() {
                 </button>
               </Link>
             </div>
-            <FilterControls
-              eventType={eventType}
-              category={category}
-              priceRange={priceRange}
-              onEventChange={setEventType}
-              onCategoryChange={setCategory}
-              onPriceChange={setPriceRange}
-              onClearFilters={handleClearFilters}
-              sortBy={sortBy}
-              onSortChange={setSortBy}
-              location={location}
-              onLocationChange={setLocation}
-              availableDate={availableDate}
-              onAvailableDateChange={setAvailableDate}
-              minRating={minRating}
-              onMinRatingChange={setMinRating}
-              minYears={minYears}
-              onMinYearsChange={setMinYears} />
-
           </div>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-4">
+        <div className="bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 px-4 sm:px-6 py-3 sm:py-4">
+          <FilterControls
+            eventType={eventType}
+            category={category}
+            priceRange={priceRange}
+            onEventChange={setEventType}
+            onCategoryChange={setCategory}
+            onPriceChange={setPriceRange}
+            onClearFilters={handleClearFilters}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
+            location={location}
+            onLocationChange={setLocation}
+            availableDate={availableDate}
+            onAvailableDateChange={setAvailableDate}
+            minRating={minRating}
+            onMinRatingChange={setMinRating}
+            minYears={minYears}
+            onMinYearsChange={setMinYears} />
         </div>
       </div>
 
