@@ -86,8 +86,8 @@ Deno.serve(async (req) => {
 
     // Read raw response first to handle non-JSON responses
     const rawText = await apiResponse.text();
-    console.log("Autheo API status:", apiResponse.status);
-    console.log("Autheo API raw response (first 500 chars):", rawText.substring(0, 500));
+    console.log("Agregar API status:", apiResponse.status);
+    console.log("Agregar API raw response (first 500 chars):", rawText.substring(0, 500));
 
     let apiResult;
     try {
