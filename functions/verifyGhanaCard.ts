@@ -1,5 +1,4 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
-import { Image } from "npm:imagescript@1.3.0";
 
 Deno.serve(async (req) => {
   try {
@@ -48,66 +47,98 @@ Deno.serve(async (req) => {
       selfieRes.arrayBuffer()
     ]);
 
-    console.log("Original sizes (bytes) - Front:", frontBuf.byteLength, "Back:", backBuf.byteLength, "Selfie:", selfieBuf.byteLength);
-
-    // Resize images to reduce payload size - target max 600px wide
-    const resizeAndCompress = async (buf) => {
-      const img = await Image.decode(new Uint8Array(buf));
-      const maxWidth = 600;
-      if (img.width > maxWidth) {
-        const ratio = maxWidth / img.width;
-        img.resize(maxWidth, Math.round(img.height * ratio));
-      }
-      return await img.encodeJPEG(60);
-    };
-
-    const [frontSmall, backSmall, selfieSmall] = await Promise.all([
-      resizeAndCompress(frontBuf),
-      resizeAndCompress(backBuf),
-      resizeAndCompress(selfieBuf)
-    ]);
-
-    console.log("Compressed sizes - Front:", frontSmall.length, "Back:", backSmall.length, "Selfie:", selfieSmall.length);
+    console.log("Image sizes (bytes) - Front:", frontBuf.byteLength, "Back:", backBuf.byteLength, "Selfie:", selfieBuf.byteLength);
 
     // Convert to base64
-    const toBase64 = (bytes) => {
-      const u8 = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+    const toBase64 = (buffer) => {
+      const bytes = new Uint8Array(buffer);
       let binary = '';
-      for (let i = 0; i < u8.length; i++) {
-        binary += String.fromCharCode(u8[i]);
+      for (let i = 0; i < bytes.length; i++) {
+        binary += String.fromCharCode(bytes[i]);
       }
       return btoa(binary);
     };
 
-    const docFront = toBase64(frontSmall);
-    const docBack = toBase64(backSmall);
-    const selfie = toBase64(selfieSmall);
+    const docFront = toBase64(frontBuf);
+    const docBack = toBase64(backBuf);
+    const selfie = toBase64(selfieBuf);
 
-    const totalB64 = docFront.length + docBack.length + selfie.length;
-    console.log("Total base64 payload:", totalB64, "bytes (~" + (totalB64 / 1024).toFixed(0) + " KB)");
+    console.log("Base64 sizes - Front:", docFront.length, "Back:", docBack.length, "Selfie:", selfie.length);
 
-    // Call Agregar API
     const apiKey = Deno.env.get("GHANA_CARD_API_KEY");
     const apiSecret = Deno.env.get("GHANA_CARD_API_SECRET");
 
-    console.log("Calling Agregar API...");
+    // Try multipart/form-data first (more efficient for file uploads)
+    console.log("Attempting multipart/form-data upload...");
+    const formData = new FormData();
+    formData.append("doc_front", new Blob([frontBuf], { type: "image/jpeg" }), "front.jpg");
+    formData.append("doc_back", new Blob([backBuf], { type: "image/jpeg" }), "back.jpg");
+    formData.append("selfie", new Blob([selfieBuf], { type: "image/jpeg" }), "selfie.jpg");
 
-    const apiResponse = await fetch("https://api.agregartech.com/identity/document/facial/GH", {
+    let apiResponse = await fetch("https://api.agregartech.com/identity/document/facial/GH", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         "X-API-KEY": apiKey,
         "X-API-SECRET": apiSecret
       },
-      body: JSON.stringify({
-        doc_front: docFront,
-        doc_back: docBack,
-        selfie: selfie
-      })
+      body: formData
     });
 
+    console.log("Multipart attempt status:", apiResponse.status);
+
+    // If multipart fails with 413, try JSON with base64
+    if (apiResponse.status === 413) {
+      console.log("Multipart failed (413). Trying JSON base64...");
+      apiResponse = await fetch("https://api.agregartech.com/identity/document/facial/GH", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-KEY": apiKey,
+          "X-API-SECRET": apiSecret
+        },
+        body: JSON.stringify({
+          doc_front: docFront,
+          doc_back: docBack,
+          selfie: selfie
+        })
+      });
+      console.log("JSON attempt status:", apiResponse.status);
+    }
+
+    // If still 413, try x-www-form-urlencoded
+    if (apiResponse.status === 413) {
+      console.log("JSON also failed (413). Trying URL-encoded...");
+      const params = new URLSearchParams();
+      params.append("doc_front", docFront);
+      params.append("doc_back", docBack);
+      params.append("selfie", selfie);
+
+      apiResponse = await fetch("https://api.agregartech.com/identity/document/facial/GH", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-API-KEY": apiKey,
+          "X-API-SECRET": apiSecret
+        },
+        body: params.toString()
+      });
+      console.log("URL-encoded attempt status:", apiResponse.status);
+    }
+
+    if (apiResponse.status === 413) {
+      return Response.json({
+        error: "Images are too large for the Ghana Card API. The API server rejects payloads over its size limit. Please contact Agregar support to increase the limit, or have vendors upload smaller images.",
+        image_sizes: {
+          front: `${(frontBuf.byteLength / 1024).toFixed(0)} KB`,
+          back: `${(backBuf.byteLength / 1024).toFixed(0)} KB`,
+          selfie: `${(selfieBuf.byteLength / 1024).toFixed(0)} KB`,
+          total: `${((frontBuf.byteLength + backBuf.byteLength + selfieBuf.byteLength) / 1024).toFixed(0)} KB`
+        }
+      }, { status: 413 });
+    }
+
     const rawText = await apiResponse.text();
-    console.log("API status:", apiResponse.status);
+    console.log("API final status:", apiResponse.status);
     console.log("API response (first 500 chars):", rawText.substring(0, 500));
 
     let apiResult;
@@ -122,7 +153,7 @@ Deno.serve(async (req) => {
       }, { status: 502 });
     }
     
-    console.log("Parsed API response:", JSON.stringify(apiResult));
+    console.log("Parsed response:", JSON.stringify(apiResult));
 
     const isVerified = apiResponse.ok && (apiResult.verified === true || apiResult.status === "verified" || apiResult.success === true);
     const message = apiResult.message || apiResult.detail || (isVerified ? "Ghana Card verified successfully" : "Ghana Card verification failed");
