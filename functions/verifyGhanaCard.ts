@@ -126,8 +126,14 @@ Deno.serve(async (req) => {
     }
 
     if (apiResponse.status === 413) {
+      // Mark as failed so admin knows to ask vendor to re-upload
+      await base44.asServiceRole.entities.Vendor.update(vendor_id, {
+        ghana_card_status: 'failed',
+        ghana_card_verification_message: 'Images are too large for the verification API. Please ask the vendor to re-upload their Ghana Card images and selfie — they will be automatically compressed on upload.'
+      });
+
       return Response.json({
-        error: "Images are too large for the Ghana Card API. The API server rejects payloads over its size limit. Please contact Agregar support to increase the limit, or have vendors upload smaller images.",
+        error: "Images are too large for the verification API. The vendor needs to re-upload their Ghana Card images (front, back, and selfie). New uploads are automatically compressed to meet the API size limit.",
         image_sizes: {
           front: `${(frontBuf.byteLength / 1024).toFixed(0)} KB`,
           back: `${(backBuf.byteLength / 1024).toFixed(0)} KB`,
