@@ -284,15 +284,10 @@ export default function VendorMarketplace() {
         </div>
       </div>
 
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      {/* <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <div className="flex">
-          {/* Left Side Ad - Hidden on mobile */}
-          {/* <div className="hidden xl:block">
-            <SideAdPlaceholder position="left" />
-          </div> */}
 
           <div className="flex-1 min-w-0">
-        {/* Results Count - only show when searching */}
         {searchQuery &&
             <div className="mb-6 sm:mb-8 px-2">
             <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
@@ -395,12 +390,8 @@ export default function VendorMarketplace() {
             }
             </div>
 
-          {/* Right Side Ad - Hidden on mobile */}
-          {/* <div className="hidden xl:block">
-            <SideAdPlaceholder position="right" />
+          </div>
           </div> */}
-          </div>
-          </div>
     </div></PullToRefresh>
   );
 }
