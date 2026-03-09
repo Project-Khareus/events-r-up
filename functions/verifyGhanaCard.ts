@@ -14,7 +14,6 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'vendor_id is required' }, { status: 400 });
     }
 
-    // Fetch vendor record
     const vendors = await base44.asServiceRole.entities.Vendor.filter({ id: vendor_id });
     const vendor = vendors[0];
 
@@ -22,24 +21,36 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Vendor not found' }, { status: 404 });
     }
 
-    if (!vendor.ghana_card_image_url) {
-      return Response.json({ error: 'Vendor has not submitted Ghana Card image' }, { status: 400 });
+    if (!vendor.ghana_card_image_url || !vendor.ghana_card_back_image_url || !vendor.ghana_card_selfie_url) {
+      return Response.json({ error: 'Vendor must submit card front, card back, and selfie images' }, { status: 400 });
     }
 
-    // Fetch the Ghana Card image and convert to base64
-    const imageResponse = await fetch(vendor.ghana_card_image_url);
-    if (!imageResponse.ok) {
-      return Response.json({ error: 'Failed to fetch Ghana Card image' }, { status: 500 });
-    }
-    const imageBuffer = await imageResponse.arrayBuffer();
-    const base64Image = btoa(String.fromCharCode(...new Uint8Array(imageBuffer)));
+    // Fetch all three images and convert to base64
+    const [frontRes, backRes, selfieRes] = await Promise.all([
+      fetch(vendor.ghana_card_image_url),
+      fetch(vendor.ghana_card_back_image_url),
+      fetch(vendor.ghana_card_selfie_url)
+    ]);
 
-    // Build payload — doc_front is the card image, selfie is optional (same image if no separate selfie)
-    const payload = {
-      doc_front: base64Image,
-      doc_back: base64Image,
-      selfie: base64Image
+    if (!frontRes.ok || !backRes.ok || !selfieRes.ok) {
+      return Response.json({ error: 'Failed to fetch one or more images' }, { status: 500 });
+    }
+
+    const toBase64 = async (response) => {
+      const buffer = await response.arrayBuffer();
+      const bytes = new Uint8Array(buffer);
+      let binary = '';
+      for (let i = 0; i < bytes.length; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return btoa(binary);
     };
+
+    const [docFront, docBack, selfie] = await Promise.all([
+      toBase64(frontRes),
+      toBase64(backRes),
+      toBase64(selfieRes)
+    ]);
 
     // Call Agregar API
     const apiKey = Deno.env.get("GHANA_CARD_API_KEY");
@@ -52,7 +63,11 @@ Deno.serve(async (req) => {
         "X-API-KEY": apiKey,
         "X-API-SECRET": apiSecret
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({
+        doc_front: docFront,
+        doc_back: docBack,
+        selfie: selfie
+      })
     });
 
     const apiResult = await apiResponse.json();
@@ -61,7 +76,6 @@ Deno.serve(async (req) => {
     const isVerified = apiResponse.ok && (apiResult.verified === true || apiResult.status === "verified" || apiResult.success === true);
     const message = apiResult.message || apiResult.detail || (isVerified ? "Ghana Card verified successfully" : "Ghana Card verification failed");
 
-    // Update vendor record
     await base44.asServiceRole.entities.Vendor.update(vendor_id, {
       ghana_card_status: isVerified ? 'verified' : 'failed',
       ghana_card_verification_message: message,
