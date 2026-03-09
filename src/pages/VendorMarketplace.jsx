@@ -229,19 +229,15 @@ export default function VendorMarketplace() {
     <PullToRefresh onRefresh={handleRefresh}><div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
       {/* Hero Section */}
       <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
-        <div className="max-w-7xl mx-auto px-6 py-8 sm:py-10 lg:py-14">
+        <div className="max-w-7xl mx-auto px-6 py-6 sm:py-8 lg:py-10">
           <div className="max-w-3xl">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold mb-3 leading-tight tracking-tight">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold mb-2 leading-tight tracking-tight">
               Find Your Perfect
               <span className="inline sm:block text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300 italic"> Event Vendors</span>
             </h1>
-            <p className="text-base sm:text-lg text-slate-300 leading-relaxed mb-3">
+            <p className="text-base sm:text-lg text-slate-300 leading-relaxed">
               Discover exceptional vendors for your special moments.
             </p>
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-slate-400" />
-              <span className="text-sm text-slate-400 font-medium tracking-wide">Khareus, lasting memories</span>
-            </div>
           </div>
         </div>
       </div>
