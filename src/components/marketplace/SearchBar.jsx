@@ -72,7 +72,10 @@ export default function SearchBar({ value, onChange, onSearch, location, onLocat
           type="text"
           placeholder="I am looking for..."
           value={value || ""}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => {
+            onChange(e.target.value);
+            if (!e.target.value && onSearch) onSearch("");
+          }}
           onKeyDown={(e) => { if (e.key === 'Enter' && onSearch) onSearch(value || ""); }}
           className="w-full h-12 sm:h-14 pl-4 sm:pl-5 pr-12 text-sm sm:text-base border border-slate-200 dark:border-slate-600 rounded-r-xl sm:rounded-r-2xl bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all"
         />
