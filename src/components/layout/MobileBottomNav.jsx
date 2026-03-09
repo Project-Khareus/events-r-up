@@ -1,63 +1,39 @@
-import React, { useCallback } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "../../utils";
 import { Home, Heart, Search, Bell, User } from "lucide-react";
 
 const NAV_ITEMS = [
-  { name: "Home", key: "home", icon: Home, page: "VendorMarketplace" },
-  { name: "My Picks", key: "picks", icon: Heart, page: "MyPicks" },
-  { name: "Search", key: "search", icon: Search, page: "VendorMarketplace" },
-  { name: "Notifications", key: "notifications", icon: Bell, page: "Notifications" },
-  { name: "Profile", key: "profile", icon: User, page: "MyProfile" },
+  { name: "Home", icon: Home, page: "VendorMarketplace" },
+  { name: "My Picks", icon: Heart, page: "MyPicks" },
+  { name: "Search", icon: Search, page: "VendorMarketplace" },
+  { name: "Notifications", icon: Bell, page: "Notifications" },
+  { name: "Profile", icon: User, page: "MyProfile" },
 ];
-
-// Save the last visited URL for each tab key
-const saveTabUrl = (key, url) => {
-  try { sessionStorage.setItem(`tab_url_${key}`, url); } catch {}
-};
-const getTabUrl = (key, fallback) => {
-  try { return sessionStorage.getItem(`tab_url_${key}`) || fallback; } catch { return fallback; }
-};
 
 export default function MobileBottomNav() {
   const location = useLocation();
-  const navigate = useNavigate();
-  const currentPath = location.pathname + location.search;
+  const currentPath = location.pathname;
 
-  // Persist current path to whichever tab is active
-  React.useEffect(() => {
-    const active = NAV_ITEMS.find(item =>
-      currentPath.includes(item.page) || (item.page === "VendorMarketplace" && currentPath === "/")
-    );
-    if (active) saveTabUrl(active.key, currentPath);
-  }, [currentPath]);
-
-  const handleTabPress = useCallback((item) => {
-    const defaultUrl = createPageUrl(item.page);
-    const savedUrl = getTabUrl(item.key, defaultUrl);
-    const isActive = currentPath.includes(item.page) ||
-      (item.page === "VendorMarketplace" && currentPath === "/");
-
-    if (isActive) {
-      // Already on this tab — scroll to top
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
-      navigate(savedUrl);
+  const getIsActive = (item) => {
+    const pagePath = "/" + item.page;
+    if (item.page === "VendorMarketplace") {
+      return currentPath === pagePath || currentPath === "/";
     }
-  }, [currentPath, navigate]);
+    return currentPath === pagePath;
+  };
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-slate-200/50 dark:border-slate-800/50 z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
       <div className="flex justify-around items-center h-16 px-2">
         {NAV_ITEMS.map((item) => {
-          const isActive = currentPath.includes(item.page) || 
-            (item.page === "VendorMarketplace" && currentPath === "/");
+          const isActive = getIsActive(item);
           
           return (
-            <button
+            <Link
               key={item.name}
-              onClick={() => handleTabPress(item)}
-              className="relative flex flex-col items-center justify-center flex-1 py-2 group"
+              to={createPageUrl(item.page)}
+              className="relative flex flex-col items-center justify-center flex-1 py-2 group no-underline"
             >
               <div className={`flex flex-col items-center justify-center gap-1 transition-all duration-300 ${
                 isActive 
@@ -88,7 +64,7 @@ export default function MobileBottomNav() {
               {isActive && (
                 <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-transparent via-indigo-600 to-transparent rounded-full" />
               )}
-            </button>
+            </Link>
           );
         })}
       </div>
