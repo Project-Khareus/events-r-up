@@ -102,7 +102,7 @@ Deno.serve(async (req) => {
       }, { status: 502 });
     }
     
-    console.log("Autheo API parsed response:", JSON.stringify(apiResult));
+    console.log("Agregar API parsed response:", JSON.stringify(apiResult));
 
     const isVerified = apiResponse.ok && (apiResult.verified === true || apiResult.status === "verified" || apiResult.success === true);
     const message = apiResult.message || apiResult.detail || (isVerified ? "Ghana Card verified successfully" : "Ghana Card verification failed");
