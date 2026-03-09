@@ -64,69 +64,63 @@ export default function MyProfile() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/20">
-      <div className="max-w-4xl mx-auto px-6 py-12">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-100 to-indigo-50">
-              <User className="h-6 w-6 text-indigo-600" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-slate-900">My Profile</h1>
-              <p className="text-slate-600">Manage your account settings</p>
-            </div>
-          </div>
-          <div className="flex gap-3">
-            <Button variant="outline" onClick={() => navigate(createPageUrl("UserProfile") + `?userId=${user?.id}`)}>
-              View Public Profile
-            </Button>
-            <Button onClick={() => navigate(createPageUrl("Settings"))}>
-              Edit Profile
-            </Button>
-          </div>
-        </div>
-
-        <div className="space-y-6">
-          {/* Profile Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Profile Information</CardTitle>
-              <CardDescription>Your basic account details</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-center gap-6">
-                <Avatar className="h-24 w-24">
-                  <AvatarImage src={user?.avatar_url} />
-                  <AvatarFallback className="bg-indigo-100 text-indigo-700 text-2xl">
-                    {user?.full_name?.[0] || 'U'}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                  <h3 className="text-xl font-semibold text-slate-900">{user?.full_name}</h3>
-                  <p className="text-slate-600">{user?.email}</p>
-                </div>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
+        {/* Profile Header Card */}
+        <Card className="mb-6 overflow-hidden">
+          <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 h-24 sm:h-32" />
+          <div className="px-4 sm:px-6 pb-5 -mt-12 sm:-mt-14">
+            <div className="flex flex-col sm:flex-row sm:items-end gap-4">
+              <Avatar className="h-20 w-20 sm:h-24 sm:w-24 border-4 border-white shadow-md">
+                <AvatarImage src={user?.avatar_url} />
+                <AvatarFallback className="bg-indigo-100 text-indigo-700 text-2xl sm:text-3xl">
+                  {user?.full_name?.[0] || 'U'}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <h1 className="text-xl sm:text-2xl font-bold text-slate-900 truncate">{user?.full_name}</h1>
+                <p className="text-sm text-slate-500 truncate">{user?.email}</p>
               </div>
+              <div className="flex gap-2 sm:gap-3 shrink-0">
+                <Button variant="outline" size="sm" className="text-xs sm:text-sm" onClick={() => navigate(createPageUrl("UserProfile") + `?userId=${user?.id}`)}>
+                  View Public Profile
+                </Button>
+                <Button size="sm" className="text-xs sm:text-sm" onClick={() => navigate(createPageUrl("Settings"))}>
+                  Edit Profile
+                </Button>
+              </div>
+            </div>
+          </div>
+        </Card>
 
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <Label>Full Name</Label>
-                  <Input value={user?.full_name || ''} disabled />
+        <div className="space-y-4 sm:space-y-6">
+          {/* Account Details */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base sm:text-lg">Account Details</CardTitle>
+              <CardDescription>Your basic account information</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <Label className="text-xs text-slate-500">Full Name</Label>
+                  <Input value={user?.full_name || ''} disabled className="h-9" />
                 </div>
-                <div>
-                  <Label>Email</Label>
-                  <Input value={user?.email || ''} disabled />
+                <div className="space-y-1.5">
+                  <Label className="text-xs text-slate-500">Email</Label>
+                  <Input value={user?.email || ''} disabled className="h-9" />
                 </div>
-                <div>
-                  <Label>Role</Label>
-                  <div className="flex items-center gap-2">
-                    <Shield className="h-4 w-4 text-slate-500" />
-                    <span className="text-sm font-medium capitalize">{user?.role}</span>
+                <div className="space-y-1.5">
+                  <Label className="text-xs text-slate-500">Role</Label>
+                  <div className="flex items-center gap-2 h-9 px-3 bg-slate-50 rounded-md border border-slate-200">
+                    <Shield className="h-4 w-4 text-indigo-500" />
+                    <span className="text-sm font-medium capitalize text-slate-700">{user?.role}</span>
                   </div>
                 </div>
-                <div>
-                  <Label>Member Since</Label>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-slate-500" />
-                    <span className="text-sm">{new Date(user?.created_date).toLocaleDateString()}</span>
+                <div className="space-y-1.5">
+                  <Label className="text-xs text-slate-500">Member Since</Label>
+                  <div className="flex items-center gap-2 h-9 px-3 bg-slate-50 rounded-md border border-slate-200">
+                    <Calendar className="h-4 w-4 text-indigo-500" />
+                    <span className="text-sm text-slate-700">{new Date(user?.created_date).toLocaleDateString()}</span>
                   </div>
                 </div>
               </div>
