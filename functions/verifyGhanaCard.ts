@@ -1,5 +1,4 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
-import sharp from 'npm:sharp@0.33.2';
 
 Deno.serve(async (req) => {
   try {
@@ -49,66 +48,98 @@ Deno.serve(async (req) => {
       selfieRes.arrayBuffer()
     ]);
 
-    console.log("Original sizes - Front:", frontBuf.byteLength, "Back:", backBuf.byteLength, "Selfie:", selfieBuf.byteLength);
-
-    // Resize images to max 800px width and compress to JPEG quality 70 to reduce payload
-    const resizeImage = async (buffer) => {
-      const resized = await sharp(new Uint8Array(buffer))
-        .resize({ width: 800, withoutEnlargement: true })
-        .jpeg({ quality: 70 })
-        .toBuffer();
-      return resized;
-    };
-
-    const [frontSmall, backSmall, selfieSmall] = await Promise.all([
-      resizeImage(frontBuf),
-      resizeImage(backBuf),
-      resizeImage(selfieBuf)
-    ]);
-
-    console.log("Resized sizes - Front:", frontSmall.length, "Back:", backSmall.length, "Selfie:", selfieSmall.length);
+    console.log("Original sizes (bytes) - Front:", frontBuf.byteLength, "Back:", backBuf.byteLength, "Selfie:", selfieBuf.byteLength);
+    console.log("Total raw size:", frontBuf.byteLength + backBuf.byteLength + selfieBuf.byteLength);
 
     // Convert to base64
     const toBase64 = (buffer) => {
       const bytes = new Uint8Array(buffer);
-      let binary = '';
-      for (let i = 0; i < bytes.length; i++) {
-        binary += String.fromCharCode(bytes[i]);
+      const chunks = [];
+      const chunkSize = 8192;
+      for (let i = 0; i < bytes.length; i += chunkSize) {
+        chunks.push(String.fromCharCode(...bytes.slice(i, i + chunkSize)));
       }
-      return btoa(binary);
+      return btoa(chunks.join(''));
     };
 
-    const docFront = toBase64(frontSmall);
-    const docBack = toBase64(backSmall);
-    const selfie = toBase64(selfieSmall);
+    const docFront = toBase64(frontBuf);
+    const docBack = toBase64(backBuf);
+    const selfie = toBase64(selfieBuf);
 
-    const totalSize = docFront.length + docBack.length + selfie.length;
-    console.log("Total base64 payload size:", totalSize);
+    console.log("Base64 sizes - Front:", docFront.length, "Back:", docBack.length, "Selfie:", selfie.length);
 
     // Call Agregar API
     const apiKey = Deno.env.get("GHANA_CARD_API_KEY");
     const apiSecret = Deno.env.get("GHANA_CARD_API_SECRET");
 
-    console.log("Calling Agregar API...");
+    console.log("Calling Agregar API via multipart/form-data...");
+
+    // Use multipart form-data with file uploads instead of JSON base64
+    const formData = new FormData();
+    formData.append("doc_front", new Blob([frontBuf], { type: "image/jpeg" }), "front.jpg");
+    formData.append("doc_back", new Blob([backBuf], { type: "image/jpeg" }), "back.jpg");
+    formData.append("selfie", new Blob([selfieBuf], { type: "image/jpeg" }), "selfie.jpg");
 
     const apiResponse = await fetch("https://api.agregartech.com/identity/document/facial/GH", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         "X-API-KEY": apiKey,
         "X-API-SECRET": apiSecret
       },
-      body: JSON.stringify({
-        doc_front: docFront,
-        doc_back: docBack,
-        selfie: selfie
-      })
+      body: formData
     });
 
-    // Read raw response to handle non-JSON
     const rawText = await apiResponse.text();
     console.log("Agregar API status:", apiResponse.status);
     console.log("Agregar API response (first 500 chars):", rawText.substring(0, 500));
+
+    // If multipart also fails with 413, try JSON with base64 (images might just be too large)
+    if (apiResponse.status === 413) {
+      console.log("Multipart failed with 413. Trying JSON with base64...");
+      
+      const jsonResponse = await fetch("https://api.agregartech.com/identity/document/facial/GH", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-KEY": apiKey,
+          "X-API-SECRET": apiSecret
+        },
+        body: JSON.stringify({
+          doc_front: docFront,
+          doc_back: docBack,
+          selfie: selfie
+        })
+      });
+
+      const jsonRaw = await jsonResponse.text();
+      console.log("JSON attempt status:", jsonResponse.status);
+      console.log("JSON attempt response (first 500):", jsonRaw.substring(0, 500));
+
+      if (jsonResponse.status === 413) {
+        return Response.json({
+          error: "Images are too large for the Ghana Card verification API. Please ask the vendor to upload smaller/compressed images (under 1MB each).",
+          image_sizes: {
+            front: `${(frontBuf.byteLength / 1024 / 1024).toFixed(2)} MB`,
+            back: `${(backBuf.byteLength / 1024 / 1024).toFixed(2)} MB`,
+            selfie: `${(selfieBuf.byteLength / 1024 / 1024).toFixed(2)} MB`
+          }
+        }, { status: 413 });
+      }
+
+      // Parse the JSON response
+      let apiResult;
+      try {
+        apiResult = JSON.parse(jsonRaw);
+      } catch {
+        return Response.json({
+          error: "Ghana Card API returned an unexpected response.",
+          api_status: jsonResponse.status,
+          api_response_preview: jsonRaw.substring(0, 200)
+        }, { status: 502 });
+      }
+
+      return handleApiResult(base44, vendor_id, jsonResponse, apiResult);
+    }
 
     let apiResult;
     try {
@@ -122,27 +153,31 @@ Deno.serve(async (req) => {
       }, { status: 502 });
     }
     
-    console.log("Agregar API parsed response:", JSON.stringify(apiResult));
-
-    const isVerified = apiResponse.ok && (apiResult.verified === true || apiResult.status === "verified" || apiResult.success === true);
-    const message = apiResult.message || apiResult.detail || (isVerified ? "Ghana Card verified successfully" : "Ghana Card verification failed");
-
-    await base44.asServiceRole.entities.Vendor.update(vendor_id, {
-      ghana_card_status: isVerified ? 'verified' : 'failed',
-      ghana_card_verification_message: message,
-      ghana_card_verified_at: new Date().toISOString()
-    });
-
-    return Response.json({
-      success: true,
-      verified: isVerified,
-      status: isVerified ? 'verified' : 'failed',
-      message: message,
-      api_response: apiResult
-    });
+    return handleApiResult(base44, vendor_id, apiResponse, apiResult);
 
   } catch (error) {
     console.error("Verification error:", error.message);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
+
+async function handleApiResult(base44, vendor_id, apiResponse, apiResult) {
+  console.log("Agregar API parsed response:", JSON.stringify(apiResult));
+
+  const isVerified = apiResponse.ok && (apiResult.verified === true || apiResult.status === "verified" || apiResult.success === true);
+  const message = apiResult.message || apiResult.detail || (isVerified ? "Ghana Card verified successfully" : "Ghana Card verification failed");
+
+  await base44.asServiceRole.entities.Vendor.update(vendor_id, {
+    ghana_card_status: isVerified ? 'verified' : 'failed',
+    ghana_card_verification_message: message,
+    ghana_card_verified_at: new Date().toISOString()
+  });
+
+  return Response.json({
+    success: true,
+    verified: isVerified,
+    status: isVerified ? 'verified' : 'failed',
+    message: message,
+    api_response: apiResult
+  });
+}
