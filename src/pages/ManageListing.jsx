@@ -48,18 +48,18 @@ export default function ManageListing() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 py-12 px-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 py-4 sm:py-8 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">My Vendor Listings</h1>
-            <p className="text-slate-600">Manage your business listings</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-1">My Vendor Listings</h1>
+            <p className="text-sm text-slate-600">Manage your business listings</p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-2 sm:gap-3">
             {vendors.length > 0 &&
             <Link to={createPageUrl("VendorAnalytics")}>
-                <Button variant="outline" className="border-indigo-200 text-indigo-700 hover:bg-indigo-50">
-                  <BarChart3 className="h-4 w-4 mr-2" />
+                <Button variant="outline" size="sm" className="border-indigo-200 text-indigo-700 hover:bg-indigo-50">
+                  <BarChart3 className="h-4 w-4 mr-1.5" />
                   Analytics
                 </Button>
               </Link>
@@ -69,9 +69,10 @@ export default function ManageListing() {
               const canAddTrial = trialCount < 3;
               return (
                 <Link to={createPageUrl("VendorSignup")}>
-                  <Button className="bg-indigo-600 hover:bg-indigo-700">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add New Listing {canAddTrial && `(${3 - trialCount} trial${3 - trialCount !== 1 ? 's' : ''} left)`}
+                  <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700">
+                    <Plus className="h-4 w-4 mr-1.5" />
+                    <span className="hidden sm:inline">Add New Listing {canAddTrial && `(${3 - trialCount} trial${3 - trialCount !== 1 ? 's' : ''} left)`}</span>
+                    <span className="sm:hidden">Add New</span>
                   </Button>
                 </Link>);
 
