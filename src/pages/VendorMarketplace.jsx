@@ -284,7 +284,7 @@ export default function VendorMarketplace() {
         </div>
       </div>
 
-      {/* <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <div className="flex">
 
           <div className="flex-1 min-w-0">
@@ -317,9 +317,9 @@ export default function VendorMarketplace() {
           </div> :
             isHomepage ? (
             <div className="space-y-3 sm:space-y-4">
-              <div className="-mx-4 sm:-mx-6 lg:mx-auto mb-2">
+              {/* <div className="-mx-4 sm:-mx-6 lg:mx-auto mb-2">
                 <PromoAdBanner vendor={promoVendor} className="lg:max-w-7xl lg:mx-auto lg:rounded-2xl" />
-              </div>
+              </div> */}
               {vendorsByEvent.map((group, index) =>
               <div key={group.eventType}>
                   {group.vendors.length > 0 ?
@@ -391,7 +391,7 @@ export default function VendorMarketplace() {
             </div>
 
           </div>
-          </div> */}
+          </div>
     </div></PullToRefresh>
   );
 }
