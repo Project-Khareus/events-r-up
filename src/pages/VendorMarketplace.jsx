@@ -247,9 +247,9 @@ export default function VendorMarketplace() {
       </div>
 
       {/* Search & Filters */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-6 sm:-mt-8">
-        <div className="bg-white dark:bg-slate-800 rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200 dark:border-slate-700 p-4 sm:p-6 lg:p-8">
-          <div className="flex flex-col gap-4 sm:gap-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-5 sm:-mt-6">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200 dark:border-slate-700 p-3 sm:p-4 lg:p-6">
+          <div className="flex flex-col gap-3 sm:gap-4">
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch">
               <div className="flex-1">
                 <SearchBar value={searchInput} onChange={setSearchInput} onSearch={setSearchQuery} location={location} onLocationChange={setLocation} />
@@ -266,8 +266,8 @@ export default function VendorMarketplace() {
       </div>
 
       {/* Filters */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-4">
-        <div className="bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 px-4 sm:px-6 py-3 sm:py-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-3">
+        <div className="bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 px-4 sm:px-5 py-2.5 sm:py-3">
           <FilterControls
             eventType={eventType}
             category={category}
@@ -289,7 +289,7 @@ export default function VendorMarketplace() {
         </div>
       </div>
 
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-5 sm:py-8">
         <div className="flex">
 
           <div className="flex-1 min-w-0">
