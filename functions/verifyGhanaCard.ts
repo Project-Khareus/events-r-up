@@ -1,21 +1,9 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-
-/**
- * Ghana Card Verification Function
- * 
- * This function is a placeholder awaiting the Ghana Card verification API endpoint.
- * When the API endpoint is available, replace the TODO section below with the actual API call.
- * 
- * Expected payload: { vendor_id: string }
- * The function fetches the vendor's ghana_card_number and ghana_card_image_url,
- * calls the verification API, and updates the vendor record with the result.
- */
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
-    // Auth check - admin only
     const user = await base44.auth.me();
     if (user?.role !== 'admin') {
       return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
@@ -34,57 +22,62 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Vendor not found' }, { status: 404 });
     }
 
-    if (!vendor.ghana_card_number || !vendor.ghana_card_image_url) {
-      return Response.json({ error: 'Vendor has not submitted Ghana Card details' }, { status: 400 });
+    if (!vendor.ghana_card_image_url) {
+      return Response.json({ error: 'Vendor has not submitted Ghana Card image' }, { status: 400 });
     }
 
-    // ============================================================
-    // TODO: Replace this block with the actual Ghana Card API call
-    // when the endpoint is provided.
-    //
-    // Example structure (to be updated):
-    //
-    // const API_ENDPOINT = "https://api.example.com/verify-ghana-card";
-    // const API_KEY = Deno.env.get("GHANA_CARD_API_KEY");
-    //
-    // const apiResponse = await fetch(API_ENDPOINT, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     "Authorization": `Bearer ${API_KEY}`
-    //   },
-    //   body: JSON.stringify({
-    //     card_number: vendor.ghana_card_number,
-    //     card_image_url: vendor.ghana_card_image_url
-    //   })
-    // });
-    //
-    // const apiResult = await apiResponse.json();
-    // const isVerified = apiResult.verified === true;
-    // const message = apiResult.message || (isVerified ? "Verification successful" : "Verification failed");
-    // ============================================================
+    // Fetch the Ghana Card image and convert to base64
+    const imageResponse = await fetch(vendor.ghana_card_image_url);
+    if (!imageResponse.ok) {
+      return Response.json({ error: 'Failed to fetch Ghana Card image' }, { status: 500 });
+    }
+    const imageBuffer = await imageResponse.arrayBuffer();
+    const base64Image = btoa(String.fromCharCode(...new Uint8Array(imageBuffer)));
 
-    // PLACEHOLDER LOGIC - Remove when real API is integrated
-    const isVerified = false;
-    const message = "Ghana Card verification API endpoint not yet configured. Please contact the development team to integrate the API.";
+    // Build payload — doc_front is the card image, selfie is optional (same image if no separate selfie)
+    const payload = {
+      doc_front: base64Image,
+      doc_back: base64Image,
+      selfie: base64Image
+    };
 
-    // Update vendor record with verification result
-    const updateData = {
+    // Call Agregar API
+    const apiKey = Deno.env.get("GHANA_CARD_API_KEY");
+    const apiSecret = Deno.env.get("GHANA_CARD_API_SECRET");
+
+    const apiResponse = await fetch("https://api.agregartech.com/identity/document/facial/GH", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-KEY": apiKey,
+        "X-API-SECRET": apiSecret
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const apiResult = await apiResponse.json();
+    console.log("Agregar API response:", JSON.stringify(apiResult));
+
+    const isVerified = apiResponse.ok && (apiResult.verified === true || apiResult.status === "verified" || apiResult.success === true);
+    const message = apiResult.message || apiResult.detail || (isVerified ? "Ghana Card verified successfully" : "Ghana Card verification failed");
+
+    // Update vendor record
+    await base44.asServiceRole.entities.Vendor.update(vendor_id, {
       ghana_card_status: isVerified ? 'verified' : 'failed',
       ghana_card_verification_message: message,
       ghana_card_verified_at: new Date().toISOString()
-    };
-
-    await base44.asServiceRole.entities.Vendor.update(vendor_id, updateData);
+    });
 
     return Response.json({
       success: true,
       verified: isVerified,
-      status: updateData.ghana_card_status,
-      message: message
+      status: isVerified ? 'verified' : 'failed',
+      message: message,
+      api_response: apiResult
     });
 
   } catch (error) {
+    console.error("Verification error:", error.message);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
