@@ -431,17 +431,14 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* Profile Picture & Main Image */}
-      <Card className="p-6 rounded-2xl border-slate-200">
-        <h2 className="text-slate-950 mb-4 text-lg font-semibold flex items-center gap-2">Profile & Images
-
-
-        </h2>
+      <Card className="p-6 rounded-2xl border-slate-300 bg-white">
+        <h2 className="text-slate-900 mb-4 text-lg font-semibold flex items-center gap-2">Profile & Images</h2>
         
         <div className="grid md:grid-cols-3 gap-6">
           {/* Main Image */}
           <div>
-            <Label className="mb-2 block">Main Business Image *</Label>
-            <div className="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center hover:border-indigo-300 transition-colors">
+            <Label className="mb-2 block text-slate-700">Main Business Image *</Label>
+            <div className="border-2 border-dashed border-slate-300 rounded-xl p-4 text-center hover:border-indigo-400 transition-colors bg-white">
               {formData.image_url ?
               <div className="relative">
                   <img
@@ -482,8 +479,8 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
 
           {/* Gallery Images */}
           <div>
-            <Label className="mb-2 block">Portfolio Gallery (Images)</Label>
-            <div className="border-2 border-dashed border-slate-200 rounded-xl p-4 hover:border-indigo-300 transition-colors">
+            <Label className="mb-2 block text-slate-700">Portfolio Gallery (Images)</Label>
+            <div className="border-2 border-dashed border-slate-300 rounded-xl p-4 hover:border-indigo-400 transition-colors bg-white">
               <div className="grid grid-cols-3 gap-2 mb-3">
                 {formData.gallery_images.map((url, index) =>
                 <div key={index} className="relative aspect-square">
@@ -501,7 +498,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
                     </button>
                   </div>
                 )}
-                <label className="aspect-square border-2 border-dashed border-slate-200 rounded-lg flex items-center justify-center cursor-pointer hover:border-indigo-300">
+                <label className="aspect-square border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-indigo-400 bg-white">
                   <input
                     type="file"
                     accept="image/*"
@@ -545,8 +542,8 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
 
           {/* Gallery Videos */}
           <div>
-            <Label className="mb-2 block">Portfolio Videos</Label>
-            <div className="border-2 border-dashed border-slate-200 rounded-xl p-4 hover:border-indigo-300 transition-colors">
+            <Label className="mb-2 block text-slate-700">Portfolio Videos</Label>
+            <div className="border-2 border-dashed border-slate-300 rounded-xl p-4 hover:border-indigo-400 transition-colors bg-white">
               <div className="grid grid-cols-2 gap-2 mb-3">
                 {formData.gallery_videos.map((url, index) =>
                 <div key={index} className="relative aspect-video">
@@ -564,7 +561,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
                     </button>
                   </div>
                 )}
-                <label className="aspect-video border-2 border-dashed border-slate-200 rounded-lg flex items-center justify-center cursor-pointer hover:border-indigo-300">
+                <label className="aspect-video border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-indigo-400 bg-white">
                   <input
                     type="file"
                     accept="video/*"
