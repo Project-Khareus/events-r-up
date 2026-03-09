@@ -225,22 +225,33 @@ export default function VendorMarketplace() {
 
   return (
     <PullToRefresh onRefresh={handleRefresh}><div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
-      {/* Hero Section with Search */}
-      <div className="bg-gradient-to-br from-emerald-500 via-emerald-500 to-emerald-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-14 pb-20 sm:pt-20 sm:pb-24">
-          <h1 className="text-center text-2xl sm:text-3xl lg:text-4xl font-bold mb-8 sm:mb-10 text-white/90">
-            What are you looking for?
-          </h1>
-          <div className="max-w-2xl mx-auto flex flex-col sm:flex-row gap-3 items-stretch">
-            <div className="flex-1">
-              <SearchBar value={searchQuery} onChange={setSearchQuery} location={location} onLocationChange={setLocation} />
+      {/* Hero Section */}
+      <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-24 sm:pt-20 sm:pb-28">
+          <div className="max-w-3xl mb-10 sm:mb-12">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold mb-6 leading-tight tracking-tight">
+              Find Your Perfect
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300 italic">
+                Event Vendors
+              </span>
+            </h1>
+            <p className="text-lg sm:text-xl text-slate-300 leading-relaxed">
+              Discover exceptional vendors for your special moments. Curated professionals ready to bring your vision to life.
+            </p>
+          </div>
+          <div className="max-w-2xl">
+            <p className="text-sm font-medium text-slate-400 mb-3 tracking-wide uppercase">What are you looking for?</p>
+            <div className="flex flex-col sm:flex-row gap-3 items-stretch">
+              <div className="flex-1">
+                <SearchBar value={searchQuery} onChange={setSearchQuery} location={location} onLocationChange={setLocation} />
+              </div>
+              <Link to={createPageUrl("EventPlanning")} className="w-full sm:w-auto">
+                <button className="w-full sm:w-auto h-12 sm:h-14 px-5 sm:px-6 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white rounded-xl font-medium transition-all flex items-center gap-2 justify-center whitespace-nowrap text-sm sm:text-base border border-white/20">
+                  <Wand2 className="h-4 w-4 sm:h-5 sm:w-5" />
+                  Plan an Event
+                </button>
+              </Link>
             </div>
-            <Link to={createPageUrl("EventPlanning")} className="w-full sm:w-auto">
-              <button className="w-full sm:w-auto h-12 sm:h-14 px-5 sm:px-6 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white rounded-xl font-medium transition-all flex items-center gap-2 justify-center whitespace-nowrap text-sm sm:text-base border border-white/30">
-                <Wand2 className="h-4 w-4 sm:h-5 sm:w-5" />
-                Plan an Event
-              </button>
-            </Link>
           </div>
         </div>
       </div>
