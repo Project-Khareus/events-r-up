@@ -52,11 +52,11 @@ export default function MyProfile() {
 
   if (isLoading) {
     return (
-      <div className="max-w-4xl mx-auto px-6 py-12">
-        <Skeleton className="h-12 w-64 mb-8" />
-        <div className="grid gap-6">
-          <Skeleton className="h-64" />
-          <Skeleton className="h-48" />
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
+        <Skeleton className="h-44 sm:h-56 rounded-xl mb-6" />
+        <div className="grid gap-4 sm:gap-6">
+          <Skeleton className="h-48 rounded-xl" />
+          <Skeleton className="h-32 rounded-xl" />
         </div>
       </div>
     );
@@ -129,9 +129,9 @@ export default function MyProfile() {
 
           {/* Biometric Authentication */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Smartphone className="h-5 w-5" />
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+                <Smartphone className="h-4 w-4 sm:h-5 sm:w-5" />
                 Biometric Authentication
               </CardTitle>
               <CardDescription>
@@ -169,8 +169,8 @@ export default function MyProfile() {
 
           {/* Trusted Devices */}
           <Card>
-            <CardHeader>
-              <CardTitle>Trusted Devices</CardTitle>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base sm:text-lg">Trusted Devices</CardTitle>
               <CardDescription>Devices you've used to access your account</CardDescription>
             </CardHeader>
             <CardContent>
