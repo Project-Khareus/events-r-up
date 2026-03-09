@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Search, MapPin, ChevronDown } from "lucide-react";
 
-const LOCATIONS = [
-  "All Ghana",
+const DEFAULT_LOCATIONS = [
   "Accra",
   "Kumasi",
   "Tema",
@@ -15,7 +14,7 @@ const LOCATIONS = [
   "Bolgatanga"
 ];
 
-export default function SearchBar({ value, onChange, location, onLocationChange }) {
+export default function SearchBar({ value, onChange, location, onLocationChange, vendorLocations = [] }) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [locQuery, setLocQuery] = useState("");
   const [isEditing, setIsEditing] = useState(false);
@@ -35,7 +34,14 @@ export default function SearchBar({ value, onChange, location, onLocationChange 
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const filteredLocations = LOCATIONS.filter((loc) =>
+  // Merge vendor locations with defaults, deduplicate, sort alphabetically
+  const allLocations = React.useMemo(() => {
+    const merged = new Set([...DEFAULT_LOCATIONS, ...vendorLocations]);
+    const sorted = Array.from(merged).filter(Boolean).sort((a, b) => a.localeCompare(b));
+    return ["All Ghana", ...sorted];
+  }, [vendorLocations]);
+
+  const filteredLocations = allLocations.filter((loc) =>
     loc.toLowerCase().includes(locQuery.toLowerCase())
   );
 
