@@ -111,8 +111,8 @@ export default function VendorMarketplace() {
       const matchesCategory = category === "all" || vendorCategories.length === 0 || vendorCategories.includes(category);
       const matchesPrice = priceRange === "all" || !vendor.price_range || vendor.price_range === priceRange;
 
-      // Advanced filters
-      const matchesLocation = !location ||
+      // Advanced filters — location from search bar only applies when searching
+      const matchesLocation = !location || !searchQuery ||
       vendor.location?.toLowerCase().includes(location.toLowerCase());
 
       const matchesRating = minRating === 0 ||
