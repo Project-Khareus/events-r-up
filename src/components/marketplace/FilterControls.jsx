@@ -134,10 +134,10 @@ export default function FilterControls({
 
   return (
     <div className="space-y-3">
-      {/* Main Filters Row */}
-      <div className="flex flex-wrap items-center gap-3">
+      {/* Main Filters Row - horizontally scrollable on mobile */}
+      <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto pb-1 -mb-1 sm:flex-wrap sm:overflow-visible sm:pb-0 sm:mb-0" style={{scrollbarWidth:'none',WebkitOverflowScrolling:'touch'}}>
         <Select value={eventType} onValueChange={handleEventChange}>
-          <SelectTrigger className="w-40 rounded-xl">
+          <SelectTrigger className="w-[120px] sm:w-40 h-9 sm:h-10 text-xs sm:text-sm rounded-xl shrink-0">
             <SelectValue placeholder="Event Type" />
           </SelectTrigger>
           <SelectContent>
@@ -150,7 +150,7 @@ export default function FilterControls({
         </Select>
 
         <Select value={category} onValueChange={onCategoryChange}>
-          <SelectTrigger className="w-56 rounded-xl">
+          <SelectTrigger className="w-[130px] sm:w-56 h-9 sm:h-10 text-xs sm:text-sm rounded-xl shrink-0">
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent>
@@ -163,7 +163,7 @@ export default function FilterControls({
         </Select>
 
         <Select value={priceRange} onValueChange={onPriceChange}>
-          <SelectTrigger className="w-32 rounded-xl">
+          <SelectTrigger className="w-[100px] sm:w-32 h-9 sm:h-10 text-xs sm:text-sm rounded-xl shrink-0">
             <SelectValue placeholder="Price" />
           </SelectTrigger>
           <SelectContent>
@@ -177,7 +177,7 @@ export default function FilterControls({
 
         {onSortChange && (
           <Select value={sortBy} onValueChange={onSortChange}>
-            <SelectTrigger className="w-48 rounded-xl">
+            <SelectTrigger className="w-[130px] sm:w-48 h-9 sm:h-10 text-xs sm:text-sm rounded-xl shrink-0">
               <SelectValue placeholder="Sort By" />
             </SelectTrigger>
             <SelectContent>
@@ -194,12 +194,12 @@ export default function FilterControls({
           variant="outline"
           size="sm"
           onClick={() => setShowAdvanced(!showAdvanced)}
-          className={`rounded-xl gap-2 ${hasAdvancedFilters ? 'border-indigo-500 text-indigo-600' : ''}`}
+          className={`rounded-xl gap-1.5 h-9 sm:h-10 text-xs sm:text-sm shrink-0 ${hasAdvancedFilters ? 'border-indigo-500 text-indigo-600' : ''}`}
         >
-          <SlidersHorizontal className="h-4 w-4" />
-          Advanced
+          <SlidersHorizontal className="h-3.5 w-3.5" />
+          <span className="hidden sm:inline">Advanced</span>
           {hasAdvancedFilters && (
-            <Badge variant="default" className="ml-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+            <Badge variant="default" className="ml-0.5 h-4 w-4 sm:h-5 sm:w-5 rounded-full p-0 flex items-center justify-center text-[10px] sm:text-xs">
               {[location, availableDate, minRating > 0, minYears > 0].filter(Boolean).length}
             </Badge>
           )}
@@ -208,10 +208,10 @@ export default function FilterControls({
         {hasFilters && (
           <Badge 
             variant="secondary" 
-            className="cursor-pointer hover:bg-slate-200 gap-1 px-3 py-1.5"
+            className="cursor-pointer hover:bg-slate-200 gap-1 px-2.5 py-1 sm:px-3 sm:py-1.5 text-xs shrink-0"
             onClick={handleClearAll}
           >
-            Clear All
+            Clear
             <X className="h-3 w-3" />
           </Badge>
         )}
