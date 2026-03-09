@@ -17,6 +17,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { compressImage } from "@/components/utils/imageCompress";
 
 const EVENT_TYPES = [
 { value: "weddings", label: "Weddings" },
@@ -317,7 +318,8 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
     if (!file) return;
     setGhanaCardUploading(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const compressed = await compressImage(file, 800, 0.7);
+      const { file_url } = await base44.integrations.Core.UploadFile({ file: compressed });
       setFormData((prev) => ({ ...prev, ghana_card_image_url: file_url }));
       toast.success("Ghana Card front uploaded!");
     } catch (error) {
@@ -332,7 +334,8 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
     if (!file) return;
     setGhanaCardBackUploading(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const compressed = await compressImage(file, 800, 0.7);
+      const { file_url } = await base44.integrations.Core.UploadFile({ file: compressed });
       setFormData((prev) => ({ ...prev, ghana_card_back_image_url: file_url }));
       toast.success("Ghana Card back uploaded!");
     } catch (error) {
@@ -347,7 +350,8 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
     if (!file) return;
     setSelfieUploading(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const compressed = await compressImage(file, 800, 0.7);
+      const { file_url } = await base44.integrations.Core.UploadFile({ file: compressed });
       setFormData((prev) => ({ ...prev, ghana_card_selfie_url: file_url }));
       toast.success("Selfie uploaded!");
     } catch (error) {
