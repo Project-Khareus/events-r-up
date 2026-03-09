@@ -14,22 +14,33 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'vendor_id is required' }, { status: 400 });
     }
 
-    const vendors = await base44.asServiceRole.entities.Vendor.filter({ id: vendor_id });
-    const vendor = vendors[0];
+    // Fetch vendor record using get() by ID
+    const vendor = await base44.asServiceRole.entities.Vendor.get(vendor_id);
 
     if (!vendor) {
       return Response.json({ error: 'Vendor not found' }, { status: 404 });
     }
 
-    if (!vendor.ghana_card_image_url || !vendor.ghana_card_back_image_url || !vendor.ghana_card_selfie_url) {
-      return Response.json({ error: 'Vendor must submit card front, card back, and selfie images' }, { status: 400 });
+    const frontUrl = vendor.ghana_card_image_url;
+    const backUrl = vendor.ghana_card_back_image_url;
+    const selfieUrl = vendor.ghana_card_selfie_url;
+
+    if (!frontUrl || !backUrl || !selfieUrl) {
+      return Response.json({ 
+        error: 'Vendor must submit card front, card back, and selfie images',
+        missing: {
+          front: !frontUrl,
+          back: !backUrl,
+          selfie: !selfieUrl
+        }
+      }, { status: 400 });
     }
 
     // Fetch all three images and convert to base64
     const [frontRes, backRes, selfieRes] = await Promise.all([
-      fetch(vendor.ghana_card_image_url),
-      fetch(vendor.ghana_card_back_image_url),
-      fetch(vendor.ghana_card_selfie_url)
+      fetch(frontUrl),
+      fetch(backUrl),
+      fetch(selfieUrl)
     ]);
 
     if (!frontRes.ok || !backRes.ok || !selfieRes.ok) {
@@ -56,6 +67,8 @@ Deno.serve(async (req) => {
     const apiKey = Deno.env.get("GHANA_CARD_API_KEY");
     const apiSecret = Deno.env.get("GHANA_CARD_API_SECRET");
 
+    console.log("Calling Agregar API with front/back/selfie images...");
+
     const apiResponse = await fetch("https://api.agregartech.com/identity/document/facial/GH", {
       method: "POST",
       headers: {
@@ -71,6 +84,7 @@ Deno.serve(async (req) => {
     });
 
     const apiResult = await apiResponse.json();
+    console.log("Agregar API status:", apiResponse.status);
     console.log("Agregar API response:", JSON.stringify(apiResult));
 
     const isVerified = apiResponse.ok && (apiResult.verified === true || apiResult.status === "verified" || apiResult.success === true);
