@@ -134,6 +134,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
   const [nameChangeDialogOpen, setNameChangeDialogOpen] = useState(false);
   const [nameChangeReasons, setNameChangeReasons] = useState([]);
   const [pendingNameChange, setPendingNameChange] = useState("");
+  const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
 
   useEffect(() => {
     if (initialData) {
@@ -378,6 +379,12 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
       return;
     }
 
+    // Show review confirmation dialog
+    setReviewDialogOpen(true);
+  };
+
+  const confirmSubmit = () => {
+    setReviewDialogOpen(false);
     onSubmit(formData);
   };
 
@@ -1113,6 +1120,42 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
           </>
         }
       </Button>
+
+      {/* Review Confirmation Dialog */}
+      <Dialog open={reviewDialogOpen} onOpenChange={setReviewDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <CheckCircle className="h-5 w-5 text-green-600" />
+              Submit Listing for Review
+            </DialogTitle>
+            <DialogDescription className="pt-2">
+              Your listing <strong>"{formData.business_name}"</strong> will be submitted and reviewed by our team before it goes live on Khareus. You'll be notified once it's approved.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="bg-slate-50 rounded-lg p-4 space-y-2 text-sm text-slate-700">
+            <p><strong>Business:</strong> {formData.business_name}</p>
+            {formData.event_type.length > 0 && <p><strong>Event Types:</strong> {formData.event_type.join(", ")}</p>}
+            {formData.category.length > 0 && <p><strong>Categories:</strong> {formData.category.length} selected</p>}
+            {formData.location && <p><strong>Location:</strong> {formData.location}</p>}
+            <p><strong>Plan:</strong> {formData.subscription_type?.charAt(0).toUpperCase() + formData.subscription_type?.slice(1)}</p>
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setReviewDialogOpen(false)}>
+              Go Back
+            </Button>
+            <Button
+              onClick={confirmSubmit}
+              className="bg-indigo-600 hover:bg-indigo-700">
+              Confirm & Submit
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Name Change Dialog */}
       <Dialog open={nameChangeDialogOpen} onOpenChange={setNameChangeDialogOpen}>

@@ -6,7 +6,7 @@ import { createPageUrl } from "../utils";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Store, Loader2, CheckCircle, CreditCard } from "lucide-react";
+import { Store, Loader2, CheckCircle, Send } from "lucide-react";
 import VendorForm from "../components/vendor/VendorForm";
 
 export default function VendorSignup() {
@@ -163,8 +163,8 @@ export default function VendorSignup() {
           }}
           onSubmit={handleSubmit}
           isSubmitting={createCheckoutMutation.isPending}
-          submitLabel="Continue to Payment"
-          submitIcon={<CreditCard className="h-5 w-5" />} />
+          submitLabel="Submit"
+          submitIcon={<Send className="h-5 w-5" />} />
 
       </div>
     </div>);
