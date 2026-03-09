@@ -47,25 +47,43 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Failed to fetch one or more images' }, { status: 500 });
     }
 
-    const [frontBlob, backBlob, selfieBlob] = await Promise.all([
-      frontRes.blob(),
-      backRes.blob(),
-      selfieRes.blob()
+    const [frontBuf, backBuf, selfieBuf] = await Promise.all([
+      frontRes.arrayBuffer(),
+      backRes.arrayBuffer(),
+      selfieRes.arrayBuffer()
     ]);
 
-    console.log("Image sizes - Front:", frontBlob.size, "Back:", backBlob.size, "Selfie:", selfieBlob.size);
+    console.log("Original image sizes - Front:", frontBuf.byteLength, "Back:", backBuf.byteLength, "Selfie:", selfieBuf.byteLength);
 
-    // Call Agregar API using multipart/form-data to avoid 413 payload too large
+    // Convert to base64 and compress by limiting size
+    const toBase64 = (buffer) => {
+      const bytes = new Uint8Array(buffer);
+      let binary = '';
+      for (let i = 0; i < bytes.length; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return btoa(binary);
+    };
+
+    const docFront = toBase64(frontBuf);
+    const docBack = toBase64(backBuf);
+    const selfie = toBase64(selfieBuf);
+
+    console.log("Base64 sizes - Front:", docFront.length, "Back:", docBack.length, "Selfie:", selfie.length);
+    console.log("Total payload size (approx):", docFront.length + docBack.length + selfie.length);
+
+    // Call Agregar API
     const apiKey = Deno.env.get("GHANA_CARD_API_KEY");
     const apiSecret = Deno.env.get("GHANA_CARD_API_SECRET");
 
     console.log("API Key present:", !!apiKey, "API Secret present:", !!apiSecret);
-    console.log("Calling Agregar API with multipart form data...");
+    console.log("Calling Agregar API...");
 
+    // Try multipart/form-data with file blobs
     const formData = new FormData();
-    formData.append("doc_front", frontBlob, "front.jpg");
-    formData.append("doc_back", backBlob, "back.jpg");
-    formData.append("selfie", selfieBlob, "selfie.jpg");
+    formData.append("doc_front", new Blob([frontBuf], { type: "image/jpeg" }), "front.jpg");
+    formData.append("doc_back", new Blob([backBuf], { type: "image/jpeg" }), "back.jpg");
+    formData.append("selfie", new Blob([selfieBuf], { type: "image/jpeg" }), "selfie.jpg");
 
     const apiResponse = await fetch("https://api.agregartech.com/identity/document/facial/GH", {
       method: "POST",
