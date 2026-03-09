@@ -46,6 +46,7 @@ export default function VendorMarketplace() {
   const eventParam = urlParams.get("event") || "all";
   const categoryParam = urlParams.get("category") || "all";
 
+  const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [eventType, setEventType] = useState(eventParam);
   const [category, setCategory] = useState(categoryParam);
