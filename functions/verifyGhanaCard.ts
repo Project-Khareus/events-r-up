@@ -63,13 +63,14 @@ Deno.serve(async (req) => {
       toBase64(selfieRes)
     ]);
 
-    // Call Agregar API
+    // Call Agregar/Autheo API
     const apiKey = Deno.env.get("GHANA_CARD_API_KEY");
     const apiSecret = Deno.env.get("GHANA_CARD_API_SECRET");
 
-    console.log("Calling Agregar API with front/back/selfie images...");
+    console.log("API Key present:", !!apiKey, "API Secret present:", !!apiSecret);
+    console.log("Calling Autheo API with front/back/selfie images...");
 
-    const apiResponse = await fetch("https://api.agregartech.com/identity/document/facial/GH", {
+    const apiResponse = await fetch("https://api.autheo.online/v1/identity/verify", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -77,15 +78,34 @@ Deno.serve(async (req) => {
         "X-API-SECRET": apiSecret
       },
       body: JSON.stringify({
+        document_type: "ghana_card",
+        country: "GH",
         doc_front: docFront,
         doc_back: docBack,
-        selfie: selfie
+        selfie: selfie,
+        id_number: vendor.ghana_card_number
       })
     });
 
-    const apiResult = await apiResponse.json();
-    console.log("Agregar API status:", apiResponse.status);
-    console.log("Agregar API response:", JSON.stringify(apiResult));
+    // Read raw response first to handle non-JSON responses
+    const rawText = await apiResponse.text();
+    console.log("Autheo API status:", apiResponse.status);
+    console.log("Autheo API raw response (first 500 chars):", rawText.substring(0, 500));
+
+    let apiResult;
+    try {
+      apiResult = JSON.parse(rawText);
+    } catch {
+      // API returned non-JSON (likely HTML error page)
+      console.error("API returned non-JSON response. Full response:", rawText.substring(0, 1000));
+      return Response.json({
+        error: "Ghana Card API returned an unexpected response. The API endpoint may be incorrect or unavailable.",
+        api_status: apiResponse.status,
+        api_response_preview: rawText.substring(0, 200)
+      }, { status: 502 });
+    }
+    
+    console.log("Autheo API parsed response:", JSON.stringify(apiResult));
 
     const isVerified = apiResponse.ok && (apiResult.verified === true || apiResult.status === "verified" || apiResult.success === true);
     const message = apiResult.message || apiResult.detail || (isVerified ? "Ghana Card verified successfully" : "Ghana Card verification failed");
