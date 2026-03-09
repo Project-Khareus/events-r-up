@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Store, Loader2, Plus, Edit2, ExternalLink, Clock, CheckCircle2, BarChart3 } from "lucide-react";
+import { Store, Loader2, Plus, Edit2, ExternalLink, Clock, CheckCircle2, BarChart3, AlertTriangle } from "lucide-react";
+import { differenceInDays, differenceInHours, parseISO, isPast } from "date-fns";
 
 export default function ManageListing() {
   const navigate = useNavigate();
@@ -149,6 +150,29 @@ export default function ManageListing() {
                       Changes Pending Review
                     </Badge>
               }
+
+                  {vendor.is_trial && vendor.subscription_end_date && (() => {
+                    const endDate = parseISO(vendor.subscription_end_date);
+                    const expired = isPast(endDate);
+                    const daysLeft = differenceInDays(endDate, new Date());
+                    const hoursLeft = differenceInHours(endDate, new Date());
+                    
+                    return (
+                      <div className={`mb-3 px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5 ${
+                        expired ? 'bg-red-50 text-red-700 border border-red-200' :
+                        daysLeft <= 3 ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                        'bg-blue-50 text-blue-700 border border-blue-200'
+                      }`}>
+                        {expired ? <AlertTriangle className="h-3.5 w-3.5" /> : <Clock className="h-3.5 w-3.5" />}
+                        {expired 
+                          ? 'Trial expired — upgrade to stay listed'
+                          : daysLeft === 0 
+                            ? `Trial ends in ${hoursLeft}h`
+                            : `Trial: ${daysLeft} day${daysLeft !== 1 ? 's' : ''} left`
+                        }
+                      </div>
+                    );
+                  })()}
 
                   <div className="flex gap-2">
                     <Link to={`${createPageUrl("EditVendor")}?id=${vendor.id}`} className="flex-1">
