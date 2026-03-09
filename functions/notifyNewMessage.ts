@@ -1,7 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
 
 const BRAND = 'Khareus';
-const SITE_URL = 'https://eventsrup.com';
+const SITE_URL = 'https://khareus.com';
 
 function emailTemplate(title, titleColor, content) {
     return `
