@@ -149,6 +149,15 @@ export default function VendorMarketplace() {
   }, [filteredVendors, featuredVendors]);
 
   // Pick a random vendor for promo (vendors with high ratings)
+  // Extract unique locations from actual vendor data
+  const vendorLocations = useMemo(() => {
+    const locs = new Set();
+    vendors.forEach((v) => {
+      if (v.location) locs.add(v.location.trim());
+    });
+    return Array.from(locs);
+  }, [vendors]);
+
   const promoVendor = useMemo(() => {
     const eligibleVendors = vendors.filter((v) => v.rating >= 4 && v.image_url);
     if (eligibleVendors.length === 0) return null;
@@ -243,7 +252,7 @@ export default function VendorMarketplace() {
             <p className="text-sm font-medium text-slate-400 mb-3 tracking-wide uppercase">What are you looking for?</p>
             <div className="flex flex-col sm:flex-row gap-3 items-stretch">
               <div className="flex-1">
-                <SearchBar value={searchQuery} onChange={setSearchQuery} location={location} onLocationChange={setLocation} />
+                <SearchBar value={searchQuery} onChange={setSearchQuery} location={location} onLocationChange={setLocation} vendorLocations={vendorLocations} />
               </div>
               <Link to={createPageUrl("EventPlanning")} className="w-full sm:w-auto">
                 <button className="w-full sm:w-auto h-12 sm:h-14 px-5 sm:px-6 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white rounded-xl font-medium transition-all flex items-center gap-2 justify-center whitespace-nowrap text-sm sm:text-base border border-white/20">
