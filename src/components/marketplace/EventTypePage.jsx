@@ -113,8 +113,7 @@ export default function EventTypePage({ eventType, title, description, categorie
         </div>
       </div>
 
-      {/* Vendor listings commented out */}
-      {/* <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="max-w-7xl mx-auto px-6 py-12">
         <p className="text-slate-600 mb-8">
           <span className="font-semibold text-slate-900">{filteredVendors.length}</span> vendors found
         </p>
@@ -144,7 +143,7 @@ export default function EventTypePage({ eventType, title, description, categorie
             ))}
           </div>
         )}
-      </div> */}
+      </div>
     </div>
   );
 }
