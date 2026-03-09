@@ -209,6 +209,7 @@ export default function VendorMarketplace() {
     setEventType("all");
     setCategory("all");
     setPriceRange("all");
+    setSearchInput("");
     setSearchQuery("");
     setSortBy("relevance");
     setLocation("");
