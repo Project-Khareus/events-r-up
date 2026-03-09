@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, Mail, Shield, Calendar, Smartphone } from "lucide-react";
+import { User, Mail, Shield, Calendar, Smartphone, Camera, Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import BiometricLogin from "../components/auth/BiometricLogin";
@@ -17,6 +17,7 @@ export default function MyProfile() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [uploadingCover, setUploadingCover] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
