@@ -108,7 +108,7 @@ export default function MyProfile() {
               </span>
             </label>
           </div>
-          <div className="px-4 sm:px-6 pb-5 -mt-12 sm:-mt-14">
+          <div className="px-4 sm:px-6 pb-5 -mt-10 sm:-mt-12">
             <div className="flex flex-col sm:flex-row sm:items-end gap-4">
               <Avatar className="h-20 w-20 sm:h-24 sm:w-24 border-4 border-white shadow-md">
                 <AvatarImage src={user?.avatar_url} />
