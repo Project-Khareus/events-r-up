@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import PullToRefresh from "../components/shared/PullToRefresh";
-import { Sparkles, TrendingUp, Wand2, Loader2 } from "lucide-react";
+import { Sparkles, TrendingUp, Wand2, Loader2, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { Button } from "@/components/ui/button";
@@ -149,15 +149,6 @@ export default function VendorMarketplace() {
   }, [filteredVendors, featuredVendors]);
 
   // Pick a random vendor for promo (vendors with high ratings)
-  // Extract unique locations from actual vendor data
-  const vendorLocations = useMemo(() => {
-    const locs = new Set();
-    vendors.forEach((v) => {
-      if (v.location) locs.add(v.location.trim());
-    });
-    return Array.from(locs);
-  }, [vendors]);
-
   const promoVendor = useMemo(() => {
     const eligibleVendors = vendors.filter((v) => v.rating >= 4 && v.image_url);
     if (eligibleVendors.length === 0) return null;
@@ -236,39 +227,40 @@ export default function VendorMarketplace() {
     <PullToRefresh onRefresh={handleRefresh}><div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
       {/* Hero Section */}
       <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-24 sm:pt-20 sm:pb-28">
-          <div className="max-w-3xl mb-10 sm:mb-12">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold mb-6 leading-tight tracking-tight">
+        <div className="max-w-7xl mx-auto px-6 py-20 lg:py-28">
+          <div className="max-w-3xl">
+            <h1 className="text-5xl lg:text-6xl font-serif font-bold mb-6 leading-tight tracking-tight">
               Find Your Perfect
               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300 italic">
                 Event Vendors
               </span>
             </h1>
-            <p className="text-lg sm:text-xl text-slate-300 leading-relaxed">
+            <p className="text-xl text-slate-300 leading-relaxed mb-6">
               Discover exceptional vendors for your special moments. Curated professionals ready to bring your vision to life.
             </p>
-          </div>
-          <div className="max-w-2xl">
-            <p className="text-sm font-medium text-slate-400 mb-3 tracking-wide uppercase">What are you looking for?</p>
-            <div className="flex flex-col sm:flex-row gap-3 items-stretch">
-              <div className="flex-1">
-                <SearchBar value={searchQuery} onChange={setSearchQuery} location={location} onLocationChange={setLocation} vendorLocations={vendorLocations} />
-              </div>
-              <Link to={createPageUrl("EventPlanning")} className="w-full sm:w-auto">
-                <button className="w-full sm:w-auto h-12 sm:h-14 px-5 sm:px-6 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white rounded-xl font-medium transition-all flex items-center gap-2 justify-center whitespace-nowrap text-sm sm:text-base border border-white/20">
-                  <Wand2 className="h-4 w-4 sm:h-5 sm:w-5" />
-                  Plan an Event
-                </button>
-              </Link>
+            <div className="flex items-center gap-2">
+              <Calendar className="h-5 w-5 text-slate-400" />
+              <span className="text-slate-400 font-medium tracking-wide">Khareus, lasting memories</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Filters */}
+      {/* Search & Filters */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-6 sm:-mt-8">
         <div className="bg-white dark:bg-slate-800 rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200 dark:border-slate-700 p-4 sm:p-6 lg:p-8">
           <div className="flex flex-col gap-4 sm:gap-6">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch">
+              <div className="flex-1">
+                <SearchBar value={searchQuery} onChange={setSearchQuery} />
+              </div>
+              <Link to={createPageUrl("EventPlanning")} className="w-full sm:w-auto">
+                <button className="w-full sm:w-auto h-full px-4 sm:px-6 py-3 bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-900 hover:to-black text-white rounded-xl font-medium shadow-lg shadow-slate-300 transition-all hover:scale-105 flex items-center gap-2 justify-center whitespace-nowrap text-sm sm:text-base">
+                  <Wand2 className="h-4 w-4 sm:h-5 sm:w-5" />
+                  Plan an Event
+                </button>
+              </Link>
+            </div>
             <FilterControls
               eventType={eventType}
               category={category}
