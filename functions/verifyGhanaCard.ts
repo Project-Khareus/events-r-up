@@ -68,9 +68,9 @@ Deno.serve(async (req) => {
     const apiSecret = Deno.env.get("GHANA_CARD_API_SECRET");
 
     console.log("API Key present:", !!apiKey, "API Secret present:", !!apiSecret);
-    console.log("Calling Autheo API with front/back/selfie images...");
+    console.log("Calling Agregar API with front/back/selfie images...");
 
-    const apiResponse = await fetch("https://api.autheo.online/v1/identity/verify", {
+    const apiResponse = await fetch("https://api.agregartech.com/identity/document/facial/GH", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -78,12 +78,9 @@ Deno.serve(async (req) => {
         "X-API-SECRET": apiSecret
       },
       body: JSON.stringify({
-        document_type: "ghana_card",
-        country: "GH",
         doc_front: docFront,
         doc_back: docBack,
-        selfie: selfie,
-        id_number: vendor.ghana_card_number
+        selfie: selfie
       })
     });
 
