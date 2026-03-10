@@ -83,7 +83,7 @@ export default function ReviewCard({ review }) {
       </div>
 
       {review.event_type && (
-        <Badge variant="outline" className="mb-3 border-indigo-200 text-indigo-700 bg-indigo-50">
+        <Badge variant="outline" className="mb-3 border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900/30">
           {review.event_type}
         </Badge>
       )}
