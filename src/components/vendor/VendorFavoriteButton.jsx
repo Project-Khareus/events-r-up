@@ -1,15 +1,11 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-
-const normalizeData = (item) => {
-  if (!item) return null;
-  return item.data ? { id: item.id, ...item.data } : item;
-};
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function VendorFavoriteButton({ vendorId, className, variant = "outline", size = "icon" }) {
   const queryClient = useQueryClient();
@@ -19,25 +15,12 @@ export default function VendorFavoriteButton({ vendorId, className, variant = "o
     queryFn: () => base44.auth.me().catch(() => null),
   });
 
-  const { data: rawFavorites = [] } = useQuery({
-    queryKey: ['vendorFavorites', vendorId],
-    queryFn: async () => {
-      if (!user) return [];
-      try {
-        const allFavorites = await base44.entities.Favorite.list();
-        return allFavorites.filter(f => {
-          const fav = normalizeData(f);
-          return fav.vendor_id === vendorId && fav.item_type === 'vendor';
-        });
-      } catch (error) {
-        console.error('Error fetching vendor favorites:', error);
-        return [];
-      }
-    },
+  const { data: favorites = [] } = useQuery({
+    queryKey: ['vendorFavorites', vendorId, user?.id],
+    queryFn: () => base44.entities.Favorite.filter({ vendor_id: vendorId, item_type: 'vendor' }),
     enabled: !!user && !!vendorId,
   });
 
-  const favorites = useMemo(() => rawFavorites.map(normalizeData), [rawFavorites]);
   const myFavorite = favorites[0];
   const isFavorited = !!myFavorite;
 
@@ -47,44 +30,31 @@ export default function VendorFavoriteButton({ vendorId, className, variant = "o
         throw new Error("Please log in to favorite vendors");
       }
       if (isFavorited) {
-        return base44.entities.Favorite.delete(myFavorite.id);
+        await base44.entities.Favorite.delete(myFavorite.id);
+        return { action: 'removed' };
       } else {
-        return base44.entities.Favorite.create({
+        await base44.entities.Favorite.create({
           user_id: user.id,
           vendor_id: vendorId,
           item_type: 'vendor'
         });
+        return { action: 'added' };
       }
     },
-    onMutate: async () => {
-      // Cancel outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ['vendorFavorites', vendorId] });
-      
-      // Snapshot previous value
-      const previousFavorites = queryClient.getQueryData(['vendorFavorites', vendorId]);
-      
-      // Optimistically update
-      queryClient.setQueryData(['vendorFavorites', vendorId], (old = []) => {
-        if (isFavorited) {
-          return old.filter(f => normalizeData(f).id !== myFavorite.id);
-        } else {
-          return [...old, { id: 'temp', user_id: user.id, vendor_id: vendorId, item_type: 'vendor' }];
-        }
-      });
-      
-      return { previousFavorites };
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ['vendorFavorites', vendorId] });
+      queryClient.invalidateQueries({ queryKey: ['myFavorites'] });
+      if (result.action === 'added') {
+        toast.success("Added to your favorites!", { icon: "❤️" });
+      } else {
+        toast("Removed from favorites", { icon: "💔" });
+      }
     },
-    onError: (err, variables, context) => {
-      // Rollback on error
-      queryClient.setQueryData(['vendorFavorites', vendorId], context.previousFavorites);
+    onError: (err) => {
       toast.error(err.message);
       if (err.message.includes("log in")) {
         base44.auth.redirectToLogin(window.location.href);
       }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['vendorFavorites', vendorId] });
-      queryClient.invalidateQueries({ queryKey: ['myFavorites'] });
     }
   });
 
@@ -93,7 +63,7 @@ export default function VendorFavoriteButton({ vendorId, className, variant = "o
       variant={variant}
       size={size}
       className={cn(
-        "transition-all duration-200",
+        "transition-all duration-200 relative overflow-hidden",
         isFavorited ? "text-red-500 hover:text-red-600 bg-red-50 hover:bg-red-100 border-red-200" : "text-slate-400 hover:text-red-500",
         className
       )}
@@ -104,7 +74,18 @@ export default function VendorFavoriteButton({ vendorId, className, variant = "o
       }}
       disabled={toggleMutation.isPending}
     >
-      <Heart className={cn("h-5 w-5", isFavorited && "fill-current")} />
+      <AnimatePresence mode="wait">
+        <motion.span
+          key={isFavorited ? "filled" : "empty"}
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 1.5, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 500, damping: 15 }}
+          className="flex items-center justify-center"
+        >
+          <Heart className={cn("h-5 w-5", isFavorited && "fill-current")} />
+        </motion.span>
+      </AnimatePresence>
     </Button>
   );
 }
