@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../../utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -20,11 +20,24 @@ export default function VendorCategorySection({ title, eventType, category, vend
   // Hide category if less than 2 vendors
   if (vendors.length < 2) return null;
 
-  // Determine target link - if category is 'all', link to the main Event Type page (e.g. Weddings), otherwise CategoryPage
+  // Determine target link
   const pageName = eventType ? eventType.charAt(0).toUpperCase() + eventType.slice(1) : "VendorMarketplace";
   const targetUrl = category === 'all' 
     ? createPageUrl(pageName)
     : createPageUrl(`CategoryPage?category=${category}&event=${eventType}`);
+
+  // Determine which indices get the landscape variant
+  // Pattern: every 5 tiles, the 1st and 4th are landscape (spans 2 cols)
+  const displayVendors = vendors.slice(0, Math.min(vendors.length, 12));
+  const tileLayout = useMemo(() => {
+    // Landscape indices: positions 0, 3, 7, 10 in a repeating pattern
+    const landscapeSet = new Set();
+    for (let i = 0; i < displayVendors.length; i++) {
+      const pos = i % 8;
+      if (pos === 0 || pos === 3) landscapeSet.add(i);
+    }
+    return landscapeSet;
+  }, [displayVendors.length]);
 
   return (
     <div className="mb-6">
@@ -45,13 +58,20 @@ export default function VendorCategorySection({ title, eventType, category, vend
         </Link>
       </div>
 
-      {/* Desktop Grid - 5 columns compact */}
-      <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-5 gap-2">
-        {vendors.slice(0, Math.min(vendors.length, 10)).map((vendor) => (
-          <div key={vendor.id}>
-            <VendorCard vendor={vendor} reviews={allReviews.filter(r => r.vendor_id === vendor.id)} />
-          </div>
-        ))}
+      {/* Desktop Dynamic Grid - mixed standard and landscape tiles */}
+      <div className="hidden md:grid md:grid-cols-4 lg:grid-cols-6 gap-2 auto-rows-auto">
+        {displayVendors.map((vendor, idx) => {
+          const isWide = tileLayout.has(idx);
+          return (
+            <div key={vendor.id} className={isWide ? 'col-span-2' : 'col-span-1'}>
+              <VendorCard 
+                vendor={vendor} 
+                reviews={allReviews.filter(r => r.vendor_id === vendor.id)} 
+                variant={isWide ? "landscape" : "standard"}
+              />
+            </div>
+          );
+        })}
       </div>
 
       {/* Mobile Carousel */}
