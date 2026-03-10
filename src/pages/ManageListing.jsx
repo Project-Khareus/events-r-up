@@ -49,17 +49,17 @@ export default function ManageListing() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 py-4 sm:py-8 px-4 sm:px-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 py-4 sm:py-8 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-1">My Vendor Listings</h1>
-            <p className="text-sm text-slate-600">Manage your business listings</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100 mb-1">My Vendor Listings</h1>
+            <p className="text-sm text-slate-600 dark:text-slate-400">Manage your business listings</p>
           </div>
           <div className="flex gap-2 sm:gap-3">
             {vendors.length > 0 &&
             <Link to={createPageUrl("VendorAnalytics")}>
-                <Button variant="outline" size="sm" className="border-indigo-200 text-indigo-700 hover:bg-indigo-50">
+                <Button variant="outline" size="sm" className="border-indigo-200 text-indigo-700 hover:bg-indigo-50 dark:border-indigo-800 dark:text-indigo-400 dark:hover:bg-indigo-950">
                   <BarChart3 className="h-4 w-4 mr-1.5" />
                   Analytics
                 </Button>
@@ -82,12 +82,12 @@ export default function ManageListing() {
         </div>
 
         {vendors.length === 0 ?
-        <Card className="p-12 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-100 mb-4">
+        <Card className="p-12 text-center dark:bg-slate-800 dark:border-slate-700">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-700 mb-4">
               <Store className="h-8 w-8 text-slate-400" />
             </div>
-            <h3 className="text-slate-950 mb-2 text-xl font-semibold">No vendor listings yet</h3>
-            <p className="text-gray-900 mb-6">Create your first vendor listing to start getting bookings.</p>
+            <h3 className="text-slate-950 dark:text-slate-100 mb-2 text-xl font-semibold">No vendor listings yet</h3>
+            <p className="text-gray-900 dark:text-slate-300 mb-6">Create your first vendor listing to start getting bookings.</p>
             <Link to={createPageUrl("VendorSignup")}>
               <Button className="bg-indigo-600 hover:bg-indigo-700">
                 <Plus className="h-4 w-4 mr-2" />
@@ -98,8 +98,8 @@ export default function ManageListing() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {vendors.map((vendor) =>
-          <Card key={vendor.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="aspect-video bg-slate-200 relative">
+          <Card key={vendor.id} className="overflow-hidden hover:shadow-lg transition-shadow dark:bg-slate-800 dark:border-slate-700">
+                <div className="aspect-video bg-slate-200 dark:bg-slate-700 relative">
                   {vendor.image_url ?
               <img
                 src={vendor.image_url}
@@ -136,11 +136,11 @@ export default function ManageListing() {
                 </div>
                 
                 <div className="p-5">
-                  <h3 className="font-bold text-lg text-slate-900 mb-1 truncate">
+                  <h3 className="font-bold text-lg text-slate-900 dark:text-slate-100 mb-1 truncate">
                     {vendor.business_name}
                   </h3>
                   {vendor.slogan &&
-              <p className="text-sm text-slate-600 mb-3 line-clamp-2">
+              <p className="text-sm text-slate-600 dark:text-slate-400 mb-3 line-clamp-2">
                       {vendor.slogan}
                     </p>
               }
@@ -176,18 +176,18 @@ export default function ManageListing() {
 
                   <div className="flex gap-2">
                     <Link to={`${createPageUrl("EditVendor")}?id=${vendor.id}`} className="flex-1">
-                      <Button variant="outline" className="w-full">
+                      <Button variant="outline" className="w-full dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700">
                         <Edit2 className="h-4 w-4 mr-2" />
                         Edit
                       </Button>
                     </Link>
                     <Link to={`${createPageUrl("VendorDetail")}?id=${vendor.id}`}>
-                      <Button variant="ghost" size="icon">
+                      <Button variant="ghost" size="icon" className="dark:text-slate-300 dark:hover:bg-slate-700">
                         <ExternalLink className="h-4 w-4" />
                       </Button>
                     </Link>
                     <Link to={createPageUrl("VendorAnalytics")}>
-                      <Button variant="ghost" size="icon" className="text-indigo-600">
+                      <Button variant="ghost" size="icon" className="text-indigo-600 dark:text-indigo-400 dark:hover:bg-slate-700">
                         <BarChart3 className="h-4 w-4" />
                       </Button>
                     </Link>
