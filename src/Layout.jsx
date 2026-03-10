@@ -194,8 +194,8 @@ export default function Layout({ children }) {
                     .dark .bg-red-100 { background-color: #2c1010 !important; }
                     .dark .text-red-700 { color: #f87171 !important; }
                     .dark .bg-red-950\/30 { background-color: rgba(69,10,10,0.3) !important; }
-                    .dark .hover\:bg-red-950\/50:hover { background-color: rgba(69,10,10,0.5) !important; }
-                    .dark .hover\:bg-red-100:hover { background-color: rgba(69,10,10,0.5) !important; }
+                    .dark [class*="hover:bg-red-950"]:hover { background-color: rgba(69,10,10,0.5) !important; }
+                    .dark [class*="hover:bg-red-100"]:hover { background-color: rgba(69,10,10,0.5) !important; }
 
                     /* -- Blue -- */
                     .dark .bg-blue-50 { background-color: #0d1f3a !important; }
@@ -259,11 +259,11 @@ export default function Layout({ children }) {
                     .dark .via-white { --tw-gradient-via: #1e293b !important; }
 
                     /* -- Breadcrumb links -- */
-                    .dark .hover\:text-slate-900:hover { color: var(--color-text-primary) !important; }
+                    .dark [class*="hover:text-slate-900"]:hover { color: var(--color-text-primary) !important; }
 
                     /* -- Social links on vendor detail -- */
                     .dark a.border-slate-200 { border-color: var(--color-border) !important; }
-                    .dark a.hover\:bg-slate-50:hover { background-color: var(--color-bg-secondary) !important; }
+                    .dark a[class*="hover:bg-slate-50"]:hover { background-color: var(--color-bg-secondary) !important; }
 
                     /* -- Star icons in dark mode (keep amber) -- */
                     .dark .fill-slate-900.text-slate-900 { fill: #f1f5f9 !important; color: #f1f5f9 !important; }
