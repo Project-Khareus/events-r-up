@@ -81,25 +81,13 @@ export default function VendorDetail() {
     detectUserCurrency().then(setCurrency);
   }, []);
 
-  // Track profile view
-  React.useEffect(() => {
-    const trackView = async () => {
-      if (!vendorId) return;
-      
-      try {
-        await base44.functions.invoke('trackProfileView', { vendorId });
-      } catch (error) {
-        console.error('Error tracking view:', error);
-      }
-    };
-    
-    trackView();
-  }, [vendorId]);
-
   const { data: vendor, isLoading } = useQuery({
     queryKey: ['vendor', vendorId],
     queryFn: () => base44.entities.Vendor.filter({ id: vendorId }).then(r => r[0] ?? null),
     enabled: !!vendorId,
+    retry: 3,
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 5000),
+    staleTime: 300000,
   });
 
   const { data: currentUser } = useQuery({
@@ -109,13 +97,25 @@ export default function VendorDetail() {
       if (!authenticated) return null;
       return base44.auth.me();
     },
+    staleTime: 600000,
   });
 
+  // Only fetch reviews after vendor loads to avoid rate limits
   const { data: reviews = [] } = useQuery({
     queryKey: ['reviews', vendorId],
     queryFn: () => base44.entities.Review.filter({ vendor_id: vendorId }, '-created_date', 50),
-    enabled: !!vendorId,
+    enabled: !!vendor,
+    staleTime: 300000,
   });
+
+  // Track profile view after vendor loads (non-critical, delayed)
+  React.useEffect(() => {
+    if (!vendor?.id) return;
+    const timer = setTimeout(() => {
+      base44.functions.invoke('trackProfileView', { vendorId: vendor.id }).catch(() => {});
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [vendor?.id]);
 
   if (isLoading) {
     return (
