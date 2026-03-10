@@ -347,9 +347,9 @@ export default function VendorMarketplace() {
                   <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-slate-500" />
                   <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Featured Vendors</h2>
                 </div>
-                <div className="columns-1 sm:columns-2 lg:columns-4 gap-2 sm:gap-3 space-y-2 sm:space-y-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
                   {featuredVendors.map((vendor) =>
-                  <div key={vendor.id} className="break-inside-avoid">
+                  <div key={vendor.id}>
                       <VendorCard vendor={vendor} reviews={allReviews.filter((r) => r.vendor_id === vendor.id)} />
                     </div>
                   )}
@@ -361,9 +361,9 @@ export default function VendorMarketplace() {
                 {featuredVendors.length > 0 &&
                 <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4 sm:mb-6">All Vendors</h2>
                 }
-                <div className="columns-1 sm:columns-2 lg:columns-4 gap-2 sm:gap-3 space-y-2 sm:space-y-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
                     {regularVendors.map((vendor) =>
-                  <div key={vendor.id} className="break-inside-avoid">
+                  <div key={vendor.id}>
                         <VendorCard vendor={vendor} reviews={allReviews.filter((r) => r.vendor_id === vendor.id)} />
                       </div>
                   )}
