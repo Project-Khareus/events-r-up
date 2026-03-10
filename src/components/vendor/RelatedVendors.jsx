@@ -18,7 +18,7 @@ export default function RelatedVendors({ currentVendorId, category, eventType, c
   if (isLoading) {
     return (
       <div className={compact ? "mt-4" : "mt-16"}>
-        {!compact && <h2 className="text-2xl font-bold text-slate-900 mb-6">Similar Vendors</h2>}
+        {!compact && <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Similar Vendors</h2>}
         <div className={compact ? "space-y-4" : "grid md:grid-cols-2 lg:grid-cols-4 gap-6"}>
           {[1, 2].map((i) => (
             <Skeleton key={i} className={compact ? "h-64 rounded-xl" : "h-80 rounded-2xl"} />
@@ -41,8 +41,8 @@ export default function RelatedVendors({ currentVendorId, category, eventType, c
   }
 
   return (
-    <div className="mt-16 border-t border-slate-200 pt-12">
-      <h2 className="text-2xl font-bold text-slate-900 mb-6">Similar Vendors You May Like</h2>
+    <div className="mt-16 border-t border-slate-200 dark:border-slate-700 pt-12">
+      <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Similar Vendors You May Like</h2>
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         {relatedVendors.map((vendor) => (
           <VendorCard key={vendor.id} vendor={vendor} />

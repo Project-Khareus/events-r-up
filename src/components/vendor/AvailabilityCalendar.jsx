@@ -81,14 +81,14 @@ export default function AvailabilityCalendar({ vendorId, isOwner = false }) {
   const bookedCount = monthDays.filter(d => getDateStatus(d) === 'booked').length;
 
   return (
-    <Card className="p-6">
+    <Card className="p-6 dark:bg-slate-800 dark:border-slate-700">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+          <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
             <CalendarIcon className="h-5 w-5" />
             {isOwner ? 'Manage Availability' : 'Check Availability'}
           </h3>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             {isOwner ? 'Click dates to block/unblock' : 'View available booking dates'}
           </p>
         </div>
@@ -102,7 +102,7 @@ export default function AvailabilityCalendar({ vendorId, isOwner = false }) {
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
-        <h4 className="font-semibold text-slate-900">
+        <h4 className="font-semibold text-slate-900 dark:text-slate-100">
           {format(currentMonth, 'MMMM yyyy')}
         </h4>
         <Button
@@ -116,7 +116,7 @@ export default function AvailabilityCalendar({ vendorId, isOwner = false }) {
 
       <div className="grid grid-cols-7 gap-1 mb-2">
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-          <div key={day} className="text-center text-xs font-medium text-slate-500 py-2">
+          <div key={day} className="text-center text-xs font-medium text-slate-500 dark:text-slate-400 py-2">
             {day}
           </div>
         ))}
@@ -135,10 +135,10 @@ export default function AvailabilityCalendar({ vendorId, isOwner = false }) {
               disabled={isPast && !isOwner}
               className={`
                 aspect-square rounded-lg text-sm font-medium transition-all
-                ${isPast ? 'bg-slate-50 text-slate-300 cursor-not-allowed' : ''}
-                ${status === 'available' && !isPast ? 'bg-green-50 text-green-700 hover:bg-green-100 border border-green-200' : ''}
-                ${status === 'blocked' ? 'bg-red-50 text-red-700 hover:bg-red-100 border border-red-200' : ''}
-                ${status === 'booked' ? 'bg-amber-50 text-amber-700 border border-amber-200' : ''}
+                ${isPast ? 'bg-slate-50 dark:bg-slate-700/50 text-slate-300 dark:text-slate-500 cursor-not-allowed' : ''}
+                ${status === 'available' && !isPast ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50 border border-green-200 dark:border-green-800' : ''}
+                ${status === 'blocked' ? 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 border border-red-200 dark:border-red-800' : ''}
+                ${status === 'booked' ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800' : ''}
                 ${isSelected ? 'ring-2 ring-indigo-500' : ''}
                 ${isOwner && !isPast ? 'cursor-pointer' : ''}
               `}
@@ -151,26 +151,26 @@ export default function AvailabilityCalendar({ vendorId, isOwner = false }) {
 
       <div className="mt-6 flex flex-wrap gap-3 text-xs">
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-green-100 border border-green-300"></div>
-          <span className="text-slate-600">Available ({availableCount})</span>
+          <div className="w-4 h-4 rounded bg-green-100 dark:bg-green-900/40 border border-green-300 dark:border-green-700"></div>
+          <span className="text-slate-600 dark:text-slate-400">Available ({availableCount})</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-red-100 border border-red-300"></div>
-          <span className="text-slate-600">Blocked ({blockedCount})</span>
+          <div className="w-4 h-4 rounded bg-red-100 dark:bg-red-900/40 border border-red-300 dark:border-red-700"></div>
+          <span className="text-slate-600 dark:text-slate-400">Blocked ({blockedCount})</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-amber-100 border border-amber-300"></div>
-          <span className="text-slate-600">Booked ({bookedCount})</span>
+          <div className="w-4 h-4 rounded bg-amber-100 dark:bg-amber-900/40 border border-amber-300 dark:border-amber-700"></div>
+          <span className="text-slate-600 dark:text-slate-400">Booked ({bookedCount})</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-slate-50 border border-slate-200"></div>
-          <span className="text-slate-600">Past</span>
+          <div className="w-4 h-4 rounded bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600"></div>
+          <span className="text-slate-600 dark:text-slate-400">Past</span>
         </div>
       </div>
 
       {isOwner && (
-        <div className="mt-4 p-3 bg-indigo-50 rounded-lg border border-indigo-200">
-          <p className="text-xs text-indigo-700">
+        <div className="mt-4 p-3 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg border border-indigo-200 dark:border-indigo-800">
+          <p className="text-xs text-indigo-700 dark:text-indigo-300">
             💡 Tip: Click on future dates to toggle between available and blocked
           </p>
         </div>

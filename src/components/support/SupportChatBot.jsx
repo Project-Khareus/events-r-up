@@ -81,19 +81,19 @@ export default function SupportChatBot() {
       {/* Promo Tooltip */}
       {showPromo && !open && (
         <div className="fixed bottom-40 md:bottom-24 right-4 z-50 flex flex-col items-end">
-          <div className="relative bg-white rounded-xl shadow-xl border border-slate-200 px-4 py-3 max-w-[220px] mb-2">
+          <div className="relative bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 px-4 py-3 max-w-[220px] mb-2">
             <button
               onClick={() => setShowPromo(false)}
-              className="absolute top-2 right-2 text-slate-400 hover:text-slate-600"
+              className="absolute top-2 right-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
               aria-label="Dismiss"
             >
               <X className="h-4 w-4" />
             </button>
-            <p className="text-sm text-slate-800 pr-4">
+            <p className="text-sm text-slate-800 dark:text-slate-200 pr-4">
               <span className="font-bold">How can we help?</span> Chat with us now
             </p>
             {/* Tail */}
-            <div className="absolute -bottom-2 right-6 w-4 h-4 bg-white border-r border-b border-slate-200 rotate-45" />
+            <div className="absolute -bottom-2 right-6 w-4 h-4 bg-white dark:bg-slate-800 border-r border-b border-slate-200 dark:border-slate-700 rotate-45" />
           </div>
         </div>
       )}
@@ -109,7 +109,7 @@ export default function SupportChatBot() {
 
       {/* Chat Window */}
       {open && (
-        <div className="fixed bottom-40 md:bottom-24 right-4 z-50 w-[350px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden" style={{ height: '480px' }}>
+        <div className="fixed bottom-40 md:bottom-24 right-4 z-50 w-[350px] max-w-[calc(100vw-2rem)] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden" style={{ height: '480px' }}>
           {/* Header */}
           <div className="bg-indigo-600 text-white px-4 py-3 flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center">
@@ -122,7 +122,7 @@ export default function SupportChatBot() {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50">
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50 dark:bg-slate-900">
             {messages.map((msg, i) => (
               <div key={i} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                 {msg.role === "assistant" && (
@@ -133,7 +133,7 @@ export default function SupportChatBot() {
                 <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${
                   msg.role === "user"
                     ? "bg-indigo-600 text-white rounded-tr-sm"
-                    : "bg-white text-slate-800 border border-slate-200 rounded-tl-sm shadow-sm"
+                    : "bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-tl-sm shadow-sm"
                 }`}>
                   {msg.role === "assistant" ? (
                     <ReactMarkdown className="prose prose-sm max-w-none [&>p]:m-0 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
@@ -155,7 +155,7 @@ export default function SupportChatBot() {
                 <div className="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
                   <Bot className="h-4 w-4 text-indigo-600" />
                 </div>
-                <div className="bg-white border border-slate-200 rounded-2xl rounded-tl-sm px-3 py-2 shadow-sm">
+                <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl rounded-tl-sm px-3 py-2 shadow-sm">
                   <Loader2 className="h-4 w-4 animate-spin text-indigo-500" />
                 </div>
               </div>
@@ -181,12 +181,12 @@ export default function SupportChatBot() {
           )}
 
           {/* Input */}
-          <form onSubmit={sendMessage} className="p-3 border-t border-slate-200 bg-white flex gap-2">
+          <form onSubmit={sendMessage} className="p-3 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 flex gap-2">
             <input
               value={input}
               onChange={e => setInput(e.target.value)}
               placeholder="Ask Kharis anything about Khareus..."
-              className="flex-1 text-sm border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50"
+              className="flex-1 text-sm border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500"
               disabled={loading}
             />
             <button
