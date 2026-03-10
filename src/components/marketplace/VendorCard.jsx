@@ -33,11 +33,9 @@ const CATEGORY_LABELS = {
   others: "Others"
 };
 
-export default function VendorCard({ vendor, reviews = [], size = "auto", variant = "standard" }) {
+export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
   if (!vendor) return null;
   
-  const isLandscape = variant === "landscape";
-  const isHero = variant === "hero";
   const [imageError, setImageError] = React.useState(false);
   const [currency, setCurrency] = React.useState(null);
 
@@ -64,8 +62,8 @@ export default function VendorCard({ vendor, reviews = [], size = "auto", varian
 
   return (
     <Link to={createPageUrl(`VendorDetail?id=${vendor.id}`)} className="block h-full">
-      <Card className={`group h-full overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-500 bg-white dark:bg-slate-800 rounded-none ${isLandscape ? 'flex flex-row' : 'flex flex-col'}`}>
-        <div className={`relative overflow-hidden bg-slate-100 shrink-0 ${isHero ? 'h-[60%]' : isLandscape ? 'w-2/5 min-h-full' : 'h-36 sm:h-40 md:h-44'}`}>
+      <Card className="group h-full flex flex-col overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-500 bg-white dark:bg-slate-800 rounded-none">
+        <div className="relative h-36 sm:h-40 md:h-44 overflow-hidden bg-slate-100 shrink-0">
           {vendor.image_url && !imageError ? (
             <img
               src={vendor.image_url}
@@ -78,7 +76,7 @@ export default function VendorCard({ vendor, reviews = [], size = "auto", varian
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
-              <span className={`font-serif text-slate-300 ${isLandscape ? 'text-4xl' : 'text-6xl'}`}>
+              <span className="text-6xl font-serif text-slate-300">
                 {vendor.business_name?.[0]?.toUpperCase()}
               </span>
             </div>

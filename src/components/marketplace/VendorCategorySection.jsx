@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from "react";
+import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../../utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -26,8 +26,6 @@ export default function VendorCategorySection({ title, eventType, category, vend
     ? createPageUrl(pageName)
     : createPageUrl(`CategoryPage?category=${category}&event=${eventType}`);
 
-  const displayVendors = vendors.slice(0, Math.min(vendors.length, 10));
-
   return (
     <div className="mb-6">
       {/* Header */}
@@ -47,20 +45,13 @@ export default function VendorCategorySection({ title, eventType, category, vend
         </Link>
       </div>
 
-      {/* Desktop Grid - first card is landscape hero, rest are standard */}
+      {/* Desktop Grid - 5 columns compact */}
       <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-5 gap-2">
-        {displayVendors.map((vendor, idx) => {
-          const isHero = idx === 0 && displayVendors.length >= 4;
-          return (
-            <div key={vendor.id} className={isHero ? 'col-span-2 row-span-2' : ''}>
-              <VendorCard 
-                vendor={vendor} 
-                reviews={allReviews.filter(r => r.vendor_id === vendor.id)} 
-                variant={isHero ? "hero" : "standard"}
-              />
-            </div>
-          );
-        })}
+        {vendors.slice(0, Math.min(vendors.length, 10)).map((vendor) => (
+          <div key={vendor.id}>
+            <VendorCard vendor={vendor} reviews={allReviews.filter(r => r.vendor_id === vendor.id)} />
+          </div>
+        ))}
       </div>
 
       {/* Mobile Carousel */}
