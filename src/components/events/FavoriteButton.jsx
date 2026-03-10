@@ -1,95 +1,60 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-
-// Helper to handle potential nested data structure
-const normalizeData = (item) => {
-  if (!item) return null;
-  return item.data ? { id: item.id, ...item.data } : item;
-};
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function FavoriteButton({ eventId, className, variant = "outline", size = "icon" }) {
   const queryClient = useQueryClient();
 
-  // 1. Get current user
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => base44.auth.me().catch(() => null),
   });
 
-  // 2. Check if favorited
-  // We fetch the user's favorites for this specific event
-  const { data: rawFavorites = [] } = useQuery({
-    queryKey: ['favorites', eventId],
-    queryFn: async () => {
-      if (!user) return [];
-      try {
-        const allFavorites = await base44.entities.Favorite.list();
-        return allFavorites.filter(f => {
-          const fav = normalizeData(f);
-          return fav.event_id === eventId && fav.item_type === 'event';
-        });
-      } catch (error) {
-        console.error('Error fetching event favorites:', error);
-        return [];
-      }
-    },
+  const { data: favorites = [] } = useQuery({
+    queryKey: ['eventFavorites', eventId, user?.id],
+    queryFn: () => base44.entities.Favorite.filter({ event_id: eventId, item_type: 'event' }),
     enabled: !!user && !!eventId,
   });
 
-  const favorites = useMemo(() => rawFavorites.map(normalizeData), [rawFavorites]);
   const myFavorite = favorites[0];
   const isFavorited = !!myFavorite;
 
-  // 3. Mutations with optimistic updates
   const toggleMutation = useMutation({
     mutationFn: async () => {
       if (!user) {
         throw new Error("Please log in to favorite events");
       }
       if (isFavorited) {
-        return base44.entities.Favorite.delete(myFavorite.id);
+        await base44.entities.Favorite.delete(myFavorite.id);
+        return { action: 'removed' };
       } else {
-        return base44.entities.Favorite.create({
+        await base44.entities.Favorite.create({
           user_id: user.id,
           event_id: eventId,
           item_type: 'event'
         });
+        return { action: 'added' };
       }
     },
-    onMutate: async () => {
-      // Cancel outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ['favorites', eventId] });
-      
-      // Snapshot previous value
-      const previousFavorites = queryClient.getQueryData(['favorites', eventId]);
-      
-      // Optimistically update
-      queryClient.setQueryData(['favorites', eventId], (old = []) => {
-        if (isFavorited) {
-          return old.filter(f => normalizeData(f).id !== myFavorite.id);
-        } else {
-          return [...old, { id: 'temp', user_id: user.id, event_id: eventId, item_type: 'event' }];
-        }
-      });
-      
-      return { previousFavorites };
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ['eventFavorites', eventId] });
+      queryClient.invalidateQueries({ queryKey: ['myFavorites'] });
+      if (result.action === 'added') {
+        toast.success("Added to your favorites!", { icon: "❤️" });
+      } else {
+        toast("Removed from favorites", { icon: "💔" });
+      }
     },
-    onError: (err, variables, context) => {
-      // Rollback on error
-      queryClient.setQueryData(['favorites', eventId], context.previousFavorites);
+    onError: (err) => {
       toast.error(err.message);
       if (err.message.includes("log in")) {
         base44.auth.redirectToLogin(window.location.href);
       }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['favorites', eventId] });
-      queryClient.invalidateQueries({ queryKey: ['myFavorites'] });
     }
   });
 
@@ -98,18 +63,29 @@ export default function FavoriteButton({ eventId, className, variant = "outline"
       variant={variant}
       size={size}
       className={cn(
-        "transition-all duration-200",
+        "transition-all duration-200 relative overflow-hidden",
         isFavorited ? "text-red-500 hover:text-red-600 bg-red-50 hover:bg-red-100 border-red-200" : "text-slate-400 hover:text-red-500",
         className
       )}
       onClick={(e) => {
-        e.preventDefault(); // Prevent navigating if inside a link
+        e.preventDefault();
         e.stopPropagation();
         toggleMutation.mutate();
       }}
       disabled={toggleMutation.isPending}
     >
-      <Heart className={cn("h-5 w-5", isFavorited && "fill-current")} />
+      <AnimatePresence mode="wait">
+        <motion.span
+          key={isFavorited ? "filled" : "empty"}
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 1.5, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 500, damping: 15 }}
+          className="flex items-center justify-center"
+        >
+          <Heart className={cn("h-5 w-5", isFavorited && "fill-current")} />
+        </motion.span>
+      </AnimatePresence>
     </Button>
   );
 }
