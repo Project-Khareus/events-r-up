@@ -193,6 +193,15 @@ export default function Layout({ children }) {
                     /* -- Support chatbot window -- */
                     .dark .bg-slate-50.rounded-2xl { background-color: var(--color-bg-primary) !important; }
 
+                    /* -- Dialog / modal overlays -- */
+                    .dark [role="dialog"] { background-color: var(--color-surface) !important; border-color: var(--color-border) !important; }
+                    .dark [data-state="open"][role="dialog"] .bg-white { background-color: var(--color-surface) !important; }
+
+                    /* -- Tabs -- */
+                    .dark [role="tablist"] { background-color: var(--color-bg-secondary) !important; }
+                    .dark [role="tab"][data-state="active"] { background-color: var(--color-surface) !important; color: var(--color-text-primary) !important; }
+                    .dark [role="tab"] { color: var(--color-text-muted) !important; }
+
                     /* -- Filter panel -- */
                     .dark .bg-slate-50.rounded-xl { background-color: var(--color-bg-secondary) !important; }
 
@@ -202,6 +211,13 @@ export default function Layout({ children }) {
                     /* -- VendorDetail: loading/not-found bg -- */
                     .dark .min-h-screen.bg-white { background-color: var(--color-bg-primary) !important; }
                     .dark .min-h-screen.text-slate-900 { color: var(--color-text-primary) !important; }
+
+                    /* -- Card backgrounds in dark mode -- */
+                    .dark .bg-white.rounded-2xl,
+                    .dark .bg-white.rounded-xl { background-color: var(--color-surface) !important; }
+
+                    /* -- Indigo icon backgrounds in dark mode -- */
+                    .dark .bg-indigo-100 { background-color: rgba(99, 102, 241, 0.15) !important; }
 
                     /* -- Messages page gradient bg -- */
                     .dark .from-slate-50 { --tw-gradient-from: #0f172a !important; }
