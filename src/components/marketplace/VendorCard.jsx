@@ -63,7 +63,7 @@ export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
   return (
     <Link to={createPageUrl(`VendorDetail?id=${vendor.id}`)} className="block h-full">
       <Card className="group h-full flex flex-col overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-500 bg-white dark:bg-slate-800 rounded-none">
-        <div className="relative h-48 sm:h-56 md:h-64 overflow-hidden bg-slate-100 shrink-0">
+        <div className="relative h-36 sm:h-40 md:h-44 overflow-hidden bg-slate-100 shrink-0">
           {vendor.image_url && !imageError ? (
             <img
               src={vendor.image_url}
@@ -113,7 +113,7 @@ export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         </div>
 
-        <div className="p-3 sm:p-4 flex flex-col flex-1">
+        <div className="p-2 sm:p-3 flex flex-col flex-1">
           {/* Categories Tags */}
           <div className="flex flex-wrap gap-1 mb-1.5 sm:mb-2">
             {categories.slice(0, 2).map((cat, i) => (
@@ -126,11 +126,11 @@ export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
             )}
           </div>
 
-          <h3 className="font-serif font-bold text-base sm:text-lg lg:text-xl text-slate-900 dark:text-slate-100 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors line-clamp-1 mb-1.5 sm:mb-2 tracking-tight">
+          <h3 className="font-serif font-bold text-sm sm:text-base text-slate-900 dark:text-slate-100 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors line-clamp-1 mb-1 sm:mb-1.5 tracking-tight">
             {vendor.business_name}
           </h3>
 
-          <div className="space-y-1 sm:space-y-1.5 mb-2 sm:mb-3">
+          <div className="space-y-0.5 sm:space-y-1 mb-1.5 sm:mb-2">
             {vendor.location && (
               <div className="flex items-center gap-1 sm:gap-1.5 text-slate-500 dark:text-slate-400 text-xs sm:text-sm">
                 <MapPin className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
@@ -152,7 +152,7 @@ export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
           </div>
 
           {vendor.description && (
-            <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm line-clamp-2 leading-relaxed mt-auto">
+            <p className="text-slate-600 dark:text-slate-400 text-[11px] sm:text-xs line-clamp-2 leading-relaxed mt-auto">
               {vendor.description}
             </p>
           )}

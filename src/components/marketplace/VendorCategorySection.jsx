@@ -17,11 +17,8 @@ export default function VendorCategorySection({ title, eventType, category, vend
     }
   };
 
-  // Hide category if less than 4 vendors
-  if (vendors.length < 4) return null;
-  
-  // Only show multiples of 4 on desktop to avoid orphan cards
-  const displayCount = Math.floor(vendors.length / 4) * 4;
+  // Hide category if less than 2 vendors
+  if (vendors.length < 2) return null;
 
   // Determine target link - if category is 'all', link to the main Event Type page (e.g. Weddings), otherwise CategoryPage
   const pageName = eventType ? eventType.charAt(0).toUpperCase() + eventType.slice(1) : "VendorMarketplace";
@@ -30,7 +27,7 @@ export default function VendorCategorySection({ title, eventType, category, vend
     : createPageUrl(`CategoryPage?category=${category}&event=${eventType}`);
 
   return (
-    <div className="mb-10">
+    <div className="mb-6">
       {/* Header */}
       <div className="flex items-center gap-4 mb-4 px-1">
         <Link 
@@ -48,9 +45,9 @@ export default function VendorCategorySection({ title, eventType, category, vend
         </Link>
       </div>
 
-      {/* Desktop Grid - 4 columns, only show multiples of 4 */}
-      <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-3">
-        {vendors.slice(0, displayCount).map((vendor) => (
+      {/* Desktop Grid - 5 columns compact */}
+      <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-5 gap-2">
+        {vendors.slice(0, Math.min(vendors.length, 10)).map((vendor) => (
           <div key={vendor.id}>
             <VendorCard vendor={vendor} reviews={allReviews.filter(r => r.vendor_id === vendor.id)} />
           </div>
@@ -80,7 +77,7 @@ export default function VendorCategorySection({ title, eventType, category, vend
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {vendors.map((vendor) => (
-            <div key={vendor.id} className="flex-shrink-0 w-72 snap-start">
+            <div key={vendor.id} className="flex-shrink-0 w-56 snap-start">
               <VendorCard vendor={vendor} reviews={allReviews.filter(r => r.vendor_id === vendor.id)} />
             </div>
           ))}
