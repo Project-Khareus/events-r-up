@@ -215,6 +215,7 @@ export default function Layout({ children }) {
                     /* -- Card backgrounds in dark mode -- */
                     .dark .bg-white.rounded-2xl,
                     .dark .bg-white.rounded-xl { background-color: var(--color-surface) !important; }
+                    .dark .bg-card { background-color: var(--color-surface) !important; }
 
                     /* -- Indigo icon backgrounds in dark mode -- */
                     .dark .bg-indigo-100 { background-color: rgba(99, 102, 241, 0.15) !important; }
@@ -308,6 +309,7 @@ export default function Layout({ children }) {
                       :root:not(.light-mode) .fill-slate-900.text-slate-900 { fill: #f1f5f9 !important; color: #f1f5f9 !important; }
                       :root:not(.light-mode) .bg-white.rounded-2xl,
                       :root:not(.light-mode) .bg-white.rounded-xl { background-color: var(--color-surface) !important; }
+                      :root:not(.light-mode) .bg-card { background-color: var(--color-surface) !important; }
                       :root:not(.light-mode) .bg-indigo-100 { background-color: rgba(99, 102, 241, 0.15) !important; }
                       :root:not(.light-mode) [role="dialog"] { background-color: var(--color-surface) !important; border-color: var(--color-border) !important; }
                       :root:not(.light-mode) [role="tablist"] { background-color: var(--color-bg-secondary) !important; }
