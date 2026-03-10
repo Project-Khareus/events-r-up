@@ -15,14 +15,14 @@ export default function PrivacyPolicy() {
   const lastUpdated = "December 20, 2025";
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-20 font-sans">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pb-20 font-sans">
       <MetaTags 
         title="Privacy Policy - EventsRup" 
         description="Learn how EventsRup collects, uses, and protects your personal information." 
       />
 
       {/* Header */}
-      <div className="bg-white border-b border-slate-200">
+      <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-4xl mx-auto px-6 py-12 md:py-16">
           <Link 
             to={createPageUrl("VendorMarketplace")}
@@ -82,14 +82,14 @@ export default function PrivacyPolicy() {
         </div>
 
         {/* Detailed Sections */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
           <Accordion type="single" collapsible className="w-full" defaultValue="item-1">
             
             <AccordionItem value="item-1">
-              <AccordionTrigger className="px-6 py-5 hover:bg-slate-50">
+              <AccordionTrigger className="px-6 py-5 hover:bg-slate-50 dark:hover:bg-slate-700">
                 <div className="flex items-center gap-3">
                   <Eye className="h-5 w-5 text-indigo-500" />
-                  <span className="text-lg font-medium text-slate-900">1. Information We Collect</span>
+                  <span className="text-lg font-medium text-slate-900 dark:text-slate-100">1. Information We Collect</span>
                 </div>
               </AccordionTrigger>
               <AccordionContent className="px-6 pb-6 text-slate-600 leading-relaxed">
@@ -109,10 +109,10 @@ export default function PrivacyPolicy() {
             </AccordionItem>
 
             <AccordionItem value="item-2">
-              <AccordionTrigger className="px-6 py-5 hover:bg-slate-50">
+              <AccordionTrigger className="px-6 py-5 hover:bg-slate-50 dark:hover:bg-slate-700">
                 <div className="flex items-center gap-3">
                   <Server className="h-5 w-5 text-indigo-500" />
-                  <span className="text-lg font-medium text-slate-900">2. How We Use Your Information</span>
+                  <span className="text-lg font-medium text-slate-900 dark:text-slate-100">2. How We Use Your Information</span>
                 </div>
               </AccordionTrigger>
               <AccordionContent className="px-6 pb-6 text-slate-600 leading-relaxed">
@@ -131,10 +131,10 @@ export default function PrivacyPolicy() {
             </AccordionItem>
 
             <AccordionItem value="item-3">
-              <AccordionTrigger className="px-6 py-5 hover:bg-slate-50">
+              <AccordionTrigger className="px-6 py-5 hover:bg-slate-50 dark:hover:bg-slate-700">
                 <div className="flex items-center gap-3">
                   <Share2 className="h-5 w-5 text-indigo-500" />
-                  <span className="text-lg font-medium text-slate-900">3. Sharing of Information</span>
+                  <span className="text-lg font-medium text-slate-900 dark:text-slate-100">3. Sharing of Information</span>
                 </div>
               </AccordionTrigger>
               <AccordionContent className="px-6 pb-6 text-slate-600 leading-relaxed">
@@ -150,10 +150,10 @@ export default function PrivacyPolicy() {
             </AccordionItem>
 
             <AccordionItem value="item-4">
-              <AccordionTrigger className="px-6 py-5 hover:bg-slate-50">
+              <AccordionTrigger className="px-6 py-5 hover:bg-slate-50 dark:hover:bg-slate-700">
                 <div className="flex items-center gap-3">
                   <Lock className="h-5 w-5 text-indigo-500" />
-                  <span className="text-lg font-medium text-slate-900">4. Data Security</span>
+                  <span className="text-lg font-medium text-slate-900 dark:text-slate-100">4. Data Security</span>
                 </div>
               </AccordionTrigger>
               <AccordionContent className="px-6 pb-6 text-slate-600 leading-relaxed">
@@ -164,10 +164,10 @@ export default function PrivacyPolicy() {
             </AccordionItem>
 
             <AccordionItem value="item-5">
-              <AccordionTrigger className="px-6 py-5 hover:bg-slate-50">
+              <AccordionTrigger className="px-6 py-5 hover:bg-slate-50 dark:hover:bg-slate-700">
                 <div className="flex items-center gap-3">
                   <UserCheck className="h-5 w-5 text-indigo-500" />
-                  <span className="text-lg font-medium text-slate-900">5. Your Rights & Choices</span>
+                  <span className="text-lg font-medium text-slate-900 dark:text-slate-100">5. Your Rights & Choices</span>
                 </div>
               </AccordionTrigger>
               <AccordionContent className="px-6 pb-6 text-slate-600 leading-relaxed">
