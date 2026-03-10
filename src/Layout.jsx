@@ -8,7 +8,24 @@ const Footer = lazy(() => import("./components/layout/Footer"));
 const CookieConsent = lazy(() => import("./components/layout/CookieConsent"));
 const SupportChatBot = lazy(() => import("./components/support/SupportChatBot"));
 
+function useDarkModeClass() {
+  React.useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const apply = (e) => {
+      if (e.matches) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    };
+    apply(mq);
+    mq.addEventListener('change', apply);
+    return () => mq.removeEventListener('change', apply);
+  }, []);
+}
+
 export default function Layout({ children }) {
+  useDarkModeClass();
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col" style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}>
       <style>{`
