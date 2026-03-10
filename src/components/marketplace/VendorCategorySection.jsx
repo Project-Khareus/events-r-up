@@ -26,18 +26,7 @@ export default function VendorCategorySection({ title, eventType, category, vend
     ? createPageUrl(pageName)
     : createPageUrl(`CategoryPage?category=${category}&event=${eventType}`);
 
-  // Determine which indices get the landscape variant
-  // Pattern: every 5 tiles, the 1st and 4th are landscape (spans 2 cols)
-  const displayVendors = vendors.slice(0, Math.min(vendors.length, 12));
-  const tileLayout = useMemo(() => {
-    // Landscape indices: positions 0, 3, 7, 10 in a repeating pattern
-    const landscapeSet = new Set();
-    for (let i = 0; i < displayVendors.length; i++) {
-      const pos = i % 8;
-      if (pos === 0 || pos === 3) landscapeSet.add(i);
-    }
-    return landscapeSet;
-  }, [displayVendors.length]);
+  const displayVendors = vendors.slice(0, Math.min(vendors.length, 10));
 
   return (
     <div className="mb-6">
@@ -58,16 +47,16 @@ export default function VendorCategorySection({ title, eventType, category, vend
         </Link>
       </div>
 
-      {/* Desktop Dynamic Grid - mixed standard and landscape tiles */}
-      <div className="hidden md:grid md:grid-cols-4 lg:grid-cols-6 gap-2 auto-rows-auto">
+      {/* Desktop Grid - first card is landscape hero, rest are standard */}
+      <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-5 gap-2">
         {displayVendors.map((vendor, idx) => {
-          const isWide = tileLayout.has(idx);
+          const isHero = idx === 0 && displayVendors.length >= 4;
           return (
-            <div key={vendor.id} className={isWide ? 'col-span-2' : 'col-span-1'}>
+            <div key={vendor.id} className={isHero ? 'col-span-2 row-span-2' : ''}>
               <VendorCard 
                 vendor={vendor} 
                 reviews={allReviews.filter(r => r.vendor_id === vendor.id)} 
-                variant={isWide ? "landscape" : "standard"}
+                variant={isHero ? "hero" : "standard"}
               />
             </div>
           );
