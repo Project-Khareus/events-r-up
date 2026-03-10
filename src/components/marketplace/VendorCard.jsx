@@ -37,6 +37,7 @@ export default function VendorCard({ vendor, reviews = [], size = "auto", varian
   if (!vendor) return null;
   
   const isLandscape = variant === "landscape";
+  const isHero = variant === "hero";
   const [imageError, setImageError] = React.useState(false);
   const [currency, setCurrency] = React.useState(null);
 
@@ -64,7 +65,7 @@ export default function VendorCard({ vendor, reviews = [], size = "auto", varian
   return (
     <Link to={createPageUrl(`VendorDetail?id=${vendor.id}`)} className="block h-full">
       <Card className={`group h-full overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-500 bg-white dark:bg-slate-800 rounded-none ${isLandscape ? 'flex flex-row' : 'flex flex-col'}`}>
-        <div className={`relative overflow-hidden bg-slate-100 shrink-0 ${isLandscape ? 'w-2/5 min-h-full' : 'h-36 sm:h-40 md:h-44'}`}>
+        <div className={`relative overflow-hidden bg-slate-100 shrink-0 ${isHero ? 'h-[60%]' : isLandscape ? 'w-2/5 min-h-full' : 'h-36 sm:h-40 md:h-44'}`}>
           {vendor.image_url && !imageError ? (
             <img
               src={vendor.image_url}
