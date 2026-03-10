@@ -83,6 +83,9 @@ export default function Layout({ children }) {
                     .dark .border-slate-100 { border-color: #1e293b !important; }
                     .dark .border-slate-200 { border-color: var(--color-border) !important; }
                     .dark .border-slate-300 { border-color: var(--color-border-strong) !important; }
+                    .dark .border-gray-100 { border-color: #1e293b !important; }
+                    .dark .border-gray-200 { border-color: var(--color-border) !important; }
+                    .dark .border-gray-300 { border-color: var(--color-border-strong) !important; }
                     .dark .divide-slate-100 > * + * { border-color: #1e293b !important; }
                     .dark .divide-slate-200 > * + * { border-color: var(--color-border) !important; }
 
@@ -119,6 +122,11 @@ export default function Layout({ children }) {
                     /* -- Badges / pills -- */
                     .dark .bg-slate-100.text-slate-700,
                     .dark .bg-slate-100.text-slate-600 { background-color: #334155 !important; color: #cbd5e1 !important; }
+
+                    /* -- Gray palette (mirrors slate) -- */
+                    .dark .bg-gray-50 { background-color: var(--color-bg-secondary) !important; }
+                    .dark .bg-gray-100 { background-color: var(--color-bg-secondary) !important; }
+                    .dark .bg-gray-200 { background-color: #334155 !important; }
 
                     /* -- Nav -- */
                     .dark nav.bg-white { background-color: var(--color-bg-primary) !important; }
