@@ -324,8 +324,11 @@ export default function Layout({ children }) {
                       :root:not(.light-mode) .bg-gray-100 { background-color: var(--color-bg-secondary) !important; }
                       :root:not(.light-mode) .bg-gray-200 { background-color: #334155 !important; }
                       :root:not(.light-mode) .bg-slate-50 { background-color: var(--color-bg-secondary) !important; }
-                      :root:not(.light-mode) .hover\:bg-slate-50:hover { background-color: var(--color-bg-secondary) !important; }
+                      :root:not(.light-mode) .hover\:bg-slate-50:hover { background-color: #1e293b !important; }
                       :root:not(.light-mode) .hover\:bg-slate-100:hover { background-color: #334155 !important; }
+                      :root:not(.light-mode) .hover\:bg-white:hover { background-color: var(--color-surface) !important; }
+                      :root:not(.light-mode) .hover\:bg-gray-50:hover { background-color: #1e293b !important; }
+                      :root:not(.light-mode) .hover\:bg-gray-100:hover { background-color: #334155 !important; }
                       :root:not(.light-mode) .divide-slate-100 > * + * { border-color: #1e293b !important; }
                       :root:not(.light-mode) .divide-slate-200 > * + * { border-color: var(--color-border) !important; }
                       :root:not(.light-mode) input,
