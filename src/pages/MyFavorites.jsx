@@ -11,11 +11,7 @@ import EventCard from "../components/events/EventCard";
 import VendorCard from "../components/marketplace/VendorCard";
 import { Skeleton } from "@/components/ui/skeleton";
 
-// Helper to handle potential nested data structure
-const normalizeData = (item) => {
-  if (!item) return null;
-  return item.data ? { id: item.id, ...item.data } : item;
-};
+
 
 export default function MyFavorites() {
   const queryClient = useQueryClient();
