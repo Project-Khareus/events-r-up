@@ -31,55 +31,29 @@ export default function MyFavorites() {
   const vendorFavorites = favorites.filter(f => f.item_type === 'vendor');
 
   // 2. Fetch the actual events for event favorites
+  const eventIds = eventFavorites.map(f => f.event_id).filter(Boolean);
   const { data: events = [], isLoading: isLoadingEvents } = useQuery({
-    queryKey: ['favoritedEvents', eventFavorites],
+    queryKey: ['favoritedEvents', eventIds],
     queryFn: async () => {
-      if (eventFavorites.length === 0) return [];
-      
-      const eventPromises = eventFavorites.map(async (fav) => {
-        if (!fav || !fav.event_id) return null;
-        try {
-          const results = await base44.entities.EventListing.filter({ id: fav.event_id });
-          if (results && results.length > 0) {
-            return normalizeData(results[0]);
-          }
-          return null;
-        } catch (err) {
-          console.error("Error fetching event", fav.event_id, err);
-          return null;
-        }
-      });
-      
-      const results = await Promise.all(eventPromises);
-      return results.filter(e => !!e);
+      const results = await Promise.all(
+        eventIds.map(id => base44.entities.EventListing.filter({ id }).then(r => r[0] || null).catch(() => null))
+      );
+      return results.filter(Boolean);
     },
-    enabled: eventFavorites.length > 0,
+    enabled: eventIds.length > 0,
   });
 
   // 3. Fetch the actual vendors for vendor favorites
+  const vendorIds = vendorFavorites.map(f => f.vendor_id).filter(Boolean);
   const { data: vendors = [], isLoading: isLoadingVendors } = useQuery({
-    queryKey: ['favoritedVendors', vendorFavorites],
+    queryKey: ['favoritedVendors', vendorIds],
     queryFn: async () => {
-      if (vendorFavorites.length === 0) return [];
-      
-      const vendorPromises = vendorFavorites.map(async (fav) => {
-        if (!fav || !fav.vendor_id) return null;
-        try {
-          const results = await base44.entities.Vendor.filter({ id: fav.vendor_id });
-          if (results && results.length > 0) {
-            return normalizeData(results[0]);
-          }
-          return null;
-        } catch (err) {
-          console.error("Error fetching vendor", fav.vendor_id, err);
-          return null;
-        }
-      });
-      
-      const results = await Promise.all(vendorPromises);
-      return results.filter(v => !!v);
+      const results = await Promise.all(
+        vendorIds.map(id => base44.entities.Vendor.filter({ id }).then(r => r[0] || null).catch(() => null))
+      );
+      return results.filter(Boolean);
     },
-    enabled: vendorFavorites.length > 0,
+    enabled: vendorIds.length > 0,
   });
 
   const isLoading = isLoadingFavorites || 
