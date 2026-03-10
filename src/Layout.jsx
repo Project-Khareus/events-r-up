@@ -73,6 +73,11 @@ export default function Layout({ children }) {
                     .dark .text-slate-500 { color: #7c8fa8 !important; }
                     .dark .text-slate-400 { color: #64748b !important; }
                     .dark .text-stone-800 { color: var(--color-text-primary) !important; }
+                    .dark .text-gray-900 { color: var(--color-text-primary) !important; }
+                    .dark .text-gray-800 { color: var(--color-text-secondary) !important; }
+                    .dark .text-gray-700 { color: var(--color-text-secondary) !important; }
+                    .dark .text-gray-600 { color: #94a3b8 !important; }
+                    .dark .text-gray-500 { color: #7c8fa8 !important; }
 
                     /* -- Borders -- */
                     .dark .border-slate-100 { border-color: #1e293b !important; }
@@ -273,6 +278,11 @@ export default function Layout({ children }) {
                       :root:not(.light-mode) .text-slate-700 { color: var(--color-text-secondary) !important; }
                       :root:not(.light-mode) .text-slate-600 { color: #94a3b8 !important; }
                       :root:not(.light-mode) .text-slate-500 { color: #7c8fa8 !important; }
+                      :root:not(.light-mode) .text-gray-900 { color: var(--color-text-primary) !important; }
+                      :root:not(.light-mode) .text-gray-800 { color: var(--color-text-secondary) !important; }
+                      :root:not(.light-mode) .text-gray-700 { color: var(--color-text-secondary) !important; }
+                      :root:not(.light-mode) .text-gray-600 { color: #94a3b8 !important; }
+                      :root:not(.light-mode) .text-gray-500 { color: #7c8fa8 !important; }
                       :root:not(.light-mode) .border-slate-100 { border-color: #1e293b !important; }
                       :root:not(.light-mode) .border-slate-200 { border-color: var(--color-border) !important; }
                       :root:not(.light-mode) .border-slate-300 { border-color: var(--color-border-strong) !important; }
