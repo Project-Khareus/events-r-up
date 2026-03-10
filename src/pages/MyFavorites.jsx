@@ -20,31 +20,15 @@ export default function MyFavorites() {
     queryFn: () => base44.auth.me().catch(() => null),
   });
 
-  // 1. Fetch user's favorites
-  const { data: rawFavorites = [], isLoading: isLoadingFavorites } = useQuery({
+  // 1. Fetch user's favorites (RLS filters by user_id automatically)
+  const { data: favorites = [], isLoading: isLoadingFavorites } = useQuery({
     queryKey: ['myFavorites', user?.id],
-    queryFn: async () => {
-      if (!user) return [];
-      try {
-        // RLS already filters by user_id, so just list all (which returns only user's favorites)
-        const favorites = await base44.entities.Favorite.list('-created_date', 100);
-        console.log('Raw favorites fetched:', favorites);
-        console.log('User ID:', user.id);
-        console.log('Normalized favorites:', favorites.map(normalizeData));
-        return favorites;
-      } catch (error) {
-        console.error('Error fetching favorites:', error);
-        return [];
-      }
-    },
+    queryFn: () => base44.entities.Favorite.list('-created_date', 100),
     enabled: !!user,
   });
 
-  const favorites = useMemo(() => rawFavorites.map(normalizeData), [rawFavorites]);
-
-  // Separate favorites by type (handle legacy favorites without item_type)
-  const eventFavorites = favorites.filter(f => f.item_type === 'event' || (f.event_id && !f.item_type));
-  const vendorFavorites = favorites.filter(f => f.item_type === 'vendor' || (f.vendor_id && !f.item_type));
+  const eventFavorites = favorites.filter(f => f.item_type === 'event');
+  const vendorFavorites = favorites.filter(f => f.item_type === 'vendor');
 
   // 2. Fetch the actual events for event favorites
   const { data: events = [], isLoading: isLoadingEvents } = useQuery({
