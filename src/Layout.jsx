@@ -294,6 +294,12 @@ export default function Layout({ children }) {
                       :root:not(.light-mode) .border-slate-100 { border-color: #1e293b !important; }
                       :root:not(.light-mode) .border-slate-200 { border-color: var(--color-border) !important; }
                       :root:not(.light-mode) .border-slate-300 { border-color: var(--color-border-strong) !important; }
+                      :root:not(.light-mode) .border-gray-100 { border-color: #1e293b !important; }
+                      :root:not(.light-mode) .border-gray-200 { border-color: var(--color-border) !important; }
+                      :root:not(.light-mode) .border-gray-300 { border-color: var(--color-border-strong) !important; }
+                      :root:not(.light-mode) .bg-gray-50 { background-color: var(--color-bg-secondary) !important; }
+                      :root:not(.light-mode) .bg-gray-100 { background-color: var(--color-bg-secondary) !important; }
+                      :root:not(.light-mode) .bg-gray-200 { background-color: #334155 !important; }
                       :root:not(.light-mode) .bg-slate-50 { background-color: var(--color-bg-secondary) !important; }
                       :root:not(.light-mode) .hover\:bg-slate-50:hover { background-color: var(--color-bg-secondary) !important; }
                       :root:not(.light-mode) .hover\:bg-slate-100:hover { background-color: #334155 !important; }
