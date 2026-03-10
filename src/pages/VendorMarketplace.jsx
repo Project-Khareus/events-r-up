@@ -347,15 +347,12 @@ export default function VendorMarketplace() {
                   <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-slate-500" />
                   <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Featured Vendors</h2>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2">
-                  {featuredVendors.map((vendor, idx) => {
-                    const isWide = idx === 0 || idx === 3;
-                    return (
-                      <div key={vendor.id} className={isWide ? 'col-span-2' : 'col-span-1'}>
-                        <VendorCard vendor={vendor} reviews={allReviews.filter((r) => r.vendor_id === vendor.id)} variant={isWide ? "landscape" : "standard"} />
-                      </div>
-                    );
-                  })}
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+                  {featuredVendors.map((vendor) => (
+                    <div key={vendor.id}>
+                      <VendorCard vendor={vendor} reviews={allReviews.filter((r) => r.vendor_id === vendor.id)} />
+                    </div>
+                  ))}
                 </div>
               </div>
               }
@@ -364,16 +361,12 @@ export default function VendorMarketplace() {
                 {featuredVendors.length > 0 &&
                 <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4 sm:mb-6">All Vendors</h2>
                 }
-                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2">
-                    {regularVendors.map((vendor, idx) => {
-                      const pos = idx % 8;
-                      const isWide = pos === 0 || pos === 3;
-                      return (
-                        <div key={vendor.id} className={isWide ? 'col-span-2' : 'col-span-1'}>
-                          <VendorCard vendor={vendor} reviews={allReviews.filter((r) => r.vendor_id === vendor.id)} variant={isWide ? "landscape" : "standard"} />
-                        </div>
-                      );
-                    })}
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+                    {regularVendors.map((vendor) => (
+                      <div key={vendor.id}>
+                        <VendorCard vendor={vendor} reviews={allReviews.filter((r) => r.vendor_id === vendor.id)} />
+                      </div>
+                    ))}
                   </div>
               </div>
               }
