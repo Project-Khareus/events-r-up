@@ -124,14 +124,15 @@ export default function Layout({ children }) {
                     .dark label { color: var(--color-text-secondary) !important; }
 
                     /* -- Hover states (brighter, not darker) -- */
-                    html.dark .hover\:bg-slate-50:hover { background-color: #1e293b !important; }
-                    html.dark .hover\:bg-slate-100:hover { background-color: #334155 !important; }
-                    html.dark .hover\:bg-slate-200:hover { background-color: #3d5068 !important; }
-                    html.dark .hover\:bg-white:hover { background-color: var(--color-surface) !important; }
-                    html.dark .hover\:bg-gray-50:hover { background-color: #1e293b !important; }
-                    html.dark .hover\:bg-gray-100:hover { background-color: #334155 !important; }
+                    html.dark .hover\\:bg-slate-50:hover { background-color: #1e293b !important; }
+                    html.dark .hover\\:bg-slate-100:hover { background-color: #334155 !important; }
+                    html.dark .hover\\:bg-slate-200:hover { background-color: #3d5068 !important; }
+                    html.dark .hover\\:bg-white:hover { background-color: var(--color-surface-elevated) !important; }
+                    html.dark .hover\\:bg-gray-50:hover { background-color: #1e293b !important; }
+                    html.dark .hover\\:bg-gray-100:hover { background-color: #334155 !important; }
                     html.dark [class*="hover:bg-slate-50"]:hover { background-color: #1e293b !important; }
-                    html.dark [class*="hover:bg-white"]:hover { background-color: var(--color-surface) !important; }
+                    html.dark [class*="hover:bg-white"]:hover { background-color: var(--color-surface-elevated) !important; }
+                    html.dark [class*="hover:bg-gray-50"]:hover { background-color: #1e293b !important; }
 
                     /* -- Table rows -- */
                     .dark tr:hover { background-color: var(--color-bg-secondary) !important; }
