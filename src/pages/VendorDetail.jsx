@@ -32,6 +32,7 @@ import MetaTags from "../components/shared/MetaTags";
 import VendorFavoriteButton from "../components/vendor/VendorFavoriteButton";
 import AvailabilityCalendar from "../components/vendor/AvailabilityCalendar";
 import MobileHeader from "../components/layout/MobileHeader";
+import ReportDialog from "../components/reports/ReportDialog";
 import { formatPrice, detectUserCurrency } from "@/components/utils/currency";
 
 const CATEGORY_LABELS = {
@@ -288,13 +289,20 @@ export default function VendorDetail() {
                 </div>
                 <VendorFavoriteButton vendorId={vendor.id} size="icon" className="h-12 w-12 rounded-lg border-slate-300" />
               </div>
-              <ShareButton 
-                url={window.location.href}
-                title={`${vendor.business_name} - Event Vendor`}
-                description={vendor.description || `Check out ${vendor.business_name} on Khareus!`}
-                variant="outline"
-                className="w-full h-11"
-              />
+              <div className="flex gap-2">
+                <ShareButton 
+                  url={window.location.href}
+                  title={`${vendor.business_name} - Event Vendor`}
+                  description={vendor.description || `Check out ${vendor.business_name} on Khareus!`}
+                  variant="outline"
+                  className="flex-1 h-11"
+                />
+                <ReportDialog
+                  targetType="vendor"
+                  targetId={vendor.id}
+                  targetName={vendor.business_name}
+                />
+              </div>
             </div>
 
             {/* Info Cards */}
