@@ -35,18 +35,22 @@ export default function VendorFavoriteButton({ vendorId, className, variant = "o
 
   const toggleMutation = useMutation({
     mutationFn: async () => {
+      console.log("Favorite toggle clicked", { user: user?.id, vendorId, isFavorited, myFavorite: myFavorite?.id });
       if (!user) {
         throw new Error("login");
       }
       if (isFavorited) {
+        console.log("Deleting favorite", myFavorite.id);
         await base44.entities.Favorite.delete(myFavorite.id);
         return { action: 'removed' };
       } else {
-        await base44.entities.Favorite.create({
+        console.log("Creating favorite", { user_id: user.id, vendor_id: vendorId, item_type: 'vendor' });
+        const result = await base44.entities.Favorite.create({
           user_id: user.id,
           vendor_id: vendorId,
           item_type: 'vendor'
         });
+        console.log("Favorite created", result);
         return { action: 'added' };
       }
     },
