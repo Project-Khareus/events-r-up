@@ -25,6 +25,9 @@ export default function MyFavorites() {
     queryKey: ['myFavorites', user?.id],
     queryFn: () => base44.entities.Favorite.list('-created_date', 100),
     enabled: !!user,
+    staleTime: 60000,
+    retry: 3,
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 5000),
   });
 
   const eventFavorites = favorites.filter(f => f.item_type === 'event');
