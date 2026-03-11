@@ -394,7 +394,7 @@ export default function AdminReports() {
                 Choose an outcome for the report against <strong className="text-slate-900 dark:text-slate-200">{selectedReport?.target_name}</strong>. Both the reporter and vendor will be notified by email.
               </DialogDescription>
             </DialogHeader>
-            <div className="space-y-4 py-2">
+            <div className="space-y-4 py-2 max-h-[60vh] overflow-y-auto">
               <div>
                 <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">Outcome *</label>
                 <Select value={selectedOutcome} onValueChange={setSelectedOutcome}>
