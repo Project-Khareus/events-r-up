@@ -5,29 +5,37 @@ import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { motion, AnimatePresence } from "framer-motion";
 
-export default function FavoriteButton({ eventId, className, variant = "outline", size = "icon" }) {
-  const queryClient = useQueryClient();
-
+function useAllEventFavorites() {
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => base44.auth.me().catch(() => null),
+    staleTime: 600000,
   });
 
-  const { data: favorites = [] } = useQuery({
-    queryKey: ['eventFavorites', eventId, user?.id],
-    queryFn: () => base44.entities.Favorite.filter({ event_id: eventId, item_type: 'event' }),
-    enabled: !!user && !!eventId,
+  const { data: allFavorites = [] } = useQuery({
+    queryKey: ['allEventFavorites', user?.id],
+    queryFn: () => base44.entities.Favorite.filter({ item_type: 'event' }),
+    enabled: !!user,
+    staleTime: 300000,
+    retry: 2,
+    retryDelay: 2000,
   });
 
-  const myFavorite = favorites[0];
+  return { user, allFavorites };
+}
+
+export default function FavoriteButton({ eventId, className, variant = "outline", size = "icon" }) {
+  const queryClient = useQueryClient();
+  const { user, allFavorites } = useAllEventFavorites();
+
+  const myFavorite = allFavorites.find(f => f.event_id === eventId);
   const isFavorited = !!myFavorite;
 
   const toggleMutation = useMutation({
     mutationFn: async () => {
       if (!user) {
-        throw new Error("Please log in to favorite events");
+        throw new Error("login");
       }
       if (isFavorited) {
         await base44.entities.Favorite.delete(myFavorite.id);
@@ -42,18 +50,16 @@ export default function FavoriteButton({ eventId, className, variant = "outline"
       }
     },
     onSuccess: (result) => {
-      queryClient.invalidateQueries({ queryKey: ['eventFavorites', eventId] });
+      queryClient.invalidateQueries({ queryKey: ['allEventFavorites'] });
       queryClient.invalidateQueries({ queryKey: ['myFavorites'] });
-      if (result.action === 'added') {
-        toast.success("Added to your favorites!", { icon: "❤️" });
-      } else {
-        toast("Removed from favorites", { icon: "💔" });
-      }
+      toast.success(result.action === 'added' ? "Added to favorites!" : "Removed from favorites");
     },
     onError: (err) => {
-      toast.error(err.message);
-      if (err.message.includes("log in")) {
+      if (err.message === "login") {
+        toast("Please log in to save favorites");
         base44.auth.redirectToLogin(window.location.href);
+      } else {
+        toast.error("Could not update favorite. Please try again.");
       }
     }
   });
@@ -74,18 +80,7 @@ export default function FavoriteButton({ eventId, className, variant = "outline"
       }}
       disabled={toggleMutation.isPending}
     >
-      <AnimatePresence mode="wait">
-        <motion.span
-          key={isFavorited ? "filled" : "empty"}
-          initial={{ scale: 0.5, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 1.5, opacity: 0 }}
-          transition={{ type: "spring", stiffness: 500, damping: 15 }}
-          className="flex items-center justify-center"
-        >
-          <Heart className={cn("h-5 w-5", isFavorited && "fill-current")} />
-        </motion.span>
-      </AnimatePresence>
+      <Heart className={cn("h-5 w-5 transition-transform", isFavorited && "fill-current scale-110")} />
     </Button>
   );
 }
