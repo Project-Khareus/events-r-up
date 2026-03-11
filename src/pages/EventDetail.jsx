@@ -15,6 +15,7 @@ import EventCard from "../components/events/EventCard";
 import FavoriteButton from "../components/events/FavoriteButton";
 import AddToCalendarButton from "../components/events/AddToCalendarButton";
 import MobileHeader from "../components/layout/MobileHeader";
+import ReportDialog from "../components/reports/ReportDialog";
 
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   var R = 6371; // Radius of the earth in km
@@ -270,6 +271,11 @@ export default function EventDetail() {
                           description={event.description || `Join us at ${event.title}`}
                           variant="outline"
                           className="w-full"
+                        />
+                        <ReportDialog
+                          targetType="event"
+                          targetId={event.id}
+                          targetName={event.title}
                         />
                     </div>
                 </div>
