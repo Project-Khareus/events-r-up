@@ -91,9 +91,7 @@ export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
             </div>
           )}
 
-          <div className="absolute top-2 right-2 sm:top-4 sm:right-4">
-            <VendorFavoriteButton vendorId={vendor.id} size="icon" className="bg-white/90 hover:bg-white" />
-          </div>
+          {/* Favorite button moved outside Link */}
 
           {vendor.starting_price && currency && (
             <div className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 bg-slate-800 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded-md sm:rounded-lg shadow-lg font-semibold text-xs sm:text-sm">
