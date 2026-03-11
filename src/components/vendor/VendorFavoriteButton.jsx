@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
-// Hook to fetch ALL of user's vendor favorites ONCE (shared across all buttons)
-function useAllVendorFavorites() {
+export default function VendorFavoriteButton({ vendorId, className, variant = "outline", size = "icon" }) {
+  const queryClient = useQueryClient();
+
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => base44.auth.me().catch(() => null),
@@ -18,54 +19,67 @@ function useAllVendorFavorites() {
     queryKey: ['allVendorFavorites', user?.id],
     queryFn: () => base44.entities.Favorite.filter({ item_type: 'vendor' }),
     enabled: !!user,
-    staleTime: 300000,
+    staleTime: 30000,
     retry: 2,
-    retryDelay: 2000,
   });
-
-  return { user, allFavorites };
-}
-
-export default function VendorFavoriteButton({ vendorId, className, variant = "outline", size = "icon" }) {
-  const queryClient = useQueryClient();
-  const { user, allFavorites } = useAllVendorFavorites();
 
   const myFavorite = allFavorites.find(f => f.vendor_id === vendorId);
   const isFavorited = !!myFavorite;
 
   const toggleMutation = useMutation({
     mutationFn: async () => {
-      console.log("Favorite toggle clicked", { user: user?.id, vendorId, isFavorited, myFavorite: myFavorite?.id });
       if (!user) {
         throw new Error("login");
       }
       if (isFavorited) {
-        console.log("Deleting favorite", myFavorite.id);
         await base44.entities.Favorite.delete(myFavorite.id);
-        return { action: 'removed' };
+        return { action: 'removed', id: myFavorite.id };
       } else {
-        console.log("Creating favorite", { user_id: user.id, vendor_id: vendorId, item_type: 'vendor' });
         const result = await base44.entities.Favorite.create({
           user_id: user.id,
           vendor_id: vendorId,
           item_type: 'vendor'
         });
-        console.log("Favorite created", result);
-        return { action: 'added' };
+        return { action: 'added', record: result };
       }
     },
-    onSuccess: (result) => {
-      queryClient.invalidateQueries({ queryKey: ['allVendorFavorites'] });
-      queryClient.invalidateQueries({ queryKey: ['myFavorites'] });
-      toast.success(result.action === 'added' ? "Added to favorites!" : "Removed from favorites");
+    onMutate: async () => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['allVendorFavorites', user?.id] });
+      
+      // Snapshot previous value
+      const previous = queryClient.getQueryData(['allVendorFavorites', user?.id]);
+      
+      // Optimistic update
+      queryClient.setQueryData(['allVendorFavorites', user?.id], (old = []) => {
+        if (isFavorited) {
+          return old.filter(f => f.vendor_id !== vendorId);
+        } else {
+          return [...old, { vendor_id: vendorId, user_id: user.id, item_type: 'vendor', id: 'temp_' + vendorId }];
+        }
+      });
+      
+      return { previous };
     },
-    onError: (err) => {
+    onError: (err, _, context) => {
+      // Rollback on error
+      if (context?.previous) {
+        queryClient.setQueryData(['allVendorFavorites', user?.id], context.previous);
+      }
       if (err.message === "login") {
         toast("Please log in to save favorites");
         base44.auth.redirectToLogin(window.location.href);
       } else {
         toast.error("Could not update favorite. Please try again.");
       }
+    },
+    onSuccess: (result) => {
+      toast.success(result.action === 'added' ? "Added to favorites!" : "Removed from favorites");
+    },
+    onSettled: () => {
+      // Always refetch after mutation to sync with server
+      queryClient.invalidateQueries({ queryKey: ['allVendorFavorites'] });
+      queryClient.invalidateQueries({ queryKey: ['myFavorites'] });
     }
   });
 
