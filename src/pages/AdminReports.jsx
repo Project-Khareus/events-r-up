@@ -387,26 +387,26 @@ export default function AdminReports() {
 
         {/* Action Dialog */}
         <Dialog open={actionDialogOpen} onOpenChange={setActionDialogOpen}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
             <DialogHeader>
-              <DialogTitle>Take Action on Report</DialogTitle>
-              <DialogDescription>
-                Choose an outcome for the report against <strong>{selectedReport?.target_name}</strong>. Both the reporter and vendor will be notified by email.
+              <DialogTitle className="text-slate-900 dark:text-slate-100">Take Action on Report</DialogTitle>
+              <DialogDescription className="text-slate-600 dark:text-slate-400">
+                Choose an outcome for the report against <strong className="text-slate-900 dark:text-slate-200">{selectedReport?.target_name}</strong>. Both the reporter and vendor will be notified by email.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-2">
               <div>
-                <label className="text-sm font-semibold text-slate-700 mb-2 block">Outcome *</label>
+                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">Outcome *</label>
                 <Select value={selectedOutcome} onValueChange={setSelectedOutcome}>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100">
                     <SelectValue placeholder="Select an outcome..." />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600">
                     {REPORT_OUTCOMES.map(o => (
                       <SelectItem key={o.value} value={o.value}>
                         <div>
                           <span className="font-medium">{o.label}</span>
-                          <span className="text-xs text-slate-500 ml-2">— {o.description}</span>
+                          <span className="text-xs text-slate-500 dark:text-slate-400 ml-2">— {o.description}</span>
                         </div>
                       </SelectItem>
                     ))}
@@ -414,12 +414,12 @@ export default function AdminReports() {
                 </Select>
               </div>
               <div>
-                <label className="text-sm font-semibold text-slate-700 mb-2 block">Set Status</label>
+                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">Set Status</label>
                 <Select value={newStatus} onValueChange={setNewStatus}>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600">
                     <SelectItem value="reviewed">Reviewed</SelectItem>
                     <SelectItem value="resolved">Resolved</SelectItem>
                     <SelectItem value="dismissed">Dismissed</SelectItem>
@@ -427,21 +427,22 @@ export default function AdminReports() {
                 </Select>
               </div>
               <div>
-                <label className="text-sm font-semibold text-slate-700 mb-2 block">Admin Notes</label>
+                <label className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 block">Admin Notes</label>
                 <Textarea
                   placeholder="Add notes about your decision..."
                   value={adminNotes}
                   onChange={(e) => setAdminNotes(e.target.value)}
                   rows={3}
+                  className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100 placeholder:text-slate-400"
                 />
               </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setActionDialogOpen(false)}>Cancel</Button>
+              <Button variant="outline" onClick={() => setActionDialogOpen(false)} className="border-slate-300 dark:border-slate-600">Cancel</Button>
               <Button
                 onClick={handleConfirmAction}
                 disabled={!selectedOutcome || actionMutation.isPending}
-                className="bg-indigo-600 hover:bg-indigo-700"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white"
               >
                 {actionMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Shield className="h-4 w-4 mr-2" />}
                 Confirm Action
