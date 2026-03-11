@@ -82,6 +82,8 @@ export default function MyFavorites() {
   const handleRefresh = async () => {
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ['myFavorites'] }),
+      queryClient.invalidateQueries({ queryKey: ['allVendorFavorites'] }),
+      queryClient.invalidateQueries({ queryKey: ['allEventFavorites'] }),
       queryClient.invalidateQueries({ queryKey: ['favoritedEvents'] }),
       queryClient.invalidateQueries({ queryKey: ['favoritedVendors'] }),
     ]);
