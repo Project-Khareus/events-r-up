@@ -157,6 +157,10 @@ export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
           )}
         </div>
       </Card>
-    </Link>
+      </Link>
+      <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10">
+        <VendorFavoriteButton vendorId={vendor.id} size="icon" className="bg-white/90 hover:bg-white shadow-sm" />
+      </div>
+    </div>
   );
 }
