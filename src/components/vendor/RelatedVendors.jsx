@@ -7,7 +7,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function RelatedVendors({ currentVendorId, category, eventType, compact = false }) {
   const { data: vendors = [], isLoading } = useQuery({
     queryKey: ['vendors'],
-    queryFn: () => base44.entities.Vendor.list(),
+    queryFn: () => base44.entities.Vendor.list('-created_date', 80),
+    staleTime: 600000,
+    refetchOnWindowFocus: false,
   });
 
   const relatedVendors = vendors.filter(v => 

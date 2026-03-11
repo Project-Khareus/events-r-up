@@ -26,6 +26,7 @@ export default function AvailabilityCalendar({ vendorId, isOwner = false }) {
       });
     },
     enabled: !!vendorId,
+    staleTime: 300000,
   });
 
   const toggleDateMutation = useMutation({

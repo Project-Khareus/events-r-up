@@ -10,6 +10,8 @@ export default function ReviewsList({ vendorId }) {
   const { data: reviews = [], isLoading } = useQuery({
     queryKey: ['reviews', vendorId],
     queryFn: () => base44.entities.Review.filter({ vendor_id: vendorId }, '-created_date', 50),
+    staleTime: 300000,
+    enabled: !!vendorId,
   });
 
   if (isLoading) {
