@@ -19,6 +19,9 @@ export default function VendorFavoriteButton({ vendorId, className, variant = "o
     queryKey: ['vendorFavorites', vendorId, user?.id],
     queryFn: () => base44.entities.Favorite.filter({ vendor_id: vendorId, item_type: 'vendor' }),
     enabled: !!user && !!vendorId,
+    staleTime: 300000,
+    retry: 2,
+    retryDelay: 2000,
   });
 
   const myFavorite = favorites[0];
