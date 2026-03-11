@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
-function useAllEventFavorites() {
+export default function FavoriteButton({ eventId, className, variant = "outline", size = "icon" }) {
+  const queryClient = useQueryClient();
+
   const { data: user } = useQuery({
     queryKey: ['currentUser'],
     queryFn: () => base44.auth.me().catch(() => null),
@@ -17,17 +19,9 @@ function useAllEventFavorites() {
     queryKey: ['allEventFavorites', user?.id],
     queryFn: () => base44.entities.Favorite.filter({ item_type: 'event' }),
     enabled: !!user,
-    staleTime: 300000,
+    staleTime: 30000,
     retry: 2,
-    retryDelay: 2000,
   });
-
-  return { user, allFavorites };
-}
-
-export default function FavoriteButton({ eventId, className, variant = "outline", size = "icon" }) {
-  const queryClient = useQueryClient();
-  const { user, allFavorites } = useAllEventFavorites();
 
   const myFavorite = allFavorites.find(f => f.event_id === eventId);
   const isFavorited = !!myFavorite;
@@ -39,28 +33,47 @@ export default function FavoriteButton({ eventId, className, variant = "outline"
       }
       if (isFavorited) {
         await base44.entities.Favorite.delete(myFavorite.id);
-        return { action: 'removed' };
+        return { action: 'removed', id: myFavorite.id };
       } else {
-        await base44.entities.Favorite.create({
+        const result = await base44.entities.Favorite.create({
           user_id: user.id,
           event_id: eventId,
           item_type: 'event'
         });
-        return { action: 'added' };
+        return { action: 'added', record: result };
       }
     },
-    onSuccess: (result) => {
-      queryClient.invalidateQueries({ queryKey: ['allEventFavorites'] });
-      queryClient.invalidateQueries({ queryKey: ['myFavorites'] });
-      toast.success(result.action === 'added' ? "Added to favorites!" : "Removed from favorites");
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ['allEventFavorites', user?.id] });
+      const previous = queryClient.getQueryData(['allEventFavorites', user?.id]);
+      
+      queryClient.setQueryData(['allEventFavorites', user?.id], (old = []) => {
+        if (isFavorited) {
+          return old.filter(f => f.event_id !== eventId);
+        } else {
+          return [...old, { event_id: eventId, user_id: user.id, item_type: 'event', id: 'temp_' + eventId }];
+        }
+      });
+      
+      return { previous };
     },
-    onError: (err) => {
+    onError: (err, _, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(['allEventFavorites', user?.id], context.previous);
+      }
       if (err.message === "login") {
         toast("Please log in to save favorites");
         base44.auth.redirectToLogin(window.location.href);
       } else {
         toast.error("Could not update favorite. Please try again.");
       }
+    },
+    onSuccess: (result) => {
+      toast.success(result.action === 'added' ? "Added to favorites!" : "Removed from favorites");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['allEventFavorites'] });
+      queryClient.invalidateQueries({ queryKey: ['myFavorites'] });
     }
   });
 
