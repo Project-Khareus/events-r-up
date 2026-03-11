@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, Store, Edit2, Clock, Eye, Search, Ban, CreditCard, ShieldCheck, ShieldX, ShieldAlert } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, Store, Edit2, Clock, Eye, Search, Ban, CreditCard, ShieldCheck, ShieldX, ShieldAlert, Flag } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 
@@ -24,6 +24,16 @@ export default function AdminVendors() {
   const [suspensionReason, setSuspensionReason] = useState("");
   const [verifyingCardVendorId, setVerifyingCardVendorId] = useState(null);
   const [ghanaCardDialogVendor, setGhanaCardDialogVendor] = useState(null);
+
+  // Fetch reports count
+  const { data: pendingReportsCount = 0 } = useQuery({
+    queryKey: ['admin_reports_count'],
+    queryFn: async () => {
+      const reports = await base44.entities.Report.filter({ status: 'pending' });
+      return reports.length;
+    },
+    staleTime: 60000,
+  });
 
   // Fetch all vendors
   const { data: allVendors = [], isLoading } = useQuery({
@@ -355,12 +365,17 @@ export default function AdminVendors() {
             <p className="text-slate-600">Review new listings and changes</p>
           </div>
           <div className="flex gap-3">
-            <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200">
-              <span className="font-semibold text-indigo-600">{pendingVendors.length}</span> New
-            </div>
-            <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-orange-200">
-              <span className="font-semibold text-orange-600">{vendorsWithChanges.length}</span> Updates
-            </div>
+           <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200">
+             <span className="font-semibold text-indigo-600">{pendingVendors.length}</span> New
+           </div>
+           <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-orange-200">
+             <span className="font-semibold text-orange-600">{vendorsWithChanges.length}</span> Updates
+           </div>
+           <Link to={createPageUrl("AdminReports")}>
+             <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-red-200 hover:bg-red-50 transition-colors cursor-pointer">
+               <span className="font-semibold text-red-600">{pendingReportsCount}</span> Reports
+             </div>
+           </Link>
           </div>
         </div>
 
@@ -387,6 +402,12 @@ export default function AdminVendors() {
             <TabsTrigger value="all" className="gap-2">
               All Vendors ({approvedVendors.length})
             </TabsTrigger>
+            <Link to={createPageUrl("AdminReports")}>
+              <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700 hover:bg-red-50 gap-1.5 ml-2">
+                <Flag className="h-4 w-4" />
+                Reports ({pendingReportsCount})
+              </Button>
+            </Link>
           </TabsList>
 
           <TabsContent value="new">
