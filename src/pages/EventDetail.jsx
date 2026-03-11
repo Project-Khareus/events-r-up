@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { ArrowLeft, Calendar, MapPin, DollarSign, Tag, User } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, DollarSign, Tag, User, Flag } from "lucide-react";
 import ShareButton from "../components/shared/ShareButton";
 import MetaTags from "../components/shared/MetaTags";
 import { format } from "date-fns";
@@ -276,6 +276,12 @@ export default function EventDetail() {
                           targetType="event"
                           targetId={event.id}
                           targetName={event.title}
+                          trigger={
+                            <Button variant="outline" size="default" className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 gap-2">
+                              <Flag className="h-4 w-4" />
+                              Report this event
+                            </Button>
+                          }
                         />
                     </div>
                 </div>
