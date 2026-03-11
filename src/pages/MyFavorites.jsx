@@ -44,6 +44,7 @@ export default function MyFavorites() {
       return results.filter(Boolean);
     },
     enabled: eventIds.length > 0,
+    staleTime: 300000,
   });
 
   // 3. Fetch the actual vendors for vendor favorites
@@ -57,6 +58,7 @@ export default function MyFavorites() {
       return results.filter(Boolean);
     },
     enabled: vendorIds.length > 0,
+    staleTime: 300000,
   });
 
   const isLoading = isLoadingFavorites || 
