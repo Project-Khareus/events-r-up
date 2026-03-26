@@ -11,8 +11,8 @@ const CURRENCY_MAP = {
   EU: { code: 'EUR', symbol: '€', name: 'Euro' },
 };
 
-// Default to USD
-const DEFAULT_CURRENCY = { code: 'USD', symbol: '$', name: 'US Dollar' };
+// Default to GHS (Ghanaian Cedi)
+const DEFAULT_CURRENCY = { code: 'GHS', symbol: 'GH₵', name: 'Ghanaian Cedi' };
 
 let cachedCurrency = null;
 
@@ -21,46 +21,11 @@ let cachedCurrency = null;
  * Uses browser locale and timezone as fallback
  */
 export const detectUserCurrency = async () => {
-  if (cachedCurrency) {
-    return cachedCurrency;
+  // Always use GHS for this platform
+  if (!cachedCurrency) {
+    cachedCurrency = { code: 'GHS', symbol: 'GH₵', name: 'Ghanaian Cedi' };
   }
-
-  try {
-    // Try to get country from browser locale
-    const locale = navigator.language || navigator.userLanguage;
-    const countryCode = locale.split('-')[1]?.toUpperCase();
-    
-    if (countryCode && CURRENCY_MAP[countryCode]) {
-      cachedCurrency = CURRENCY_MAP[countryCode];
-      return cachedCurrency;
-    }
-
-    // Fallback: Try to detect via timezone
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    if (timezone) {
-      if (timezone.includes('Africa/Accra')) {
-        cachedCurrency = CURRENCY_MAP.GH;
-        return cachedCurrency;
-      } else if (timezone.includes('Africa/Lagos')) {
-        cachedCurrency = CURRENCY_MAP.NG;
-        return cachedCurrency;
-      } else if (timezone.includes('Africa/Nairobi')) {
-        cachedCurrency = CURRENCY_MAP.KE;
-        return cachedCurrency;
-      } else if (timezone.includes('Africa/Johannesburg')) {
-        cachedCurrency = CURRENCY_MAP.ZA;
-        return cachedCurrency;
-      }
-    }
-
-    // Default to USD
-    cachedCurrency = DEFAULT_CURRENCY;
-    return cachedCurrency;
-  } catch (error) {
-    console.error('Error detecting currency:', error);
-    cachedCurrency = DEFAULT_CURRENCY;
-    return cachedCurrency;
-  }
+  return cachedCurrency;
 };
 
 /**
