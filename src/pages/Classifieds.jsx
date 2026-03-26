@@ -109,7 +109,10 @@ export default function Classifieds() {
   const approvedEvents = useMemo(() => {
     const now = new Date();
     return events.filter(e => {
-      const isApproved = e.status === 'approved' || !e.status || (user && e.created_by === user.email);
+      // Only show approved events publicly, or pending/no-status events owned by the current user
+      const isApproved = e.status === 'approved' || 
+        (!e.status && user && e.created_by === user.email) ||
+        (e.status === 'pending' && user && e.created_by === user.email);
       const eventDate = e.event_date ? new Date(e.event_date) : null;
       const isUpcoming = !eventDate || eventDate >= now;
       return isApproved && isUpcoming;
