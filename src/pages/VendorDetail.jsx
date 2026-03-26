@@ -33,7 +33,7 @@ import VendorFavoriteButton from "../components/vendor/VendorFavoriteButton";
 import AvailabilityCalendar from "../components/vendor/AvailabilityCalendar";
 import MobileHeader from "../components/layout/MobileHeader";
 import ReportDialog from "../components/reports/ReportDialog";
-import { formatPrice, detectUserCurrency } from "@/components/utils/currency";
+import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 
 const CATEGORY_LABELS = {
   event_planner: "Event Planner",
@@ -76,11 +76,6 @@ export default function VendorDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   const vendorId = urlParams.get("id");
   const [showAllCategories, setShowAllCategories] = React.useState(false);
-  const [currency, setCurrency] = React.useState(null);
-
-  React.useEffect(() => {
-    detectUserCurrency().then(setCurrency);
-  }, []);
 
   const { data: vendor, isLoading } = useQuery({
     queryKey: ['vendor', vendorId],
@@ -264,7 +259,7 @@ export default function VendorDetail() {
             <div className="mb-4">
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100">
-                  {vendor.starting_price && currency ? formatPrice(vendor.starting_price, currency) : "Price varies"}
+                  {vendor.starting_price ? formatPrice(vendor.starting_price, getCurrencyByCode(vendor.price_currency)) : "Price varies"}
                 </span>
                 {vendor.starting_price && <span className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm font-normal">starting price</span>}
               </div>

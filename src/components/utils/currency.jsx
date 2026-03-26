@@ -1,18 +1,27 @@
 // Currency detection and formatting utility
 
-const CURRENCY_MAP = {
-  GH: { code: 'GHS', symbol: '₵', name: 'Ghanaian Cedi' },
-  US: { code: 'USD', symbol: '$', name: 'US Dollar' },
-  GB: { code: 'GBP', symbol: '£', name: 'British Pound' },
-  NG: { code: 'NGN', symbol: '₦', name: 'Nigerian Naira' },
-  KE: { code: 'KES', symbol: 'KSh', name: 'Kenyan Shilling' },
-  ZA: { code: 'ZAR', symbol: 'R', name: 'South African Rand' },
-  CA: { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' },
-  EU: { code: 'EUR', symbol: '€', name: 'Euro' },
-};
+export const CURRENCY_OPTIONS = [
+  { code: 'GHS', symbol: 'GH₵', name: 'Ghanaian Cedi' },
+  { code: 'USD', symbol: '$', name: 'US Dollar' },
+  { code: 'GBP', symbol: '£', name: 'British Pound' },
+  { code: 'EUR', symbol: '€', name: 'Euro' },
+  { code: 'NGN', symbol: '₦', name: 'Nigerian Naira' },
+  { code: 'KES', symbol: 'KSh', name: 'Kenyan Shilling' },
+  { code: 'ZAR', symbol: 'R', name: 'South African Rand' },
+  { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' },
+];
+
+const CURRENCY_MAP = Object.fromEntries(CURRENCY_OPTIONS.map(c => [c.code, c]));
 
 // Default to GHS (Ghanaian Cedi)
 const DEFAULT_CURRENCY = { code: 'GHS', symbol: 'GH₵', name: 'Ghanaian Cedi' };
+
+/**
+ * Get currency object by code. Falls back to GHS.
+ */
+export const getCurrencyByCode = (code) => {
+  return CURRENCY_MAP[code] || DEFAULT_CURRENCY;
+};
 
 let cachedCurrency = null;
 

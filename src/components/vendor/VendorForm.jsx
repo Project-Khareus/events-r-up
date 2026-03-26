@@ -18,6 +18,8 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { compressImage } from "@/components/utils/imageCompress";
+import { CURRENCY_OPTIONS } from "@/components/utils/currency";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const EVENT_TYPES = [
 { value: "weddings", label: "Weddings" },
@@ -109,6 +111,7 @@ const DEFAULT_FORM_DATA = {
   gallery_videos: [],
   services: [],
   years_in_business: "",
+  price_currency: "GHS",
   subscription_type: "trial",
   ghana_card_number: "",
   ghana_card_image_url: "",
@@ -769,14 +772,28 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
 
           </div>
           <div>
-            <Label>Starting Price (USD)</Label>
-            <Input
-              type="number"
-              value={formData.starting_price}
-              onChange={(e) => setFormData({ ...formData, starting_price: e.target.value })}
-              placeholder="e.g., 500"
-              className="mt-1" />
-
+            <Label>Starting Price</Label>
+            <div className="flex gap-2 mt-1">
+              <Select
+                value={formData.price_currency || "GHS"}
+                onValueChange={(val) => setFormData({ ...formData, price_currency: val })}>
+                <SelectTrigger className="w-[120px] shrink-0">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {CURRENCY_OPTIONS.map((c) => (
+                    <SelectItem key={c.code} value={c.code}>
+                      {c.symbol} {c.code}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Input
+                type="number"
+                value={formData.starting_price}
+                onChange={(e) => setFormData({ ...formData, starting_price: e.target.value })}
+                placeholder="e.g., 500" />
+            </div>
           </div>
         </div>
       </Card>

@@ -1,0 +1,293 @@
+{
+  "name": "Vendor",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "ID of the user who owns this vendor listing"
+    },
+    "business_name": {
+      "type": "string",
+      "description": "Name of the vendor business"
+    },
+    "slogan": {
+      "type": "string",
+      "description": "Business slogan or tagline"
+    },
+    "logo_url": {
+      "type": "string",
+      "description": "Business logo image URL"
+    },
+    "profile_picture_url": {
+      "type": "string",
+      "description": "Profile picture URL"
+    },
+    "years_in_business": {
+      "type": "number",
+      "description": "Number of years in business"
+    },
+    "awards": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of awards and recognitions"
+    },
+    "certifications": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Professional certifications and credentials"
+    },
+    "event_type": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "weddings",
+          "parties",
+          "conference",
+          "funeral"
+        ]
+      },
+      "description": "Event types this vendor serves"
+    },
+    "category": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "event_planner",
+          "bridal_fashion",
+          "makeup_artistes",
+          "decor_logistics",
+          "event_grounds",
+          "photography_videography",
+          "design_creatives",
+          "catering",
+          "jewellery",
+          "honeymoon_packages",
+          "music_karaoke_mc",
+          "car_rentals",
+          "social_media_support",
+          "ushers",
+          "dance_tutorials",
+          "rent_a_team",
+          "conference_facilities",
+          "rapporteur_services",
+          "caskets",
+          "catering_drinks",
+          "fashion_wreaths",
+          "others"
+        ]
+      },
+      "description": "Types of service provided"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of services offered"
+    },
+    "location": {
+      "type": "string",
+      "description": "City or region where vendor operates"
+    },
+    "starting_price": {
+      "type": "number",
+      "description": "Starting price for services"
+    },
+    "price_currency": {
+      "type": "string",
+      "enum": [
+        "GHS",
+        "USD",
+        "GBP",
+        "EUR",
+        "NGN",
+        "KES",
+        "ZAR",
+        "CAD"
+      ],
+      "default": "GHS",
+      "description": "Currency for the starting price"
+    },
+    "contact_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "contact_phone": {
+      "type": "string"
+    },
+    "website": {
+      "type": "string"
+    },
+    "instagram": {
+      "type": "string",
+      "description": "Instagram handle"
+    },
+    "facebook": {
+      "type": "string",
+      "description": "Facebook page URL"
+    },
+    "twitter": {
+      "type": "string",
+      "description": "Twitter/X handle"
+    },
+    "tiktok": {
+      "type": "string",
+      "description": "TikTok handle"
+    },
+    "linkedin": {
+      "type": "string",
+      "description": "LinkedIn profile URL"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Main showcase image"
+    },
+    "gallery_images": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Portfolio/gallery images"
+    },
+    "gallery_videos": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Portfolio/gallery video URLs"
+    },
+    "services": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of specific services offered"
+    },
+    "rating": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 5
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "suspended"
+      ],
+      "default": "pending",
+      "description": "Listing approval status"
+    },
+    "suspension_reason": {
+      "type": "string"
+    },
+    "pending_changes": {
+      "type": "object"
+    },
+    "has_pending_changes": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_trial": {
+      "type": "boolean",
+      "default": false
+    },
+    "subscription_type": {
+      "type": "string",
+      "enum": [
+        "trial",
+        "explorer",
+        "monthly",
+        "annual"
+      ]
+    },
+    "subscription_start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "subscription_end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "stripe_customer_id": {
+      "type": "string"
+    },
+    "stripe_subscription_id": {
+      "type": "string"
+    },
+    "ghana_card_number": {
+      "type": "string",
+      "description": "Ghana National ID Card number"
+    },
+    "ghana_card_image_url": {
+      "type": "string",
+      "description": "Upload of the Ghana Card (front)"
+    },
+    "ghana_card_back_image_url": {
+      "type": "string",
+      "description": "Upload of the Ghana Card (back)"
+    },
+    "ghana_card_selfie_url": {
+      "type": "string",
+      "description": "Selfie photo of the vendor for facial matching"
+    },
+    "ghana_card_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "verified",
+        "failed"
+      ],
+      "default": "pending",
+      "description": "Ghana Card verification status"
+    },
+    "ghana_card_verification_message": {
+      "type": "string",
+      "description": "Response message from the Ghana Card verification API"
+    },
+    "ghana_card_verified_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when Ghana Card was verified"
+    }
+  },
+  "required": [
+    "business_name",
+    "event_type",
+    "category"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": true,
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

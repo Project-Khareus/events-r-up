@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "../../utils";
 import { Badge } from "@/components/ui/badge";
 import VendorFavoriteButton from "../vendor/VendorFavoriteButton";
-import { formatPrice, detectUserCurrency } from "@/components/utils/currency";
+import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 
 const CATEGORY_LABELS = {
   bridal_fashion: "Bridal Fashion",
@@ -35,11 +35,7 @@ export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
   if (!vendor) return null;
 
   const [imageError, setImageError] = React.useState(false);
-  const [currency, setCurrency] = React.useState(null);
-
-  React.useEffect(() => {
-    detectUserCurrency().then(setCurrency);
-  }, []);
+  const currency = getCurrencyByCode(vendor.price_currency);
 
   const averageRating = reviews.length > 0
     ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
