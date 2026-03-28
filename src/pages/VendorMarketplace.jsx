@@ -70,11 +70,11 @@ export default function VendorMarketplace() {
   const { data: rawVendors = [], isLoading, isFetching } = useQuery({
     queryKey: ['vendors', vendorPage],
     queryFn: () => base44.entities.Vendor.list('-created_date', 80),
-    staleTime: 600000, // 10 minutes
-    cacheTime: 1800000, // 30 minutes
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
+    staleTime: 60000, // 1 minute
+    cacheTime: 300000, // 5 minutes
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
     retry: 1,
     keepPreviousData: true
   });
@@ -83,11 +83,11 @@ export default function VendorMarketplace() {
   const { data: allReviews = [] } = useQuery({
     queryKey: ['all_reviews'],
     queryFn: () => base44.entities.Review.list('-created_date', 150),
-    staleTime: 600000, // 10 minutes
-    cacheTime: 1800000, // 30 minutes
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
+    staleTime: 60000, // 1 minute
+    cacheTime: 300000, // 5 minutes
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
     retry: 1
   });
 
