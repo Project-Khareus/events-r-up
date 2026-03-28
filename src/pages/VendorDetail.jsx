@@ -134,7 +134,12 @@ export default function VendorDetail() {
     );
   }
 
-  if (!vendor) {
+  // Block access to non-approved vendors unless the user is the owner or an admin
+  const isOwnerOrAdmin = currentUser && (
+    vendor?.user_id === currentUser.id || currentUser.role === 'admin'
+  );
+
+  if (!vendor || (vendor.status && vendor.status !== 'approved' && !isOwnerOrAdmin)) {
     return (
       <div className="min-h-screen bg-white dark:bg-slate-900 flex items-center justify-center">
         <div className="text-center">

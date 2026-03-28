@@ -50,22 +50,19 @@ export default function EventDetail() {
   const nearbyEvents = useMemo(() => {
     if (!event || !events.length) return [];
     return events
-      .filter(e => e.id !== event.id)
+      .filter(e => e.id !== event.id && e.status === 'approved')
       .map(e => ({
           ...e,
           distance: getDistanceFromLatLonInKm(event.location_lat, event.location_lng, e.location_lat, e.location_lng)
       }))
       .sort((a, b) => a.distance - b.distance)
-      .slice(0, 4); // Top 4 closest
+      .slice(0, 4);
   }, [event, events]);
 
   const similarEvents = useMemo(() => {
     if (!event || !events.length) return [];
-    // Similar by theme, excluding self and those already in nearby (to avoid dupes visually if desired, but okay to duplicate logic if specifically asked for sections)
-    // User asked for "sections related to nearby events as well as similar events based on themes"
-    // It is possible an event is both nearby and similar.
     return events
-      .filter(e => e.id !== event.id && e.theme === event.theme)
+      .filter(e => e.id !== event.id && e.status === 'approved' && e.theme === event.theme)
       .slice(0, 4);
   }, [event, events]);
 

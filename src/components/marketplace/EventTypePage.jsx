@@ -28,7 +28,9 @@ export default function EventTypePage({ eventType, title, description, categorie
   });
 
   const vendors = useMemo(() => {
-    return rawVendors.map(v => v.data ? { id: v.id, ...v.data } : v);
+    return rawVendors
+      .map(v => v.data ? { id: v.id, ...v.data } : v)
+      .filter(v => v.status === 'approved');
   }, [rawVendors]);
 
   const filteredVendors = useMemo(() => {

@@ -38,25 +38,8 @@ export default function ReportDialog({ targetType, targetId, targetName, trigger
 
   const submitMutation = useMutation({
     mutationFn: async (data) => {
-      const report = await base44.entities.Report.create(data);
-
-      // Notify all admins
-      const allUsers = await base44.entities.User.list();
-      const admins = allUsers.filter(u => u.role === 'admin');
-      
-      const notificationPromises = admins.map(admin =>
-        base44.entities.Notification.create({
-          user_id: admin.id,
-          type: 'system',
-          title: `New Report: ${targetName}`,
-          message: `A ${targetType} has been reported for: ${data.reasons.slice(0, 2).join(', ')}${data.reasons.length > 2 ? '...' : ''}`,
-          link: `AdminReports?id=${report.id}`,
-          action_by: user.full_name || user.email,
-        })
-      );
-      await Promise.all(notificationPromises);
-
-      return report;
+      const result = await base44.functions.invoke('submitReport', data);
+      return result.data;
     },
     onSuccess: () => {
       toast.success("Report submitted. Our team will review it shortly.");
@@ -114,15 +97,12 @@ export default function ReportDialog({ targetType, targetId, targetName, trigger
       return;
     }
     submitMutation.mutate({
-      reporter_id: user.id,
-      reporter_email: user.email,
       target_type: targetType,
       target_id: targetId,
       target_name: targetName,
       reasons: selectedReasons,
       details: details.trim() || undefined,
       attachments: attachments.length > 0 ? attachments : undefined,
-      status: "pending"
     });
   };
 
