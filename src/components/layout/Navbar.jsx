@@ -188,24 +188,30 @@ export default function Navbar() {
                         )}
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-80 p-0">
-                      <div className="flex items-center justify-between p-4 border-b">
-                        <h4 className="font-semibold">Notifications</h4>
-                        <Link to={createPageUrl("Notifications")} className="text-xs text-indigo-600 hover:underline">
+                    <DropdownMenuContent align="end" className="w-96 p-0 rounded-xl shadow-xl border-slate-200 dark:border-slate-700">
+                      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-slate-700">
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-semibold text-sm text-slate-900 dark:text-slate-100">Notifications</h4>
+                          {unreadCount > 0 && (
+                            <span className="text-[11px] font-medium bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300 px-1.5 py-0.5 rounded-full">
+                              {unreadCount}
+                            </span>
+                          )}
+                        </div>
+                        <Link to={createPageUrl("Notifications")} className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors">
                           View all
                         </Link>
                       </div>
-                      <div className="max-h-[400px] overflow-y-auto">
+                      <div className="max-h-[420px] overflow-y-auto py-1">
                         {notifications.length === 0 ? (
-                          <div className="p-8 text-center text-slate-500 text-sm">
-                            No notifications yet
+                          <div className="py-10 text-center">
+                            <Bell className="h-8 w-8 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+                            <p className="text-sm text-slate-500 dark:text-slate-400">No notifications yet</p>
                           </div>
                         ) : (
-                          <div className="divide-y divide-slate-100">
+                          <div className="px-1">
                             {notifications.map(notification => (
-                              <div key={notification.id} className="p-2 hover:bg-slate-50">
-                                <NotificationItem notification={notification} compact={true} />
-                              </div>
+                              <NotificationItem key={notification.id} notification={notification} compact={true} />
                             ))}
                           </div>
                         )}
