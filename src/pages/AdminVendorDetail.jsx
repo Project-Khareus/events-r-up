@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, ArrowLeft } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, ArrowLeft, CreditCard } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function AdminVendorDetail() {
@@ -28,6 +28,15 @@ export default function AdminVendorDetail() {
       if (user.role !== 'admin') throw new Error("Unauthorized");
       const vendors = await base44.entities.Vendor.filter({ id: vendorId });
       return vendors[0];
+    },
+    enabled: !!vendorId,
+  });
+
+  const { data: verification } = useQuery({
+    queryKey: ['admin_vendor_verification', vendorId],
+    queryFn: async () => {
+      const verifications = await base44.entities.VendorVerification.filter({ vendor_id: vendorId });
+      return verifications[0] || null;
     },
     enabled: !!vendorId,
   });
@@ -298,6 +307,51 @@ export default function AdminVendorDetail() {
             <h3 className="font-semibold text-slate-900 mb-2">Description</h3>
             <p className="text-slate-600">{vendor.description || 'No description provided'}</p>
           </div>
+
+          {/* Ghana Card Verification */}
+          {verification && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-6 mb-6">
+              <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                <CreditCard className="h-5 w-5 text-amber-600" />
+                Ghana Card Verification
+              </h3>
+              <div className="space-y-3">
+                <div>
+                  <p className="text-sm text-slate-500">Card Number</p>
+                  <p className="font-medium text-slate-900">{verification.ghana_card_number || 'N/A'}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-slate-500">Status</p>
+                  <Badge className={verification.ghana_card_status === 'verified' ? 'bg-green-500 text-white' : verification.ghana_card_status === 'failed' ? 'bg-red-500 text-white' : 'bg-yellow-500 text-white'}>
+                    {verification.ghana_card_status || 'pending'}
+                  </Badge>
+                  {verification.ghana_card_verification_message && (
+                    <p className="text-xs text-slate-500 mt-1">{verification.ghana_card_verification_message}</p>
+                  )}
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  {verification.ghana_card_image_url && (
+                    <div>
+                      <p className="text-xs text-slate-500 mb-1">Front</p>
+                      <img src={verification.ghana_card_image_url} alt="Card Front" className="w-full h-24 object-cover rounded border" />
+                    </div>
+                  )}
+                  {verification.ghana_card_back_image_url && (
+                    <div>
+                      <p className="text-xs text-slate-500 mb-1">Back</p>
+                      <img src={verification.ghana_card_back_image_url} alt="Card Back" className="w-full h-24 object-cover rounded border" />
+                    </div>
+                  )}
+                  {verification.ghana_card_selfie_url && (
+                    <div>
+                      <p className="text-xs text-slate-500 mb-1">Selfie</p>
+                      <img src={verification.ghana_card_selfie_url} alt="Selfie" className="w-full h-24 object-cover rounded border" />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Pending Changes */}
           {vendor.has_pending_changes && vendor.pending_changes && (

@@ -113,6 +113,7 @@ const DEFAULT_FORM_DATA = {
   years_in_business: "",
   price_currency: "GHS",
   subscription_type: "trial",
+  // Ghana Card fields (stored in separate VendorVerification entity)
   ghana_card_number: "",
   ghana_card_image_url: "",
   ghana_card_back_image_url: "",
@@ -138,6 +139,26 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
   const [nameChangeReasons, setNameChangeReasons] = useState([]);
   const [pendingNameChange, setPendingNameChange] = useState("");
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
+
+  // Load verification data for edit mode
+  useEffect(() => {
+    if (initialData?.id) {
+      base44.entities.VendorVerification.filter({ vendor_id: initialData.id })
+        .then(verifications => {
+          if (verifications.length > 0) {
+            const v = verifications[0];
+            setFormData(prev => ({
+              ...prev,
+              ghana_card_number: v.ghana_card_number || "",
+              ghana_card_image_url: v.ghana_card_image_url || "",
+              ghana_card_back_image_url: v.ghana_card_back_image_url || "",
+              ghana_card_selfie_url: v.ghana_card_selfie_url || "",
+            }));
+          }
+        })
+        .catch(() => {});
+    }
+  }, [initialData?.id]);
 
   useEffect(() => {
     if (initialData) {

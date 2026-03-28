@@ -1,0 +1,88 @@
+{
+  "name": "VendorVerification",
+  "type": "object",
+  "properties": {
+    "vendor_id": {
+      "type": "string",
+      "description": "ID of the vendor this verification belongs to"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "ID of the user who owns the vendor"
+    },
+    "ghana_card_number": {
+      "type": "string",
+      "description": "Ghana National ID Card number"
+    },
+    "ghana_card_image_url": {
+      "type": "string",
+      "description": "Upload of the Ghana Card (front)"
+    },
+    "ghana_card_back_image_url": {
+      "type": "string",
+      "description": "Upload of the Ghana Card (back)"
+    },
+    "ghana_card_selfie_url": {
+      "type": "string",
+      "description": "Selfie photo of the vendor for facial matching"
+    },
+    "ghana_card_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "verified",
+        "failed"
+      ],
+      "default": "pending",
+      "description": "Ghana Card verification status"
+    },
+    "ghana_card_verification_message": {
+      "type": "string",
+      "description": "Response message from the Ghana Card verification API"
+    },
+    "ghana_card_verified_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when Ghana Card was verified"
+    }
+  },
+  "required": [
+    "vendor_id",
+    "user_id",
+    "ghana_card_number"
+  ],
+  "rls": {
+    "create": {
+      "user_id": "{{user.id}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

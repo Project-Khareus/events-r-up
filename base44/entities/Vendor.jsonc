@@ -219,22 +219,6 @@
     "stripe_subscription_id": {
       "type": "string"
     },
-    "ghana_card_number": {
-      "type": "string",
-      "description": "Ghana National ID Card number"
-    },
-    "ghana_card_image_url": {
-      "type": "string",
-      "description": "Upload of the Ghana Card (front)"
-    },
-    "ghana_card_back_image_url": {
-      "type": "string",
-      "description": "Upload of the Ghana Card (back)"
-    },
-    "ghana_card_selfie_url": {
-      "type": "string",
-      "description": "Selfie photo of the vendor for facial matching"
-    },
     "ghana_card_status": {
       "type": "string",
       "enum": [
@@ -243,16 +227,7 @@
         "failed"
       ],
       "default": "pending",
-      "description": "Ghana Card verification status"
-    },
-    "ghana_card_verification_message": {
-      "type": "string",
-      "description": "Response message from the Ghana Card verification API"
-    },
-    "ghana_card_verified_at": {
-      "type": "string",
-      "format": "date-time",
-      "description": "Timestamp when Ghana Card was verified"
+      "description": "Ghana Card verification status (synced from VendorVerification)"
     }
   },
   "required": [

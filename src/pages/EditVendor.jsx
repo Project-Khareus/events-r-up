@@ -66,25 +66,49 @@ export default function EditVendor() {
 
   const updateVendorMutation = useMutation({
     mutationFn: async (data) => {
+      // Separate Ghana Card fields from vendor data
+      const { ghana_card_number, ghana_card_image_url, ghana_card_back_image_url, ghana_card_selfie_url, ...restData } = data;
+
       // Track changes
       const changes = [];
-      Object.keys(data).forEach(key => {
+      Object.keys(restData).forEach(key => {
         const oldVal = vendor[key];
-        const newVal = data[key];
+        const newVal = restData[key];
         if (JSON.stringify(oldVal) !== JSON.stringify(newVal)) {
           changes.push(key);
         }
       });
 
       const pendingChanges = {
-        ...data,
-        starting_price: data.starting_price ? parseFloat(data.starting_price) : undefined,
-        years_in_business: data.years_in_business ? parseInt(data.years_in_business) : undefined,
+        ...restData,
+        starting_price: restData.starting_price ? parseFloat(restData.starting_price) : undefined,
+        years_in_business: restData.years_in_business ? parseInt(restData.years_in_business) : undefined,
       };
 
       // Check if business_name is being changed
-      const nameChanged = vendor.business_name !== data.business_name;
-      const nameChangeReasons = data.name_change_reasons || [];
+      const nameChanged = vendor.business_name !== restData.business_name;
+      const nameChangeReasons = restData.name_change_reasons || [];
+
+      // Update Ghana Card data in VendorVerification entity
+      if (ghana_card_number || ghana_card_image_url || ghana_card_back_image_url || ghana_card_selfie_url) {
+        const verifications = await base44.entities.VendorVerification.filter({ vendor_id: vendor.id });
+        const verificationData = {
+          ghana_card_number,
+          ghana_card_image_url,
+          ghana_card_back_image_url,
+          ghana_card_selfie_url,
+        };
+        if (verifications.length > 0) {
+          await base44.entities.VendorVerification.update(verifications[0].id, verificationData);
+        } else {
+          await base44.entities.VendorVerification.create({
+            ...verificationData,
+            vendor_id: vendor.id,
+            user_id: vendor.user_id,
+            ghana_card_status: 'pending'
+          });
+        }
+      }
       
       // Store changes in pending_changes field, don't update main listing yet
       return { 

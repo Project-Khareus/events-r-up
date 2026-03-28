@@ -48,10 +48,13 @@ export default function VendorSignup() {
 
   const createCheckoutMutation = useMutation({
     mutationFn: async (data) => {
+      // Separate Ghana Card fields from vendor data
+      const { ghana_card_number, ghana_card_image_url, ghana_card_back_image_url, ghana_card_selfie_url, ...restData } = data;
+
       const vendorData = {
-        ...data,
-        starting_price: data.starting_price ? parseFloat(data.starting_price) : undefined,
-        years_in_business: data.years_in_business ? parseInt(data.years_in_business) : undefined
+        ...restData,
+        starting_price: restData.starting_price ? parseFloat(restData.starting_price) : undefined,
+        years_in_business: restData.years_in_business ? parseInt(restData.years_in_business) : undefined
       };
 
       // Check if trial is selected
@@ -76,6 +79,17 @@ export default function VendorSignup() {
           subscription_start_date: new Date().toISOString().split('T')[0],
           subscription_end_date: trialEndDate.toISOString().split('T')[0],
           status: 'pending'
+        });
+
+        // Create verification record in separate entity
+        await base44.entities.VendorVerification.create({
+          vendor_id: newVendor.id,
+          user_id: user.id,
+          ghana_card_number,
+          ghana_card_image_url,
+          ghana_card_back_image_url,
+          ghana_card_selfie_url,
+          ghana_card_status: 'pending'
         });
 
         return { trial: true, vendorId: newVendor.id };

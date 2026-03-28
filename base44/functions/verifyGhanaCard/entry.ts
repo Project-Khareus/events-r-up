@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
 
 Deno.serve(async (req) => {
   try {
@@ -14,14 +14,16 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'vendor_id is required' }, { status: 400 });
     }
 
-    const vendor = await base44.asServiceRole.entities.Vendor.get(vendor_id);
-    if (!vendor) {
-      return Response.json({ error: 'Vendor not found' }, { status: 404 });
+    // Fetch verification data from the separate entity
+    const verifications = await base44.asServiceRole.entities.VendorVerification.filter({ vendor_id });
+    if (!verifications || verifications.length === 0) {
+      return Response.json({ error: 'No verification data found for this vendor' }, { status: 404 });
     }
 
-    const frontUrl = vendor.ghana_card_image_url;
-    const backUrl = vendor.ghana_card_back_image_url;
-    const selfieUrl = vendor.ghana_card_selfie_url;
+    const verification = verifications[0];
+    const frontUrl = verification.ghana_card_image_url;
+    const backUrl = verification.ghana_card_back_image_url;
+    const selfieUrl = verification.ghana_card_selfie_url;
 
     if (!frontUrl || !backUrl || !selfieUrl) {
       return Response.json({ 
@@ -63,12 +65,10 @@ Deno.serve(async (req) => {
     const docBack = toBase64(backBuf);
     const selfie = toBase64(selfieBuf);
 
-    console.log("Base64 sizes - Front:", docFront.length, "Back:", docBack.length, "Selfie:", selfie.length);
-
     const apiKey = Deno.env.get("GHANA_CARD_API_KEY");
     const apiSecret = Deno.env.get("GHANA_CARD_API_SECRET");
 
-    // Try multipart/form-data first (more efficient for file uploads)
+    // Try multipart/form-data first
     console.log("Attempting multipart/form-data upload...");
     const formData = new FormData();
     formData.append("doc_front", new Blob([frontBuf], { type: "image/jpeg" }), "front.jpg");
@@ -126,14 +126,20 @@ Deno.serve(async (req) => {
     }
 
     if (apiResponse.status === 413) {
-      // Mark as failed so admin knows to ask vendor to re-upload
-      await base44.asServiceRole.entities.Vendor.update(vendor_id, {
-        ghana_card_status: 'failed',
-        ghana_card_verification_message: 'Images are too large for the verification API. Please ask the vendor to re-upload their Ghana Card images and selfie — they will be automatically compressed on upload.'
-      });
+      // Mark as failed on both entities
+      const failMsg = 'Images are too large for the verification API. Please ask the vendor to re-upload their Ghana Card images and selfie — they will be automatically compressed on upload.';
+      await Promise.all([
+        base44.asServiceRole.entities.VendorVerification.update(verification.id, {
+          ghana_card_status: 'failed',
+          ghana_card_verification_message: failMsg
+        }),
+        base44.asServiceRole.entities.Vendor.update(vendor_id, {
+          ghana_card_status: 'failed'
+        })
+      ]);
 
       return Response.json({
-        error: "Images are too large for the verification API. The vendor needs to re-upload their Ghana Card images (front, back, and selfie). New uploads are automatically compressed to meet the API size limit.",
+        error: failMsg,
         image_sizes: {
           front: `${(frontBuf.byteLength / 1024).toFixed(0)} KB`,
           back: `${(backBuf.byteLength / 1024).toFixed(0)} KB`,
@@ -164,11 +170,17 @@ Deno.serve(async (req) => {
     const isVerified = apiResponse.ok && (apiResult.verified === true || apiResult.status === "verified" || apiResult.success === true);
     const message = apiResult.message || apiResult.detail || (isVerified ? "Ghana Card verified successfully" : "Ghana Card verification failed");
 
-    await base44.asServiceRole.entities.Vendor.update(vendor_id, {
-      ghana_card_status: isVerified ? 'verified' : 'failed',
-      ghana_card_verification_message: message,
-      ghana_card_verified_at: new Date().toISOString()
-    });
+    // Update both the verification entity and the vendor's status field
+    await Promise.all([
+      base44.asServiceRole.entities.VendorVerification.update(verification.id, {
+        ghana_card_status: isVerified ? 'verified' : 'failed',
+        ghana_card_verification_message: message,
+        ghana_card_verified_at: new Date().toISOString()
+      }),
+      base44.asServiceRole.entities.Vendor.update(vendor_id, {
+        ghana_card_status: isVerified ? 'verified' : 'failed'
+      })
+    ]);
 
     return Response.json({
       success: true,
