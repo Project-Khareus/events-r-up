@@ -17,8 +17,8 @@ export default function VendorCategorySection({ title, eventType, category, vend
     }
   };
 
-  // Hide category if less than 2 vendors
-  if (vendors.length < 2) return null;
+  // Hide category if no vendors
+  if (vendors.length === 0) return null;
 
   // Determine target link
   const pageName = eventType ? eventType.charAt(0).toUpperCase() + eventType.slice(1) : "VendorMarketplace";
