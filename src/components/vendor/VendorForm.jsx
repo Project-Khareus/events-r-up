@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -703,12 +704,23 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
 
         <div className="mt-4">
           <Label>Description</Label>
-          <Textarea
-            value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            placeholder="Describe your services, experience, and what makes you unique..."
-            className="mt-1 min-h-28" />
-
+          <div className="mt-1">
+            <ReactQuill
+              theme="snow"
+              value={formData.description || ""}
+              onChange={(value) => setFormData({ ...formData, description: value })}
+              placeholder="Describe your services, experience, and what makes you unique..."
+              modules={{
+                toolbar: [
+                  [{ header: [1, 2, 3, false] }],
+                  ['bold', 'italic', 'underline'],
+                  [{ list: 'ordered' }, { list: 'bullet' }],
+                  ['link'],
+                  ['clean']
+                ]
+              }}
+            />
+          </div>
         </div>
 
         <div className="mt-4">
