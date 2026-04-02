@@ -8,6 +8,10 @@ Deno.serve(async (req) => {
 
     const appId = Deno.env.get('BASE44_APP_ID');
     const serviceToken = Deno.env.get('BASE44_SERVICE_TOKEN');
+
+    // Debug: log what we have
+    const tokenPreview = serviceToken ? serviceToken.substring(0, 20) + '...' : 'NOT FOUND';
+    
     const url = `https://base44.app/api/apps/${appId}/entities/EventListing`;
 
     const results = [];
@@ -17,15 +21,14 @@ Deno.serve(async (req) => {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${serviceToken}`,
-          'X-Bypass-RLS': 'true',
         },
         body: JSON.stringify(event),
       });
       const data = await res.json();
-      results.push(data);
+      results.push({ status: res.status, data });
     }
 
-    return Response.json({ ok: true, created: results.length, results });
+    return Response.json({ ok: true, created: results.length, tokenPreview, results });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
