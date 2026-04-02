@@ -51,7 +51,7 @@ const CATEGORY_LABELS = {
   rentals: "Rentals",
   bakery: "Bakery & Desserts",
   bridal_fashion: "Fashion & Accessories",
-  makeup_artistes: "Make-Up Artistes",
+  beauty_personal_care: "Beauty & Personal Care",
   decor_logistics: "Décor & Logistics",
   event_grounds: "Event Venues",
   photography_videography: "Photo & Video",
@@ -165,7 +165,7 @@ export default function VendorDetail() {
   
   // Categories that need availability calendar
   const BOOKING_CATEGORIES = [
-    'makeup_artistes',
+    'beauty_personal_care',
     'event_grounds',
     'photography_videography',
     'catering',

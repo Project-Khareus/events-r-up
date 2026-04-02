@@ -18,7 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 const CATEGORY_LABELS = {
   event_planner: "Event Planner",
   bridal_fashion: "Fashion & Accessories",
-  makeup_artistes: "Make-Up Artistes",
+  beauty_personal_care: "Beauty & Personal Care",
   decor_logistics: "Décor & Logistics Setup",
   event_grounds: "Event Venues",
   photography_videography: "Photography & Videography",

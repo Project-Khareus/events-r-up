@@ -9,7 +9,7 @@ import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 
 const CATEGORY_LABELS = {
   bridal_fashion: "Bridal Fashion",
-  makeup_artistes: "Make-Up",
+  beauty_personal_care: "Beauty",
   decor_logistics: "Décor & Logistics",
   event_grounds: "Event Grounds",
   photography_videography: "Photo & Video",
@@ -32,24 +32,25 @@ const CATEGORY_LABELS = {
 };
 
 export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
-  if (!vendor) return null;
-
   const [imageError, setImageError] = React.useState(false);
-  const currency = getCurrencyByCode(vendor.price_currency);
+  const currency = vendor ? getCurrencyByCode(vendor.price_currency) : null;
 
   const averageRating = reviews.length > 0
     ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
-    : vendor.rating;
+    : vendor?.rating;
 
   const isFeatured = useMemo(() => {
+    if (!vendor) return false;
     if (reviews.length >= 3 && averageRating >= 4.5) {
       const hash = vendor.id.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
       return hash % 10 < 7;
     }
     return false;
-  }, [reviews.length, averageRating, vendor.id]);
+  }, [reviews.length, averageRating, vendor?.id]);
 
-  const categories = Array.isArray(vendor.category) ? vendor.category : (vendor.category ? [vendor.category] : []);
+  const categories = Array.isArray(vendor?.category) ? vendor.category : (vendor?.category ? [vendor.category] : []);
+
+  if (!vendor) return null;
 
   return (
     <div className="relative block h-full">

@@ -4,7 +4,7 @@ import EventTypePage from '../components/marketplace/EventTypePage';
 const CATEGORIES = [
   { name: "Event Planner", id: "event_planner" },
   { name: "Event Venues", id: "event_grounds" },
-  { name: "Make-Up Artistes", id: "makeup_artistes" },
+  { name: "Beauty & Personal Care", id: "beauty_personal_care" },
   { name: "Décor & Logistics Setup", id: "decor_logistics" },
   { name: "Photography & Videography", id: "photography_videography" },
   { name: "Design & Creatives", id: "design_creatives" },

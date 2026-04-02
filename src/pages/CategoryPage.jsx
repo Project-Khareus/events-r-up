@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 const CATEGORY_LABELS = {
   bridal_fashion: "Bridal Fashion & Accessories",
-  makeup_artistes: "Make-Up Artistes",
+  beauty_personal_care: "Beauty & Personal Care",
   decor_logistics: "Décor & Logistics Setup",
   event_grounds: "Event Grounds",
   photography_videography: "Photography & Videography",
