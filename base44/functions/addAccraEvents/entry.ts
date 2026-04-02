@@ -1,5 +1,3 @@
-import { createClient } from 'npm:@base44/sdk@0.8.23';
-
 Deno.serve(async (req) => {
   try {
     const { events } = await req.json().catch(() => ({ events: [] }));
@@ -8,18 +6,26 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'No events provided' }, { status: 400 });
     }
 
-    const serviceToken = Deno.env.get('BASE44_SERVICE_TOKEN');
     const appId = Deno.env.get('BASE44_APP_ID');
-
-    const base44 = createClient({ appId, serviceToken });
+    const serviceToken = Deno.env.get('BASE44_SERVICE_TOKEN');
+    const url = `https://base44.app/api/apps/${appId}/entities/EventListing`;
 
     const results = [];
     for (const event of events) {
-      const created = await base44.asServiceRole.entities.EventListing.create(event);
-      results.push(created);
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${serviceToken}`,
+          'X-Bypass-RLS': 'true',
+        },
+        body: JSON.stringify(event),
+      });
+      const data = await res.json();
+      results.push(data);
     }
 
-    return Response.json({ ok: true, created: results.length });
+    return Response.json({ ok: true, created: results.length, results });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
