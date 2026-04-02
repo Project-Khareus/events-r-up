@@ -8,10 +8,10 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'No events provided' }, { status: 400 });
     }
 
-    const base44 = createClient({
-      appId: Deno.env.get('BASE44_APP_ID'),
-      serviceToken: Deno.env.get('BASE44_SERVICE_TOKEN'),
-    });
+    const serviceToken = Deno.env.get('BASE44_SERVICE_TOKEN');
+    const appId = Deno.env.get('BASE44_APP_ID');
+
+    const base44 = createClient({ appId, serviceToken });
 
     const results = [];
     for (const event of events) {
