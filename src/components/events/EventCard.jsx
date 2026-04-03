@@ -11,9 +11,9 @@ export default function EventCard({ event }) {
   const date = new Date(event.event_date);
   
   return (
-    <div className="h-full relative group bg-white">
+    <div className="h-full relative group bg-white dark:bg-slate-800">
       <Link to={createPageUrl("EventDetail") + `?id=${event.id}`} className="block h-full">
-        <div className="flex flex-col h-full hover:bg-slate-50 transition-colors rounded-lg overflow-hidden">
+        <div className="flex flex-col h-full hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors rounded-lg overflow-hidden">
           {/* Image Container */}
           <div className="relative aspect-[2/1] overflow-hidden">
             <img 
@@ -36,24 +36,24 @@ export default function EventCard({ event }) {
           
           {/* Content */}
           <div className="flex-1 p-4 flex flex-col gap-1">
-            <h3 className="text-[1.15rem] font-bold text-[#1e0a3c] leading-[1.3] mb-1 line-clamp-2 group-hover:text-indigo-600 transition-colors tracking-tight">
+            <h3 className="text-[1.15rem] font-bold text-slate-900 dark:text-slate-100 leading-[1.3] mb-1 line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors tracking-tight">
               {event.title}
             </h3>
             
-            <div className="text-sm font-bold text-[#d1410c] truncate">
+            <div className="text-sm font-bold text-orange-600 dark:text-orange-400 truncate">
               {format(date, 'EEE, MMM d • h:mm a')}
             </div>
 
-            <div className="text-sm text-[#6f7287] truncate">
+            <div className="text-sm text-slate-500 dark:text-slate-400 truncate">
               {event.location_address || "Online Event"}
             </div>
 
-            <div className="text-sm font-medium text-[#6f7287] mt-1">
+            <div className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
                {event.is_paid ? (event.price ? `$${event.price}` : 'Starts at $0') : 'Free'}
             </div>
             
             <div className="mt-3 flex items-center gap-2">
-                <Badge variant="outline" className="text-xs font-medium text-[#6f7287] border-slate-200 bg-slate-50/50">
+                <Badge variant="outline" className="text-xs font-medium text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600 bg-slate-50/50 dark:bg-slate-700/50">
                     {event.theme}
                 </Badge>
             </div>
