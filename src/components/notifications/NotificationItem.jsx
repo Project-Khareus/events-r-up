@@ -138,14 +138,18 @@ export default function NotificationItem({ notification, onRead, compact = false
     </div>
   );
 
+  const handleClick = () => {
+    if (!notification.is_read && onRead) onRead(notification);
+  };
+
   if (notification.link) {
     const linkPath = notification.link.startsWith('/') ? notification.link : createPageUrl(notification.link);
     return (
-      <Link to={linkPath} onClick={() => onRead && onRead(notification)}>
+      <Link to={linkPath} onClick={handleClick}>
         <Content />
       </Link>
     );
   }
 
-  return <Content />;
+  return <div onClick={handleClick} className="cursor-pointer"><Content /></div>;
 }
