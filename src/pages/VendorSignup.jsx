@@ -165,7 +165,7 @@ export default function VendorSignup() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-700 mb-6">
             <Store className="h-8 w-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Create Your Vendor Profile</h1>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">Create Your Vendor Listing</h1>
           <p className="text-slate-600">Join Khareus and reach thousands of event planners</p>
         </div>
 
