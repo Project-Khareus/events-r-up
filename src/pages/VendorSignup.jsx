@@ -92,7 +92,7 @@ export default function VendorSignup() {
           ghana_card_status: 'pending'
         });
 
-        return { trial: true, vendorId: newVendor.id };
+        return { trial: true, vendorId: newVendor.id, businessName: vendorData.business_name };
       }
 
       // For paid plans, use checkout
@@ -103,15 +103,59 @@ export default function VendorSignup() {
 
       return response.data;
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       if (data.trial) {
-        // Trial created successfully, redirect to manage listing
         toast.success("Trial listing created! We'll review it shortly.");
+
+        // Send confirmation email to the vendor
+        try {
+          await base44.integrations.Core.SendEmail({
+            to: user.email,
+            from_name: 'Khareus',
+            subject: 'Your Vendor Listing Has Been Submitted!',
+            body: `
+              <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+                <div style="padding: 32px 24px;">
+                  <h1 style="color: #4F46E5; font-size: 24px; margin: 0 0 20px 0;">Listing Submitted Successfully!</h1>
+                  <p style="color: #334155; font-size: 15px; line-height: 1.6;">Hi ${user.full_name || 'there'},</p>
+                  <p style="color: #334155; font-size: 15px; line-height: 1.6;">Your vendor listing has been submitted and is now pending review by our team. We'll notify you once it's approved.</p>
+                  <div style="background: #F8FAFC; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #E2E8F0;">
+                    <p style="margin: 4px 0; color: #334155;"><strong>What happens next?</strong></p>
+                    <ul style="color: #334155; font-size: 14px; line-height: 1.8;">
+                      <li>Our team will review your listing within 24-48 hours</li>
+                      <li>You'll receive an email when your listing is approved</li>
+                      <li>You can view and edit your listing anytime from your dashboard</li>
+                    </ul>
+                  </div>
+                  <p style="color: #334155; font-size: 15px; line-height: 1.6;">Want to make changes? You can edit your listing before it's approved:</p>
+                  <a href="https://khareus.com/ManageListing" style="display: inline-block; padding: 12px 28px; background-color: #4F46E5; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; margin: 16px 0;">View My Listings</a>
+                  <a href="https://khareus.com/EditVendor?id=${data.vendorId}" style="display: inline-block; padding: 12px 28px; background-color: #ffffff; color: #4F46E5; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; margin: 16px 0 16px 8px; border: 2px solid #4F46E5;">Edit Listing</a>
+                </div>
+                <div style="border-top: 1px solid #E2E8F0; padding: 20px 24px; text-align: center;">
+                  <p style="color: #94A3B8; font-size: 12px; margin: 0;">&copy; ${new Date().getFullYear()} Khareus. All rights reserved.</p>
+                </div>
+              </div>
+            `
+          });
+        } catch (e) {
+          console.error('Failed to send vendor confirmation email:', e);
+        }
+
+        // Notify admin
+        try {
+          await base44.functions.invoke('notifyVendorSubmission', {
+            business_name: data.businessName || 'New Vendor',
+            vendor_id: data.vendorId,
+            contact_email: user.email
+          });
+        } catch (e) {
+          console.error('Failed to notify admin:', e);
+        }
+
         setTimeout(() => {
           navigate(createPageUrl("ManageListing"));
         }, 1500);
       } else {
-        // Redirect to Stripe checkout
         window.location.href = data.url;
       }
     },
