@@ -13,6 +13,39 @@ import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, Store, Edit2,
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 
+const CATEGORY_LABELS = {
+  event_planner: "Event Planner",
+  bridal_fashion: "Fashion & Accessories",
+  beauty_personal_care: "Beauty & Personal Care",
+  makeup_artistes: "Beauty & Personal Care",
+  decor_logistics: "Décor & Logistics Setup",
+  event_grounds: "Event Grounds",
+  photography_videography: "Photography & Videography",
+  design_creatives: "Design & Creatives",
+  catering: "Catering",
+  jewellery: "Jewellery",
+  honeymoon_packages: "Honeymoon Packages",
+  music_karaoke_mc: "Music / Karaoke / MCs",
+  car_rentals: "Car Rentals",
+  social_media_support: "Social Media Support",
+  ushers: "Ushers",
+  dance_tutorials: "Dance Tutorials",
+  rent_a_team: "Rent-a-Team",
+  conference_facilities: "Conference Facilities",
+  rapporteur_services: "Rapporteur Services",
+  caskets: "Caskets",
+  catering_drinks: "Catering & Drinks",
+  fashion_wreaths: "Fashion / Wreaths",
+  others: "Others",
+};
+
+const EVENT_TYPE_LABELS = {
+  weddings: "Weddings",
+  parties: "Parties",
+  conference: "Conference",
+  funeral: "Funeral",
+};
+
 export default function AdminVendors() {
   const queryClient = useQueryClient();
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
@@ -438,9 +471,13 @@ export default function AdminVendors() {
                     <div className="flex items-start justify-between">
                       <div>
                         <h3 className="text-xl font-bold text-slate-900">{vendor.business_name}</h3>
-                        <div className="flex gap-2 mt-1 mb-2">
-                          <Badge variant="secondary">{vendor.event_type}</Badge>
-                          <Badge variant="outline">{vendor.category}</Badge>
+                        <div className="flex gap-2 mt-1 mb-2 flex-wrap">
+                          {Array.isArray(vendor.event_type) ? vendor.event_type.map(et => (
+                            <Badge key={et} variant="secondary">{EVENT_TYPE_LABELS[et] || et}</Badge>
+                          )) : <Badge variant="secondary">{EVENT_TYPE_LABELS[vendor.event_type] || vendor.event_type}</Badge>}
+                          {Array.isArray(vendor.category) ? vendor.category.map(cat => (
+                            <Badge key={cat} variant="outline">{CATEGORY_LABELS[cat] || cat}</Badge>
+                          )) : <Badge variant="outline">{CATEGORY_LABELS[vendor.category] || vendor.category}</Badge>}
                         </div>
                       </div>
                       <Link to={`/VendorDetail?id=${vendor.id}`} target="_blank">
