@@ -66,35 +66,6 @@ export default function VendorMarketplace() {
   const [aiMatchedIds, setAiMatchedIds] = useState(null);
   const [isAiSearching, setIsAiSearching] = useState(false);
 
-  const handleAiSearch = useCallback(async (query) => {
-    if (!query?.trim()) {
-      setAiMatchedIds(null);
-      return;
-    }
-    setIsAiSearching(true);
-    const vendorsForAi = vendors.map(v => ({
-      id: v.id,
-      name: v.business_name,
-      description: (v.description || "").slice(0, 120),
-      categories: v.category,
-      event_types: v.event_type,
-      location: v.location,
-      services: v.services?.slice(0, 5),
-      price: v.starting_price,
-    }));
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `You are a vendor search engine. Given the user query and list of vendors, return the IDs of ALL vendors that match. Consider name, description, categories, services, location, and event types. Be generous — include partial matches.\n\nUser query: "${query}"\n\nVendors:\n${JSON.stringify(vendorsForAi)}`,
-      response_json_schema: {
-        type: "object",
-        properties: {
-          matched_ids: { type: "array", items: { type: "string" } }
-        }
-      }
-    });
-    setAiMatchedIds(new Set(result.matched_ids || []));
-    setIsAiSearching(false);
-  }, [vendors]);
-
   useEffect(() => {
     setEventType(eventParam);
     setCategory(categoryParam);
@@ -130,6 +101,35 @@ export default function VendorMarketplace() {
     map((v) => v.data ? { id: v.id, ...v.data } : v).
     filter((v) => !v.status || v.status === 'approved');
   }, [rawVendors]);
+
+  const handleAiSearch = useCallback(async (query) => {
+    if (!query?.trim()) {
+      setAiMatchedIds(null);
+      return;
+    }
+    setIsAiSearching(true);
+    const vendorsForAi = vendors.map(v => ({
+      id: v.id,
+      name: v.business_name,
+      description: (v.description || "").slice(0, 120),
+      categories: v.category,
+      event_types: v.event_type,
+      location: v.location,
+      services: v.services?.slice(0, 5),
+      price: v.starting_price,
+    }));
+    const result = await base44.integrations.Core.InvokeLLM({
+      prompt: `You are a vendor search engine. Given the user query and list of vendors, return the IDs of ALL vendors that match. Consider name, description, categories, services, location, and event types. Be generous — include partial matches.\n\nUser query: "${query}"\n\nVendors:\n${JSON.stringify(vendorsForAi)}`,
+      response_json_schema: {
+        type: "object",
+        properties: {
+          matched_ids: { type: "array", items: { type: "string" } }
+        }
+      }
+    });
+    setAiMatchedIds(new Set(result.matched_ids || []));
+    setIsAiSearching(false);
+  }, [vendors]);
 
   const filteredVendors = useMemo(() => {
     let filtered = vendors.filter((vendor) => {
