@@ -25,10 +25,10 @@ const REPORT_OUTCOMES = [
 ];
 
 const STATUS_MAP = {
-  pending: { label: "Pending", color: "bg-amber-100 text-amber-800", icon: Clock },
-  reviewed: { label: "Reviewed", color: "bg-blue-100 text-blue-800", icon: Eye },
-  resolved: { label: "Resolved", color: "bg-green-100 text-green-800", icon: CheckCircle },
-  dismissed: { label: "Dismissed", color: "bg-slate-100 text-slate-800", icon: XCircle },
+  pending: { label: "Pending", color: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300", icon: Clock },
+  reviewed: { label: "Reviewed", color: "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300", icon: Eye },
+  resolved: { label: "Resolved", color: "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300", icon: CheckCircle },
+  dismissed: { label: "Dismissed", color: "bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300", icon: XCircle },
 };
 
 export default function AdminReports() {
@@ -233,20 +233,20 @@ export default function AdminReports() {
     const isHighlighted = highlightId === report.id;
 
     return (
-      <Card key={report.id} className={`p-5 bg-white ${isHighlighted ? 'ring-2 ring-indigo-500' : ''}`}>
+      <Card key={report.id} className={`p-6 bg-white dark:bg-slate-800/80 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow ${isHighlighted ? 'ring-2 ring-indigo-500' : ''}`}>
         <div className="flex flex-col gap-4">
           {/* Header */}
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
-                <Flag className="h-5 w-5 text-red-600" />
+              <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center shrink-0">
+                <Flag className="h-5 w-5 text-red-600 dark:text-red-400" />
               </div>
               <div>
-                <h3 className="font-bold text-slate-900 text-lg">{report.target_name}</h3>
-                <p className="text-sm text-slate-500">
+                <h3 className="font-bold text-slate-900 dark:text-white text-lg">{report.target_name}</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
                   {report.target_type === "vendor" ? "Vendor" : "Event"} • Reported by {report.reporter_email}
                 </p>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
                   {new Date(report.created_date).toLocaleString('en-US', {
                     month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true
                   })}
@@ -262,7 +262,7 @@ export default function AdminReports() {
           {/* Reasons */}
           <div className="flex flex-wrap gap-1.5">
             {(report.reasons || []).map((reason, i) => (
-              <Badge key={i} variant="outline" className="text-xs font-normal text-red-700 border-red-200 bg-red-50">
+              <Badge key={i} variant="outline" className="text-xs font-medium text-red-700 border-red-300 bg-red-50 dark:text-red-300 dark:border-red-700/50 dark:bg-red-900/30">
                 {reason}
               </Badge>
             ))}
@@ -270,9 +270,9 @@ export default function AdminReports() {
 
           {/* Details */}
           {report.details && (
-            <div className="bg-slate-50 rounded-lg p-3 text-sm text-slate-700">
-              <p className="font-medium text-slate-900 text-xs mb-1">Reporter's Details:</p>
-              {report.details}
+            <div className="bg-slate-50 dark:bg-slate-900/50 rounded-lg p-3.5 text-sm text-slate-700 dark:text-slate-300 border border-slate-100 dark:border-slate-700">
+              <p className="font-semibold text-slate-900 dark:text-slate-200 text-xs mb-1.5 uppercase tracking-wide">Reporter's Details</p>
+              <p className="leading-relaxed">{report.details}</p>
             </div>
           )}
 
@@ -289,14 +289,14 @@ export default function AdminReports() {
 
           {/* Admin Notes */}
           {report.admin_notes && (
-            <div className="bg-indigo-50 rounded-lg p-3 text-sm text-indigo-900 border border-indigo-100">
-              <p className="font-semibold text-xs mb-1">Admin Decision:</p>
-              {report.admin_notes}
+            <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-3.5 text-sm text-amber-900 dark:text-amber-200 border border-amber-200 dark:border-amber-700/40">
+              <p className="font-semibold text-xs mb-1.5 uppercase tracking-wide text-amber-700 dark:text-amber-400">Admin Decision</p>
+              <p className="leading-relaxed">{report.admin_notes}</p>
             </div>
           )}
 
           {/* Actions */}
-          <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
+          <div className="flex flex-wrap gap-2 pt-3 border-t border-slate-100 dark:border-slate-700">
             {report.target_type === "vendor" && (
               <Link to={`${createPageUrl("VendorDetail")}?id=${report.target_id}`} target="_blank">
                 <Button variant="outline" size="sm" className="gap-1.5">
@@ -322,7 +322,7 @@ export default function AdminReports() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 md:p-8">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-4 md:p-8">
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
           <Button variant="ghost" size="sm" onClick={() => navigate(createPageUrl("AdminVendors"))}>
@@ -331,18 +331,18 @@ export default function AdminReports() {
         </div>
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
               <AlertTriangle className="h-8 w-8 text-red-500" />
               Reports
             </h1>
-            <p className="text-slate-600 mt-1">Review and act on user reports</p>
+            <p className="text-slate-600 dark:text-slate-400 mt-1">Review and act on user reports</p>
           </div>
           <div className="flex gap-3">
-            <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-red-200">
-              <span className="font-semibold text-red-600">{pendingReports.length}</span> Pending
+            <div className="bg-white dark:bg-slate-800 px-4 py-2.5 rounded-lg shadow-sm border border-red-200 dark:border-red-800/40">
+              <span className="font-semibold text-red-600 dark:text-red-400">{pendingReports.length}</span> <span className="text-slate-700 dark:text-slate-300">Pending</span>
             </div>
-            <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200">
-              <span className="font-semibold text-slate-600">{reports.length}</span> Total
+            <div className="bg-white dark:bg-slate-800 px-4 py-2.5 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
+              <span className="font-semibold text-slate-700 dark:text-slate-200">{reports.length}</span> <span className="text-slate-600 dark:text-slate-400">Total</span>
             </div>
           </div>
         </div>
@@ -356,10 +356,10 @@ export default function AdminReports() {
 
           <TabsContent value="pending">
             {pendingReports.length === 0 ? (
-              <Card className="p-12 text-center bg-white">
+              <Card className="p-12 text-center bg-white dark:bg-slate-800/80 dark:border-slate-700">
                 <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-3" />
-                <h3 className="text-lg font-semibold text-slate-900">No pending reports</h3>
-                <p className="text-slate-500">All reports have been addressed.</p>
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white">No pending reports</h3>
+                <p className="text-slate-500 dark:text-slate-400">All reports have been addressed.</p>
               </Card>
             ) : (
               <div className="space-y-4">{pendingReports.map(renderReportCard)}</div>
@@ -367,8 +367,8 @@ export default function AdminReports() {
           </TabsContent>
           <TabsContent value="reviewed">
             {reviewedReports.length === 0 ? (
-              <Card className="p-12 text-center bg-white">
-                <p className="text-slate-500">No reports under review.</p>
+              <Card className="p-12 text-center bg-white dark:bg-slate-800/80 dark:border-slate-700">
+                <p className="text-slate-500 dark:text-slate-400">No reports under review.</p>
               </Card>
             ) : (
               <div className="space-y-4">{reviewedReports.map(renderReportCard)}</div>
@@ -376,8 +376,8 @@ export default function AdminReports() {
           </TabsContent>
           <TabsContent value="resolved">
             {resolvedReports.length === 0 ? (
-              <Card className="p-12 text-center bg-white">
-                <p className="text-slate-500">No resolved reports yet.</p>
+              <Card className="p-12 text-center bg-white dark:bg-slate-800/80 dark:border-slate-700">
+                <p className="text-slate-500 dark:text-slate-400">No resolved reports yet.</p>
               </Card>
             ) : (
               <div className="space-y-4">{resolvedReports.map(renderReportCard)}</div>
