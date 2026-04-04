@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, ArrowLeft, CreditCard, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
+import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 
 export default function AdminVendorDetail() {
   const navigate = useNavigate();
@@ -307,7 +308,7 @@ export default function AdminVendorDetail() {
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Starting Price</h3>
-              <p className="text-slate-600 font-bold text-lg">{vendor.starting_price ? `$${vendor.starting_price}` : 'N/A'}</p>
+              <p className="text-slate-600 font-bold text-lg">{vendor.starting_price ? formatPrice(vendor.starting_price, getCurrencyByCode(vendor.price_currency)) : 'N/A'}</p>
             </div>
           </div>
 
