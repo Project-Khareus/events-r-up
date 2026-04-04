@@ -371,8 +371,8 @@ export default function AdminVendors() {
            <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-orange-200">
              <span className="font-semibold text-orange-600">{vendorsWithChanges.length}</span> Updates
            </div>
-           <Link to={createPageUrl("AdminReports")}>
-             <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-red-200 hover:bg-red-50 transition-colors cursor-pointer">
+           <Link to="/AdminReports">
+              <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-red-200 hover:bg-red-50 transition-colors cursor-pointer">
                <span className="font-semibold text-red-600">{pendingReportsCount}</span> Reports
              </div>
            </Link>
@@ -402,7 +402,7 @@ export default function AdminVendors() {
             <TabsTrigger value="all" className="gap-2">
               All Vendors ({approvedVendors.length})
             </TabsTrigger>
-            <Link to={createPageUrl("AdminReports")}>
+            <Link to="/AdminReports">
               <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700 hover:bg-red-50 gap-1.5 ml-2">
                 <Flag className="h-4 w-4" />
                 Reports ({pendingReportsCount})
@@ -443,7 +443,7 @@ export default function AdminVendors() {
                           <Badge variant="outline">{vendor.category}</Badge>
                         </div>
                       </div>
-                      <Link to={`${createPageUrl("VendorDetail")}?id=${vendor.id}`} target="_blank">
+                      <Link to={`/VendorDetail?id=${vendor.id}`} target="_blank">
                         <Button variant="ghost" size="sm" className="gap-2">
                           View Details <ExternalLink className="h-4 w-4" />
                         </Button>
@@ -580,7 +580,7 @@ export default function AdminVendors() {
                           })}
                         </p>
                       </div>
-                      <Link to={`${createPageUrl("VendorDetail")}?id=${vendor.id}`} target="_blank">
+                      <Link to={`/VendorDetail?id=${vendor.id}`} target="_blank">
                         <Button variant="ghost" size="sm" className="gap-2">
                           View Live <ExternalLink className="h-4 w-4" />
                         </Button>
@@ -740,13 +740,13 @@ export default function AdminVendors() {
 
                       <div className="space-y-2">
                         <div className="flex gap-2">
-                          <Link to={`${createPageUrl("AdminVendorDetail")}?id=${vendor.id}`} className="flex-1">
+                          <Link to={`/AdminVendorDetail?id=${vendor.id}`} className="flex-1">
                             <Button variant="outline" className="w-full">
                               <Eye className="h-4 w-4 mr-2" />
                               Review
                             </Button>
                           </Link>
-                          <Link to={`${createPageUrl("VendorDetail")}?id=${vendor.id}`} target="_blank">
+                          <Link to={`/VendorDetail?id=${vendor.id}`} target="_blank">
                             <Button variant="ghost" size="icon">
                               <ExternalLink className="h-4 w-4" />
                             </Button>

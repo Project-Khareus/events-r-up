@@ -64,7 +64,7 @@ export default function AdminVendorDetail() {
       toast.success("Vendor approved and notified!");
       queryClient.invalidateQueries(['admin_vendor_detail']);
       queryClient.invalidateQueries(['admin_pending_vendors']);
-      navigate(createPageUrl("AdminVendors"));
+      navigate('/AdminVendors');
     },
     onError: (error) => {
       toast.error("Failed to approve vendor: " + error.message);
@@ -94,7 +94,7 @@ export default function AdminVendorDetail() {
       toast.success("Vendor rejected");
       queryClient.invalidateQueries(['admin_vendor_detail']);
       queryClient.invalidateQueries(['admin_pending_vendors']);
-      navigate(createPageUrl("AdminVendors"));
+      navigate('/AdminVendors');
     },
   });
 
@@ -147,7 +147,7 @@ export default function AdminVendorDetail() {
       toast.success("Changes approved and vendor notified!");
       queryClient.invalidateQueries(['admin_vendor_detail']);
       queryClient.invalidateQueries(['admin_vendors_with_changes']);
-      navigate(createPageUrl("AdminVendors"));
+      navigate('/AdminVendors');
     },
   });
 
@@ -204,7 +204,7 @@ export default function AdminVendorDetail() {
       queryClient.invalidateQueries(['admin_vendors_with_changes']);
       setRejectDialogOpen(false);
       setRejectionReason("");
-      navigate(createPageUrl("AdminVendors"));
+      navigate('/AdminVendors');
     },
   });
 
@@ -221,7 +221,7 @@ export default function AdminVendorDetail() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-slate-900 mb-2">Vendor not found</h2>
-          <Button onClick={() => navigate(createPageUrl("AdminVendors"))}>
+          <Button onClick={() => navigate('/AdminVendors')}>
             Back to Admin
           </Button>
         </div>
@@ -245,7 +245,7 @@ export default function AdminVendorDetail() {
       <div className="max-w-5xl mx-auto">
         <Button 
           variant="ghost" 
-          onClick={() => navigate(createPageUrl("AdminVendors"))}
+          onClick={() => navigate('/AdminVendors')}
           className="mb-6"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
@@ -269,7 +269,7 @@ export default function AdminVendorDetail() {
                 )}
               </div>
             </div>
-            <Link to={`${createPageUrl("VendorDetail")}?id=${vendor.id}`} target="_blank">
+            <Link to={`/VendorDetail?id=${vendor.id}`} target="_blank">
               <Button variant="outline" size="sm" className="shrink-0">
                 View Public <ExternalLink className="h-4 w-4 ml-2" />
               </Button>
