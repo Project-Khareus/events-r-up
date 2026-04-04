@@ -229,6 +229,14 @@ export default function AdminVendorDetail() {
     );
   }
 
+  const formatPhone = (phone) => {
+    if (!phone) return 'N/A';
+    const cleaned = phone.replace(/\s+/g, '');
+    if (cleaned.startsWith('+')) return cleaned;
+    if (cleaned.startsWith('0')) return '+233' + cleaned.substring(1);
+    return '+233' + cleaned;
+  };
+
   const formatValue = (val) => {
     if (val === null || val === undefined || val === '') return 'Not set';
     if (Array.isArray(val)) {
@@ -291,7 +299,7 @@ export default function AdminVendorDetail() {
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Phone</h3>
-              <p className="text-slate-600">{vendor.contact_phone || 'N/A'}</p>
+              <p className="text-slate-600">{vendor.contact_phone ? formatPhone(vendor.contact_phone) : 'N/A'}</p>
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Location</h3>
