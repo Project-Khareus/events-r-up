@@ -305,7 +305,7 @@ export default function AdminVendorDetail() {
 
           <div className="mb-6">
             <h3 className="font-semibold text-slate-900 mb-2">Description</h3>
-            <p className="text-slate-600">{vendor.description || 'No description provided'}</p>
+            <div className="text-slate-600 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: vendor.description || 'No description provided' }} />
           </div>
 
           {/* Ghana Card Verification */}
