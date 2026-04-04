@@ -480,11 +480,18 @@ export default function AdminVendors() {
                           )) : <Badge variant="outline">{CATEGORY_LABELS[vendor.category] || vendor.category}</Badge>}
                         </div>
                       </div>
-                      <Link to={`/VendorDetail?id=${vendor.id}`} target="_blank">
-                        <Button variant="ghost" size="sm" className="gap-2">
-                          View Details <ExternalLink className="h-4 w-4" />
-                        </Button>
-                      </Link>
+                      <div className="flex gap-2">
+                        <Link to={`/VendorDetail?id=${vendor.id}`} target="_blank">
+                          <Button variant="outline" size="sm" className="gap-2 text-indigo-600 border-indigo-200 hover:bg-indigo-50">
+                            <Eye className="h-4 w-4" /> Preview Listing
+                          </Button>
+                        </Link>
+                        <Link to={`/AdminVendorDetail?id=${vendor.id}`}>
+                          <Button variant="ghost" size="sm" className="gap-2">
+                            Admin View <ExternalLink className="h-4 w-4" />
+                          </Button>
+                        </Link>
+                      </div>
                     </div>
                     
                     <p className="text-slate-600 line-clamp-2 mb-4">{vendor.description}</p>

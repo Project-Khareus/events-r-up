@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, ArrowLeft, CreditCard } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, ArrowLeft, CreditCard, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function AdminVendorDetail() {
@@ -270,8 +270,8 @@ export default function AdminVendorDetail() {
               </div>
             </div>
             <Link to={`/VendorDetail?id=${vendor.id}`} target="_blank">
-              <Button variant="outline" size="sm" className="shrink-0">
-                View Public <ExternalLink className="h-4 w-4 ml-2" />
+              <Button variant="outline" size="sm" className="shrink-0 text-indigo-600 border-indigo-200 hover:bg-indigo-50 gap-2">
+                <Eye className="h-4 w-4" /> Preview as Public
               </Button>
             </Link>
           </div>
