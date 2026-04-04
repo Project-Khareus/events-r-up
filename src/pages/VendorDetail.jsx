@@ -52,6 +52,7 @@ const CATEGORY_LABELS = {
   bakery: "Bakery & Desserts",
   bridal_fashion: "Fashion & Accessories",
   beauty_personal_care: "Beauty & Personal Care",
+  makeup_artistes: "Beauty & Personal Care",
   decor_logistics: "Décor & Logistics",
   event_grounds: "Event Venues",
   photography_videography: "Photo & Video",

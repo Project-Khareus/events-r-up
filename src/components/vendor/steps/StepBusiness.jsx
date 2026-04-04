@@ -18,7 +18,7 @@ const CATEGORIES_BY_EVENT = {
   weddings: [
     { value: "event_planner", label: "Event Planner" },
     { value: "bridal_fashion", label: "Fashion & Accessories" },
-    { value: "makeup_artistes", label: "Make-Up Artistes" },
+    { value: "beauty_personal_care", label: "Beauty & Personal Care" },
     { value: "decor_logistics", label: "Décor & Logistics Setup" },
     { value: "event_grounds", label: "Event Grounds" },
     { value: "photography_videography", label: "Photography & Videography" },
@@ -36,7 +36,7 @@ const CATEGORIES_BY_EVENT = {
   parties: [
     { value: "event_planner", label: "Event Planner" },
     { value: "event_grounds", label: "Event Venues" },
-    { value: "makeup_artistes", label: "Make-Up Artistes" },
+    { value: "beauty_personal_care", label: "Beauty & Personal Care" },
     { value: "decor_logistics", label: "Décor & Logistics Setup" },
     { value: "photography_videography", label: "Photography & Videography" },
     { value: "design_creatives", label: "Design & Creatives" },
