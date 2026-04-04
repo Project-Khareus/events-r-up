@@ -16,12 +16,12 @@ export default function BudgetSelector({ value, onChange, onNext, onBack }) {
     <div className="space-y-6">
       <div className="text-center mb-8">
         <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">What's your budget?</h2>
-        <p className="text-slate-500">This helps us show vendors within your price range</p>
+        <p className="text-slate-600">This helps us show vendors within your price range</p>
       </div>
 
       <div className="max-w-md mx-auto space-y-6">
         <div>
-          <label className="text-sm font-medium mb-2 block text-slate-700">Enter custom amount</label>
+          <label className="text-sm font-semibold mb-2 block text-slate-800">Enter custom amount</label>
           <div className="relative">
             <Wallet className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
             <span className="absolute left-12 top-1/2 -translate-y-1/2 text-sm font-semibold text-slate-500">GH₵</span>
@@ -38,7 +38,7 @@ export default function BudgetSelector({ value, onChange, onNext, onBack }) {
         </div>
 
         <div>
-          <p className="text-sm font-medium text-slate-500 mb-3 text-center">— or pick a range —</p>
+          <p className="text-sm font-medium text-slate-400 mb-3 text-center">— or pick a range —</p>
           <div className="grid gap-2">
             {BUDGET_PRESETS.map((preset) => {
               const isSelected = value === preset.value.toString();

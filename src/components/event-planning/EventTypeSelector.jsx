@@ -14,7 +14,7 @@ export default function EventTypeSelector({ value, onChange, onNext }) {
     <div className="space-y-6">
       <div className="text-center mb-8">
         <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">What type of event are you planning?</h2>
-        <p className="text-slate-500">Choose one to get started</p>
+        <p className="text-slate-600">Choose one to get started</p>
       </div>
 
       <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
@@ -34,8 +34,8 @@ export default function EventTypeSelector({ value, onChange, onNext }) {
               <div className={`inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br ${type.color} mb-3 shadow-sm`}>
                 <Icon className="h-5 w-5 text-white" />
               </div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-1">{type.label}</h3>
-              <p className="text-sm text-slate-500 leading-relaxed">{type.description}</p>
+              <h3 className="text-lg font-bold text-slate-900 mb-1">{type.label}</h3>
+              <p className="text-sm text-slate-600 leading-relaxed">{type.description}</p>
               {isSelected && (
                 <div className={`absolute top-4 right-4 w-6 h-6 rounded-full bg-gradient-to-br ${type.color} flex items-center justify-center`}>
                   <svg className="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
