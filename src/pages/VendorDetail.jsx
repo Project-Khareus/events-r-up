@@ -86,7 +86,7 @@ export default function VendorDetail() {
     staleTime: 300000,
   });
 
-  const { data: currentUser } = useQuery({
+  const { data: currentUser, isLoading: isLoadingUser } = useQuery({
     queryKey: ['currentUser'],
     queryFn: async () => {
       const authenticated = await base44.auth.isAuthenticated();
@@ -139,7 +139,8 @@ export default function VendorDetail() {
     vendor?.user_id === currentUser.id || currentUser.role === 'admin'
   );
 
-  if (!vendor || (vendor.status && vendor.status !== 'approved' && !isOwnerOrAdmin)) {
+  // Wait for user check before showing "not found" for non-approved vendors
+  if (!vendor) {
     return (
       <div className="min-h-screen bg-white dark:bg-slate-900 flex items-center justify-center">
         <div className="text-center">
@@ -153,6 +154,31 @@ export default function VendorDetail() {
         </div>
       </div>
     );
+  }
+
+  if (vendor.status && vendor.status !== 'approved') {
+    if (isLoadingUser) {
+      return (
+        <div className="min-h-screen bg-white dark:bg-slate-900 flex items-center justify-center">
+          <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
+        </div>
+      );
+    }
+    if (!isOwnerOrAdmin) {
+      return (
+        <div className="min-h-screen bg-white dark:bg-slate-900 flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">Vendor not found</h2>
+            <Link to={createPageUrl("VendorMarketplace")}>
+              <Button variant="outline" className="rounded-xl">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Marketplace
+              </Button>
+            </Link>
+          </div>
+        </div>
+      );
+    }
   }
 
   const allImages = [vendor.image_url, ...(vendor.gallery_images || [])].filter(Boolean);
