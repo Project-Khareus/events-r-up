@@ -462,7 +462,7 @@ export default function Navbar() {
                             <Settings className="h-5 w-5 group-hover:scale-110 transition-transform" />
                             <span className="font-medium">Settings</span>
                           </Link>
-                          
+
                           <Link 
                             to={createPageUrl("ManageListing")} 
                             onClick={() => setMobileMenuOpen(false)}
@@ -471,7 +471,25 @@ export default function Navbar() {
                             <Store className="h-5 w-5 group-hover:scale-110 transition-transform" />
                             <span className="font-medium">Manage Listing</span>
                           </Link>
-                          
+
+                          <Link 
+                            to={createPageUrl("Bookings")} 
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
+                          >
+                            <CalendarDays className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                            <span className="font-medium">My Bookings</span>
+                          </Link>
+
+                          <Link 
+                            to={createPageUrl("MyFavorites")} 
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
+                          >
+                            <Heart className="h-5 w-5 group-hover:scale-110 transition-transform" />
+                            <span className="font-medium">My Favorites</span>
+                          </Link>
+
                           {user.role === 'admin' && (
                             <Link 
                               to={createPageUrl("AdminVendors")} 
