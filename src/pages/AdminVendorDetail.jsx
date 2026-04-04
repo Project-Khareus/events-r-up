@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, ArrowLeft, CreditCard, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
+import { capitalizeHtmlSentences } from "@/components/utils/capitalizeHtml";
 
 export default function AdminVendorDetail() {
   const navigate = useNavigate();
@@ -314,7 +315,7 @@ export default function AdminVendorDetail() {
 
           <div className="mb-6">
             <h3 className="font-semibold text-slate-900 mb-2">Description</h3>
-            <div className="text-slate-600 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: vendor.description || 'No description provided' }} />
+            <div className="text-slate-600 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: capitalizeHtmlSentences(vendor.description) || 'No description provided' }} />
           </div>
 
           {/* Ghana Card Verification */}

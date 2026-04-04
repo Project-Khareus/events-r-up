@@ -13,6 +13,7 @@ import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, Store, Edit2,
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
+import { capitalizeHtmlSentences } from "@/components/utils/capitalizeHtml";
 
 const CATEGORY_LABELS = {
   event_planner: "Event Planner",
@@ -495,7 +496,7 @@ export default function AdminVendors() {
                       </div>
                     </div>
                     
-                    <div className="text-slate-600 line-clamp-2 mb-4 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: vendor.description || '' }} />
+                    <div className="text-slate-600 line-clamp-2 mb-4 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: capitalizeHtmlSentences(vendor.description) || '' }} />
                     
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-slate-500 mb-4">
                       <div>
