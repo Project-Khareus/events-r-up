@@ -6,6 +6,13 @@ import { Mail, Phone, Globe, MessageCircle, Calendar, Instagram, Facebook, Twitt
 import StartConversationButton from "../messaging/StartConversationButton";
 import BookingForm from "../bookings/BookingForm";
 
+function formatPhone(phone) {
+  if (!phone) return phone;
+  if (phone.startsWith('+')) return phone;
+  if (phone.startsWith('0')) return '+233' + phone.substring(1);
+  return '+233' + phone;
+}
+
 export default function ContactBookingModal({ vendor, trigger }) {
   const [open, setOpen] = useState(false);
 
@@ -56,7 +63,7 @@ export default function ContactBookingModal({ vendor, trigger }) {
               
               {vendor.contact_phone && (
                 <a
-                  href={`tel:${vendor.contact_phone}`}
+                  href={`tel:${formatPhone(vendor.contact_phone)}`}
                   className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors"
                 >
                   <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
@@ -64,7 +71,7 @@ export default function ContactBookingModal({ vendor, trigger }) {
                   </div>
                   <div>
                     <p className="text-xs text-slate-500 dark:text-slate-400">Phone</p>
-                    <p className="text-sm font-medium text-slate-700 dark:text-slate-300">{vendor.contact_phone}</p>
+                    <p className="text-sm font-medium text-slate-700 dark:text-slate-300">{formatPhone(vendor.contact_phone)}</p>
                   </div>
                 </a>
               )}
