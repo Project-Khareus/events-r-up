@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, Store, Edit2, Clock, Eye, Search, Ban, CreditCard, ShieldCheck, ShieldX, ShieldAlert, Flag } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
+import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 
 const CATEGORY_LABELS = {
   event_planner: "Event Planner",
@@ -494,7 +495,7 @@ export default function AdminVendors() {
                       </div>
                     </div>
                     
-                    <p className="text-slate-600 line-clamp-2 mb-4">{vendor.description}</p>
+                    <div className="text-slate-600 line-clamp-2 mb-4 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: vendor.description || '' }} />
                     
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-slate-500 mb-4">
                       <div>
@@ -503,11 +504,11 @@ export default function AdminVendors() {
                       </div>
                       <div>
                         <span className="block font-medium text-slate-700">Phone</span>
-                        {vendor.contact_phone || 'N/A'}
+                        {vendor.contact_phone ? (vendor.contact_phone.startsWith('+') ? vendor.contact_phone : vendor.contact_phone.startsWith('0') ? '+233' + vendor.contact_phone.substring(1) : '+233' + vendor.contact_phone) : 'N/A'}
                       </div>
                       <div>
                         <span className="block font-medium text-slate-700">Price</span>
-                        {vendor.price_range} ({vendor.starting_price ? `$${vendor.starting_price}+` : 'N/A'})
+                        {vendor.starting_price ? formatPrice(vendor.starting_price, getCurrencyByCode(vendor.price_currency)) + '+' : 'N/A'}
                       </div>
                       <div>
                         <span className="block font-medium text-slate-700">Submitted</span>
