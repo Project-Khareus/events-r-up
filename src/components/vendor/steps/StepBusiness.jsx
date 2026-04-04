@@ -117,7 +117,7 @@ export default function StepBusiness({ formData, setFormData, onNext, initialDat
               placeholder="Your business name"
               className="mt-1"
             />
-            {initialData?.business_name && (
+            {initialData?.id && initialData?.business_name && (
               <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
                 <AlertCircle className="h-3 w-3" /> Name changes require admin approval
               </p>

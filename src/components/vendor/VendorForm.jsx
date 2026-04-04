@@ -137,8 +137,8 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
       return;
     }
 
-    // Check if name has changed (edit mode)
-    if (initialData && initialData.business_name && formData.business_name !== initialData.business_name) {
+    // Check if name has changed (edit mode only — existing approved listing)
+    if (isEditMode && initialData.business_name && formData.business_name !== initialData.business_name) {
       setNameChangeDialogOpen(true);
       return;
     }
