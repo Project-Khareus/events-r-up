@@ -69,40 +69,42 @@ export default function LocationSelector({ value, onChange, onNext, onBack }) {
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">Where is your event?</h2>
-        <p className="text-slate-600">Search for your event location</p>
+        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">Where is your event?</h2>
+        <p className="text-slate-500">We'll find vendors near your location</p>
       </div>
 
       <div className="max-w-md mx-auto space-y-4">
         <div className="relative">
-          <Label className="text-base mb-3 block flex items-center gap-2">
-            <MapPin className="h-4 w-4 text-slate-500" />
+          <Label className="text-sm font-medium mb-2 block text-slate-700">
             Event Location *
           </Label>
-          <Input
-            type="text"
-            placeholder="Enter city, state, or address..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="h-14 rounded-xl text-lg pr-10"
-          />
-          {isSearching && (
-            <Loader2 className="absolute right-4 top-[52px] h-5 w-5 text-slate-400 animate-spin" />
-          )}
+          <div className="relative">
+            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+            <Input
+              type="text"
+              placeholder="Search for a city or address..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-14 rounded-xl text-base pl-12 pr-10 border-slate-200 focus:border-indigo-400 focus:ring-indigo-400"
+            />
+            {isSearching && (
+              <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-indigo-500 animate-spin" />
+            )}
+          </div>
 
           {suggestions.length > 0 && (
-            <div className="absolute z-10 w-full mt-2 bg-white border border-slate-200 rounded-xl shadow-lg max-h-64 overflow-y-auto">
+            <div className="absolute z-10 w-full mt-2 bg-white border border-slate-200 rounded-xl shadow-xl max-h-64 overflow-y-auto">
               {suggestions.map((location, idx) => (
                 <button
                   key={idx}
                   onClick={() => handleSelectLocation(location)}
-                  className="w-full px-4 py-3 text-left hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-b-0"
+                  className="w-full px-4 py-3 text-left hover:bg-indigo-50 transition-colors border-b border-slate-100 last:border-b-0 group"
                 >
                   <div className="flex items-start gap-3">
-                    <MapPin className="h-5 w-5 text-indigo-600 mt-0.5 shrink-0" />
+                    <MapPin className="h-5 w-5 text-indigo-500 mt-0.5 shrink-0" />
                     <div>
-                      <p className="font-medium text-slate-900">{location.name}</p>
-                      <p className="text-sm text-slate-600">{location.formatted_address}</p>
+                      <p className="font-medium text-slate-900 group-hover:text-indigo-700">{location.name}</p>
+                      <p className="text-sm text-slate-500">{location.formatted_address}</p>
                     </div>
                   </div>
                 </button>
@@ -114,9 +116,11 @@ export default function LocationSelector({ value, onChange, onNext, onBack }) {
         {selectedLocation && (
           <div className="p-4 bg-indigo-50 rounded-xl border border-indigo-200">
             <div className="flex items-start gap-3">
-              <MapPin className="h-5 w-5 text-indigo-600 mt-0.5" />
+              <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
+                <MapPin className="h-4 w-4 text-indigo-600" />
+              </div>
               <div>
-                <p className="font-medium text-slate-900">{selectedLocation.name}</p>
+                <p className="font-semibold text-slate-900">{selectedLocation.name}</p>
                 <p className="text-sm text-slate-600">{selectedLocation.formatted_address}</p>
               </div>
             </div>
@@ -124,34 +128,34 @@ export default function LocationSelector({ value, onChange, onNext, onBack }) {
         )}
 
         <div>
-          <Label className="text-sm mb-2 block">Search Radius (miles)</Label>
-          <Input
-            type="number"
-            min="1"
-            max="100"
-            value={radius}
-            onChange={(e) => setRadius(parseInt(e.target.value))}
-            className="rounded-xl"
-          />
-          <p className="text-xs text-slate-500 mt-1">
-            We'll show vendors within {radius} miles of your location
-          </p>
+          <Label className="text-sm font-medium mb-2 block text-slate-700">Search Radius</Label>
+          <div className="flex items-center gap-3">
+            <Input
+              type="number"
+              min="1"
+              max="100"
+              value={radius}
+              onChange={(e) => setRadius(parseInt(e.target.value))}
+              className="rounded-xl h-11 w-24 text-center"
+            />
+            <span className="text-sm text-slate-500">miles from your location</span>
+          </div>
         </div>
       </div>
 
-      <div className="flex gap-4 justify-center mt-8">
+      <div className="flex gap-3 justify-center mt-8">
         <Button
           onClick={onBack}
           variant="outline"
-          className="px-8 h-12 rounded-xl"
+          className="px-6 h-12 rounded-xl border-slate-300 text-slate-700"
         >
-          <ChevronLeft className="h-4 w-4 mr-2" />
+          <ChevronLeft className="h-4 w-4 mr-1" />
           Back
         </Button>
         <Button
           onClick={handleContinue}
           disabled={!selectedLocation}
-          className="px-8 h-12 rounded-xl bg-indigo-600 hover:bg-indigo-700"
+          className="px-8 h-12 rounded-xl bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-200 disabled:shadow-none"
         >
           Continue
         </Button>

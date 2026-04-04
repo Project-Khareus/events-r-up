@@ -71,21 +71,21 @@ export default function CategorySelector({ eventType, budget, selectedCategories
 
   return (
     <div className="space-y-6">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">
           Which vendors do you need?
         </h2>
-        <p className="text-slate-600">
-          Select the vendor types your ${parseInt(budget).toLocaleString()} budget should cover
+        <p className="text-slate-500">
+          Select services your GH₵ {parseInt(budget).toLocaleString()} budget should cover
         </p>
       </div>
 
-      <div className="flex justify-center gap-3 mb-6">
+      <div className="flex justify-center gap-3 mb-4">
         <Button
           type="button"
           variant="outline"
           onClick={selectAll}
-          className="rounded-xl"
+          className="rounded-xl text-sm h-9 border-slate-300"
         >
           Select All
         </Button>
@@ -93,60 +93,64 @@ export default function CategorySelector({ eventType, budget, selectedCategories
           type="button"
           variant="outline"
           onClick={clearAll}
-          className="rounded-xl"
+          className="rounded-xl text-sm h-9 border-slate-300"
         >
           Clear All
         </Button>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 max-w-5xl mx-auto">
         {availableCategories.map((category) => {
           const isSelected = selectedCategories.includes(category.value);
           return (
-            <Card
+            <button
               key={category.value}
               onClick={() => toggleCategory(category.value)}
-              className={`p-4 cursor-pointer transition-all hover:shadow-lg ${
+              className={`relative p-4 rounded-xl text-left transition-all duration-200 border-2 group ${
                 isSelected
-                  ? "border-indigo-600 bg-indigo-50 border-2"
-                  : "border-slate-200 hover:border-indigo-300"
+                  ? "border-indigo-500 bg-indigo-50 shadow-sm"
+                  : "border-slate-200 hover:border-slate-300 bg-white hover:shadow-sm"
               }`}
             >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <h3 className="font-semibold text-slate-900 mb-1">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex-1 min-w-0">
+                  <h3 className={`font-semibold text-sm mb-0.5 ${
+                    isSelected ? "text-indigo-700" : "text-slate-800"
+                  }`}>
                     {category.label}
                   </h3>
-                  <p className="text-sm text-slate-600">
+                  <p className="text-xs text-slate-500 leading-relaxed">
                     {category.description}
                   </p>
                 </div>
-                {isSelected && (
-                  <div className="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center shrink-0 ml-2">
-                    <Check className="h-4 w-4 text-white" />
-                  </div>
-                )}
+                <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-all ${
+                  isSelected
+                    ? "bg-indigo-600"
+                    : "border-2 border-slate-300 group-hover:border-slate-400"
+                }`}>
+                  {isSelected && <Check className="h-3 w-3 text-white" />}
+                </div>
               </div>
-            </Card>
+            </button>
           );
         })}
       </div>
 
-      <div className="flex gap-4 justify-center mt-8">
+      <div className="flex gap-3 justify-center mt-8">
         <Button
           onClick={onBack}
           variant="outline"
-          className="px-8 h-12 rounded-xl"
+          className="px-6 h-12 rounded-xl border-slate-300 text-slate-700"
         >
-          <ChevronLeft className="h-4 w-4 mr-2" />
+          <ChevronLeft className="h-4 w-4 mr-1" />
           Back
         </Button>
         <Button
           onClick={onNext}
           disabled={selectedCategories.length === 0}
-          className="px-8 h-12 rounded-xl bg-indigo-600 hover:bg-indigo-700"
+          className="px-8 h-12 rounded-xl bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-200 disabled:shadow-none"
         >
-          Find Vendors ({selectedCategories.length} selected)
+          View Results ({selectedCategories.length} selected)
         </Button>
       </div>
     </div>
