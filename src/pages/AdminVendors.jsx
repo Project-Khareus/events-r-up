@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 import { capitalizeHtmlSentences } from "@/components/utils/capitalizeHtml";
+import { getVendorUrl } from "../utils/vendorUrl";
 
 const CATEGORY_LABELS = {
   event_planner: "Event Planner",
@@ -110,7 +111,7 @@ export default function AdminVendors() {
           type: 'vendor_approved',
           title: 'Vendor Approved!',
           message: `Congratulations! Your vendor listing "${vendorObj.business_name}" has been approved and is now live.`,
-          link: `VendorDetail?id=${vendorObj.id}`,
+          link: getVendorUrl(vendorObj).substring(1),
           action_by: currentUser.full_name || currentUser.email,
           action_type: 'approved',
           vendor_id: vendorObj.id,
@@ -171,8 +172,8 @@ export default function AdminVendors() {
     },
     onSuccess: async ({ updated, vendor }) => {
       const currentUser = await base44.auth.me();
-      const manageLink = `https://eventsrup.com${createPageUrl("ManageListing")}`;
-      const viewLink = `https://eventsrup.com${createPageUrl("VendorDetail")}?id=${vendor.id}`;
+      const manageLink = `https://khareus.com/managelisting`;
+      const viewLink = `https://khareus.com${getVendorUrl(vendor)}`;
 
       // Get the list of changed fields
       const changes = Object.keys(vendor.pending_changes || {})
@@ -222,9 +223,9 @@ export default function AdminVendors() {
     },
     onSuccess: async ({ updated, vendor, reason }) => {
       const currentUser = await base44.auth.me();
-      const manageLink = `https://eventsrup.com${createPageUrl("ManageListing")}`;
-      const viewLink = `https://eventsrup.com${createPageUrl("VendorDetail")}?id=${vendor.id}`;
-      const messageLink = `https://eventsrup.com${createPageUrl("Messages")}?admin=true`;
+      const manageLink = `https://khareus.com/managelisting`;
+      const viewLink = `https://khareus.com${getVendorUrl(vendor)}`;
+      const messageLink = `https://khareus.com/messages?admin=true`;
 
       // Get the list of changed fields
       const changes = Object.keys(vendor.pending_changes || {})
@@ -297,8 +298,8 @@ export default function AdminVendors() {
     },
     onSuccess: async (result, { vendor, reason }) => {
       const currentUser = await base44.auth.me();
-      const manageLink = `https://eventsrup.com${createPageUrl("ManageListing")}`;
-      const messageLink = `https://eventsrup.com${createPageUrl("Messages")}?admin=true`;
+      const manageLink = `https://khareus.com/managelisting`;
+      const messageLink = `https://khareus.com/messages?admin=true`;
 
       try {
         await base44.integrations.Core.SendEmail({
@@ -483,7 +484,7 @@ export default function AdminVendors() {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <Link to={`/VendorDetail?id=${vendor.id}`} target="_blank">
+                        <Link to={getVendorUrl(vendor)} target="_blank">
                           <Button variant="outline" size="sm" className="gap-2 text-indigo-600 border-indigo-200 hover:bg-indigo-50">
                             <Eye className="h-4 w-4" /> Preview Listing
                           </Button>
@@ -626,7 +627,7 @@ export default function AdminVendors() {
                           })}
                         </p>
                       </div>
-                      <Link to={`/VendorDetail?id=${vendor.id}`} target="_blank">
+                      <Link to={getVendorUrl(vendor)} target="_blank">
                         <Button variant="ghost" size="sm" className="gap-2">
                           View Live <ExternalLink className="h-4 w-4" />
                         </Button>
@@ -792,7 +793,7 @@ export default function AdminVendors() {
                               Review
                             </Button>
                           </Link>
-                          <Link to={`/VendorDetail?id=${vendor.id}`} target="_blank">
+                          <Link to={getVendorUrl(vendor)} target="_blank">
                             <Button variant="ghost" size="icon">
                               <ExternalLink className="h-4 w-4" />
                             </Button>

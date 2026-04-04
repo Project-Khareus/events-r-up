@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Store, Loader2, Plus, Edit2, ExternalLink, Clock, CheckCircle2, BarChart3, AlertTriangle } from "lucide-react";
 import { differenceInDays, differenceInHours, parseISO, isPast } from "date-fns";
+import { getVendorUrl } from "../utils/vendorUrl";
 
 export default function ManageListing() {
   const navigate = useNavigate();
@@ -181,7 +182,7 @@ export default function ManageListing() {
                         Edit
                       </Button>
                     </Link>
-                    <Link to={`${createPageUrl("VendorDetail")}?id=${vendor.id}`}>
+                    <Link to={getVendorUrl(vendor)}>
                       <Button variant="ghost" size="icon" className="dark:text-slate-300 dark:hover:bg-slate-700">
                         <ExternalLink className="h-4 w-4" />
                       </Button>

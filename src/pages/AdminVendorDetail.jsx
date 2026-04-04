@@ -13,6 +13,7 @@ import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, ArrowLeft, Cr
 import { Link } from "react-router-dom";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 import { capitalizeHtmlSentences } from "@/components/utils/capitalizeHtml";
+import { getVendorUrl } from "../utils/vendorUrl";
 
 export default function AdminVendorDetail() {
   const navigate = useNavigate();
@@ -53,7 +54,7 @@ export default function AdminVendorDetail() {
         type: 'vendor_approved',
         title: 'Vendor Approved!',
         message: `Congratulations! Your vendor listing "${vendor.business_name}" has been approved and is now live.`,
-        link: `VendorDetail?id=${vendor.id}`,
+        link: getVendorUrl(vendor).substring(1),
         action_by: currentUser.full_name || currentUser.email,
         action_type: 'approved',
         vendor_id: vendor.id,
@@ -112,8 +113,8 @@ export default function AdminVendorDetail() {
     },
     onSuccess: async () => {
       const currentUser = await base44.auth.me();
-      const manageLink = `https://eventsrup.com${createPageUrl("ManageListing")}`;
-      const viewLink = `https://eventsrup.com${createPageUrl("VendorDetail")}?id=${vendor.id}`;
+      const manageLink = `https://khareus.com/managelisting`;
+      const viewLink = `https://khareus.com${getVendorUrl(vendor)}`;
 
       const changes = Object.keys(vendor.pending_changes || {})
         .filter(key => JSON.stringify(vendor[key]) !== JSON.stringify(vendor.pending_changes[key]));
@@ -162,8 +163,8 @@ export default function AdminVendorDetail() {
     },
     onSuccess: async () => {
       const currentUser = await base44.auth.me();
-      const manageLink = `https://eventsrup.com${createPageUrl("ManageListing")}`;
-      const messageLink = `https://eventsrup.com${createPageUrl("Messages")}?admin=true`;
+      const manageLink = `https://khareus.com/managelisting`;
+      const messageLink = `https://khareus.com/messages?admin=true`;
 
       const changes = Object.keys(vendor.pending_changes || {})
         .filter(key => JSON.stringify(vendor[key]) !== JSON.stringify(vendor.pending_changes[key]));
@@ -279,7 +280,7 @@ export default function AdminVendorDetail() {
                 )}
               </div>
             </div>
-            <Link to={`/VendorDetail?id=${vendor.id}`} target="_blank">
+            <Link to={getVendorUrl(vendor)} target="_blank">
               <Button variant="outline" size="sm" className="shrink-0 text-indigo-600 border-indigo-200 hover:bg-indigo-50 gap-2">
                 <Eye className="h-4 w-4" /> Preview as Public
               </Button>

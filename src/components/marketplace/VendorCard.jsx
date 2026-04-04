@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { MapPin, Star, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
-import { createPageUrl } from "../../utils";
+import { getVendorUrl } from "../../utils/vendorUrl";
 import { Badge } from "@/components/ui/badge";
 import VendorFavoriteButton from "../vendor/VendorFavoriteButton";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
@@ -54,7 +54,7 @@ export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
 
   return (
     <div className="relative block h-full">
-      <Link to={createPageUrl(`VendorDetail?id=${vendor.id}`)} className="block h-full">
+      <Link to={getVendorUrl(vendor)} className="block h-full">
         <Card className="group h-full flex flex-col overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-500 bg-white dark:bg-slate-800 rounded-none">
           <div className="relative h-36 sm:h-40 md:h-44 overflow-hidden bg-slate-100 shrink-0">
             {vendor.image_url && !imageError ? (

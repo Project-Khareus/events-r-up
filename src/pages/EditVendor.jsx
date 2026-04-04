@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Store, Loader2, ArrowLeft, ExternalLink } from "lucide-react";
 import VendorForm from "../components/vendor/VendorForm";
+import { getVendorUrl } from "../utils/vendorUrl";
 
 export default function EditVendor() {
   const navigate = useNavigate();
@@ -218,7 +219,7 @@ export default function EditVendor() {
             {vendor && (
                 <Button 
                     variant="outline" 
-                    onClick={() => navigate(`${createPageUrl("VendorDetail")}?id=${vendor.id}`)}
+                    onClick={() => navigate(getVendorUrl(vendor))}
                     className="flex items-center gap-2"
                 >
                     View Public Listing

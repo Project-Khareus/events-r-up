@@ -35,6 +35,8 @@ import MobileHeader from "../components/layout/MobileHeader";
 import ReportDialog from "../components/reports/ReportDialog";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 import { capitalizeHtmlSentences } from "@/components/utils/capitalizeHtml";
+import { useParams } from "react-router-dom";
+import { parseVendorSlug, getVendorUrl } from "../utils/vendorUrl";
 
 const CATEGORY_LABELS = {
   event_planner: "Event Planner",
@@ -75,18 +77,42 @@ const CATEGORY_LABELS = {
 };
 
 export default function VendorDetail() {
+  const { slug } = useParams();
   const urlParams = new URLSearchParams(window.location.search);
-  const vendorId = urlParams.get("id");
+  // Support both /vendor/:slug and legacy ?id= URLs
+  const vendorIdFromQuery = urlParams.get("id");
+  const shortIdFromSlug = slug ? parseVendorSlug(slug) : null;
   const [showAllCategories, setShowAllCategories] = React.useState(false);
 
   const { data: vendor, isLoading } = useQuery({
-    queryKey: ['vendor', vendorId],
-    queryFn: () => base44.entities.Vendor.filter({ id: vendorId }).then(r => r[0] ?? null),
-    enabled: !!vendorId,
+    queryKey: ['vendor', vendorIdFromQuery || shortIdFromSlug],
+    queryFn: async () => {
+      // Direct ID lookup (legacy ?id= param)
+      if (vendorIdFromQuery) {
+        const results = await base44.entities.Vendor.filter({ id: vendorIdFromQuery });
+        return results[0] ?? null;
+      }
+      // Slug-based lookup: find vendor whose ID ends with the short ID
+      if (shortIdFromSlug) {
+        const allVendors = await base44.entities.Vendor.list('-created_date', 200);
+        const match = allVendors.find(v => v.id.endsWith(shortIdFromSlug));
+        return match ?? null;
+      }
+      return null;
+    },
+    enabled: !!(vendorIdFromQuery || shortIdFromSlug),
     retry: 3,
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 5000),
     staleTime: 300000,
   });
+
+  // Redirect legacy ?id= URLs to clean slug URLs
+  React.useEffect(() => {
+    if (vendor && vendorIdFromQuery && !slug) {
+      const cleanUrl = getVendorUrl(vendor);
+      window.history.replaceState(null, '', cleanUrl);
+    }
+  }, [vendor, vendorIdFromQuery, slug]);
 
   const { data: currentUser, isLoading: isLoadingUser } = useQuery({
     queryKey: ['currentUser'],
@@ -99,6 +125,8 @@ export default function VendorDetail() {
   });
 
   // Only fetch reviews after vendor loads to avoid rate limits
+  const vendorId = vendor?.id;
+
   const { data: reviews = [] } = useQuery({
     queryKey: ['reviews', vendorId],
     queryFn: () => base44.entities.Review.filter({ vendor_id: vendorId }, '-created_date', 50),
@@ -319,7 +347,7 @@ export default function VendorDetail() {
               </div>
               <div className="flex gap-2">
                 <ShareButton 
-                  url={window.location.href}
+                  url={`${window.location.origin}${getVendorUrl(vendor)}`}
                   title={`${vendor.business_name} - Event Vendor`}
                   description={vendor.description || `Check out ${vendor.business_name} on Khareus!`}
                   variant="outline"
