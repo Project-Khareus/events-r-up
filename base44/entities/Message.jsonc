@@ -1,0 +1,97 @@
+{
+  "name": "Message",
+  "type": "object",
+  "properties": {
+    "conversation_id": {
+      "type": "string",
+      "description": "ID of the conversation this message belongs to"
+    },
+    "sender_id": {
+      "type": "string",
+      "description": "ID of the user who sent the message"
+    },
+    "sender_name": {
+      "type": "string",
+      "description": "Name of the sender"
+    },
+    "sender_type": {
+      "type": "string",
+      "enum": [
+        "user",
+        "vendor"
+      ],
+      "description": "Whether sender is a regular user or vendor"
+    },
+    "content": {
+      "type": "string",
+      "description": "Message content"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether message has been read"
+    }
+  },
+  "required": [
+    "conversation_id",
+    "sender_id",
+    "content",
+    "sender_type"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "$or": [
+        {
+          "conversation_id": {
+            "$in": {
+              "$query": {
+                "entity": "Conversation",
+                "field": "id",
+                "filter": {
+                  "$or": [
+                    {
+                      "user_id": "{{user.id}}"
+                    },
+                    {
+                      "vendor_id": "{{user.id}}"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "sender_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "sender_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
