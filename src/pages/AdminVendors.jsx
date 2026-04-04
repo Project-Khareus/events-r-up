@@ -498,18 +498,18 @@ export default function AdminVendors() {
                     
                     <div className="text-slate-600 line-clamp-2 mb-4 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: capitalizeHtmlSentences(vendor.description) || '' }} />
                     
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-slate-500 mb-4">
-                      <div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-sm text-slate-500 mb-4">
+                      <div className="min-w-0">
                         <span className="block font-medium text-slate-700">Email</span>
-                        {vendor.contact_email}
+                        <span className="block truncate">{vendor.contact_email || 'N/A'}</span>
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <span className="block font-medium text-slate-700">Phone</span>
-                        {vendor.contact_phone ? (vendor.contact_phone.startsWith('+') ? vendor.contact_phone : vendor.contact_phone.startsWith('0') ? '+233' + vendor.contact_phone.substring(1) : '+233' + vendor.contact_phone) : 'N/A'}
+                        <span className="block">{vendor.contact_phone ? (vendor.contact_phone.startsWith('+') ? vendor.contact_phone : vendor.contact_phone.startsWith('0') ? '+233' + vendor.contact_phone.substring(1) : '+233' + vendor.contact_phone) : 'N/A'}</span>
                       </div>
                       <div>
                         <span className="block font-medium text-slate-700">Price</span>
-                        {vendor.starting_price ? formatPrice(vendor.starting_price, getCurrencyByCode(vendor.price_currency)) + '+' : 'N/A'}
+                        <span className="block">{vendor.starting_price ? formatPrice(vendor.starting_price, getCurrencyByCode(vendor.price_currency)) + '+' : 'N/A'}</span>
                       </div>
                       <div>
                         <span className="block font-medium text-slate-700">Submitted</span>
