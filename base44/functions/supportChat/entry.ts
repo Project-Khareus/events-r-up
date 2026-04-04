@@ -65,16 +65,37 @@ Deno.serve(async (req) => {
       const allUsers = await base44.asServiceRole.entities.User.list();
       const admins = allUsers.filter(u => u.role === 'admin');
 
+      const userName = user ? (user.full_name || user.email) : 'Guest';
+      const chatSummary = (body.history || []).slice(-5).map(h => `${h.role}: ${h.content}`).join('\n');
+
       for (const admin of admins) {
+        // In-app notification
         await base44.asServiceRole.entities.Notification.create({
           user_id: admin.id,
           type: 'system',
           title: 'Support Chat Escalation',
-          message: `A user${user ? ` (${user.full_name || user.email})` : ' (guest)'} needs admin assistance in the support chat.${sessionId ? ` Session: ${sessionId}` : ''}`,
+          message: `A user${user ? ` (${userName})` : ' (guest)'} needs admin assistance in the support chat.${sessionId ? ` Session: ${sessionId}` : ''}`,
           link: '/Messages',
           is_read: false,
           action_type: 'requested_changes'
         });
+
+        // Email notification
+        if (admin.email) {
+          await base44.asServiceRole.integrations.Core.SendEmail({
+            to: admin.email,
+            from_name: 'Khareus Support',
+            subject: `Support Escalation from ${userName}`,
+            body: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto">
+              <h2 style="color:#4f46e5">Support Chat Escalation</h2>
+              <p><strong>User:</strong> ${userName}${user ? ` (${user.email})` : ''}</p>
+              <p><strong>Session:</strong> ${sessionId || 'N/A'}</p>
+              <h3 style="margin-top:16px">Recent Chat History:</h3>
+              <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;font-size:14px;white-space:pre-wrap">${chatSummary || 'No history available'}</div>
+              <p style="margin-top:16px">Please check the <a href="/Messages" style="color:#4f46e5">Messages section</a> to assist this user.</p>
+            </div>`
+          });
+        }
       }
 
       return Response.json({ escalated: true, message: "An admin has been notified and will join shortly. You can also reach us via Messages." });
