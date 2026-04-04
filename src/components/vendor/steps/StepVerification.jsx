@@ -8,13 +8,17 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { compressImage } from "@/components/utils/imageCompress";
-import { CreditCard, Upload, Loader2, X, Check, AlertCircle, ArrowLeft } from "lucide-react";
+import { CreditCard, Upload, Loader2, X, Check, AlertCircle, ArrowLeft, Info } from "lucide-react";
 
 const PLANS = [
-  { key: "trial", name: "Trial", desc: "1 month free (max 3)", price: "Free", unit: "/mo", isTrial: true },
-  { key: "explorer", name: "Explorer", desc: "Try it out", price: "GHS 15", unit: "/mo" },
-  { key: "monthly", name: "Monthly", desc: "Pay as you go", price: "GHS 14", unit: "/mo" },
-  { key: "annual", name: "Annual", desc: "Save yearly", price: "GHS 150", unit: "/year", badge: "Best Value" },
+  { key: "trial", name: "Trial", desc: "1 month free (max 3)", price: "Free", unit: "/mo", isTrial: true,
+    info: "Get started free for 1 month. You can have up to 3 trial listings at a time. After 1 month, upgrade to stay listed." },
+  { key: "explorer", name: "Explorer", desc: "Try it out", price: "GHS 15", unit: "/mo",
+    info: "A low-cost entry plan billed monthly. Great for new vendors testing the marketplace. Cancel anytime." },
+  { key: "monthly", name: "Monthly", desc: "Pay as you go", price: "GHS 14", unit: "/mo",
+    info: "Our standard monthly plan with full visibility and features. Renews automatically each month." },
+  { key: "annual", name: "Annual", desc: "Save yearly", price: "GHS 150", unit: "/year", badge: "Best Value",
+    info: "Pay once for the whole year and save over 15% compared to monthly. Best for established vendors." },
 ];
 
 function ImageUploadBox({ label, fieldValue, onUpload, onClear, uploading, hint }) {
@@ -159,6 +163,21 @@ export default function StepVerification({ formData, setFormData, onBack, onSubm
             );
           })}
         </div>
+
+        {/* Info bubble for selected plan */}
+        {formData.subscription_type && (
+          <div className="mt-4 flex items-start gap-2.5 rounded-lg border border-indigo-200 bg-indigo-50 p-3">
+            <Info className="h-4 w-4 text-indigo-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-medium text-indigo-800">
+                {PLANS.find((p) => p.key === formData.subscription_type)?.name} Plan
+              </p>
+              <p className="text-xs text-indigo-700 mt-0.5">
+                {PLANS.find((p) => p.key === formData.subscription_type)?.info}
+              </p>
+            </div>
+          </div>
+        )}
       </Card>
 
       <div className="flex justify-between">
