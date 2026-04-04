@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "../../utils";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { 
   Menu, X, Home, Compass, MessageCircle, CalendarDays, 
   Bell, User, LogOut, Settings, PlusCircle, ShieldCheck, FileText, CheckSquare, Store, Heart
@@ -114,6 +114,14 @@ export default function Navbar() {
   });
 
   const unreadCount = notifications.filter(n => !n.is_read).length;
+  const queryClient = useQueryClient();
+
+  const handleNotificationRead = useCallback(async (notification) => {
+    if (notification.is_read) return;
+    await base44.entities.Notification.update(notification.id, { is_read: true });
+    queryClient.invalidateQueries({ queryKey: ['notifications'] });
+    queryClient.invalidateQueries({ queryKey: ['unreadNotificationsCount'] });
+  }, [queryClient]);
 
   const handleLogout = async () => {
     await base44.auth.logout();
@@ -211,7 +219,7 @@ export default function Navbar() {
                         ) : (
                           <div className="px-1">
                             {notifications.map(notification => (
-                              <NotificationItem key={notification.id} notification={notification} compact={true} />
+                              <NotificationItem key={notification.id} notification={notification} compact={true} onRead={handleNotificationRead} />
                             ))}
                           </div>
                         )}
