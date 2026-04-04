@@ -274,11 +274,6 @@ export default function AdminEvents() {
             </Button>
           )}
         </div>
-          <Button onClick={handleAiSearch} disabled={isAiSearching} className="bg-indigo-600 hover:bg-indigo-700 gap-2 h-11">
-            {isAiSearching ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-            AI Search
-          </Button>
-        </div>
 
         {/* Status Tabs + Bulk Toolbar */}
         <div className="flex flex-wrap items-center gap-2 mb-6">
