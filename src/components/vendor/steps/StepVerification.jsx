@@ -12,9 +12,9 @@ import { CreditCard, Upload, Loader2, X, Check, AlertCircle, ArrowLeft } from "l
 
 const PLANS = [
   { key: "trial", name: "Trial", desc: "1 month free (max 3)", price: "Free", unit: "/mo", isTrial: true },
-  { key: "explorer", name: "Explorer", desc: "Try it out", price: "$1", unit: "/mo" },
-  { key: "monthly", name: "Monthly", desc: "Pay as you go", price: "$0.90", unit: "/mo" },
-  { key: "annual", name: "Annual", desc: "Save yearly", price: "$10", unit: "/year", badge: "Best Value" },
+  { key: "explorer", name: "Explorer", desc: "Try it out", price: "GHS 15", unit: "/mo" },
+  { key: "monthly", name: "Monthly", desc: "Pay as you go", price: "GHS 14", unit: "/mo" },
+  { key: "annual", name: "Annual", desc: "Save yearly", price: "GHS 150", unit: "/year", badge: "Best Value" },
 ];
 
 function ImageUploadBox({ label, fieldValue, onUpload, onClear, uploading, hint }) {
