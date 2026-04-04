@@ -12,6 +12,9 @@ import StepMedia from "./steps/StepMedia";
 import StepContact from "./steps/StepContact";
 import StepVerification from "./steps/StepVerification";
 
+const DRAFT_STORAGE_KEY = 'vendor_form_draft';
+const DRAFT_STEP_KEY = 'vendor_form_step';
+
 const DEFAULT_FORM_DATA = {
   business_name: "",
   slogan: "",
@@ -51,11 +54,41 @@ const NAME_CHANGE_REASONS = [
 ];
 
 export default function VendorForm({ initialData, onSubmit, isSubmitting, submitLabel = "Submit Listing", submitIcon = null }) {
-  const [formData, setFormData] = useState(DEFAULT_FORM_DATA);
-  const [step, setStep] = useState(0);
+  const isEditMode = !!initialData?.id;
+
+  // Load draft from localStorage for new listings
+  const [formData, setFormData] = useState(() => {
+    if (!isEditMode) {
+      try {
+        const saved = localStorage.getItem(DRAFT_STORAGE_KEY);
+        if (saved) return { ...DEFAULT_FORM_DATA, ...JSON.parse(saved) };
+      } catch {}
+    }
+    return DEFAULT_FORM_DATA;
+  });
+
+  const [step, setStep] = useState(() => {
+    if (!isEditMode) {
+      try {
+        const savedStep = localStorage.getItem(DRAFT_STEP_KEY);
+        if (savedStep) return parseInt(savedStep, 10) || 0;
+      } catch {}
+    }
+    return 0;
+  });
+
   const [nameChangeDialogOpen, setNameChangeDialogOpen] = useState(false);
   const [nameChangeReasons, setNameChangeReasons] = useState([]);
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
+
+  // Save draft to localStorage whenever formData or step changes (new listings only)
+  useEffect(() => {
+    if (isEditMode) return;
+    try {
+      localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(formData));
+      localStorage.setItem(DRAFT_STEP_KEY, String(step));
+    } catch {}
+  }, [formData, step, isEditMode]);
 
   // Load verification data for edit mode
   useEffect(() => {
@@ -115,6 +148,13 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
 
   const confirmSubmit = () => {
     setReviewDialogOpen(false);
+    // Clear draft on successful submit
+    if (!isEditMode) {
+      try {
+        localStorage.removeItem(DRAFT_STORAGE_KEY);
+        localStorage.removeItem(DRAFT_STEP_KEY);
+      } catch {}
+    }
     onSubmit(formData);
   };
 
