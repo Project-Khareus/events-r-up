@@ -143,7 +143,7 @@ export default function VendorResults({ eventType, location, budget, selectedCat
       <div className="text-center mb-8">
         <h2 className="text-2xl font-bold text-slate-900 mb-2">Perfect Vendors for Your Event</h2>
         <p className="text-slate-600">
-          Found {filteredAndSortedVendors.length} vendors within your ${parseInt(budget).toLocaleString()} budget
+          Found {filteredAndSortedVendors.length} vendors within your GH₵ {parseInt(budget).toLocaleString()} budget
         </p>
       </div>
 
@@ -202,7 +202,7 @@ export default function VendorResults({ eventType, location, budget, selectedCat
                     <div className="absolute top-4 right-4 flex flex-col gap-1">
                       {vendor.starting_price && (
                         <Badge className="bg-green-600">
-                          From ${vendor.starting_price.toLocaleString()}
+                          From GH₵ {vendor.starting_price.toLocaleString()}
                         </Badge>
                       )}
                       {vendor.distance < 999 && (

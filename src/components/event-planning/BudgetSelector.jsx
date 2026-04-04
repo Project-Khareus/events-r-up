@@ -2,14 +2,14 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ChevronLeft, DollarSign } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 
 const BUDGET_PRESETS = [
-  { label: "Under $5,000", value: 5000 },
-  { label: "$5,000 - $10,000", value: 10000 },
-  { label: "$10,000 - $25,000", value: 25000 },
-  { label: "$25,000 - $50,000", value: 50000 },
-  { label: "$50,000+", value: 100000 }
+  { label: "Under GH₵ 5,000", value: 5000 },
+  { label: "GH₵ 5,000 - GH₵ 10,000", value: 10000 },
+  { label: "GH₵ 10,000 - GH₵ 25,000", value: 25000 },
+  { label: "GH₵ 25,000 - GH₵ 50,000", value: 50000 },
+  { label: "GH₵ 50,000+", value: 100000 }
 ];
 
 export default function BudgetSelector({ value, onChange, onNext, onBack }) {
@@ -24,7 +24,7 @@ export default function BudgetSelector({ value, onChange, onNext, onBack }) {
         <div>
           <Label className="text-base mb-3 block">Enter Your Budget *</Label>
           <div className="relative">
-            <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-medium text-slate-400">GH₵</span>
             <Input
               type="number"
               min="0"
@@ -32,7 +32,7 @@ export default function BudgetSelector({ value, onChange, onNext, onBack }) {
               placeholder="10000"
               value={value}
               onChange={(e) => onChange(e.target.value)}
-              className="pl-12 h-14 rounded-xl text-lg"
+              className="pl-14 h-14 rounded-xl text-lg"
             />
           </div>
         </div>
