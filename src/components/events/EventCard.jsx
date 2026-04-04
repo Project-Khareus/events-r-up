@@ -48,9 +48,11 @@ export default function EventCard({ event }) {
               {event.location_address || "Online Event"}
             </div>
 
-            <div className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
-               {event.is_paid ? (event.price ? `$${event.price}` : 'Starts at $0') : 'Free'}
-            </div>
+            {(event.is_paid && event.price) && (
+              <div className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
+                ${event.price}
+              </div>
+            )}
             
             <div className="mt-3 flex items-center gap-2">
                 <Badge variant="outline" className="text-xs font-medium text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600 bg-slate-50/50 dark:bg-slate-700/50">
