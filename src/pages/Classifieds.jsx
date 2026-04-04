@@ -56,6 +56,8 @@ export default function Classifieds() {
     lat: null, 
     lng: null 
   });
+  const [locationInput, setLocationInput] = useState("");
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
 
   const debugMode = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('debug') === '1';
 
@@ -159,8 +161,11 @@ export default function Classifieds() {
       let matchesLocation = true;
       
       if (locationState.type === 'online') {
-        // Assume online events might have "Online" in address or specific flag (schema doesn't have is_online, so checking address/title)
         matchesLocation = event.location_address?.toLowerCase().includes('online') || event.title?.toLowerCase().includes('webinar');
+      } else if (locationState.type === 'named') {
+        const query = locationState.label.toLowerCase();
+        matchesLocation = event.location_address?.toLowerCase().includes(query) ||
+          event.title?.toLowerCase().includes(query);
       } else if (locationState.type === 'coords' && locationState.lat && locationState.lng) {
         // 100km radius filter
         if (event.location_lat && event.location_lng) {
@@ -238,7 +243,7 @@ export default function Classifieds() {
           {/* Location Picker Header Row */}
           <div className="flex items-center gap-2 mb-4 text-slate-700">
             <span className="text-sm font-semibold text-slate-500 uppercase tracking-wide">Browsing events in</span>
-            <DropdownMenu>
+            <DropdownMenu open={locationDropdownOpen} onOpenChange={setLocationDropdownOpen}>
               <DropdownMenuTrigger asChild>
                 <button className="flex items-center gap-2 text-indigo-600 font-bold text-lg hover:bg-indigo-50 px-3 py-1.5 rounded-lg transition-colors outline-none focus:ring-2 focus:ring-indigo-100">
                   {locationState.label}
@@ -246,6 +251,41 @@ export default function Classifieds() {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-72 p-2">
+                {/* Custom location input */}
+                <div className="p-2">
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <Input
+                      placeholder="Type a city or region..."
+                      value={locationInput}
+                      onChange={(e) => setLocationInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && locationInput.trim()) {
+                          setLocationState({ type: 'named', label: locationInput.trim(), lat: null, lng: null });
+                          setLocationInput("");
+                          setLocationDropdownOpen(false);
+                        }
+                      }}
+                      className="pl-9 h-10 text-sm rounded-lg"
+                    />
+                  </div>
+                  {locationInput.trim() && (
+                    <button
+                      onClick={() => {
+                        setLocationState({ type: 'named', label: locationInput.trim(), lat: null, lng: null });
+                        setLocationInput("");
+                        setLocationDropdownOpen(false);
+                      }}
+                      className="w-full mt-2 flex items-center gap-2 p-2 text-sm text-indigo-600 font-medium hover:bg-indigo-50 rounded-lg transition-colors"
+                    >
+                      <Search className="h-4 w-4" />
+                      Search "{locationInput.trim()}"
+                    </button>
+                  )}
+                </div>
+
+                <DropdownMenuSeparator />
+
                 <DropdownMenuItem 
                   className="flex items-center gap-3 p-3 cursor-pointer text-indigo-600 font-medium focus:text-indigo-700 focus:bg-indigo-50"
                   onClick={handleUseCurrentLocation}
