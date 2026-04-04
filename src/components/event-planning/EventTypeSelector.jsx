@@ -27,7 +27,7 @@ export default function EventTypeSelector({ value, onChange, onNext }) {
               onClick={() => onChange(type.value)}
               className={`relative p-5 rounded-2xl text-left transition-all duration-200 border-2 group ${
                 isSelected
-                  ? `${type.border} ${type.bg} dark:bg-opacity-20 shadow-md scale-[1.02]`
+                  ? "border-indigo-400 dark:border-slate-400 bg-indigo-50 dark:bg-slate-700 shadow-md scale-[1.02]"
                   : "border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500 hover:shadow-md bg-white dark:bg-slate-800"
               }`}
             >
@@ -37,7 +37,7 @@ export default function EventTypeSelector({ value, onChange, onNext }) {
               <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{type.label}</h3>
               <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{type.description}</p>
               {isSelected && (
-                <div className={`absolute top-4 right-4 w-6 h-6 rounded-full bg-gradient-to-br ${type.color} flex items-center justify-center`}>
+                <div className="absolute top-4 right-4 w-6 h-6 rounded-full bg-indigo-600 dark:bg-slate-500 flex items-center justify-center">
                   <svg className="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
