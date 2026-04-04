@@ -49,8 +49,10 @@ export default function SupportChatBot() {
       const reply = data.reply || "Sorry, I couldn't process that. Please try again.";
       setMessages(prev => [...prev, { role: "assistant", content: reply }]);
 
-      // Show escalation option after 2 user messages
-      if (newMessages.filter(m => m.role === "user").length >= 2) {
+      // Show escalation option only if AI suggests it or after 5+ user messages
+      const aiSuggestsEscalation = reply.toLowerCase().includes('notify an admin') || reply.toLowerCase().includes('escalate');
+      const userMessageCount = newMessages.filter(m => m.role === "user").length;
+      if (aiSuggestsEscalation || userMessageCount >= 5) {
         setShowEscalate(true);
       }
     } catch (err) {
