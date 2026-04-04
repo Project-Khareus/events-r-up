@@ -57,7 +57,7 @@ export default function EventPlanning() {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 -mt-6 sm:-mt-8 relative z-10 pb-16">
         {/* Progress Stepper */}
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-200/80 p-4 sm:p-6 mb-6">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200/80 dark:border-slate-700 p-4 sm:p-6 mb-6">
           <div className="flex items-center justify-between">
             {steps.map((s, idx) => (
               <React.Fragment key={s.number}>
@@ -69,17 +69,17 @@ export default function EventPlanning() {
                   <div
                     className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
                       step === s.number
-                        ? "bg-indigo-600 text-white shadow-lg shadow-indigo-300 scale-110"
+                        ? "bg-indigo-600 text-white shadow-lg shadow-indigo-300 dark:shadow-indigo-900 scale-110"
                         : step > s.number
                         ? "bg-indigo-600 text-white"
-                        : "bg-slate-200 text-slate-500"
+                        : "bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-300"
                     } ${canNavigateToStep(s.number) ? "cursor-pointer group-hover:scale-110" : "cursor-not-allowed"}`}
                   >
                     {step > s.number ? <Check className="h-4 w-4" /> : s.number}
                   </div>
                   <span
                     className={`text-xs sm:text-sm font-semibold hidden sm:block transition-colors ${
-                      step === s.number ? "text-indigo-700" : step > s.number ? "text-indigo-600" : "text-slate-400"
+                      step === s.number ? "text-indigo-700 dark:text-indigo-400" : step > s.number ? "text-indigo-600 dark:text-indigo-400" : "text-slate-400 dark:text-slate-500"
                     }`}
                   >
                     {s.title}
@@ -87,7 +87,7 @@ export default function EventPlanning() {
                 </button>
                 {idx < steps.length - 1 && (
                   <div className="flex-1 mx-1 sm:mx-2">
-                    <div className="h-1 rounded-full bg-slate-200 overflow-hidden">
+                    <div className="h-1 rounded-full bg-slate-200 dark:bg-slate-600 overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all duration-500 bg-indigo-600`}
                         style={{ width: step > s.number ? '100%' : '0%' }}
@@ -101,7 +101,7 @@ export default function EventPlanning() {
         </div>
 
         {/* Step Content */}
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-200/80 p-6 sm:p-10">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200/80 dark:border-slate-700 p-6 sm:p-10">
           {step === 1 && (
             <EventTypeSelector
               value={eventType}

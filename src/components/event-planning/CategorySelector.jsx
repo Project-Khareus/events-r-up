@@ -72,10 +72,10 @@ export default function CategorySelector({ eventType, budget, selectedCategories
   return (
     <div className="space-y-6">
       <div className="text-center mb-6">
-        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">
+        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-2">
           Which vendors do you need?
         </h2>
-        <p className="text-slate-500">
+        <p className="text-slate-600 dark:text-slate-300">
           Select services your GH₵ {parseInt(budget).toLocaleString()} budget should cover
         </p>
       </div>
@@ -108,25 +108,25 @@ export default function CategorySelector({ eventType, budget, selectedCategories
               onClick={() => toggleCategory(category.value)}
               className={`relative p-4 rounded-xl text-left transition-all duration-200 border-2 group ${
                 isSelected
-                  ? "border-indigo-500 bg-indigo-50 shadow-sm"
-                  : "border-slate-200 hover:border-slate-300 bg-white hover:shadow-sm"
+                  ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/50 shadow-sm"
+                  : "border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500 bg-white dark:bg-slate-800 hover:shadow-sm"
               }`}
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
                   <h3 className={`font-semibold text-sm mb-0.5 ${
-                    isSelected ? "text-indigo-700" : "text-slate-800"
+                    isSelected ? "text-indigo-700 dark:text-indigo-300" : "text-slate-800 dark:text-slate-100"
                   }`}>
                     {category.label}
                   </h3>
-                  <p className="text-xs text-slate-500 leading-relaxed">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                     {category.description}
                   </p>
                 </div>
                 <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-all ${
                   isSelected
                     ? "bg-indigo-600"
-                    : "border-2 border-slate-300 group-hover:border-slate-400"
+                    : "border-2 border-slate-300 dark:border-slate-500 group-hover:border-slate-400"
                 }`}>
                   {isSelected && <Check className="h-3 w-3 text-white" />}
                 </div>

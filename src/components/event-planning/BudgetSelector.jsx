@@ -15,13 +15,13 @@ export default function BudgetSelector({ value, onChange, onNext, onBack }) {
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">What's your budget?</h2>
-        <p className="text-slate-600">This helps us show vendors within your price range</p>
+        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-2">What's your budget?</h2>
+        <p className="text-slate-600 dark:text-slate-300">This helps us show vendors within your price range</p>
       </div>
 
       <div className="max-w-md mx-auto space-y-6">
         <div>
-          <label className="text-sm font-semibold mb-2 block text-slate-800">Enter custom amount</label>
+          <label className="text-sm font-semibold mb-2 block text-slate-800 dark:text-slate-200">Enter custom amount</label>
           <div className="relative">
             <Wallet className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
             <span className="absolute left-12 top-1/2 -translate-y-1/2 text-sm font-semibold text-slate-500">GH₵</span>
@@ -49,8 +49,8 @@ export default function BudgetSelector({ value, onChange, onNext, onBack }) {
                   onClick={() => onChange(preset.value.toString())}
                   className={`w-full h-12 rounded-xl flex items-center justify-between px-5 text-sm font-medium transition-all border-2 ${
                     isSelected
-                      ? "border-indigo-500 bg-indigo-50 text-indigo-700"
-                      : "border-slate-200 bg-white hover:border-slate-300 text-slate-700 hover:bg-slate-50"
+                      ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300"
+                      : "border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-500 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
                   }`}
                 >
                   <span>{preset.label}</span>

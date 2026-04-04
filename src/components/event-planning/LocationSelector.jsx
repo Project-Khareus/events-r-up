@@ -69,13 +69,13 @@ export default function LocationSelector({ value, onChange, onNext, onBack }) {
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">Where is your event?</h2>
-        <p className="text-slate-500">We'll find vendors near your location</p>
+        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-2">Where is your event?</h2>
+        <p className="text-slate-600 dark:text-slate-300">We'll find vendors near your location</p>
       </div>
 
       <div className="max-w-md mx-auto space-y-4">
         <div className="relative">
-          <Label className="text-sm font-medium mb-2 block text-slate-700">
+          <Label className="text-sm font-medium mb-2 block text-slate-700 dark:text-slate-200">
             Event Location *
           </Label>
           <div className="relative">
@@ -93,18 +93,18 @@ export default function LocationSelector({ value, onChange, onNext, onBack }) {
           </div>
 
           {suggestions.length > 0 && (
-            <div className="absolute z-10 w-full mt-2 bg-white border border-slate-200 rounded-xl shadow-xl max-h-64 overflow-y-auto">
+            <div className="absolute z-10 w-full mt-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl shadow-xl max-h-64 overflow-y-auto">
               {suggestions.map((location, idx) => (
                 <button
                   key={idx}
                   onClick={() => handleSelectLocation(location)}
-                  className="w-full px-4 py-3 text-left hover:bg-indigo-50 transition-colors border-b border-slate-100 last:border-b-0 group"
+                  className="w-full px-4 py-3 text-left hover:bg-indigo-50 dark:hover:bg-slate-600 transition-colors border-b border-slate-100 dark:border-slate-600 last:border-b-0 group"
                 >
                   <div className="flex items-start gap-3">
                     <MapPin className="h-5 w-5 text-indigo-500 mt-0.5 shrink-0" />
                     <div>
-                      <p className="font-medium text-slate-900 group-hover:text-indigo-700">{location.name}</p>
-                      <p className="text-sm text-slate-500">{location.formatted_address}</p>
+                      <p className="font-medium text-slate-900 dark:text-white group-hover:text-indigo-700 dark:group-hover:text-indigo-300">{location.name}</p>
+                      <p className="text-sm text-slate-500 dark:text-slate-300">{location.formatted_address}</p>
                     </div>
                   </div>
                 </button>
@@ -114,21 +114,21 @@ export default function LocationSelector({ value, onChange, onNext, onBack }) {
         </div>
 
         {selectedLocation && (
-          <div className="p-4 bg-indigo-50 rounded-xl border border-indigo-200">
+          <div className="p-4 bg-indigo-50 dark:bg-indigo-950/50 rounded-xl border border-indigo-200 dark:border-indigo-800">
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
                 <MapPin className="h-4 w-4 text-indigo-600" />
               </div>
               <div>
-                <p className="font-semibold text-slate-900">{selectedLocation.name}</p>
-                <p className="text-sm text-slate-600">{selectedLocation.formatted_address}</p>
+                <p className="font-semibold text-slate-900 dark:text-white">{selectedLocation.name}</p>
+                <p className="text-sm text-slate-600 dark:text-slate-300">{selectedLocation.formatted_address}</p>
               </div>
             </div>
           </div>
         )}
 
         <div>
-          <Label className="text-sm font-medium mb-2 block text-slate-700">Search Radius</Label>
+          <Label className="text-sm font-medium mb-2 block text-slate-700 dark:text-slate-200">Search Radius</Label>
           <div className="flex items-center gap-3">
             <Input
               type="number"
@@ -138,7 +138,7 @@ export default function LocationSelector({ value, onChange, onNext, onBack }) {
               onChange={(e) => setRadius(parseInt(e.target.value))}
               className="rounded-xl h-11 w-24 text-center"
             />
-            <span className="text-sm text-slate-500">miles from your location</span>
+            <span className="text-sm text-slate-500 dark:text-slate-400">miles from your location</span>
           </div>
         </div>
       </div>

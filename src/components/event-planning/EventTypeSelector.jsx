@@ -13,8 +13,8 @@ export default function EventTypeSelector({ value, onChange, onNext }) {
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">What type of event are you planning?</h2>
-        <p className="text-slate-600">Choose one to get started</p>
+        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-2">What type of event are you planning?</h2>
+        <p className="text-slate-600 dark:text-slate-300">Choose one to get started</p>
       </div>
 
       <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
@@ -27,15 +27,15 @@ export default function EventTypeSelector({ value, onChange, onNext }) {
               onClick={() => onChange(type.value)}
               className={`relative p-5 rounded-2xl text-left transition-all duration-200 border-2 group ${
                 isSelected
-                  ? `${type.border} ${type.bg} shadow-md scale-[1.02]`
-                  : "border-slate-200 hover:border-slate-300 hover:shadow-md bg-white"
+                  ? `${type.border} ${type.bg} dark:bg-opacity-20 shadow-md scale-[1.02]`
+                  : "border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500 hover:shadow-md bg-white dark:bg-slate-800"
               }`}
             >
               <div className={`inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br ${type.color} mb-3 shadow-sm`}>
                 <Icon className="h-5 w-5 text-white" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 mb-1">{type.label}</h3>
-              <p className="text-sm text-slate-600 leading-relaxed">{type.description}</p>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{type.label}</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{type.description}</p>
               {isSelected && (
                 <div className={`absolute top-4 right-4 w-6 h-6 rounded-full bg-gradient-to-br ${type.color} flex items-center justify-center`}>
                   <svg className="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
