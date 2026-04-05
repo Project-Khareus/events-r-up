@@ -1,6 +1,6 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Card } from "@/components/ui/card";
-import { MapPin, Star, Crown } from "lucide-react";
+import { MapPin, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getVendorUrl } from "../../utils/vendorUrl";
 import { Badge } from "@/components/ui/badge";
@@ -39,15 +39,6 @@ export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
     ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
     : vendor?.rating;
 
-  const isFeatured = useMemo(() => {
-    if (!vendor) return false;
-    if (reviews.length >= 3 && averageRating >= 4.5) {
-      const hash = vendor.id.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
-      return hash % 10 < 7;
-    }
-    return false;
-  }, [reviews.length, averageRating, vendor?.id]);
-
   const categories = Array.isArray(vendor?.category) ? vendor.category : (vendor?.category ? [vendor.category] : []);
 
   if (!vendor) return null;
@@ -55,99 +46,80 @@ export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
   return (
     <div className="relative block h-full">
       <Link to={getVendorUrl(vendor)} className="block h-full">
-        <Card className="group h-full flex flex-col overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-500 bg-white dark:bg-slate-800 rounded-none">
-          <div className="relative h-36 sm:h-40 md:h-44 overflow-hidden bg-slate-100 shrink-0">
+        <Card className="group h-full flex flex-col overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-500 transition-all duration-300 bg-white dark:bg-slate-800 rounded-lg hover:shadow-md">
+          <div className="relative aspect-square overflow-hidden bg-slate-100 shrink-0">
             {vendor.image_url && !imageError ? (
               <img
                 src={vendor.image_url}
                 alt={vendor.business_name}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 onError={() => setImageError(true)}
                 loading="lazy"
                 width="400"
-                height="300"
+                height="400"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
-                <span className="text-6xl font-serif text-slate-300">
+                <span className="text-5xl font-serif text-slate-300">
                   {vendor.business_name?.[0]?.toUpperCase()}
                 </span>
               </div>
             )}
 
-            {isFeatured && (
-              <div className="absolute top-2 left-2 sm:top-4 sm:left-4 bg-slate-800 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded-full flex items-center gap-1 sm:gap-1.5 shadow-lg font-medium text-xs sm:text-sm">
-                <Crown className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                <span className="hidden sm:inline">Top Rated</span>
-                <span className="sm:hidden">Top</span>
-              </div>
-            )}
-
-            {vendor.starting_price && currency && (
-              <div className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 bg-slate-800 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded-md sm:rounded-lg shadow-lg font-semibold text-xs sm:text-sm">
-                {formatPrice(vendor.starting_price, currency)}
-              </div>
-            )}
-
             {vendor.gallery_images && vendor.gallery_images.length > 0 && (
-              <div className="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 bg-black/60 text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md flex items-center gap-1 sm:gap-1.5 text-xs">
-                <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              <div className="absolute bottom-2 right-2 bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 px-1.5 py-0.5 rounded-md flex items-center gap-1 text-xs font-medium">
+                <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
                 {vendor.gallery_images.length + 1}
               </div>
             )}
-
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           </div>
 
-          <div className="p-2 sm:p-3 flex flex-col flex-1">
-            <div className="flex flex-wrap gap-1 mb-1.5 sm:mb-2">
-              {categories.slice(0, 2).map((cat, i) => (
-                <span key={i} className="text-[10px] sm:text-xs font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-1.5 sm:px-2 py-0.5 rounded-sm">
-                  {CATEGORY_LABELS[cat] || cat}
-                </span>
-              ))}
-              {categories.length > 2 && (
-                <span className="text-[10px] sm:text-xs font-medium text-slate-400 px-1">+ {categories.length - 2}</span>
-              )}
-            </div>
+          <div className="p-2 flex flex-col flex-1">
+            {categories.length > 0 && (
+              <span className="text-[10px] font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded self-start mb-1">
+                {CATEGORY_LABELS[categories[0]] || categories[0]}
+              </span>
+            )}
 
-            <h3 className="font-serif font-bold text-sm sm:text-base text-slate-900 dark:text-slate-100 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors line-clamp-1 mb-1 sm:mb-1.5 tracking-tight">
+            <h3 className="font-bold text-sm text-slate-900 dark:text-slate-100 line-clamp-1 mb-0.5">
               {vendor.business_name}
             </h3>
 
-            <div className="space-y-0.5 sm:space-y-1 mb-1.5 sm:mb-2">
-              {vendor.location && (
-                <div className="flex items-center gap-1 sm:gap-1.5 text-slate-500 dark:text-slate-400 text-xs sm:text-sm">
-                  <MapPin className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
-                  <span className="truncate">{vendor.location}</span>
-                </div>
-              )}
+            {vendor.location && (
+              <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400 text-xs mb-1">
+                <MapPin className="h-3 w-3 shrink-0" />
+                <span className="truncate">{vendor.location}</span>
+              </div>
+            )}
 
-              {(averageRating || reviews.length > 0) && (
-                <div className="flex items-center gap-1 sm:gap-1.5">
-                  <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-amber-400 text-amber-400 shrink-0" />
-                  <span className="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300">
-                    {averageRating ? averageRating.toFixed(1) : 'New'}
-                  </span>
-                  {reviews.length > 0 && (
-                    <span className="text-[10px] sm:text-xs text-slate-500">({reviews.length})</span>
-                  )}
-                </div>
+            <div className="flex items-center justify-between mt-auto">
+              <div className="flex items-center gap-1">
+                {(averageRating || reviews.length > 0) && (
+                  <>
+                    <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400 shrink-0" />
+                    <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                      {averageRating ? averageRating.toFixed(1) : 'New'}
+                    </span>
+                    {reviews.length > 0 && (
+                      <span className="text-[10px] text-slate-400">({reviews.length})</span>
+                    )}
+                  </>
+                )}
+              </div>
+              {vendor.starting_price && currency && (
+                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  {formatPrice(vendor.starting_price, currency)}
+                </span>
               )}
             </div>
-
-            {vendor.description && (
-              <p className="text-slate-600 dark:text-slate-400 text-[11px] sm:text-xs line-clamp-2 leading-relaxed mt-auto">
-                {vendor.description.replace(/<[^>]*>/g, '')}
-              </p>
-            )}
           </div>
         </Card>
       </Link>
-      <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10">
-        <VendorFavoriteButton vendorId={vendor.id} size="icon" className="bg-white/90 hover:bg-white shadow-sm" />
+      <div className="absolute top-2 right-2 z-10">
+        <VendorFavoriteButton vendorId={vendor.id} size="icon" className="bg-white/90 hover:bg-white shadow-sm h-7 w-7 rounded-full" />
       </div>
     </div>
   );

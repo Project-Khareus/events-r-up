@@ -45,8 +45,8 @@ export default function VendorCategorySection({ title, eventType, category, vend
         </Link>
       </div>
 
-      {/* Desktop Grid - 5 columns compact */}
-      <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-5 gap-2">
+      {/* Desktop Grid - 4 columns compact */}
+      <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-4 gap-3">
         {vendors.slice(0, Math.min(vendors.length, 10)).map((vendor) => (
           <div key={vendor.id}>
             <VendorCard vendor={vendor} reviews={allReviews.filter(r => r.vendor_id === vendor.id)} />
