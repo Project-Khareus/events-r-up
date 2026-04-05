@@ -45,7 +45,7 @@ export default function VendorCategorySection({ title, eventType, category, vend
         </Link>
       </div>
 
-      {/* Desktop Grid - 4 columns compact */}
+      {/* Desktop Grid - 3 columns compact (account for sidebar) */}
       <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-4 gap-3">
         {vendors.slice(0, Math.min(vendors.length, 10)).map((vendor) => (
           <div key={vendor.id}>
