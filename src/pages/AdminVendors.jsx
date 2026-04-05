@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, Store, Edit2, Clock, Eye, Search, Ban, CreditCard, ShieldCheck, ShieldX, ShieldAlert, Flag } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, Store, Edit2, Clock, Eye, Search, Ban, CreditCard, ShieldCheck, ShieldX, ShieldAlert, Flag, Star, MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
@@ -758,59 +758,95 @@ export default function AdminVendors() {
                 <p className="text-slate-500">Approved vendors will appear here.</p>
               </Card>
             ) : (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {approvedVendors.map((vendor) => (
-                  <Card key={vendor.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                    <div className="aspect-video bg-slate-200 relative">
-                      {vendor.image_url ? (
-                        <img 
-                          src={vendor.image_url} 
-                          alt={vendor.business_name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Store className="h-12 w-12 text-slate-400" />
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div className="p-5">
-                      <h3 className="font-bold text-lg text-slate-900 mb-1 truncate">
-                        {vendor.business_name}
-                      </h3>
-                      {vendor.slogan && (
-                        <p className="text-sm text-slate-600 mb-3 line-clamp-2">
-                          {vendor.slogan}
-                        </p>
-                      )}
-
-                      <div className="space-y-2">
-                        <div className="flex gap-2">
-                          <Link to={`/AdminVendorDetail?id=${vendor.id}`} className="flex-1">
-                            <Button variant="outline" className="w-full">
-                              <Eye className="h-4 w-4 mr-2" />
-                              Review
-                            </Button>
-                          </Link>
-                          <Link to={getVendorUrl(vendor)} target="_blank">
-                            <Button variant="ghost" size="icon">
-                              <ExternalLink className="h-4 w-4" />
-                            </Button>
-                          </Link>
-                        </div>
-                        <Button 
-                          variant="outline" 
-                          className="w-full text-red-600 hover:bg-red-50 border-red-200"
-                          onClick={() => handleSuspendClick(vendor)}
-                        >
-                          <Ban className="h-4 w-4 mr-2" />
-                          Suspend Listing
-                        </Button>
-                      </div>
-                    </div>
-                  </Card>
-                ))}
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="bg-slate-100 border-b border-slate-200">
+                        <th className="text-left px-6 py-3.5 text-sm font-semibold text-slate-600">Name</th>
+                        <th className="text-left px-4 py-3.5 text-sm font-semibold text-slate-600">Category</th>
+                        <th className="text-left px-4 py-3.5 text-sm font-semibold text-slate-600">Location</th>
+                        <th className="text-left px-4 py-3.5 text-sm font-semibold text-slate-600">Rating</th>
+                        <th className="text-left px-4 py-3.5 text-sm font-semibold text-slate-600">Status</th>
+                        <th className="text-center px-4 py-3.5 text-sm font-semibold text-slate-600">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {approvedVendors.map((vendor) => {
+                        const primaryCategory = Array.isArray(vendor.category) ? vendor.category[0] : vendor.category;
+                        const rating = vendor.rating || 0;
+                        const fullStars = Math.floor(rating);
+                        const hasHalf = rating - fullStars >= 0.25;
+                        return (
+                          <tr key={vendor.id} className="hover:bg-slate-50 transition-colors">
+                            <td className="px-6 py-4">
+                              <div className="flex items-center gap-3">
+                                <div className="h-11 w-11 rounded-full bg-slate-200 overflow-hidden flex-shrink-0">
+                                  {vendor.image_url ? (
+                                    <img src={vendor.image_url} alt={vendor.business_name} className="h-full w-full object-cover" />
+                                  ) : (
+                                    <div className="h-full w-full flex items-center justify-center">
+                                      <Store className="h-5 w-5 text-slate-400" />
+                                    </div>
+                                  )}
+                                </div>
+                                <span className="font-semibold text-slate-900 truncate max-w-[200px]">{vendor.business_name}</span>
+                              </div>
+                            </td>
+                            <td className="px-4 py-4 text-sm text-slate-600">
+                              {CATEGORY_LABELS[primaryCategory] || primaryCategory || '-'}
+                            </td>
+                            <td className="px-4 py-4 text-sm text-slate-600">
+                              {vendor.location || '-'}
+                            </td>
+                            <td className="px-4 py-4">
+                              <div className="flex items-center gap-0.5">
+                                {[1, 2, 3, 4, 5].map((i) => (
+                                  <Star
+                                    key={i}
+                                    className={`h-4 w-4 ${
+                                      i <= fullStars
+                                        ? 'text-amber-400 fill-amber-400'
+                                        : i === fullStars + 1 && hasHalf
+                                        ? 'text-amber-400 fill-amber-400/50'
+                                        : 'text-slate-300 fill-slate-200'
+                                    }`}
+                                  />
+                                ))}
+                              </div>
+                            </td>
+                            <td className="px-4 py-4">
+                              <span className="text-sm font-medium text-green-700">Active</span>
+                            </td>
+                            <td className="px-4 py-4">
+                              <div className="flex items-center justify-center gap-2">
+                                <Link to={`/AdminVendorDetail?id=${vendor.id}`}>
+                                  <Button variant="outline" size="icon" className="h-9 w-9 border-slate-300 hover:bg-slate-100" title="Review">
+                                    <MessageSquare className="h-4 w-4 text-slate-600" />
+                                  </Button>
+                                </Link>
+                                <Link to={getVendorUrl(vendor)} target="_blank">
+                                  <Button variant="outline" size="icon" className="h-9 w-9 border-slate-300 hover:bg-slate-100" title="View Listing">
+                                    <ExternalLink className="h-4 w-4 text-slate-600" />
+                                  </Button>
+                                </Link>
+                                <Button
+                                  variant="outline"
+                                  size="icon"
+                                  className="h-9 w-9 border-red-200 hover:bg-red-50"
+                                  title="Suspend"
+                                  onClick={() => handleSuspendClick(vendor)}
+                                >
+                                  <Ban className="h-4 w-4 text-red-500" />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             )}
           </TabsContent>
