@@ -111,12 +111,16 @@ export default function EditVendor() {
         }
       }
       
+      // Include name change reasons inside pending_changes so admin can see them
+      if (nameChanged && nameChangeReasons.length > 0) {
+        pendingChanges.name_change_reasons = nameChangeReasons;
+      }
+
       // Store changes in pending_changes field, don't update main listing yet
       return { 
         updated: await base44.entities.Vendor.update(vendor.id, {
           pending_changes: pendingChanges,
-          has_pending_changes: true,
-          ...(nameChanged && { name_change_reasons: nameChangeReasons })
+          has_pending_changes: true
         }), 
         changes,
         nameChanged,
@@ -174,7 +178,7 @@ export default function EditVendor() {
               </div>
             ` : ''}
             <p>Please log in to the admin dashboard to review and approve these changes.</p>
-            <p><a href="https://eventsrup.com${createPageUrl('AdminVendors')}" style="display: inline-block; padding: 12px 24px; background-color: #4F46E5; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0;">Review Changes</a></p>
+            <p><a href="https://khareus.com${createPageUrl('AdminVendors')}" style="display: inline-block; padding: 12px 24px; background-color: #4F46E5; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0;">Review Changes</a></p>
           `;
 
           await base44.integrations.Core.SendEmail({
