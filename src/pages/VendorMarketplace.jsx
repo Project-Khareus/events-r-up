@@ -329,31 +329,30 @@ export default function VendorMarketplace() {
             </div>
           </aside>
 
-          {/* Mobile Filters - Top */}
-          <div className="lg:hidden w-full mb-4">
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 px-4 py-2.5">
-              <FilterControls
-                eventType={eventType}
-                category={category}
-                priceRange={priceRange}
-                onEventChange={setEventType}
-                onCategoryChange={setCategory}
-                onPriceChange={setPriceRange}
-                onClearFilters={handleClearFilters}
-                sortBy={sortBy}
-                onSortChange={setSortBy}
-                location={location}
-                onLocationChange={setLocation}
-                availableDate={availableDate}
-                onAvailableDateChange={setAvailableDate}
-                minRating={minRating}
-                onMinRatingChange={setMinRating}
-                minYears={minYears}
-                onMinYearsChange={setMinYears} />
-            </div>
-          </div>
-
           <div className="flex-1 min-w-0">
+            {/* Mobile Filters - Top */}
+            <div className="lg:hidden mb-4">
+              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 px-4 py-2.5">
+                <FilterControls
+                  eventType={eventType}
+                  category={category}
+                  priceRange={priceRange}
+                  onEventChange={setEventType}
+                  onCategoryChange={setCategory}
+                  onPriceChange={setPriceRange}
+                  onClearFilters={handleClearFilters}
+                  sortBy={sortBy}
+                  onSortChange={setSortBy}
+                  location={location}
+                  onLocationChange={setLocation}
+                  availableDate={availableDate}
+                  onAvailableDateChange={setAvailableDate}
+                  minRating={minRating}
+                  onMinRatingChange={setMinRating}
+                  minYears={minYears}
+                  onMinYearsChange={setMinYears} />
+              </div>
+            </div>
         {searchQuery &&
             <div className="mb-6 sm:mb-8 px-2">
             <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
