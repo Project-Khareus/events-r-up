@@ -300,32 +300,58 @@ export default function VendorMarketplace() {
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-3">
-        <div className="bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 px-4 sm:px-5 py-2.5 sm:py-3">
-          <FilterControls
-            eventType={eventType}
-            category={category}
-            priceRange={priceRange}
-            onEventChange={setEventType}
-            onCategoryChange={setCategory}
-            onPriceChange={setPriceRange}
-            onClearFilters={handleClearFilters}
-            sortBy={sortBy}
-            onSortChange={setSortBy}
-            location={location}
-            onLocationChange={setLocation}
-            availableDate={availableDate}
-            onAvailableDateChange={setAvailableDate}
-            minRating={minRating}
-            onMinRatingChange={setMinRating}
-            minYears={minYears}
-            onMinYearsChange={setMinYears} />
-        </div>
-      </div>
-
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-5 sm:py-8">
-        <div className="flex">
+        <div className="flex gap-6">
+
+          {/* Sidebar Filters - Desktop */}
+          <aside className="hidden lg:block w-64 shrink-0">
+            <div className="sticky top-4 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-4 max-h-[calc(100vh-2rem)] overflow-y-auto">
+              <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-3 text-sm uppercase tracking-wide">Filters</h3>
+              <FilterControls
+                eventType={eventType}
+                category={category}
+                priceRange={priceRange}
+                onEventChange={setEventType}
+                onCategoryChange={setCategory}
+                onPriceChange={setPriceRange}
+                onClearFilters={handleClearFilters}
+                sortBy={sortBy}
+                onSortChange={setSortBy}
+                location={location}
+                onLocationChange={setLocation}
+                availableDate={availableDate}
+                onAvailableDateChange={setAvailableDate}
+                minRating={minRating}
+                onMinRatingChange={setMinRating}
+                minYears={minYears}
+                onMinYearsChange={setMinYears}
+                layout="vertical" />
+            </div>
+          </aside>
+
+          {/* Mobile Filters - Top */}
+          <div className="lg:hidden w-full mb-4">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 px-4 py-2.5">
+              <FilterControls
+                eventType={eventType}
+                category={category}
+                priceRange={priceRange}
+                onEventChange={setEventType}
+                onCategoryChange={setCategory}
+                onPriceChange={setPriceRange}
+                onClearFilters={handleClearFilters}
+                sortBy={sortBy}
+                onSortChange={setSortBy}
+                location={location}
+                onLocationChange={setLocation}
+                availableDate={availableDate}
+                onAvailableDateChange={setAvailableDate}
+                minRating={minRating}
+                onMinRatingChange={setMinRating}
+                minYears={minYears}
+                onMinYearsChange={setMinYears} />
+            </div>
+          </div>
 
           <div className="flex-1 min-w-0">
         {searchQuery &&
@@ -428,10 +454,10 @@ export default function VendorMarketplace() {
               }
             </div>)
             }
-            </div>
-
-          </div>
-          </div>
-    </div></PullToRefresh>
+          </div>{/* flex-1 */}
+        </div>{/* flex */}
+      </div>{/* max-w */}
+    </div>{/* min-h-screen */}
+    </PullToRefresh>
   );
 }

@@ -109,7 +109,8 @@ export default function FilterControls({
   minRating = 0,
   onMinRatingChange,
   minYears = 0,
-  onMinYearsChange
+  onMinYearsChange,
+  layout = "horizontal"
 }) {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const categories = CATEGORIES_BY_EVENT[eventType] || CATEGORIES_BY_EVENT.all;
@@ -131,6 +132,126 @@ export default function FilterControls({
     if (onMinYearsChange) onMinYearsChange(0);
     if (onSortChange) onSortChange("relevance");
   };
+
+  if (layout === "vertical") {
+    return (
+      <div className="space-y-4">
+        <div className="space-y-3">
+          <label className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Event Type</label>
+          <Select value={eventType} onValueChange={handleEventChange}>
+            <SelectTrigger className="w-full h-9 text-sm rounded-lg">
+              <SelectValue placeholder="Event Type" />
+            </SelectTrigger>
+            <SelectContent>
+              {EVENT_TYPES.map((type) => (
+                <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-3">
+          <label className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Category</label>
+          <Select value={category} onValueChange={onCategoryChange}>
+            <SelectTrigger className="w-full h-9 text-sm rounded-lg">
+              <SelectValue placeholder="Category" />
+            </SelectTrigger>
+            <SelectContent>
+              {categories.map((cat) => (
+                <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-3">
+          <label className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Price Range</label>
+          <Select value={priceRange} onValueChange={onPriceChange}>
+            <SelectTrigger className="w-full h-9 text-sm rounded-lg">
+              <SelectValue placeholder="Price" />
+            </SelectTrigger>
+            <SelectContent>
+              {PRICE_RANGES.map((price) => (
+                <SelectItem key={price.value} value={price.value}>{price.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {onSortChange && (
+          <div className="space-y-3">
+            <label className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Sort By</label>
+            <Select value={sortBy} onValueChange={onSortChange}>
+              <SelectTrigger className="w-full h-9 text-sm rounded-lg">
+                <SelectValue placeholder="Sort By" />
+              </SelectTrigger>
+              <SelectContent>
+                {SORT_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
+        <div className="border-t border-slate-200 dark:border-slate-700 pt-4 mt-4">
+          <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">Advanced</p>
+          
+          {onLocationChange && (
+            <div className="space-y-1.5 mb-3">
+              <label className="text-xs font-medium text-slate-600 dark:text-slate-300 flex items-center gap-1">
+                <MapPin className="h-3.5 w-3.5" /> Location
+              </label>
+              <Input placeholder="City or region..." value={location} onChange={(e) => onLocationChange(e.target.value)} className="rounded-lg h-9 text-sm" />
+            </div>
+          )}
+
+          {onAvailableDateChange && (
+            <div className="space-y-1.5 mb-3">
+              <label className="text-xs font-medium text-slate-600 dark:text-slate-300 flex items-center gap-1">
+                <CalendarIcon className="h-3.5 w-3.5" /> Available Date
+              </label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-full justify-start text-left font-normal rounded-lg h-9 text-sm">
+                    <CalendarIcon className="mr-2 h-3.5 w-3.5" />
+                    {availableDate ? format(availableDate, "PPP") : "Select date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar mode="single" selected={availableDate} onSelect={onAvailableDateChange} disabled={(date) => date < new Date()} initialFocus />
+                </PopoverContent>
+              </Popover>
+            </div>
+          )}
+
+          {onMinRatingChange && (
+            <div className="space-y-1.5 mb-3">
+              <label className="text-xs font-medium text-slate-600 dark:text-slate-300 flex items-center gap-1">
+                <Star className="h-3.5 w-3.5" /> Min. Rating: {minRating > 0 ? `${minRating}+` : 'Any'}
+              </label>
+              <Slider value={[minRating]} onValueChange={(value) => onMinRatingChange(value[0])} max={5} step={0.5} />
+            </div>
+          )}
+
+          {onMinYearsChange && (
+            <div className="space-y-1.5 mb-3">
+              <label className="text-xs font-medium text-slate-600 dark:text-slate-300">
+                Min. Years: {minYears > 0 ? `${minYears}+` : 'Any'}
+              </label>
+              <Slider value={[minYears]} onValueChange={(value) => onMinYearsChange(value[0])} max={20} step={1} />
+            </div>
+          )}
+        </div>
+
+        {hasFilters && (
+          <Button variant="outline" size="sm" className="w-full rounded-lg gap-1.5 text-xs" onClick={handleClearAll}>
+            <X className="h-3.5 w-3.5" /> Clear All Filters
+          </Button>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-3">
