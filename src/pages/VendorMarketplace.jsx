@@ -2,17 +2,17 @@ import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import PullToRefresh from "../components/shared/PullToRefresh";
-import { Sparkles, TrendingUp, Wand2, Loader2 } from "lucide-react";
+import { Sparkles, Wand2, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
-import { Button } from "@/components/ui/button";
+
 import SearchBar from "../components/marketplace/SearchBar";
 import FilterControls from "../components/marketplace/FilterControls";
 import VendorCard from "../components/marketplace/VendorCard";
-import VendorCategorySection from "../components/marketplace/VendorCategorySection";
-import PromoAdBanner from "../components/marketplace/PromoAdBanner";
-import SideAdPlaceholder from "../components/marketplace/SideAdPlaceholder";
-import HorizontalAdPlaceholder from "../components/marketplace/HorizontalAdPlaceholder";
+import EventTabs from "../components/marketplace/EventTabs";
+import FeaturedCarousel from "../components/marketplace/FeaturedCarousel";
+import CategoryIconGrid from "../components/marketplace/CategoryIconGrid";
+import VendorRow from "../components/marketplace/VendorRow";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const CATEGORY_LABELS = {
@@ -52,8 +52,6 @@ export default function VendorMarketplace() {
   const [category, setCategory] = useState(categoryParam);
   const [priceRange, setPriceRange] = useState("all");
   const [vendorPage, setVendorPage] = useState(1);
-  const vendorsPerPage = 32;
-  const vendorsPerSection = 12; // Limit per event type section for performance
 
   // Advanced filters
   const [sortBy, setSortBy] = useState("relevance");
@@ -178,70 +176,6 @@ export default function VendorMarketplace() {
     return filtered;
   }, [vendors, searchQuery, eventType, category, priceRange, sortBy, location, minRating, minYears, aiMatchedIds]);
 
-  const featuredVendors = useMemo(() => {
-    return filteredVendors.filter((v) => v.rating >= 4).slice(0, 4); // Display up to 4 featured
-  }, [filteredVendors]);
-
-  const regularVendors = useMemo(() => {
-    const featuredIds = new Set(featuredVendors.map((v) => v.id));
-    return filteredVendors.filter((v) => !featuredIds.has(v.id));
-  }, [filteredVendors, featuredVendors]);
-
-  // Pick a random vendor for promo (vendors with high ratings)
-  const promoVendor = useMemo(() => {
-    const eligibleVendors = vendors.filter((v) => v.rating >= 4 && v.image_url);
-    if (eligibleVendors.length === 0) return null;
-    const randomIndex = Math.floor(Date.now() / 86400000) % eligibleVendors.length; // Changes daily
-    return eligibleVendors[randomIndex];
-  }, [vendors]);
-
-  // Group vendors by event type for homepage display
-  const isHomepage = eventType === "all" && category === "all" && !searchQuery && !aiMatchedIds;
-
-  const EVENT_LABELS = {
-    weddings: "Weddings",
-    parties: "Parties",
-    conference: "Conference",
-    funeral: "Funeral"
-  };
-
-  const vendorsByEvent = useMemo(() => {
-    if (!isHomepage) return [];
-    const eventOrder = ["weddings", "parties", "conference", "funeral"];
-    const grouped = {};
-
-    // Initialize groups
-    eventOrder.forEach((e) => {
-      grouped[e] = { eventType: e, vendors: [] };
-    });
-
-    vendors.forEach((vendor) => {
-      // After normalization, event_type is directly on vendor
-      const vendorEvents = vendor.event_type ? Array.isArray(vendor.event_type) ? vendor.event_type : [vendor.event_type] : [];
-      if (vendorEvents.length === 0) return; // Skip vendors without event type
-      vendorEvents.forEach((eventType) => {
-        if (grouped[eventType]) {
-          grouped[eventType].vendors.push(vendor);
-        }
-      });
-    });
-
-    // Return groups in the specified order (Weddings, Parties, Conference, Funeral)
-    // ALWAYS show weddings and parties, limit vendors per section for performance
-    return eventOrder.
-    map((eventType) => ({
-      ...grouped[eventType],
-      vendors: grouped[eventType].vendors.slice(0, vendorsPerSection) // Limit to first 12 vendors per section
-    })).
-    filter((group) => {
-      // Always show Weddings and Parties even if empty
-      if (group.eventType === 'weddings' || group.eventType === 'parties') {
-        return true;
-      }
-      // Show other sections only if they have vendors
-      return group.vendors.length > 0;
-    });
-  }, [vendors, isHomepage, vendorsPerSection]);
 
   const handleClearFilters = () => {
     setEventType("all");
@@ -264,174 +198,188 @@ export default function VendorMarketplace() {
     ]);
   };
 
-  return (
-    <PullToRefresh onRefresh={handleRefresh}><div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
-        <div className="max-w-7xl mx-auto px-6 py-6 sm:py-8 lg:py-10">
-          <div className="max-w-3xl">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold mb-2 leading-tight tracking-tight">
-              Find Your Perfect
-              <span className="inline sm:block text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300 italic"> Event Vendors</span>
-            </h1>
-            <p className="text-base sm:text-lg text-slate-300 leading-relaxed">
-              Discover exceptional vendors for your special moments.
-            </p>
-          </div>
-        </div>
-      </div>
+  // Tabbed homepage sections
+  const [activeTab, setActiveTab] = useState("weddings");
 
-      {/* Search & Filters */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-5 sm:-mt-6">
-        <div className="bg-white dark:bg-slate-800 rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200 dark:border-slate-700 p-3 sm:p-4 lg:p-6">
-          <div className="flex flex-col gap-3 sm:gap-4">
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch">
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    if (tab === "all") {
+      setEventType("all");
+    } else {
+      setEventType(tab);
+    }
+    setCategory("all");
+    setSearchQuery("");
+    setSearchInput("");
+    setAiMatchedIds(null);
+  };
+
+  // Vendors for the active tab
+  const tabVendors = useMemo(() => {
+    if (activeTab === "all") return vendors;
+    return vendors.filter((v) => {
+      const events = Array.isArray(v.event_type) ? v.event_type : v.event_type ? [v.event_type] : [];
+      return events.includes(activeTab);
+    });
+  }, [vendors, activeTab]);
+
+  const topPicks = useMemo(() => {
+    return [...tabVendors].sort((a, b) => (b.rating || 0) - (a.rating || 0)).slice(0, 8);
+  }, [tabVendors]);
+
+  const newArrivals = useMemo(() => {
+    return [...tabVendors].sort((a, b) => new Date(b.created_date) - new Date(a.created_date)).slice(0, 8);
+  }, [tabVendors]);
+
+  const budgetPicks = useMemo(() => {
+    return tabVendors.filter((v) => v.starting_price && v.starting_price < 500).slice(0, 8);
+  }, [tabVendors]);
+
+  const carouselVendors = useMemo(() => {
+    return tabVendors.filter((v) => v.image_url).slice(0, 5);
+  }, [tabVendors]);
+
+  const isSearching = searchQuery || aiMatchedIds;
+
+  const tabPageName = activeTab === "all" ? "VendorMarketplace" : activeTab.charAt(0).toUpperCase() + activeTab.slice(1);
+
+  return (
+    <PullToRefresh onRefresh={handleRefresh}>
+      <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+        {/* Search Section */}
+        <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-5">
+            <div className="flex flex-col sm:flex-row gap-3 items-stretch">
               <div className="flex-1">
-                <SearchBar value={searchInput} onChange={setSearchInput} onSearch={(q) => { setSearchQuery(q); setAiMatchedIds(null); }} onAiSearch={handleAiSearch} isAiSearching={isAiSearching} location={location} onLocationChange={setLocation} />
+                <SearchBar
+                  value={searchInput}
+                  onChange={setSearchInput}
+                  onSearch={(q) => { setSearchQuery(q); setAiMatchedIds(null); }}
+                  onAiSearch={handleAiSearch}
+                  isAiSearching={isAiSearching}
+                  location={location}
+                  onLocationChange={setLocation}
+                />
               </div>
               <Link to={createPageUrl("EventPlanning")} className="w-full sm:w-auto">
-                <button className="w-full sm:w-auto h-full px-4 sm:px-6 py-3 bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-900 hover:to-black text-white rounded-xl font-medium shadow-lg shadow-slate-300 transition-all hover:scale-105 flex items-center gap-2 justify-center whitespace-nowrap text-sm sm:text-base">
-                  <Wand2 className="h-4 w-4 sm:h-5 sm:w-5" />
+                <button className="w-full sm:w-auto h-full px-5 py-3 bg-slate-900 hover:bg-black text-white rounded-xl font-medium shadow-sm transition-all flex items-center gap-2 justify-center whitespace-nowrap text-sm">
+                  <Wand2 className="h-4 w-4" />
                   Plan an Event
                 </button>
               </Link>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Filters */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-3">
-        <div className="bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 px-4 sm:px-5 py-2.5 sm:py-3">
-          <FilterControls
-            eventType={eventType}
-            category={category}
-            priceRange={priceRange}
-            onEventChange={setEventType}
-            onCategoryChange={setCategory}
-            onPriceChange={setPriceRange}
-            onClearFilters={handleClearFilters}
-            sortBy={sortBy}
-            onSortChange={setSortBy}
-            location={location}
-            onLocationChange={setLocation}
-            availableDate={availableDate}
-            onAvailableDateChange={setAvailableDate}
-            minRating={minRating}
-            onMinRatingChange={setMinRating}
-            minYears={minYears}
-            onMinYearsChange={setMinYears} />
-        </div>
-      </div>
-
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-5 sm:py-8">
-        <div className="flex">
-
-          <div className="flex-1 min-w-0">
-        {searchQuery &&
-            <div className="mb-6 sm:mb-8 px-2">
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-              <span className="font-semibold text-slate-900 dark:text-slate-100">{filteredVendors.length}</span> vendors found
-            </p>
+        {/* Filters */}
+        <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-2">
+            <FilterControls
+              eventType={eventType}
+              category={category}
+              priceRange={priceRange}
+              onEventChange={setEventType}
+              onCategoryChange={setCategory}
+              onPriceChange={setPriceRange}
+              onClearFilters={handleClearFilters}
+              sortBy={sortBy}
+              onSortChange={setSortBy}
+              location={location}
+              onLocationChange={setLocation}
+              availableDate={availableDate}
+              onAvailableDateChange={setAvailableDate}
+              minRating={minRating}
+              onMinRatingChange={setMinRating}
+              minYears={minYears}
+              onMinYearsChange={setMinYears}
+            />
           </div>
-            }
+        </div>
 
-        {isLoading ?
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 px-2">
-            {[...Array(6)].map((_, i) =>
-              <div key={i} className="space-y-3 sm:space-y-4">
-                <Skeleton className="h-48 sm:h-56 lg:h-64 rounded-xl sm:rounded-2xl" />
-                <Skeleton className="h-5 sm:h-6 w-3/4" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-2/3" />
+        {/* Event Tabs - sticky on scroll */}
+        <div className="sticky top-0 z-30 bg-white dark:bg-slate-800 shadow-sm">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6">
+            <EventTabs activeTab={activeTab} onTabChange={handleTabChange} />
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5 sm:py-6">
+          {isLoading ? (
+            <div className="space-y-8">
+              <Skeleton className="h-48 sm:h-56 rounded-xl" />
+              <div className="grid grid-cols-4 gap-4">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="space-y-3">
+                    <Skeleton className="h-40 rounded-xl" />
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                ))}
               </div>
-              )}
-          </div> :
-            filteredVendors.length === 0 ?
-            <div className="text-center py-12 sm:py-20 px-4">
-            <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-slate-100 mb-3 sm:mb-4">
-              <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-slate-400" />
             </div>
-            <h3 className="text-lg sm:text-xl font-semibold text-slate-900 mb-2">No vendors found</h3>
-            <p className="text-sm sm:text-base text-slate-600">Try adjusting your filters or search terms</p>
-          </div> :
-            isHomepage ? (
-            <div className="space-y-3 sm:space-y-4">
-              {/* <div className="-mx-4 sm:-mx-6 lg:mx-auto mb-2">
-                <PromoAdBanner vendor={promoVendor} className="lg:max-w-7xl lg:mx-auto lg:rounded-2xl" />
-              </div> */}
-              {vendorsByEvent.map((group, index) =>
-              <div key={group.eventType}>
-                  {group.vendors.length > 0 ?
-                <VendorCategorySection
-                  title={EVENT_LABELS[group.eventType] || group.eventType}
-                  eventType={group.eventType}
-                  category="all"
-                  vendors={group.vendors}
-                  allReviews={allReviews} /> : (
-                <div className="px-2 py-8">
-                      <h2 className="text-2xl font-bold text-slate-900 mb-4">{EVENT_LABELS[group.eventType]}</h2>
-                      <div className="text-center py-12 bg-slate-50 rounded-2xl">
-                        <p className="text-slate-600">New {EVENT_LABELS[group.eventType].toLowerCase()} vendors coming soon!</p>
-                      </div>
-                    </div>)
-                }
+          ) : isSearching ? (
+            /* Search results view */
+            <div>
+              <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+                <span className="font-semibold text-slate-900 dark:text-slate-100">{filteredVendors.length}</span> vendors found
+              </p>
+              {filteredVendors.length === 0 ? (
+                <div className="text-center py-16">
+                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-slate-100 mb-3">
+                    <Sparkles className="h-7 w-7 text-slate-400" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-slate-900 mb-1">No vendors found</h3>
+                  <p className="text-sm text-slate-600">Try adjusting your filters or search terms</p>
                 </div>
-              )}
-            </div>) : (
-            <div className="space-y-8 sm:space-y-12 px-2">
-            {featuredVendors.length > 0 &&
-              <div>
-                <div className="flex items-center gap-2 mb-4 sm:mb-6">
-                  <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-slate-500" />
-                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Featured Vendors</h2>
-                </div>
+              ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                  {featuredVendors.map((vendor) => (
+                  {filteredVendors.map((vendor) => (
                     <div key={vendor.id}>
                       <VendorCard vendor={vendor} reviews={allReviews.filter((r) => r.vendor_id === vendor.id)} />
                     </div>
                   ))}
                 </div>
-              </div>
-              }
-            {regularVendors.length > 0 &&
-              <div>
-                {featuredVendors.length > 0 &&
-                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4 sm:mb-6">All Vendors</h2>
-                }
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                    {regularVendors.map((vendor) => (
-                      <div key={vendor.id}>
-                        <VendorCard vendor={vendor} reviews={allReviews.filter((r) => r.vendor_id === vendor.id)} />
-                      </div>
-                    ))}
-                  </div>
-              </div>
-              }
-            {regularVendors.length >= vendorsPerPage * vendorPage &&
-              <div className="flex justify-center mt-8">
-                <Button
-                  onClick={() => setVendorPage((p) => p + 1)}
-                  disabled={isFetching}
-                  size="lg"
-                  className="bg-slate-900 hover:bg-black">
-                  {isFetching ?
-                  <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Loading...
-                    </> :
-                  'Load More Vendors'
-                  }
-                </Button>
-              </div>
-              }
-            </div>)
-            }
+              )}
             </div>
+          ) : (
+            /* Tabbed homepage content */
+            <div className="space-y-8">
+              {/* Featured Carousel */}
+              <FeaturedCarousel vendors={carouselVendors} />
 
-          </div>
-          </div>
-    </div></PullToRefresh>
+              {/* Category Icons */}
+              <CategoryIconGrid eventType={activeTab} />
+
+              {/* Top Picks */}
+              <VendorRow
+                title="Top Picks"
+                vendors={topPicks}
+                allReviews={allReviews}
+                seeAllUrl={createPageUrl(tabPageName)}
+              />
+
+              {/* New Arrivals */}
+              <VendorRow
+                title="New Arrivals"
+                vendors={newArrivals}
+                allReviews={allReviews}
+                seeAllUrl={createPageUrl(tabPageName)}
+              />
+
+              {/* Under GH₵500 */}
+              {budgetPicks.length > 0 && (
+                <VendorRow
+                  title="Under GH₵500"
+                  vendors={budgetPicks}
+                  allReviews={allReviews}
+                  seeAllUrl={createPageUrl(tabPageName)}
+                />
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </PullToRefresh>
   );
 }
