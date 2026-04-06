@@ -90,9 +90,9 @@ export default function SearchBar({ value, onChange, onSearch, onAiSearch, isAiS
           className="shrink-0 h-10 w-10 flex items-center justify-center rounded-full border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 disabled:opacity-60 transition-colors"
         >
           {isAiSearching ? (
-            <Loader2 className="h-4 w-4 text-slate-600 dark:text-slate-300 animate-spin" />
+            <Loader2 className="h-4 w-4 text-slate-600 dark:text-slate-300 animate-spin pointer-events-none" />
           ) : (
-            <Wand2 className="h-4 w-4 text-slate-600 dark:text-slate-300" />
+            <Wand2 className="h-4 w-4 text-slate-600 dark:text-slate-300 pointer-events-none" />
           )}
         </button>
       )}
@@ -102,7 +102,7 @@ export default function SearchBar({ value, onChange, onSearch, onAiSearch, isAiS
         onClick={() => onSearch && onSearch(value || "")}
         className="shrink-0 h-10 w-10 flex items-center justify-center rounded-full border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors"
       >
-        <Search className="h-4 w-4 text-slate-700 dark:text-slate-300" />
+        <Search className="h-4 w-4 text-slate-700 dark:text-slate-300 pointer-events-none" />
       </button>
     </div>
   );
