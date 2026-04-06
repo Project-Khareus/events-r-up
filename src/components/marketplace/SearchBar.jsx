@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Search, MapPin, ChevronDown, Sparkles, Loader2 } from "lucide-react";
+import { Search, ChevronDown, Wand2, Loader2 } from "lucide-react";
 
 const LOCATIONS = [
   "All Ghana",
@@ -33,16 +33,15 @@ export default function SearchBar({ value, onChange, onSearch, onAiSearch, isAiS
   const selectedLabel = location || "All Ghana";
 
   return (
-    <div className="flex w-full items-center gap-0">
-      {/* Location Dropdown */}
-      <div className="relative" ref={dropdownRef}>
+    <div className="flex w-full items-center gap-2">
+      {/* Location Chip */}
+      <div className="relative shrink-0" ref={dropdownRef}>
         <button
           onClick={() => setLocationOpen(!locationOpen)}
-          className="flex items-center gap-2 h-12 sm:h-14 px-4 sm:px-5 bg-white dark:bg-slate-700 border border-r-0 border-slate-200 dark:border-slate-600 rounded-l-xl sm:rounded-l-2xl text-sm sm:text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors whitespace-nowrap"
+          className="flex items-center gap-1.5 h-10 px-3.5 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-full text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors whitespace-nowrap"
         >
-          <MapPin className="h-4 w-4 text-slate-400 hidden sm:block" />
           <span className="max-w-[80px] sm:max-w-none truncate">{selectedLabel}</span>
-          <ChevronDown className={`h-4 w-4 text-slate-400 transition-transform ${locationOpen ? 'rotate-180' : ''}`} />
+          <ChevronDown className={`h-3.5 w-3.5 text-slate-400 transition-transform ${locationOpen ? 'rotate-180' : ''}`} />
         </button>
         {locationOpen && (
           <div className="absolute top-full left-0 mt-1 w-48 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl z-50 py-1 max-h-64 overflow-y-auto">
@@ -67,7 +66,8 @@ export default function SearchBar({ value, onChange, onSearch, onAiSearch, isAiS
       </div>
 
       {/* Search Input */}
-      <div className="relative flex-1">
+      <div className="relative flex-1 min-w-0">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
         <input
           type="text"
           placeholder="Try: 'photographer in Accra for wedding' or 'affordable caterer'"
@@ -77,32 +77,33 @@ export default function SearchBar({ value, onChange, onSearch, onAiSearch, isAiS
             if (!e.target.value && onSearch) onSearch("");
           }}
           onKeyDown={(e) => { if (e.key === 'Enter' && onSearch) onSearch(value || ""); }}
-          className="w-full h-12 sm:h-14 pl-4 sm:pl-5 pr-24 text-sm sm:text-base border border-slate-200 dark:border-slate-600 rounded-r-xl sm:rounded-r-2xl bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all"
+          className="w-full h-10 pl-9 pr-3 text-sm border border-slate-200 dark:border-slate-600 rounded-full bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-300 focus:border-slate-300 transition-all"
         />
-        <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
-          {onAiSearch && (
-            <button
-              onClick={() => onAiSearch(value || "")}
-              disabled={isAiSearching}
-              title="AI-powered search"
-              className="h-9 sm:h-10 px-2.5 sm:px-3 flex items-center justify-center rounded-lg sm:rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 transition-colors shadow-sm gap-1.5"
-            >
-              {isAiSearching ? (
-                <Loader2 className="h-4 w-4 text-white animate-spin" />
-              ) : (
-                <Sparkles className="h-4 w-4 text-white" />
-              )}
-              <span className="text-white text-xs font-medium hidden sm:inline">AI</span>
-            </button>
-          )}
-          <button
-            onClick={() => onSearch && onSearch(value || "")}
-            className="h-9 sm:h-10 px-3 sm:px-4 flex items-center justify-center rounded-lg sm:rounded-xl bg-slate-900 dark:bg-slate-600 hover:bg-black dark:hover:bg-slate-500 transition-colors shadow-sm"
-          >
-            <Search className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
-          </button>
-        </div>
       </div>
+
+      {/* AI Button */}
+      {onAiSearch && (
+        <button
+          onClick={() => onAiSearch(value || "")}
+          disabled={isAiSearching}
+          title="AI-powered search"
+          className="shrink-0 h-10 w-10 flex items-center justify-center rounded-full border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 disabled:opacity-60 transition-colors"
+        >
+          {isAiSearching ? (
+            <Loader2 className="h-4 w-4 text-slate-600 dark:text-slate-300 animate-spin" />
+          ) : (
+            <Wand2 className="h-4 w-4 text-slate-600 dark:text-slate-300" />
+          )}
+        </button>
+      )}
+
+      {/* Search Button */}
+      <button
+        onClick={() => onSearch && onSearch(value || "")}
+        className="shrink-0 h-10 w-10 flex items-center justify-center rounded-full border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors"
+      >
+        <Search className="h-4 w-4 text-slate-700 dark:text-slate-300" />
+      </button>
     </div>
   );
 }
