@@ -6,7 +6,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 export default function FeaturedCarousel({ vendors = [] }) {
   const [current, setCurrent] = useState(0);
   const timerRef = useRef(null);
-  const featured = vendors.filter((v) => v.image_url).slice(0, 5);
+  const featured = vendors.filter((v) => v && v.image_url).slice(0, 5);
+
+  // Reset current index when featured list changes
+  const safeCurrent = featured.length > 0 ? current % featured.length : 0;
 
   useEffect(() => {
     if (featured.length <= 1) return;
@@ -19,7 +22,7 @@ export default function FeaturedCarousel({ vendors = [] }) {
   if (featured.length === 0) return null;
 
   const goTo = (idx) => {
-    setCurrent(idx);
+    setCurrent(idx % featured.length);
     clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
       setCurrent((c) => (c + 1) % featured.length);
@@ -30,7 +33,8 @@ export default function FeaturedCarousel({ vendors = [] }) {
   const getVisibleVendors = () => {
     const result = [];
     for (let i = 0; i < Math.min(3, featured.length); i++) {
-      result.push(featured[(current + i) % featured.length]);
+      const v = featured[(safeCurrent + i) % featured.length];
+      if (v) result.push(v);
     }
     return result;
   };
@@ -64,18 +68,18 @@ export default function FeaturedCarousel({ vendors = [] }) {
       {/* Mobile: single card with swipe */}
       <div className="sm:hidden">
         <Link
-          to={getVendorUrl(featured[current])}
+          to={getVendorUrl(featured[safeCurrent])}
           className="block relative aspect-[16/9] rounded-xl overflow-hidden"
         >
           <img
-            src={featured[current].image_url}
-            alt={featured[current].business_name}
+            src={featured[safeCurrent].image_url}
+            alt={featured[safeCurrent].business_name}
             className="w-full h-full object-cover"
             loading="lazy"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
           <div className="absolute bottom-3 left-3 right-3">
-            <p className="text-white font-bold text-base drop-shadow">{featured[current].business_name}</p>
+            <p className="text-white font-bold text-base drop-shadow">{featured[safeCurrent].business_name}</p>
           </div>
         </Link>
       </div>
@@ -88,7 +92,7 @@ export default function FeaturedCarousel({ vendors = [] }) {
               key={idx}
               onClick={() => goTo(idx)}
               className={`h-2 rounded-full transition-all ${
-                idx === current ? "w-5 bg-slate-800 dark:bg-slate-200" : "w-2 bg-slate-300 dark:bg-slate-600"
+                idx === safeCurrent ? "w-5 bg-slate-800 dark:bg-slate-200" : "w-2 bg-slate-300 dark:bg-slate-600"
               }`}
             />
           ))}
