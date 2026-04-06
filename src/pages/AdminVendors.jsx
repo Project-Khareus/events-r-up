@@ -379,9 +379,9 @@ export default function AdminVendors() {
   });
 
   const ghanaCardStatusBadge = (status) => {
-    if (status === 'verified') return <Badge className="bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 gap-1"><ShieldCheck className="h-3 w-3" />Verified</Badge>;
-    if (status === 'failed') return <Badge className="bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300 gap-1"><ShieldX className="h-3 w-3" />Failed</Badge>;
-    return <Badge className="bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300 gap-1"><ShieldAlert className="h-3 w-3" />Pending</Badge>;
+    if (status === 'verified') return <Badge className="bg-green-100 text-green-800 gap-1"><ShieldCheck className="h-3 w-3" />Verified</Badge>;
+    if (status === 'failed') return <Badge className="bg-red-100 text-red-800 gap-1"><ShieldX className="h-3 w-3" />Failed</Badge>;
+    return <Badge className="bg-amber-100 text-amber-800 gap-1"><ShieldAlert className="h-3 w-3" />Pending</Badge>;
   };
 
   if (isLoading) {
@@ -499,21 +499,21 @@ export default function AdminVendors() {
                     
                     <div className="text-slate-600 line-clamp-2 mb-4 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: capitalizeHtmlSentences(vendor.description) || '' }} />
                     
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-sm text-slate-500 dark:text-slate-400 mb-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-sm text-slate-500 mb-4">
                       <div className="min-w-0">
-                        <span className="block font-medium text-slate-700 dark:text-slate-200">Email</span>
+                        <span className="block font-medium text-slate-700">Email</span>
                         <span className="block truncate">{vendor.contact_email || 'N/A'}</span>
                       </div>
                       <div className="min-w-0">
-                        <span className="block font-medium text-slate-700 dark:text-slate-200">Phone</span>
+                        <span className="block font-medium text-slate-700">Phone</span>
                         <span className="block">{vendor.contact_phone ? (vendor.contact_phone.startsWith('+') ? vendor.contact_phone : vendor.contact_phone.startsWith('0') ? '+233' + vendor.contact_phone.substring(1) : '+233' + vendor.contact_phone) : 'N/A'}</span>
                       </div>
                       <div>
-                        <span className="block font-medium text-slate-700 dark:text-slate-200">Price</span>
+                        <span className="block font-medium text-slate-700">Price</span>
                         <span className="block">{vendor.starting_price ? formatPrice(vendor.starting_price, getCurrencyByCode(vendor.price_currency)) + '+' : 'N/A'}</span>
                       </div>
                       <div>
-                        <span className="block font-medium text-slate-700 dark:text-slate-200">Submitted</span>
+                        <span className="block font-medium text-slate-700">Submitted</span>
                         {new Date(vendor.created_date).toLocaleDateString('en-US', { 
                           month: 'long', 
                           day: 'numeric', 
@@ -526,11 +526,11 @@ export default function AdminVendors() {
                     </div>
 
                     {/* Ghana Card Section */}
-                    <div className="mt-3 p-3 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-lg">
+                    <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
-                          <CreditCard className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-                          <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">Ghana Card</span>
+                          <CreditCard className="h-4 w-4 text-amber-600" />
+                          <span className="text-sm font-semibold text-slate-700">Ghana Card</span>
                           {ghanaCardStatusBadge(vendor.ghana_card_status)}
                         </div>
                         <div className="flex gap-2">
@@ -554,7 +554,7 @@ export default function AdminVendors() {
                           </Button>
                         </div>
                       </div>
-                      <p className="text-xs text-slate-600 dark:text-slate-300">
+                      <p className="text-xs text-slate-600">
                         Card No: <span className="font-mono font-medium">{vendor.ghana_card_number || 'Not provided'}</span>
                       </p>
                       {vendor.ghana_card_verification_message && (

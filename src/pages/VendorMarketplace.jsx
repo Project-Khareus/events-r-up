@@ -10,10 +10,9 @@ import SearchBar from "../components/marketplace/SearchBar";
 import FilterControls from "../components/marketplace/FilterControls";
 import VendorCard from "../components/marketplace/VendorCard";
 import VendorCategorySection from "../components/marketplace/VendorCategorySection";
-import CategorySidebar from "../components/marketplace/CategorySidebar";
-import VerifiedVendorsSection from "../components/marketplace/VerifiedVendorsSection";
-import MostBookedSection from "../components/marketplace/MostBookedSection";
-import FilterPills from "../components/marketplace/FilterPills";
+import PromoAdBanner from "../components/marketplace/PromoAdBanner";
+import SideAdPlaceholder from "../components/marketplace/SideAdPlaceholder";
+import HorizontalAdPlaceholder from "../components/marketplace/HorizontalAdPlaceholder";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const CATEGORY_LABELS = {
@@ -265,45 +264,45 @@ export default function VendorMarketplace() {
     ]);
   };
 
-  const [activePill, setActivePill] = useState("all");
-
   return (
-    <PullToRefresh onRefresh={handleRefresh}><div className="min-h-screen bg-stone-50 dark:bg-slate-900">
-      {/* Hero Section - Compact */}
+    <PullToRefresh onRefresh={handleRefresh}><div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
+      {/* Hero Section */}
       <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 sm:py-8">
-          <div className="max-w-2xl">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold mb-1 leading-tight tracking-tight">
+        <div className="max-w-7xl mx-auto px-6 py-6 sm:py-8 lg:py-10">
+          <div className="max-w-3xl">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold mb-2 leading-tight tracking-tight">
               Find Your Perfect
-              <span className="italic text-slate-300"> Event Vendors</span>
+              <span className="inline sm:block text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300 italic"> Event Vendors</span>
             </h1>
-            <p className="text-sm sm:text-base text-slate-400">
+            <p className="text-base sm:text-lg text-slate-300 leading-relaxed">
               Discover exceptional vendors for your special moments.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Search Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-5">
-        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-3 sm:p-4">
-          <div className="flex flex-col sm:flex-row gap-3 items-stretch">
-            <div className="flex-1">
-              <SearchBar value={searchInput} onChange={setSearchInput} onSearch={(q) => { setSearchQuery(q); setAiMatchedIds(null); }} onAiSearch={handleAiSearch} isAiSearching={isAiSearching} location={location} onLocationChange={setLocation} />
+      {/* Search & Filters */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-5 sm:-mt-6">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200 dark:border-slate-700 p-3 sm:p-4 lg:p-6">
+          <div className="flex flex-col gap-3 sm:gap-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch">
+              <div className="flex-1">
+                <SearchBar value={searchInput} onChange={setSearchInput} onSearch={(q) => { setSearchQuery(q); setAiMatchedIds(null); }} onAiSearch={handleAiSearch} isAiSearching={isAiSearching} location={location} onLocationChange={setLocation} />
+              </div>
+              <Link to={createPageUrl("EventPlanning")} className="w-full sm:w-auto">
+                <button className="w-full sm:w-auto h-full px-4 sm:px-6 py-3 bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-900 hover:to-black text-white rounded-xl font-medium shadow-lg shadow-slate-300 transition-all hover:scale-105 flex items-center gap-2 justify-center whitespace-nowrap text-sm sm:text-base">
+                  <Wand2 className="h-4 w-4 sm:h-5 sm:w-5" />
+                  Plan an Event
+                </button>
+              </Link>
             </div>
-            <Link to={createPageUrl("EventPlanning")} className="w-full sm:w-auto">
-              <button className="w-full sm:w-auto h-full px-5 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-medium shadow-lg transition-all hover:scale-105 flex items-center gap-2 justify-center whitespace-nowrap text-sm">
-                <Wand2 className="h-4 w-4" />
-                Plan an Event
-              </button>
-            </Link>
           </div>
         </div>
       </div>
 
-      {/* Filter Bar */}
+      {/* Filters */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-3">
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 px-4 py-2.5">
+        <div className="bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 px-4 sm:px-5 py-2.5 sm:py-3">
           <FilterControls
             eventType={eventType}
             category={category}
@@ -325,134 +324,114 @@ export default function VendorMarketplace() {
         </div>
       </div>
 
-      {/* Main Content Area with Sidebar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
-        <div className="flex gap-6">
-          {/* Left Sidebar - Desktop only */}
-          <div className="hidden lg:block w-48 shrink-0">
-            <div className="sticky top-4">
-              <CategorySidebar activeEvent={eventType === "all" ? "weddings" : eventType} onEventChange={(e) => setEventType(e)} />
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-5 sm:py-8">
+        <div className="flex">
+
+          <div className="flex-1 min-w-0">
+        {searchQuery &&
+            <div className="mb-6 sm:mb-8 px-2">
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
+              <span className="font-semibold text-slate-900 dark:text-slate-100">{filteredVendors.length}</span> vendors found
+            </p>
+          </div>
+            }
+
+        {isLoading ?
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 px-2">
+            {[...Array(6)].map((_, i) =>
+              <div key={i} className="space-y-3 sm:space-y-4">
+                <Skeleton className="h-48 sm:h-56 lg:h-64 rounded-xl sm:rounded-2xl" />
+                <Skeleton className="h-5 sm:h-6 w-3/4" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-2/3" />
+              </div>
+              )}
+          </div> :
+            filteredVendors.length === 0 ?
+            <div className="text-center py-12 sm:py-20 px-4">
+            <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-slate-100 mb-3 sm:mb-4">
+              <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-slate-400" />
             </div>
-          </div>
-
-          {/* Main Content */}
-          <div className="flex-1 min-w-0 space-y-6">
-            {searchQuery && (
-              <div className="px-1">
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  <span className="font-semibold text-slate-900 dark:text-slate-100">{filteredVendors.length}</span> vendors found
-                </p>
-              </div>
-            )}
-
-            {isLoading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[...Array(6)].map((_, i) => (
-                  <div key={i} className="space-y-3">
-                    <Skeleton className="h-48 rounded-xl" />
-                    <Skeleton className="h-5 w-3/4" />
-                    <Skeleton className="h-4 w-full" />
-                  </div>
-                ))}
-              </div>
-            ) : filteredVendors.length === 0 ? (
-              <div className="text-center py-16">
-                <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-slate-100 mb-4">
-                  <Sparkles className="h-7 w-7 text-slate-400" />
-                </div>
-                <h3 className="text-lg font-semibold text-slate-900 mb-2">No vendors found</h3>
-                <p className="text-sm text-slate-600">Try adjusting your filters or search terms</p>
-              </div>
-            ) : isHomepage ? (
-              <div className="space-y-8">
-                {/* Verified Vendors Header */}
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <div>
-                      <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">Verified Vendors</h2>
-                      <p className="text-xs text-slate-500 mt-0.5">We vet vendors so you can book with confidence.</p>
-                    </div>
-                    <div className="flex gap-2">
-                      <button className="text-xs px-3 py-1.5 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors">See all</button>
-                      <button className="text-xs px-3 py-1.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">Accept All</button>
-                    </div>
-                  </div>
-                  <FilterPills active={activePill} onSelect={setActivePill} />
-                </div>
-
-                {/* Verified Vendors Section */}
-                <VerifiedVendorsSection vendors={vendors} allReviews={allReviews} />
-
-                {/* Most Booked This Week */}
-                <MostBookedSection title="Most Booked This Week" vendors={vendors} allReviews={allReviews} />
-
-                {/* Event Sections */}
-                {vendorsByEvent.map((group) => (
-                  <div key={group.eventType}>
-                    {group.vendors.length > 0 ? (
-                      <VendorCategorySection
-                        title={EVENT_LABELS[group.eventType] || group.eventType}
-                        eventType={group.eventType}
-                        category="all"
-                        vendors={group.vendors}
-                        allReviews={allReviews}
-                      />
-                    ) : (
-                      <div className="py-6">
-                        <h2 className="text-xl font-bold text-slate-900 mb-3">{EVENT_LABELS[group.eventType]}</h2>
-                        <div className="text-center py-10 bg-white dark:bg-slate-800 rounded-xl border border-slate-200">
-                          <p className="text-slate-500 text-sm">New {EVENT_LABELS[group.eventType].toLowerCase()} vendors coming soon!</p>
-                        </div>
+            <h3 className="text-lg sm:text-xl font-semibold text-slate-900 mb-2">No vendors found</h3>
+            <p className="text-sm sm:text-base text-slate-600">Try adjusting your filters or search terms</p>
+          </div> :
+            isHomepage ? (
+            <div className="space-y-3 sm:space-y-4">
+              {/* <div className="-mx-4 sm:-mx-6 lg:mx-auto mb-2">
+                <PromoAdBanner vendor={promoVendor} className="lg:max-w-7xl lg:mx-auto lg:rounded-2xl" />
+              </div> */}
+              {vendorsByEvent.map((group, index) =>
+              <div key={group.eventType}>
+                  {group.vendors.length > 0 ?
+                <VendorCategorySection
+                  title={EVENT_LABELS[group.eventType] || group.eventType}
+                  eventType={group.eventType}
+                  category="all"
+                  vendors={group.vendors}
+                  allReviews={allReviews} /> : (
+                <div className="px-2 py-8">
+                      <h2 className="text-2xl font-bold text-slate-900 mb-4">{EVENT_LABELS[group.eventType]}</h2>
+                      <div className="text-center py-12 bg-slate-50 rounded-2xl">
+                        <p className="text-slate-600">New {EVENT_LABELS[group.eventType].toLowerCase()} vendors coming soon!</p>
                       </div>
-                    )}
-                  </div>
-                ))}
+                    </div>)
+                }
+                </div>
+              )}
+            </div>) : (
+            <div className="space-y-8 sm:space-y-12 px-2">
+            {featuredVendors.length > 0 &&
+              <div>
+                <div className="flex items-center gap-2 mb-4 sm:mb-6">
+                  <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-slate-500" />
+                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Featured Vendors</h2>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {featuredVendors.map((vendor) => (
+                    <div key={vendor.id}>
+                      <VendorCard vendor={vendor} reviews={allReviews.filter((r) => r.vendor_id === vendor.id)} />
+                    </div>
+                  ))}
+                </div>
               </div>
-            ) : (
-              <div className="space-y-8">
-                {featuredVendors.length > 0 && (
-                  <div>
-                    <div className="flex items-center gap-2 mb-4">
-                      <TrendingUp className="h-5 w-5 text-slate-500" />
-                      <h2 className="text-xl font-bold text-slate-900">Featured Vendors</h2>
-                    </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                      {featuredVendors.map((vendor) => (
-                        <VendorCard key={vendor.id} vendor={vendor} reviews={allReviews.filter((r) => r.vendor_id === vendor.id)} />
-                      ))}
-                    </div>
+              }
+            {regularVendors.length > 0 &&
+              <div>
+                {featuredVendors.length > 0 &&
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4 sm:mb-6">All Vendors</h2>
+                }
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                    {regularVendors.map((vendor) => (
+                      <div key={vendor.id}>
+                        <VendorCard vendor={vendor} reviews={allReviews.filter((r) => r.vendor_id === vendor.id)} />
+                      </div>
+                    ))}
                   </div>
-                )}
-                {regularVendors.length > 0 && (
-                  <div>
-                    {featuredVendors.length > 0 && (
-                      <h2 className="text-xl font-bold text-slate-900 mb-4">All Vendors</h2>
-                    )}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                      {regularVendors.map((vendor) => (
-                        <VendorCard key={vendor.id} vendor={vendor} reviews={allReviews.filter((r) => r.vendor_id === vendor.id)} />
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {regularVendors.length >= vendorsPerPage * vendorPage && (
-                  <div className="flex justify-center mt-6">
-                    <Button
-                      onClick={() => setVendorPage((p) => p + 1)}
-                      disabled={isFetching}
-                      size="lg"
-                      className="bg-slate-900 hover:bg-black">
-                      {isFetching ? (
-                        <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Loading...</>
-                      ) : 'Load More Vendors'}
-                    </Button>
-                  </div>
-                )}
               </div>
-            )}
+              }
+            {regularVendors.length >= vendorsPerPage * vendorPage &&
+              <div className="flex justify-center mt-8">
+                <Button
+                  onClick={() => setVendorPage((p) => p + 1)}
+                  disabled={isFetching}
+                  size="lg"
+                  className="bg-slate-900 hover:bg-black">
+                  {isFetching ?
+                  <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Loading...
+                    </> :
+                  'Load More Vendors'
+                  }
+                </Button>
+              </div>
+              }
+            </div>)
+            }
+            </div>
+
           </div>
-        </div>
-      </div>
+          </div>
     </div></PullToRefresh>
   );
 }
