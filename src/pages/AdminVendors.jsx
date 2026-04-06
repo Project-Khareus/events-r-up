@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, Store, Edit2, Clock, Eye, Search, Ban, CreditCard, ShieldCheck, ShieldX, ShieldAlert, Flag, Star, MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
+import PendingVendorCard from "../components/admin/PendingVendorCard";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 import { capitalizeHtmlSentences } from "@/components/utils/capitalizeHtml";
 import { getVendorUrl } from "../utils/vendorUrl";
@@ -458,137 +459,17 @@ export default function AdminVendors() {
             ) : (
               <div className="grid gap-4">
                 {pendingVendors.map((vendor) => (
-              <Card key={vendor.id} className="p-6 bg-white overflow-hidden">
-                <div className="flex flex-col md:flex-row gap-6">
-                  {/* Image */}
-                  <div className="w-full md:w-48 h-32 flex-shrink-0 bg-slate-100 rounded-lg overflow-hidden">
-                    {vendor.image_url ? (
-                      <img src={vendor.image_url} alt={vendor.business_name} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-slate-400">No Image</div>
-                    )}
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h3 className="text-xl font-bold text-slate-900">{vendor.business_name}</h3>
-                        <div className="flex gap-2 mt-1 mb-2 flex-wrap">
-                          {Array.isArray(vendor.event_type) ? vendor.event_type.map(et => (
-                            <Badge key={et} variant="secondary">{EVENT_TYPE_LABELS[et] || et}</Badge>
-                          )) : <Badge variant="secondary">{EVENT_TYPE_LABELS[vendor.event_type] || vendor.event_type}</Badge>}
-                          {Array.isArray(vendor.category) ? vendor.category.map(cat => (
-                            <Badge key={cat} variant="outline">{CATEGORY_LABELS[cat] || cat}</Badge>
-                          )) : <Badge variant="outline">{CATEGORY_LABELS[vendor.category] || vendor.category}</Badge>}
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Link to={getVendorUrl(vendor)} target="_blank">
-                          <Button variant="outline" size="sm" className="gap-2 text-indigo-600 border-indigo-200 hover:bg-indigo-50">
-                            <Eye className="h-4 w-4" /> Preview Listing
-                          </Button>
-                        </Link>
-                        <Link to={`/AdminVendorDetail?id=${vendor.id}`}>
-                          <Button variant="ghost" size="sm" className="gap-2">
-                            Admin View <ExternalLink className="h-4 w-4" />
-                          </Button>
-                        </Link>
-                      </div>
-                    </div>
-                    
-                    <div className="text-slate-600 line-clamp-2 mb-4 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: capitalizeHtmlSentences(vendor.description) || '' }} />
-                    
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-sm text-slate-500 mb-4">
-                      <div className="min-w-0">
-                        <span className="block font-medium text-slate-700">Email</span>
-                        <span className="block truncate">{vendor.contact_email || 'N/A'}</span>
-                      </div>
-                      <div className="min-w-0">
-                        <span className="block font-medium text-slate-700">Phone</span>
-                        <span className="block">{vendor.contact_phone ? (vendor.contact_phone.startsWith('+') ? vendor.contact_phone : vendor.contact_phone.startsWith('0') ? '+233' + vendor.contact_phone.substring(1) : '+233' + vendor.contact_phone) : 'N/A'}</span>
-                      </div>
-                      <div>
-                        <span className="block font-medium text-slate-700">Price</span>
-                        <span className="block">{vendor.starting_price ? formatPrice(vendor.starting_price, getCurrencyByCode(vendor.price_currency)) + '+' : 'N/A'}</span>
-                      </div>
-                      <div>
-                        <span className="block font-medium text-slate-700">Submitted</span>
-                        {new Date(vendor.created_date).toLocaleDateString('en-US', { 
-                          month: 'long', 
-                          day: 'numeric', 
-                          year: 'numeric',
-                          hour: 'numeric',
-                          minute: '2-digit',
-                          hour12: true
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Ghana Card Section */}
-                    <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <CreditCard className="h-4 w-4 text-amber-600" />
-                          <span className="text-sm font-semibold text-slate-700">Ghana Card</span>
-                          {ghanaCardStatusBadge(vendor.ghana_card_status)}
-                        </div>
-                        <div className="flex gap-2">
-                          {vendor.ghana_card_image_url && (
-                            <Button size="sm" variant="outline" onClick={() => setGhanaCardDialogVendor(vendor)} className="text-xs h-7">
-                              View Card
-                            </Button>
-                          )}
-                          <Button
-                            size="sm"
-                            onClick={() => verifyGhanaCardMutation.mutate(vendor.id)}
-                            disabled={verifyingCardVendorId === vendor.id}
-                            className="bg-amber-600 hover:bg-amber-700 text-white gap-1 text-xs h-7"
-                          >
-                            {verifyingCardVendorId === vendor.id ? (
-                              <Loader2 className="h-3 w-3 animate-spin" />
-                            ) : (
-                              <ShieldCheck className="h-3 w-3" />
-                            )}
-                            Verify ID
-                          </Button>
-                        </div>
-                      </div>
-                      <p className="text-xs text-slate-600">
-                        Card No: <span className="font-mono font-medium">{vendor.ghana_card_number || 'Not provided'}</span>
-                      </p>
-                      {vendor.ghana_card_verification_message && (
-                        <p className="text-xs text-slate-500 mt-1 italic">{vendor.ghana_card_verification_message}</p>
-                      )}
-                    </div>
-
-                    <div className="flex gap-3 pt-4 border-t border-slate-100">
-                      <Button 
-                        onClick={() => approveMutation.mutate(vendor)}
-                        disabled={approveMutation.isPending}
-                        className="bg-green-600 hover:bg-green-700 text-white gap-2"
-                      >
-                        {approveMutation.isPending && approveMutation.variables?.id === vendor.id ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <CheckCircle className="h-4 w-4" />
-                        )}
-                        Approve & Notify
-                      </Button>
-                      
-                      <Button 
-                        variant="outline"
-                        onClick={() => rejectMutation.mutate(vendor.id)}
-                        disabled={rejectMutation.isPending}
-                        className="text-red-600 hover:bg-red-50 border-red-200 gap-2"
-                      >
-                        <XCircle className="h-4 w-4" />
-                        Reject
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </Card>
+                  <PendingVendorCard
+                    key={vendor.id}
+                    vendor={vendor}
+                    onApprove={(v) => approveMutation.mutate(v)}
+                    onReject={(id) => rejectMutation.mutate(id)}
+                    onVerifyCard={(id) => verifyGhanaCardMutation.mutate(id)}
+                    onViewCard={(v) => setGhanaCardDialogVendor(v)}
+                    isApproving={approveMutation.isPending && approveMutation.variables?.id === vendor.id}
+                    isRejecting={rejectMutation.isPending}
+                    isVerifyingCard={verifyingCardVendorId === vendor.id}
+                  />
                 ))}
               </div>
             )}
