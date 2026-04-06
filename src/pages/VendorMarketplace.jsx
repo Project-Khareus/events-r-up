@@ -9,10 +9,8 @@ import { createPageUrl } from "../utils";
 import SearchBar from "../components/marketplace/SearchBar";
 import FilterControls from "../components/marketplace/FilterControls";
 import VendorCard from "../components/marketplace/VendorCard";
-import EventTabs from "../components/marketplace/EventTabs";
-import FeaturedCarousel from "../components/marketplace/FeaturedCarousel";
-import CategoryIconGrid from "../components/marketplace/CategoryIconGrid";
-import VendorRow from "../components/marketplace/VendorRow";
+import VendorCategorySection from "../components/marketplace/VendorCategorySection";
+import PromoAdBanner from "../components/marketplace/PromoAdBanner";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const CATEGORY_LABELS = {
@@ -52,6 +50,8 @@ export default function VendorMarketplace() {
   const [category, setCategory] = useState(categoryParam);
   const [priceRange, setPriceRange] = useState("all");
   const [vendorPage, setVendorPage] = useState(1);
+  const vendorsPerPage = 32;
+  const vendorsPerSection = 12;
 
   // Advanced filters
   const [sortBy, setSortBy] = useState("relevance");
@@ -175,7 +175,64 @@ export default function VendorMarketplace() {
 
     return filtered;
   }, [vendors, searchQuery, eventType, category, priceRange, sortBy, location, minRating, minYears, aiMatchedIds]);
+  const featuredVendors = useMemo(() => {
+    return filteredVendors.filter((v) => v.rating >= 4).slice(0, 4);
+  }, [filteredVendors]);
 
+  const regularVendors = useMemo(() => {
+    const featuredIds = new Set(featuredVendors.map((v) => v.id));
+    return filteredVendors.filter((v) => !featuredIds.has(v.id));
+  }, [filteredVendors, featuredVendors]);
+
+  // Pick a random vendor for promo (vendors with high ratings)
+  const promoVendor = useMemo(() => {
+    const eligibleVendors = vendors.filter((v) => v.rating >= 4 && v.image_url);
+    if (eligibleVendors.length === 0) return null;
+    const randomIndex = Math.floor(Date.now() / 86400000) % eligibleVendors.length;
+    return eligibleVendors[randomIndex];
+  }, [vendors]);
+
+  // Group vendors by event type for homepage display
+  const isHomepage = eventType === "all" && category === "all" && !searchQuery && !aiMatchedIds;
+
+  const EVENT_LABELS = {
+    weddings: "Weddings",
+    parties: "Parties",
+    conference: "Conference",
+    funeral: "Funeral"
+  };
+
+  const vendorsByEvent = useMemo(() => {
+    if (!isHomepage) return [];
+    const eventOrder = ["weddings", "parties", "conference", "funeral"];
+    const grouped = {};
+
+    eventOrder.forEach((e) => {
+      grouped[e] = { eventType: e, vendors: [] };
+    });
+
+    vendors.forEach((vendor) => {
+      const vendorEvents = vendor.event_type ? Array.isArray(vendor.event_type) ? vendor.event_type : [vendor.event_type] : [];
+      if (vendorEvents.length === 0) return;
+      vendorEvents.forEach((eventType) => {
+        if (grouped[eventType]) {
+          grouped[eventType].vendors.push(vendor);
+        }
+      });
+    });
+
+    return eventOrder.
+    map((eventType) => ({
+      ...grouped[eventType],
+      vendors: grouped[eventType].vendors.slice(0, vendorsPerSection)
+    })).
+    filter((group) => {
+      if (group.eventType === 'weddings' || group.eventType === 'parties') {
+        return true;
+      }
+      return group.vendors.length > 0;
+    });
+  }, [vendors, isHomepage, vendorsPerSection]);
 
   const handleClearFilters = () => {
     setEventType("all");
@@ -198,50 +255,7 @@ export default function VendorMarketplace() {
     ]);
   };
 
-  // Tabbed homepage sections
-  const [activeTab, setActiveTab] = useState("weddings");
 
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-    if (tab === "all") {
-      setEventType("all");
-    } else {
-      setEventType(tab);
-    }
-    setCategory("all");
-    setSearchQuery("");
-    setSearchInput("");
-    setAiMatchedIds(null);
-  };
-
-  // Vendors for the active tab
-  const tabVendors = useMemo(() => {
-    if (activeTab === "all") return vendors;
-    return vendors.filter((v) => {
-      const events = Array.isArray(v.event_type) ? v.event_type : v.event_type ? [v.event_type] : [];
-      return events.includes(activeTab);
-    });
-  }, [vendors, activeTab]);
-
-  const topPicks = useMemo(() => {
-    return [...tabVendors].sort((a, b) => (b.rating || 0) - (a.rating || 0)).slice(0, 8);
-  }, [tabVendors]);
-
-  const newArrivals = useMemo(() => {
-    return [...tabVendors].sort((a, b) => new Date(b.created_date) - new Date(a.created_date)).slice(0, 8);
-  }, [tabVendors]);
-
-  const budgetPicks = useMemo(() => {
-    return tabVendors.filter((v) => v.starting_price && v.starting_price < 500).slice(0, 8);
-  }, [tabVendors]);
-
-  const carouselVendors = useMemo(() => {
-    return tabVendors.filter((v) => v.image_url).slice(0, 5);
-  }, [tabVendors]);
-
-  const isSearching = searchQuery || aiMatchedIds;
-
-  const tabPageName = activeTab === "all" ? "VendorMarketplace" : activeTab.charAt(0).toUpperCase() + activeTab.slice(1);
 
   return (
     <PullToRefresh onRefresh={handleRefresh}>
@@ -296,13 +310,6 @@ export default function VendorMarketplace() {
           </div>
         </div>
 
-        {/* Event Tabs - sticky on scroll */}
-        <div className="sticky top-0 z-30 bg-white dark:bg-slate-800 shadow-sm">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6">
-            <EventTabs activeTab={activeTab} onTabChange={handleTabChange} />
-          </div>
-        </div>
-
         {/* Main Content */}
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5 sm:py-6">
           {isLoading ? (
@@ -318,8 +325,26 @@ export default function VendorMarketplace() {
                 ))}
               </div>
             </div>
-          ) : isSearching ? (
-            /* Search results view */
+          ) : isHomepage ? (
+            /* Homepage with event-grouped sections */
+            <div className="space-y-4">
+              {/* Promo Banner */}
+              <PromoAdBanner vendor={promoVendor} />
+
+              {/* Event Type Sections */}
+              {vendorsByEvent.map((group) => (
+                <VendorCategorySection
+                  key={group.eventType}
+                  title={EVENT_LABELS[group.eventType] || group.eventType}
+                  eventType={group.eventType}
+                  category="all"
+                  vendors={group.vendors}
+                  allReviews={allReviews}
+                />
+              ))}
+            </div>
+          ) : (
+            /* Filtered / search results view */
             <div>
               <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
                 <span className="font-semibold text-slate-900 dark:text-slate-100">{filteredVendors.length}</span> vendors found
@@ -340,41 +365,6 @@ export default function VendorMarketplace() {
                     </div>
                   ))}
                 </div>
-              )}
-            </div>
-          ) : (
-            /* Tabbed homepage content */
-            <div className="space-y-8">
-              {/* Featured Carousel */}
-              <FeaturedCarousel vendors={carouselVendors} />
-
-              {/* Category Icons */}
-              <CategoryIconGrid eventType={activeTab} />
-
-              {/* Top Picks */}
-              <VendorRow
-                title="Top Picks"
-                vendors={topPicks}
-                allReviews={allReviews}
-                seeAllUrl={createPageUrl(tabPageName)}
-              />
-
-              {/* New Arrivals */}
-              <VendorRow
-                title="New Arrivals"
-                vendors={newArrivals}
-                allReviews={allReviews}
-                seeAllUrl={createPageUrl(tabPageName)}
-              />
-
-              {/* Under GH₵500 */}
-              {budgetPicks.length > 0 && (
-                <VendorRow
-                  title="Under GH₵500"
-                  vendors={budgetPicks}
-                  allReviews={allReviews}
-                  seeAllUrl={createPageUrl(tabPageName)}
-                />
               )}
             </div>
           )}
