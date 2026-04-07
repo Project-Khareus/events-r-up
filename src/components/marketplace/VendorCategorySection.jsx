@@ -18,10 +18,8 @@ export default function VendorCategorySection({ title, eventType, category, vend
     }
   };
 
-  // Hide category if no vendors
   if (vendors.length === 0) return null;
 
-  // Determine target link
   const pageName = eventType ? eventType.charAt(0).toUpperCase() + eventType.slice(1) : "VendorMarketplace";
   const targetUrl = category === 'all' 
     ? createPageUrl(pageName)
@@ -32,11 +30,11 @@ export default function VendorCategorySection({ title, eventType, category, vend
       {/* Header */}
       <div className="flex items-center gap-4 mb-4 px-1">
         <Link 
-              to={targetUrl}
-              className="text-sm font-semibold tracking-widest uppercase text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors whitespace-nowrap"
-            >
-              {title}
-            </Link>
+          to={targetUrl}
+          className="text-sm font-semibold tracking-widest uppercase text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors whitespace-nowrap"
+        >
+          {title}
+        </Link>
         <div className="flex-1 h-px bg-slate-300 dark:bg-slate-600" />
         <Link 
           to={targetUrl}
@@ -46,7 +44,7 @@ export default function VendorCategorySection({ title, eventType, category, vend
         </Link>
       </div>
 
-      {/* Desktop Grid - 4 columns compact */}
+      {/* Desktop Grid */}
       <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-4 gap-3">
         {vendors.slice(0, Math.min(vendors.length, 10)).map((vendor) => (
           <div key={vendor.id}>
@@ -60,6 +58,7 @@ export default function VendorCategorySection({ title, eventType, category, vend
         {vendors.slice(0, 8).map((vendor) => (
           <VendorCard key={vendor.id} vendor={vendor} reviews={allReviews.filter(r => r.vendor_id === vendor.id)} />
         ))}
+      </div>
       {vendors.length > 8 && (
         <div className="md:hidden flex justify-center mt-3">
           <Link
