@@ -65,7 +65,7 @@ export default function VendorCategorySection({ title, eventType, category, vend
             to={targetUrl}
             className="flex items-center gap-1.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 transition-colors"
           >
-            See all {vendors.length} vendors
+            {`See all ${vendors.length} vendors`}
             <ChevronRight className="h-4 w-4" />
           </Link>
         </div>
