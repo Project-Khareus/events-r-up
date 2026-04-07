@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "../../utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import VendorCard from "./VendorCard";
+import VendorListItem from "./VendorListItem";
 
 export default function VendorCategorySection({ title, eventType, category, vendors, allReviews = [] }) {
   const scrollRef = useRef(null);
@@ -54,34 +55,20 @@ export default function VendorCategorySection({ title, eventType, category, vend
         ))}
       </div>
 
-      {/* Mobile Carousel */}
-      <div className="md:hidden relative">
-        {/* Scroll Buttons */}
-        <button
-          onClick={() => scroll("left")}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white/90 dark:bg-slate-700/90 rounded-full shadow-md flex items-center justify-center hover:bg-white dark:hover:bg-slate-700"
-        >
-          <ChevronLeft className="h-5 w-5 text-slate-700 dark:text-slate-200" />
-        </button>
-        <button
-          onClick={() => scroll("right")}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white/90 dark:bg-slate-700/90 rounded-full shadow-md flex items-center justify-center hover:bg-white dark:hover:bg-slate-700"
-        >
-          <ChevronRight className="h-5 w-5 text-slate-700 dark:text-slate-200" />
-        </button>
-
-        {/* Scrollable Container */}
-        <div
-          ref={scrollRef}
-          className="flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-1 pb-2"
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-        >
-          {vendors.map((vendor) => (
-            <div key={vendor.id} className="flex-shrink-0 w-56 snap-start">
-              <VendorCard vendor={vendor} reviews={allReviews.filter(r => r.vendor_id === vendor.id)} />
-            </div>
-          ))}
-        </div>
+      {/* Mobile List - DoorDash/Amazon inspired compact rows */}
+      <div className="md:hidden space-y-2 px-1">
+        {vendors.slice(0, 8).map((vendor) => (
+          <VendorListItem key={vendor.id} vendor={vendor} reviews={allReviews.filter(r => r.vendor_id === vendor.id)} />
+        ))}
+        {vendors.length > 8 && (
+          <Link
+            to={targetUrl}
+            className="flex items-center justify-center gap-1.5 py-2.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 transition-colors"
+          >
+            See all {vendors.length} vendors
+            <ChevronRight className="h-4 w-4" />
+          </Link>
+        )}
       </div>
     </div>
   );
