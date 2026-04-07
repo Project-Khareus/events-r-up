@@ -40,11 +40,69 @@ export default function VendorListItem({ vendor, reviews = [], variant = "row" }
 
   if (!vendor) return null;
 
+  // Magazine hero — full-width landscape image with overlay text
+  if (variant === "hero") {
+    return (
+      <div className="relative rounded-xl overflow-hidden active:scale-[0.99] transition-transform">
+        <Link to={getVendorUrl(vendor)} className="block">
+          <div className="relative w-full aspect-[16/9] bg-slate-200 dark:bg-slate-700">
+            {vendor.image_url && !imgError ? (
+              <img
+                src={vendor.image_url}
+                alt={vendor.business_name}
+                className="w-full h-full object-cover"
+                onError={() => setImgError(true)}
+                loading="lazy"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-300 to-slate-400 dark:from-slate-600 dark:to-slate-700">
+                <span className="text-5xl font-serif text-white/60">{vendor.business_name?.[0]?.toUpperCase()}</span>
+              </div>
+            )}
+            {/* Dark gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+            {/* Overlay content */}
+            <div className="absolute bottom-0 left-0 right-0 p-3">
+              {categories.length > 0 && (
+                <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-indigo-300 bg-indigo-900/50 px-2 py-0.5 rounded-full mb-1.5">
+                  {CATEGORY_LABELS[categories[0]] || categories[0]}
+                </span>
+              )}
+              <h3 className="font-bold text-[15px] text-white leading-tight line-clamp-1">{vendor.business_name}</h3>
+              <div className="flex items-center gap-3 mt-1">
+                {vendor.location && (
+                  <div className="flex items-center gap-1">
+                    <MapPin className="h-3 w-3 text-white/70 shrink-0" />
+                    <span className="text-[11px] text-white/80 truncate">{vendor.location}</span>
+                  </div>
+                )}
+                {avgRating > 0 && (
+                  <div className="flex items-center gap-1">
+                    <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+                    <span className="text-[11px] font-semibold text-white/90">{avgRating.toFixed(1)}</span>
+                  </div>
+                )}
+                {vendor.starting_price && currency && (
+                  <span className="text-[11px] font-bold text-white/90 ml-auto">
+                    {formatPrice(vendor.starting_price, currency)}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        </Link>
+        <div className="absolute top-2 right-2 z-10">
+          <VendorFavoriteButton vendorId={vendor.id} size="icon" className="bg-black/40 hover:bg-black/60 text-white shadow-sm h-7 w-7 rounded-full" />
+        </div>
+      </div>
+    );
+  }
+
   if (variant === "card") {
     return (
       <div className="relative">
         <Link to={getVendorUrl(vendor)} className="block bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 overflow-hidden hover:border-slate-300 dark:hover:border-slate-500 transition-all active:scale-[0.98]">
-          <div className="relative w-full aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-slate-700">
+          <div className="relative w-full aspect-square overflow-hidden bg-slate-100 dark:bg-slate-700">
             {vendor.image_url && !imgError ? (
               <img
                 src={vendor.image_url}
@@ -65,20 +123,14 @@ export default function VendorListItem({ vendor, reviews = [], variant = "row" }
               </div>
             )}
           </div>
-          <div className="p-2.5">
+          <div className="p-2">
             {categories.length > 0 && (
               <span className="text-[10px] font-semibold uppercase tracking-wide text-indigo-600 dark:text-indigo-400">
                 {CATEGORY_LABELS[categories[0]] || categories[0]}
               </span>
             )}
             <h3 className="font-bold text-[13px] text-slate-900 dark:text-slate-100 leading-tight line-clamp-1 mt-0.5">{vendor.business_name}</h3>
-            {vendor.location && (
-              <div className="flex items-center gap-1 mt-0.5">
-                <MapPin className="h-2.5 w-2.5 text-slate-400 shrink-0" />
-                <span className="text-[11px] text-slate-500 dark:text-slate-400 truncate">{vendor.location}</span>
-              </div>
-            )}
-            <div className="flex items-center justify-between mt-1.5">
+            <div className="flex items-center justify-between mt-1">
               <div className="flex items-center gap-1">
                 {avgRating > 0 && (
                   <>

@@ -55,24 +55,40 @@ export default function VendorCategorySection({ title, eventType, category, vend
         ))}
       </div>
 
-      {/* Mobile - Featured cards + compact rows */}
-      <div className="md:hidden px-1">
-        {/* Top 2 as visual cards */}
-        <div className="grid grid-cols-2 gap-2 mb-2">
-          {vendors.slice(0, 2).map((vendor) => (
-            <VendorListItem key={vendor.id} vendor={vendor} reviews={allReviews.filter(r => r.vendor_id === vendor.id)} variant="card" />
-          ))}
-        </div>
-        {/* Rest as compact rows */}
-        <div className="space-y-1.5">
-          {vendors.slice(2, 8).map((vendor) => (
-            <VendorListItem key={vendor.id} vendor={vendor} reviews={allReviews.filter(r => r.vendor_id === vendor.id)} variant="row" />
-          ))}
-        </div>
-        {vendors.length > 8 && (
+      {/* Mobile - Magazine Strips layout */}
+      <div className="md:hidden px-1 space-y-2">
+        {(() => {
+          const items = vendors.slice(0, 9);
+          const blocks = [];
+          let i = 0;
+          let blockIdx = 0;
+          while (i < items.length) {
+            if (blockIdx % 2 === 0) {
+              // Hero card — full-width landscape overlay
+              blocks.push(
+                <VendorListItem key={items[i].id} vendor={items[i]} reviews={allReviews.filter(r => r.vendor_id === items[i].id)} variant="hero" />
+              );
+              i++;
+            } else {
+              // 2-column compact pair
+              const pair = items.slice(i, i + 2);
+              blocks.push(
+                <div key={`pair-${i}`} className="grid grid-cols-2 gap-2">
+                  {pair.map((v) => (
+                    <VendorListItem key={v.id} vendor={v} reviews={allReviews.filter(r => r.vendor_id === v.id)} variant="card" />
+                  ))}
+                </div>
+              );
+              i += pair.length;
+            }
+            blockIdx++;
+          }
+          return blocks;
+        })()}
+        {vendors.length > 9 && (
           <Link
             to={targetUrl}
-            className="flex items-center justify-center gap-1.5 py-3 mt-2 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 transition-colors"
+            className="flex items-center justify-center gap-1.5 py-3 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 transition-colors"
           >
             See all {vendors.length} vendors
             <ChevronRight className="h-4 w-4" />
