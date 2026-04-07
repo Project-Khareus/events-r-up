@@ -55,46 +55,22 @@ export default function VendorCategorySection({ title, eventType, category, vend
         ))}
       </div>
 
-      {/* Mobile - Magazine Strips layout */}
-      <div className="md:hidden px-1 space-y-2">
-        {(() => {
-          const items = vendors.slice(0, 9);
-          const blocks = [];
-          let i = 0;
-          let blockIdx = 0;
-          while (i < items.length) {
-            if (blockIdx % 2 === 0) {
-              // Hero card — full-width landscape overlay
-              blocks.push(
-                <VendorListItem key={items[i].id} vendor={items[i]} reviews={allReviews.filter(r => r.vendor_id === items[i].id)} variant="hero" />
-              );
-              i++;
-            } else {
-              // 2-column compact pair
-              const pair = items.slice(i, i + 2);
-              blocks.push(
-                <div key={`pair-${i}`} className="grid grid-cols-2 gap-2">
-                  {pair.map((v) => (
-                    <VendorListItem key={v.id} vendor={v} reviews={allReviews.filter(r => r.vendor_id === v.id)} variant="card" />
-                  ))}
-                </div>
-              );
-              i += pair.length;
-            }
-            blockIdx++;
-          }
-          return blocks;
-        })()}
-        {vendors.length > 9 && (
+      {/* Mobile Grid */}
+      <div className="md:hidden grid grid-cols-2 gap-3 px-1">
+        {vendors.slice(0, 8).map((vendor) => (
+          <VendorCard key={vendor.id} vendor={vendor} reviews={allReviews.filter(r => r.vendor_id === vendor.id)} />
+        ))}
+      {vendors.length > 8 && (
+        <div className="md:hidden flex justify-center mt-3">
           <Link
             to={targetUrl}
-            className="flex items-center justify-center gap-1.5 py-3 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 transition-colors"
+            className="flex items-center gap-1.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 transition-colors"
           >
             See all {vendors.length} vendors
             <ChevronRight className="h-4 w-4" />
           </Link>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
