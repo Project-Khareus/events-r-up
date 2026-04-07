@@ -73,9 +73,9 @@ export default function VendorMarketplace() {
 
   const { data: rawVendors = [], isLoading, isFetching } = useQuery({
     queryKey: ['vendors', vendorPage],
-    queryFn: () => base44.entities.Vendor.list('-created_date', 80),
-    staleTime: 60000, // 1 minute
-    cacheTime: 300000, // 5 minutes
+    queryFn: () => base44.entities.Vendor.list('-created_date', 200),
+    staleTime: 60000,
+    cacheTime: 300000,
     refetchOnWindowFocus: true,
     refetchOnMount: true,
     refetchOnReconnect: true,
@@ -95,11 +95,19 @@ export default function VendorMarketplace() {
     retry: 1
   });
 
-  // Normalize vendor data - handle both flat and nested data structures
+  // Normalize vendor data and shuffle for variety on homepage
   const vendors = useMemo(() => {
-    return rawVendors.
-    map((v) => v.data ? { id: v.id, ...v.data } : v).
-    filter((v) => !v.status || v.status === 'approved');
+    const approved = rawVendors
+      .map((v) => v.data ? { id: v.id, ...v.data } : v)
+      .filter((v) => !v.status || v.status === 'approved');
+    // Seeded daily shuffle so order changes each day but stays stable during a session
+    const seed = Math.floor(Date.now() / 86400000);
+    const shuffled = [...approved];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.abs(((seed * (i + 1) * 9301 + 49297) % 233280)) % (i + 1);
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
   }, [rawVendors]);
 
   const handleAiSearch = useCallback(async (query) => {
