@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { CheckCircle, AlertCircle } from "lucide-react";
+import { CheckCircle, AlertCircle, AlertTriangle, Pencil } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { createPageUrl } from "../../utils";
 
 import VendorWizardProgress from "./VendorWizardProgress";
 import StepBusiness from "./steps/StepBusiness";
@@ -80,6 +82,9 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
   const [nameChangeDialogOpen, setNameChangeDialogOpen] = useState(false);
   const [nameChangeReasons, setNameChangeReasons] = useState([]);
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
+  const [ghanaCardPendingDialogOpen, setGhanaCardPendingDialogOpen] = useState(false);
+  const [submittedVendorId, setSubmittedVendorId] = useState(null);
+  const navigate = useNavigate();
 
   // Save draft to localStorage whenever formData or step changes (new listings only)
   useEffect(() => {
@@ -126,14 +131,12 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
     }
   }, [initialData]);
 
+  const hasGhanaCard = formData.ghana_card_number && formData.ghana_card_image_url && formData.ghana_card_back_image_url && formData.ghana_card_selfie_url;
+
   const handleSubmit = () => {
     if (!formData.business_name || formData.event_type.length === 0 || formData.category.length === 0) {
       toast.error("Please fill in all required fields (Business Name, Event Type, Category)");
       setStep(0);
-      return;
-    }
-    if (!formData.ghana_card_number || !formData.ghana_card_image_url || !formData.ghana_card_back_image_url || !formData.ghana_card_selfie_url) {
-      toast.error("Ghana Card number, front image, back image, and selfie are all required for verification");
       return;
     }
 
@@ -146,7 +149,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
     setReviewDialogOpen(true);
   };
 
-  const confirmSubmit = () => {
+  const confirmSubmit = async () => {
     setReviewDialogOpen(false);
     // Clear draft on successful submit
     if (!isEditMode) {
@@ -155,7 +158,12 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
         localStorage.removeItem(DRAFT_STEP_KEY);
       } catch {}
     }
-    onSubmit(formData);
+    const result = await onSubmit(formData);
+    // If no Ghana Card and we got a vendorId back, show pending dialog
+    if (!hasGhanaCard && result?.vendorId) {
+      setSubmittedVendorId(result.vendorId);
+      setGhanaCardPendingDialogOpen(true);
+    }
   };
 
   const confirmNameChange = () => {
@@ -229,9 +237,65 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
             {formData.location && <p><strong>Location:</strong> {formData.location}</p>}
             <p><strong>Plan:</strong> {formData.subscription_type?.charAt(0).toUpperCase() + formData.subscription_type?.slice(1)}</p>
           </div>
+          {!hasGhanaCard && (
+            <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg p-3">
+              <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+              <p className="text-sm text-amber-700">You haven't uploaded your Ghana Card yet. Your listing will be submitted but will remain pending until verification is completed. You can add it later by editing your listing.</p>
+            </div>
+          )}
           <DialogFooter>
             <Button variant="outline" onClick={() => setReviewDialogOpen(false)}>Go Back</Button>
             <Button onClick={confirmSubmit} className="bg-indigo-600 hover:bg-indigo-700">Confirm & Submit</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Ghana Card Pending Dialog */}
+      <Dialog open={ghanaCardPendingDialogOpen} onOpenChange={setGhanaCardPendingDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <CheckCircle className="h-5 w-5 text-green-600" />
+              Listing Submitted Successfully!
+            </DialogTitle>
+            <DialogDescription className="pt-2">
+              Your listing <strong>"{formData.business_name}"</strong> has been submitted for review.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 space-y-2">
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-semibold text-amber-800">Ghana Card Verification Pending</p>
+                <p className="text-sm text-amber-700 mt-1">
+                  Your listing will remain pending until you upload your Ghana Card for identity verification. You can add it by editing your listing.
+                </p>
+              </div>
+            </div>
+          </div>
+          <p className="text-sm text-slate-600">A confirmation email has been sent with a link to edit your listing.</p>
+          <DialogFooter className="flex flex-col sm:flex-row gap-2">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setGhanaCardPendingDialogOpen(false);
+                if (submittedVendorId) {
+                  navigate(`/EditVendor?id=${submittedVendorId}`);
+                }
+              }}
+              className="gap-2"
+            >
+              <Pencil className="h-4 w-4" /> Edit Listing Now
+            </Button>
+            <Button
+              onClick={() => {
+                setGhanaCardPendingDialogOpen(false);
+                navigate('/ManageListing');
+              }}
+              className="bg-indigo-600 hover:bg-indigo-700"
+            >
+              Go to Dashboard
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

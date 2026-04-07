@@ -24,7 +24,7 @@ const PLANS = [
 function ImageUploadBox({ label, fieldValue, onUpload, onClear, uploading, hint }) {
   return (
     <div>
-      <Label className="mb-2 block">{label} *</Label>
+      <Label className="mb-2 block">{label}</Label>
       <div className="border-2 border-dashed border-amber-300 rounded-xl p-4 text-center hover:border-amber-400 transition-colors bg-white">
         {fieldValue ? (
           <div className="relative">
@@ -74,9 +74,9 @@ export default function StepVerification({ formData, setFormData, onBack, onSubm
       <Card className="p-6 rounded-2xl border-amber-200 bg-amber-50/40">
         <h2 className="text-lg font-semibold text-slate-900 mb-1 flex items-center gap-2">
           <CreditCard className="h-5 w-5 text-amber-600" />
-          Ghana Card Verification <span className="text-red-500">*</span>
+          Ghana Card Verification <span className="text-xs text-slate-400 font-normal">(Optional)</span>
         </h2>
-        <p className="text-sm text-slate-500 mb-4">Required to verify your identity before listing.</p>
+        <p className="text-sm text-slate-500 mb-4">Upload your Ghana Card to speed up verification. You can also add it later by editing your listing.</p>
 
         <div className="space-y-4">
           <div>

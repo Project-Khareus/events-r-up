@@ -51,6 +51,8 @@ export default function VendorSignup() {
       // Separate Ghana Card fields from vendor data
       const { ghana_card_number, ghana_card_image_url, ghana_card_back_image_url, ghana_card_selfie_url, ...restData } = data;
 
+      const hasGhanaCard = ghana_card_number && ghana_card_image_url && ghana_card_back_image_url && ghana_card_selfie_url;
+
       const vendorData = {
         ...restData,
         starting_price: restData.starting_price ? parseFloat(restData.starting_price) : undefined,
@@ -78,21 +80,24 @@ export default function VendorSignup() {
           is_trial: true,
           subscription_start_date: new Date().toISOString().split('T')[0],
           subscription_end_date: trialEndDate.toISOString().split('T')[0],
-          status: 'pending'
+          status: 'pending',
+          ghana_card_status: hasGhanaCard ? 'pending' : undefined
         });
 
-        // Create verification record in separate entity
-        await base44.entities.VendorVerification.create({
-          vendor_id: newVendor.id,
-          user_id: user.id,
-          ghana_card_number,
-          ghana_card_image_url,
-          ghana_card_back_image_url,
-          ghana_card_selfie_url,
-          ghana_card_status: 'pending'
-        });
+        // Only create verification record if Ghana Card data was provided
+        if (hasGhanaCard) {
+          await base44.entities.VendorVerification.create({
+            vendor_id: newVendor.id,
+            user_id: user.id,
+            ghana_card_number,
+            ghana_card_image_url,
+            ghana_card_back_image_url,
+            ghana_card_selfie_url,
+            ghana_card_status: 'pending'
+          });
+        }
 
-        return { trial: true, vendorId: newVendor.id, businessName: vendorData.business_name };
+        return { trial: true, vendorId: newVendor.id, businessName: vendorData.business_name, hasGhanaCard };
       }
 
       // For paid plans, use checkout
@@ -105,31 +110,46 @@ export default function VendorSignup() {
     },
     onSuccess: async (data) => {
       if (data.trial) {
-        toast.success("Trial listing created! We'll review it shortly.");
+        // Only show toast and auto-navigate if Ghana Card was provided
+        // Otherwise the VendorForm shows the pending dialog
+        if (data.hasGhanaCard) {
+          toast.success("Trial listing created! We'll review it shortly.");
+        }
 
-        // Send confirmation email to the vendor
+        // Send confirmation email
         try {
+          const ghanaCardNote = data.hasGhanaCard
+            ? '<li>Your Ghana Card is being verified</li>'
+            : '<li style="color: #D97706; font-weight: 600;">⚠️ Ghana Card verification is still pending — please edit your listing to upload it</li>';
+
           await base44.integrations.Core.SendEmail({
             to: user.email,
             from_name: 'Khareus',
-            subject: 'Your Vendor Listing Has Been Submitted!',
+            subject: data.hasGhanaCard ? 'Your Vendor Listing Has Been Submitted!' : 'Listing Submitted — Ghana Card Verification Needed',
             body: `
               <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
                 <div style="padding: 32px 24px;">
                   <h1 style="color: #4F46E5; font-size: 24px; margin: 0 0 20px 0;">Listing Submitted Successfully!</h1>
                   <p style="color: #334155; font-size: 15px; line-height: 1.6;">Hi ${user.full_name || 'there'},</p>
-                  <p style="color: #334155; font-size: 15px; line-height: 1.6;">Your vendor listing has been submitted and is now pending review by our team. We'll notify you once it's approved.</p>
+                  <p style="color: #334155; font-size: 15px; line-height: 1.6;">Your vendor listing <strong>"${data.businessName}"</strong> has been submitted and is now pending review by our team.</p>
+                  ${!data.hasGhanaCard ? `
+                  <div style="background: #FFFBEB; padding: 16px; border-radius: 8px; margin: 20px 0; border: 1px solid #F59E0B;">
+                    <p style="margin: 0; color: #92400E; font-weight: 600; font-size: 14px;">⚠️ Ghana Card Verification Pending</p>
+                    <p style="margin: 8px 0 0; color: #92400E; font-size: 13px;">Your listing will remain pending until you upload your Ghana Card. Please edit your listing to complete this step.</p>
+                  </div>
+                  ` : ''}
                   <div style="background: #F8FAFC; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #E2E8F0;">
                     <p style="margin: 4px 0; color: #334155;"><strong>What happens next?</strong></p>
                     <ul style="color: #334155; font-size: 14px; line-height: 1.8;">
                       <li>Our team will review your listing within 24-48 hours</li>
+                      ${ghanaCardNote}
                       <li>You'll receive an email when your listing is approved</li>
                       <li>You can view and edit your listing anytime from your dashboard</li>
                     </ul>
                   </div>
-                  <p style="color: #334155; font-size: 15px; line-height: 1.6;">Want to make changes? You can edit your listing before it's approved:</p>
-                  <a href="https://khareus.com/ManageListing" style="display: inline-block; padding: 12px 28px; background-color: #4F46E5; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; margin: 16px 0;">View My Listings</a>
-                  <a href="https://khareus.com/EditVendor?id=${data.vendorId}" style="display: inline-block; padding: 12px 28px; background-color: #ffffff; color: #4F46E5; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; margin: 16px 0 16px 8px; border: 2px solid #4F46E5;">Edit Listing</a>
+                  <p style="color: #334155; font-size: 15px; line-height: 1.6;">Want to make changes? You can edit your listing:</p>
+                  <a href="https://khareus.com/EditVendor?id=${data.vendorId}" style="display: inline-block; padding: 12px 28px; background-color: #4F46E5; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; margin: 16px 0;">Edit My Listing</a>
+                  <a href="https://khareus.com/ManageListing" style="display: inline-block; padding: 12px 28px; background-color: #ffffff; color: #4F46E5; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; margin: 16px 0 16px 8px; border: 2px solid #4F46E5;">View My Listings</a>
                 </div>
                 <div style="border-top: 1px solid #E2E8F0; padding: 20px 24px; text-align: center;">
                   <p style="color: #94A3B8; font-size: 12px; margin: 0;">&copy; ${new Date().getFullYear()} Khareus. All rights reserved.</p>
@@ -152,9 +172,13 @@ export default function VendorSignup() {
           console.error('Failed to notify admin:', e);
         }
 
-        setTimeout(() => {
-          navigate(createPageUrl("ManageListing"));
-        }, 1500);
+        // Only auto-navigate if Ghana Card was provided
+        // Otherwise VendorForm handles navigation via the pending dialog
+        if (data.hasGhanaCard) {
+          setTimeout(() => {
+            navigate(createPageUrl("ManageListing"));
+          }, 1500);
+        }
       } else {
         window.location.href = data.url;
       }
@@ -165,8 +189,13 @@ export default function VendorSignup() {
     }
   });
 
-  const handleSubmit = (formData) => {
-    createCheckoutMutation.mutate(formData);
+  const handleSubmit = async (formData) => {
+    return new Promise((resolve, reject) => {
+      createCheckoutMutation.mutate(formData, {
+        onSuccess: (data) => resolve(data),
+        onError: (err) => reject(err)
+      });
+    });
   };
 
   if (isLoading) {
