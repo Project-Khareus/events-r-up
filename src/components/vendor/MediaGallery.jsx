@@ -86,7 +86,7 @@ export default function MediaGallery({ images = [], videos = [], businessName })
           <img
             src={currentMedia.url}
             alt={`${businessName} - Media ${selectedIndex + 1}`}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain"
             width="800"
             height="600"
           />
