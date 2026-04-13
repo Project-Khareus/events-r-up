@@ -35,6 +35,12 @@ export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
   const [imageError, setImageError] = React.useState(false);
   const currency = vendor ? getCurrencyByCode(vendor.price_currency) : null;
 
+  const displayImage = React.useMemo(() => {
+    const allImages = [vendor?.image_url, ...(vendor?.gallery_images || [])].filter(Boolean);
+    if (allImages.length === 0) return null;
+    return allImages[Math.floor(Math.random() * allImages.length)];
+  }, [vendor?.id]);
+
   const averageRating = reviews.length > 0
     ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
     : vendor?.rating;
@@ -48,9 +54,9 @@ export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
       <Link to={getVendorUrl(vendor)} className="block h-full">
         <Card className="group h-full flex flex-col overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-500 transition-all duration-300 bg-white dark:bg-slate-800 rounded-lg hover:shadow-md">
           <div className="relative aspect-square overflow-hidden bg-slate-100 shrink-0">
-            {vendor.image_url && !imageError ? (
+            {displayImage && !imageError ? (
               <img
-                src={vendor.image_url}
+                src={displayImage}
                 alt={vendor.business_name}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 onError={() => setImageError(true)}
