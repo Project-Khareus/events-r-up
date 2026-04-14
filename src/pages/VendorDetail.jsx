@@ -72,7 +72,7 @@ const CATEGORY_LABELS = {
   rapporteur_services: "Rapporteur",
   caskets: "Caskets",
   catering_drinks: "Catering & Drinks",
-  fashion_wreaths: "Fashion & Wreaths",
+  wreaths: "Wreaths",
   others: "Others"
 };
 

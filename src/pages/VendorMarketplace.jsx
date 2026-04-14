@@ -36,7 +36,7 @@ const CATEGORY_LABELS = {
   rapporteur_services: "Rapporteur Services",
   caskets: "Caskets",
   catering_drinks: "Catering & Drinks",
-  fashion_wreaths: "Fashion / Wreaths",
+  wreaths: "Wreaths",
   others: "Others"
 };
 
