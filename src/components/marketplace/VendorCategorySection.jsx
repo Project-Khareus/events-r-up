@@ -5,8 +5,9 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import VendorCard from "./VendorCard";
 import VendorListItem from "./VendorListItem";
 
-export default function VendorCategorySection({ title, eventType, category, vendors, allReviews = [] }) {
+export default function VendorCategorySection({ title, eventType, category, vendors: rawVendors, allReviews = [] }) {
   const scrollRef = useRef(null);
+  const vendors = (rawVendors || []).filter(v => v && v.id);
 
   const scroll = (direction) => {
     if (scrollRef.current) {
