@@ -98,8 +98,9 @@ export default function VendorMarketplace() {
   // Normalize vendor data and shuffle for variety on homepage
   const vendors = useMemo(() => {
     const approved = rawVendors
+      .filter(Boolean)
       .map((v) => v.data ? { id: v.id, ...v.data } : v)
-      .filter((v) => !v.status || v.status === 'approved');
+      .filter((v) => v && v.id && (!v.status || v.status === 'approved'));
     // Seeded daily shuffle so order changes each day but stays stable during a session
     const seed = Math.floor(Date.now() / 86400000);
     const shuffled = [...approved];
@@ -187,12 +188,12 @@ export default function VendorMarketplace() {
   }, [vendors, searchQuery, eventType, category, priceRange, sortBy, location, minRating, minYears, aiMatchedIds]);
 
   const featuredVendors = useMemo(() => {
-    return filteredVendors.filter((v) => v.rating >= 4).slice(0, 4); // Display up to 4 featured
+    return filteredVendors.filter((v) => v && v.rating >= 4).slice(0, 4);
   }, [filteredVendors]);
 
   const regularVendors = useMemo(() => {
     const featuredIds = new Set(featuredVendors.map((v) => v.id));
-    return filteredVendors.filter((v) => !featuredIds.has(v.id));
+    return filteredVendors.filter((v) => v && !featuredIds.has(v.id));
   }, [filteredVendors, featuredVendors]);
 
   // Pick a random vendor for promo (vendors with high ratings)
