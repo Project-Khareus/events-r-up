@@ -100,6 +100,21 @@ export default function Navbar() {
     retry: false,
   });
 
+  const { data: userProfile } = useQuery({
+    queryKey: ['userProfile', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return null;
+      const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+      return profiles?.[0] || null;
+    },
+    enabled: !!user?.id,
+    staleTime: 300000,
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
+
+  const avatarUrl = userProfile?.avatar_url || user?.avatar_url;
+
   const { data: notifications = [] } = useQuery({
     queryKey: ['notifications', user?.id],
     queryFn: async () => {
@@ -238,7 +253,7 @@ export default function Navbar() {
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                       <Avatar className="h-10 w-10 border-2 border-white shadow-sm">
-                        <AvatarImage src={user.avatar_url} alt={user.full_name} />
+                        <AvatarImage src={avatarUrl} alt={user.full_name} />
                         <AvatarFallback className="bg-indigo-100 text-indigo-700 font-bold">
                           {user.full_name?.[0] || 'U'}
                         </AvatarFallback>
