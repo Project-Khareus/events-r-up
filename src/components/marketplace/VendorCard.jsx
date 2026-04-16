@@ -90,7 +90,7 @@ export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
               </span>
             )}
 
-            <h3 className="font-bold text-sm text-slate-900 dark:text-slate-100 line-clamp-1 mb-0.5">
+            <h3 className="font-extrabold text-base text-slate-900 dark:text-slate-100 line-clamp-1 mb-0.5 tracking-tight">
               {vendor.business_name}
             </h3>
 
