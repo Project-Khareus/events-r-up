@@ -412,35 +412,41 @@ export default function VendorMarketplace() {
               )}
             </div>) : (
             <div className="space-y-8 sm:space-y-12 px-2">
-            {featuredVendors.length > 0 &&
+            {featuredVendors.length > 0 ? (
               <div>
                 <div className="flex items-center gap-2 mb-4 sm:mb-6">
                   <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-slate-500" />
                   <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Featured Vendors</h2>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                  {featuredVendors.map((vendor) => (
-                    <div key={vendor.id}>
-                      <VendorCard vendor={vendor} reviews={allReviews.filter((r) => r.vendor_id === vendor.id)} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-              }
-            {regularVendors.length > 0 &&
-              <div>
-                {featuredVendors.length > 0 &&
-                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4 sm:mb-6">All Vendors</h2>
-                }
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                    {regularVendors.map((vendor) => (
+                  {featuredVendors.map((vendor) => {
+                    if (!vendor) return null;
+                    return (
                       <div key={vendor.id}>
                         <VendorCard vendor={vendor} reviews={allReviews.filter((r) => r.vendor_id === vendor.id)} />
                       </div>
-                    ))}
-                  </div>
+                    );
+                  })}
+                </div>
               </div>
-              }
+            ) : null}
+            {regularVendors.length > 0 ? (
+              <div>
+                {featuredVendors.length > 0 ? (
+                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4 sm:mb-6">All Vendors</h2>
+                ) : null}
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {regularVendors.map((vendor) => {
+                    if (!vendor) return null;
+                    return (
+                      <div key={vendor.id}>
+                        <VendorCard vendor={vendor} reviews={allReviews.filter((r) => r.vendor_id === vendor.id)} />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
             {regularVendors.length >= vendorsPerPage * vendorPage &&
               <div className="flex justify-center mt-8">
                 <Button
