@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 import { capitalizeHtmlSentences } from "@/components/utils/capitalizeHtml";
 import { getVendorUrl } from "../utils/vendorUrl";
+import ProposedChanges from "../components/admin/ProposedChanges";
 
 export default function AdminVendorDetail() {
   const navigate = useNavigate();
@@ -365,58 +366,7 @@ export default function AdminVendorDetail() {
           )}
 
           {/* Pending Changes */}
-          {vendor.has_pending_changes && vendor.pending_changes && (
-            <div className="bg-orange-50 border border-orange-200 rounded-lg p-6 mb-6">
-              <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                <AlertCircle className="h-5 w-5 text-orange-600" />
-                Proposed Changes
-              </h3>
-              <div className="space-y-4">
-                {Object.keys(vendor.pending_changes)
-                  .filter(key => JSON.stringify(vendor[key]) !== JSON.stringify(vendor.pending_changes[key]))
-                  .map(key => {
-                    const oldVal = vendor[key];
-                    const newVal = vendor.pending_changes[key];
-                    const isImageField = key === 'image_url' || key === 'logo_url' || key === 'profile_picture_url';
-                    const isGalleryImages = key === 'gallery_images';
-                    const fieldLabel = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-                    
-                    return (
-                      <div key={key} className="bg-white rounded-lg border border-orange-300 p-4">
-                        <p className="font-semibold text-slate-900 mb-2">{fieldLabel}</p>
-                        {isImageField ? (
-                          <div>
-                            <p className="text-xs text-green-600 font-medium mb-1">NEW IMAGE:</p>
-                            {newVal ? (
-                              <img src={newVal} alt="New" className="w-48 h-48 object-cover rounded" />
-                            ) : (
-                              <div className="w-48 h-48 bg-slate-100 rounded flex items-center justify-center text-slate-400">Removed</div>
-                            )}
-                          </div>
-                        ) : isGalleryImages ? (
-                          <div className="flex gap-2 flex-wrap">
-                            {Array.isArray(newVal) && newVal.slice(0, 6).map((url, idx) => (
-                              <img key={idx} src={url} alt={`Gallery ${idx + 1}`} className="w-20 h-20 object-cover rounded" />
-                            ))}
-                            {Array.isArray(newVal) && newVal.length > 6 && (
-                              <div className="w-20 h-20 bg-slate-100 rounded flex items-center justify-center text-xs">
-                                +{newVal.length - 6} more
-                              </div>
-                            )}
-                          </div>
-                        ) : (
-                          <>
-                            <p className="text-sm text-slate-600 mb-1"><span className="font-medium">Before:</span> {formatValue(oldVal)}</p>
-                            <p className="text-sm text-green-600"><span className="font-medium">After:</span> {formatValue(newVal)}</p>
-                          </>
-                        )}
-                      </div>
-                    );
-                  })
-                }
-              </div>
-            </div>
-          )}
+          <ProposedChanges vendor={vendor} />
 
           {/* Action Buttons */}
           <div className="flex gap-3 pt-6 border-t border-slate-200">
