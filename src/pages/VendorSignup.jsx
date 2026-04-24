@@ -245,7 +245,6 @@ export default function VendorSignup() {
         <VendorForm
           initialData={{
             contact_email: user?.email,
-            image_url: user?.avatar_url,
             business_name: user?.full_name
           }}
           onSubmit={handleSubmit}

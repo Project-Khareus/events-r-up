@@ -117,17 +117,31 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
 
   useEffect(() => {
     if (initialData) {
-      setFormData((prev) => ({
-        ...prev,
-        ...initialData,
-        gallery_images: initialData.gallery_images || [],
-        gallery_videos: initialData.gallery_videos || [],
-        event_type: Array.isArray(initialData.event_type) ? initialData.event_type : initialData.event_type ? [initialData.event_type] : [],
-        category: Array.isArray(initialData.category) ? initialData.category : initialData.category ? [initialData.category] : [],
-        services: Array.isArray(initialData.services) ? initialData.services : initialData.services ? initialData.services.split(", ") : [],
-        starting_price: initialData.starting_price?.toString() || "",
-        years_in_business: initialData.years_in_business?.toString() || "",
-      }));
+      setFormData((prev) => {
+        const merged = { ...prev };
+        // For new listings, only apply initialData fields that have actual values
+        // so we don't overwrite localStorage draft data with empty values
+        if (!isEditMode) {
+          Object.entries(initialData).forEach(([key, value]) => {
+            if (value !== undefined && value !== null && value !== "") {
+              merged[key] = value;
+            }
+          });
+        } else {
+          // In edit mode, apply all initialData
+          Object.assign(merged, initialData);
+        }
+        return {
+          ...merged,
+          gallery_images: merged.gallery_images || [],
+          gallery_videos: merged.gallery_videos || [],
+          event_type: Array.isArray(merged.event_type) ? merged.event_type : merged.event_type ? [merged.event_type] : [],
+          category: Array.isArray(merged.category) ? merged.category : merged.category ? [merged.category] : [],
+          services: Array.isArray(merged.services) ? merged.services : merged.services ? merged.services.split(", ") : [],
+          starting_price: merged.starting_price?.toString() || "",
+          years_in_business: merged.years_in_business?.toString() || "",
+        };
+      });
     }
   }, [initialData]);
 
