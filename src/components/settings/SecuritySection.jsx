@@ -1,30 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
-import { KeyRound, LogOut, Shield, Mail, Loader2, CheckCircle, Smartphone } from "lucide-react";
+import { KeyRound, LogOut, Shield, Mail, Smartphone } from "lucide-react";
 
 export default function SecuritySection({ user }) {
-  const [resetSending, setResetSending] = useState(false);
-  const [resetSent, setResetSent] = useState(false);
-
-  const handlePasswordReset = async () => {
-    setResetSending(true);
-    try {
-      await base44.auth.resetPasswordRequest(user.email);
-      setResetSent(true);
-      toast.success("Password reset link sent to your email!");
-    } catch (err) {
-      console.error("Password reset error:", err);
-      toast.error("Could not send reset email. Please try logging out and using 'Forgot Password' on the login page.");
-    } finally {
-      setResetSending(false);
-    }
-  };
-
   return (
     <Card className="p-6">
       <h2 className="text-xl font-semibold mb-6 text-slate-900 dark:text-white flex items-center gap-2">
@@ -53,36 +35,17 @@ export default function SecuritySection({ user }) {
             Password
           </h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
-            Reset your password by receiving a secure link to your email.
+            To reset your password, sign out and click <strong>"Forgot Password?"</strong> on the login page. A reset link will be sent to your email.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3">
-            {resetSent ? (
-              <div className="flex items-center gap-2 text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-950/30 px-4 py-2.5 rounded-lg">
-                <CheckCircle className="h-5 w-5 shrink-0" />
-                <span className="text-sm font-medium">
-                  Reset link sent to <strong>{user.email}</strong> — check your inbox (and spam folder).
-                </span>
-              </div>
-            ) : (
-              <Button
-                variant="outline"
-                onClick={handlePasswordReset}
-                disabled={resetSending}
-                className="w-full sm:w-auto"
-              >
-                {resetSending ? (
-                  <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Sending...</>
-                ) : (
-                  <><Mail className="h-4 w-4 mr-2" /> Send Password Reset Email</>
-                )}
-              </Button>
-            )}
-          </div>
-
-          <p className="text-xs text-slate-500 mt-3">
-            You can also reset your password from the login page by clicking <strong>"Forgot Password?"</strong>
-          </p>
+          <Button
+            variant="outline"
+            onClick={() => base44.auth.logout(window.location.origin)}
+            className="w-full sm:w-auto"
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            Sign Out & Reset Password
+          </Button>
         </div>
 
         {/* Two-Factor Authentication */}
