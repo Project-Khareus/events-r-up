@@ -11,9 +11,10 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Settings as SettingsIcon, User, Shield, Bell, MapPin, Trash2, Loader2, AlertTriangle, Store, Edit3, Upload, Globe, Twitter, Instagram, Linkedin, KeyRound, LogOut } from "lucide-react";
+import { Settings as SettingsIcon, User, Shield, Bell, MapPin, Trash2, Loader2, AlertTriangle, Store, Edit3, Upload, Globe, Twitter, Instagram, Linkedin } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import SecuritySection from "../components/settings/SecuritySection";
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -119,8 +120,8 @@ export default function Settings() {
               <span className="hidden sm:inline">Profile</span>
             </TabsTrigger>
             <TabsTrigger value="account" className="gap-2">
-              <User className="h-4 w-4" />
-              <span className="hidden sm:inline">Account</span>
+              <Shield className="h-4 w-4" />
+              <span className="hidden sm:inline">Security</span>
             </TabsTrigger>
             <TabsTrigger value="privacy" className="gap-2">
               <Shield className="h-4 w-4" />
@@ -328,68 +329,28 @@ export default function Settings() {
             </Card>
           </TabsContent>
 
-          {/* Account Settings */}
+          {/* Account & Security Settings */}
           <TabsContent value="account">
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-6 text-slate-900 dark:text-white">Account Information</h2>
-              <div className="space-y-6">
-                <div>
-                  <Label>Full Name</Label>
-                  <Input value={user.full_name || ''} disabled className="bg-slate-50 dark:bg-slate-900" />
-                  <p className="text-xs text-slate-500 mt-1">Contact support to change your name</p>
-                </div>
-                <div>
-                  <Label>Email</Label>
-                  <Input value={user.email} disabled className="bg-slate-50 dark:bg-slate-900" />
-                  <p className="text-xs text-slate-500 mt-1">Contact support to change your email</p>
-                </div>
-                <div>
-                  <Label>Location</Label>
-                  <Input 
-                    defaultValue={userProfile?.location || ''} 
-                    placeholder="e.g., Accra, Ghana"
-                    onBlur={(e) => updateProfileMutation.mutate({ location: e.target.value })}
-                  />
-                </div>
+            <div className="space-y-6">
+              <SecuritySection user={user} />
 
-                {/* Password Reset */}
-                <div className="pt-6 border-t border-slate-200 dark:border-slate-800">
-                  <h3 className="text-lg font-semibold mb-2 text-slate-900 dark:text-white flex items-center gap-2">
-                    <KeyRound className="h-5 w-5 text-indigo-500" />
-                    Password & Security
-                  </h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
-                    To reset your password, you'll be signed out and redirected to the login page where you can use the "Forgot Password" option to receive a reset link via email.
-                  </p>
-                  <Button
-                    variant="outline"
-                    className="w-full sm:w-auto"
-                    onClick={() => {
-                      base44.auth.logout(window.location.origin);
-                    }}
-                  >
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Sign Out & Reset Password
-                  </Button>
-                </div>
-
-                <div className="pt-6 border-t border-slate-200 dark:border-slate-800">
-                  <h3 className="text-lg font-semibold mb-4 text-red-600 dark:text-red-400 flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5" />
-                    Danger Zone
-                  </h3>
-                  <Button 
-                    variant="destructive" 
-                    onClick={() => setDeleteAccountOpen(true)}
-                    className="w-full sm:w-auto"
-                  >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Delete Account
-                  </Button>
-                  <p className="text-xs text-slate-500 mt-2">This will permanently delete your account and all data</p>
-                </div>
-              </div>
-            </Card>
+              {/* Danger Zone */}
+              <Card className="p-6 border-red-200 dark:border-red-900">
+                <h3 className="text-lg font-semibold mb-4 text-red-600 dark:text-red-400 flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5" />
+                  Danger Zone
+                </h3>
+                <Button 
+                  variant="destructive" 
+                  onClick={() => setDeleteAccountOpen(true)}
+                  className="w-full sm:w-auto"
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete Account
+                </Button>
+                <p className="text-xs text-slate-500 mt-2">This will permanently delete your account and all data</p>
+              </Card>
+            </div>
           </TabsContent>
 
           {/* Privacy Settings */}
