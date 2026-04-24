@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 const BRAND = 'Khareus';
 const SITE_URL = 'https://khareus.com';
@@ -24,6 +24,9 @@ function button(text, url, color = '#4F46E5') {
 
 Deno.serve(async (req) => {
     try {
+        // Read body before creating client (body can only be read once)
+        const { business_name, vendor_id, contact_email } = await req.json();
+        
         const base44 = createClientFromRequest(req);
         
         const user = await base44.auth.me();
@@ -46,7 +49,6 @@ Deno.serve(async (req) => {
         }
 
         const adminEmail = admins[0].email;
-        const { business_name, vendor_id, contact_email } = await req.json();
 
         const content = `
             <p style="color: #334155; font-size: 15px; line-height: 1.6;">
