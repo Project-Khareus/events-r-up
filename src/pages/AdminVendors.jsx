@@ -105,25 +105,34 @@ export default function AdminVendors() {
       const currentUser = await base44.auth.me();
       const result = await base44.functions.invoke('approveVendor', { vendor_id: vendorId });
 
-      // Create in-app notification
+      // Create in-app notification (non-blocking — approval already succeeded)
       if (vendorObj) {
-        await base44.entities.Notification.create({
-          user_id: vendorObj.user_id,
-          type: 'vendor_approved',
-          title: 'Vendor Approved!',
-          message: `Congratulations! Your vendor listing "${vendorObj.business_name}" has been approved and is now live.`,
-          link: getVendorUrl(vendorObj).substring(1),
-          action_by: currentUser.full_name || currentUser.email,
-          action_type: 'approved',
-          vendor_id: vendorObj.id,
-          vendor_name: vendorObj.business_name
-        });
+        try {
+          await base44.entities.Notification.create({
+            user_id: vendorObj.user_id,
+            type: 'vendor_approved',
+            title: 'Vendor Approved!',
+            message: `Congratulations! Your vendor listing "${vendorObj.business_name}" has been approved and is now live.`,
+            link: getVendorUrl(vendorObj).substring(1),
+            action_by: currentUser.full_name || currentUser.email,
+            action_type: 'approved',
+            vendor_id: vendorObj.id,
+            vendor_name: vendorObj.business_name
+          });
+        } catch (notifErr) {
+          console.error("In-app notification failed:", notifErr);
+        }
       }
 
       return result;
     },
-    onSuccess: () => {
-      toast.success("Vendor approved and notified!");
+    onSuccess: (result) => {
+      const emailSent = result?.data?.emailSent;
+      if (emailSent === false) {
+        toast.success("Vendor approved! (Email couldn't be sent — they may use a private email)");
+      } else {
+        toast.success("Vendor approved and notified!");
+      }
       queryClient.invalidateQueries(['admin_all_vendors']);
     },
     onError: (error) => {

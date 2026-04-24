@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 const BRAND = 'Khareus';
 const SITE_URL = 'https://khareus.com';
@@ -50,32 +50,43 @@ Deno.serve(async (req) => {
             return Response.json({ error: "Vendor not found" }, { status: 404 });
         }
 
-        let emailToSend = vendor.contact_email;
-        
-        if (!emailToSend && vendor.user_id) {
-             const vendorUser = await base44.asServiceRole.entities.User.get(vendor.user_id);
-             emailToSend = vendorUser?.email;
+        // Email notification is non-blocking — approval must not fail because of email issues
+        let emailSent = false;
+        try {
+            let emailToSend = vendor.contact_email;
+            
+            if (!emailToSend && vendor.user_id) {
+                 const vendorUser = await base44.asServiceRole.entities.User.get(vendor.user_id);
+                 emailToSend = vendorUser?.email;
+            }
+
+            if (emailToSend) {
+                const content = `
+                    <p style="color: #334155; font-size: 15px; line-height: 1.6;">
+                        Great news! Your vendor listing for <strong>${vendor.business_name}</strong> has been approved and is now live on ${BRAND}.
+                    </p>
+                    <p style="color: #334155; font-size: 15px; line-height: 1.6;">
+                        Customers can now discover your services in our marketplace. You can manage your listing, track bookings, and respond to inquiries from your dashboard.
+                    </p>
+                    ${button('Manage Your Listing', `${SITE_URL}/ManageListing`)}
+                `;
+
+                await base44.integrations.Core.SendEmail({
+                    to: emailToSend,
+                    subject: `Your ${BRAND} Listing is Approved! 🎉`,
+                    body: emailTemplate('Congratulations! 🎉', '#10B981', content)
+                });
+                emailSent = true;
+            }
+        } catch (emailError) {
+            console.error("Email notification failed (non-blocking):", emailError.message);
         }
 
-        if (emailToSend) {
-            const content = `
-                <p style="color: #334155; font-size: 15px; line-height: 1.6;">
-                    Great news! Your vendor listing for <strong>${vendor.business_name}</strong> has been approved and is now live on ${BRAND}.
-                </p>
-                <p style="color: #334155; font-size: 15px; line-height: 1.6;">
-                    Customers can now discover your services in our marketplace. You can manage your listing, track bookings, and respond to inquiries from your dashboard.
-                </p>
-                ${button('Manage Your Listing', `${SITE_URL}/ManageListing`)}
-            `;
-
-            await base44.integrations.Core.SendEmail({
-                to: emailToSend,
-                subject: `Your ${BRAND} Listing is Approved! 🎉`,
-                body: emailTemplate('Congratulations! 🎉', '#10B981', content)
-            });
-        }
-
-        return Response.json({ success: true, message: "Vendor approved and notified" });
+        return Response.json({ 
+            success: true, 
+            message: emailSent ? "Vendor approved and notified" : "Vendor approved (email notification could not be sent)",
+            emailSent
+        });
 
     } catch (error) {
         console.error("Approval error:", error);
