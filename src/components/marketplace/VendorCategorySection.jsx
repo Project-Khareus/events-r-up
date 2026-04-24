@@ -47,7 +47,7 @@ export default function VendorCategorySection({ title, eventType, category, vend
 
       {/* Desktop Grid */}
       <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-4 gap-3">
-        {vendors.slice(0, Math.min(vendors.length, 10)).map((vendor) => (
+        {vendors.slice(0, 20).map((vendor) => (
           <div key={vendor.id}>
             <VendorCard vendor={vendor} reviews={allReviews.filter(r => r.vendor_id === vendor.id)} />
           </div>
@@ -56,11 +56,11 @@ export default function VendorCategorySection({ title, eventType, category, vend
 
       {/* Mobile Grid */}
       <div className="md:hidden grid grid-cols-2 gap-3 px-1">
-        {vendors.slice(0, 8).map((vendor) => (
+        {vendors.slice(0, 12).map((vendor) => (
           <VendorCard key={vendor.id} vendor={vendor} reviews={allReviews.filter(r => r.vendor_id === vendor.id)} />
         ))}
       </div>
-      {vendors.length > 8 && (
+      {vendors.length > 12 && (
         <div className="md:hidden flex justify-center mt-3">
           <Link
             to={targetUrl}

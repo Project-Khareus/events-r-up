@@ -49,7 +49,7 @@ export default function VendorMarketplace() {
   const [priceRange, setPriceRange] = useState("all");
   const [vendorPage, setVendorPage] = useState(1);
   const vendorsPerPage = 32;
-  const vendorsPerSection = 12; // Limit per event type section for performance
+  const vendorsPerSection = 50; // Limit per event type section
 
   // Advanced filters
   const [sortBy, setSortBy] = useState("relevance");
