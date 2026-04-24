@@ -73,31 +73,45 @@ export default function VendorSignup() {
         const trialEndDate = new Date();
         trialEndDate.setMonth(trialEndDate.getMonth() + 1);
 
-        const newVendor = await base44.entities.Vendor.create({
-          ...vendorData,
-          user_id: user.id,
-          subscription_type: 'trial',
-          is_trial: true,
-          subscription_start_date: new Date().toISOString().split('T')[0],
-          subscription_end_date: trialEndDate.toISOString().split('T')[0],
-          status: 'pending',
-          ghana_card_status: hasGhanaCard ? 'pending' : undefined
-        });
-
-        // Only create verification record if Ghana Card data was provided
-        if (hasGhanaCard) {
-          await base44.entities.VendorVerification.create({
-            vendor_id: newVendor.id,
+        let newVendor;
+        try {
+          newVendor = await base44.entities.Vendor.create({
+            ...vendorData,
             user_id: user.id,
-            ghana_card_number,
-            ghana_card_image_url,
-            ghana_card_back_image_url,
-            ghana_card_selfie_url,
-            ghana_card_status: 'pending'
+            subscription_type: 'trial',
+            is_trial: true,
+            subscription_start_date: new Date().toISOString().split('T')[0],
+            subscription_end_date: trialEndDate.toISOString().split('T')[0],
+            status: 'pending',
+            ghana_card_status: hasGhanaCard ? 'pending' : undefined
           });
+        } catch (err) {
+          console.error('Vendor creation failed:', err);
+          throw new Error("We couldn't create your listing. Please check that all required fields are filled in correctly and try again.");
         }
 
-        return { trial: true, vendorId: newVendor.id, businessName: vendorData.business_name, hasGhanaCard };
+        // Create verification record if Ghana Card data was provided (non-blocking)
+        let ghanaCardSaved = false;
+        if (hasGhanaCard) {
+          try {
+            await base44.entities.VendorVerification.create({
+              vendor_id: newVendor.id,
+              user_id: user.id,
+              ghana_card_number,
+              ghana_card_image_url,
+              ghana_card_back_image_url,
+              ghana_card_selfie_url,
+              ghana_card_status: 'pending'
+            });
+            ghanaCardSaved = true;
+          } catch (err) {
+            console.error('Ghana Card verification save failed:', err);
+            // Vendor was created successfully — don't block the flow
+            toast.info("Your listing was created but Ghana Card details couldn't be saved. You can add them later by editing your listing.");
+          }
+        }
+
+        return { trial: true, vendorId: newVendor.id, businessName: vendorData.business_name, hasGhanaCard: hasGhanaCard && ghanaCardSaved };
       }
 
       // For paid plans, use checkout
