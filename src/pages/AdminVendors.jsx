@@ -402,6 +402,11 @@ export default function AdminVendors() {
             <p className="text-slate-600">Review new listings and changes</p>
           </div>
           <div className="flex gap-3">
+           <Link to="/AdminCreateVendor">
+             <Button className="bg-indigo-600 hover:bg-indigo-700 gap-2">
+               <Store className="h-4 w-4" /> Create Listing
+             </Button>
+           </Link>
            <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200">
              <span className="font-semibold text-indigo-600">{pendingVendors.length}</span> New
            </div>

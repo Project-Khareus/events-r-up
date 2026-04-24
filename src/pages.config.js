@@ -92,6 +92,7 @@ import VendorMarketplace from './pages/VendorMarketplace';
 import VendorSignup from './pages/VendorSignup';
 import Weddings from './pages/Weddings';
 import AdminReports from './pages/AdminReports';
+import AdminCreateVendor from './pages/AdminCreateVendor';
 import __Layout from './Layout.jsx';
 
 
@@ -141,6 +142,7 @@ export const PAGES = {
     "VendorSignup": VendorSignup,
     "Weddings": Weddings,
     "AdminReports": AdminReports,
+    "AdminCreateVendor": AdminCreateVendor,
 }
 
 export const pagesConfig = {
