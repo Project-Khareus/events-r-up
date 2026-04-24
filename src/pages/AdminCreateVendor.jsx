@@ -3,19 +3,14 @@ import { base44 } from "@/api/base44Client";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Store, Loader2, Send, ArrowLeft, UserPlus } from "lucide-react";
+import { Loader2, Send, ArrowLeft, UserPlus } from "lucide-react";
 import VendorForm from "../components/vendor/VendorForm";
 
 export default function AdminCreateVendor() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [ownerEmail, setOwnerEmail] = useState("");
-  const [emailConfirmed, setEmailConfirmed] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -40,13 +35,11 @@ export default function AdminCreateVendor() {
     mutationFn: async (formData) => {
       const response = await base44.functions.invoke("adminCreateVendor", {
         vendor_data: formData,
-        owner_email: ownerEmail,
       });
       return response.data;
     },
     onSuccess: (data) => {
       toast.success("Vendor listing created successfully!");
-      // Clear localStorage draft
       try {
         localStorage.removeItem("vendor_form_draft");
         localStorage.removeItem("vendor_form_step");
@@ -94,79 +87,20 @@ export default function AdminCreateVendor() {
             Create Vendor Listing
           </h1>
           <p className="text-slate-600">
-            Create a listing on behalf of a vendor. It will be auto-approved and the vendor will be notified.
+            Create a listing on behalf of a vendor. It will be auto-approved and live immediately.
           </p>
         </div>
 
-        {/* Owner Email Section */}
-        <Card className="p-6 mb-6 border-indigo-200 bg-indigo-50/30">
-          <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
-              <Store className="h-5 w-5 text-indigo-600" />
-            </div>
-            <div className="flex-1">
-              <Label className="text-sm font-semibold text-slate-900 mb-1 block">
-                Vendor Owner Email *
-              </Label>
-              <p className="text-xs text-slate-500 mb-3">
-                Enter the email of the user this listing belongs to. They must already have a Khareus account.
-              </p>
-              <div className="flex gap-3">
-                <Input
-                  type="email"
-                  placeholder="vendor@example.com"
-                  value={ownerEmail}
-                  onChange={(e) => {
-                    setOwnerEmail(e.target.value);
-                    setEmailConfirmed(false);
-                  }}
-                  className="max-w-sm"
-                  disabled={emailConfirmed}
-                />
-                {!emailConfirmed ? (
-                  <Button
-                    onClick={() => {
-                      if (!ownerEmail || !ownerEmail.includes("@")) {
-                        toast.error("Please enter a valid email address");
-                        return;
-                      }
-                      setEmailConfirmed(true);
-                    }}
-                    className="bg-indigo-600 hover:bg-indigo-700"
-                  >
-                    Confirm
-                  </Button>
-                ) : (
-                  <Button
-                    variant="outline"
-                    onClick={() => setEmailConfirmed(false)}
-                  >
-                    Change
-                  </Button>
-                )}
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        {emailConfirmed ? (
-          <VendorForm
-            initialData={{
-              contact_email: ownerEmail,
-            }}
-            onSubmit={handleSubmit}
-            isSubmitting={createMutation.isPending}
-            submitLabel="Create Listing"
-            submitIcon={<Send className="h-5 w-5" />}
-          />
-        ) : (
-          <Card className="p-12 text-center bg-slate-50 border-dashed">
-            <Store className="h-12 w-12 text-slate-300 mx-auto mb-3" />
-            <p className="text-slate-500">
-              Enter and confirm the vendor owner's email above to start building the listing.
-            </p>
-          </Card>
-        )}
+        <VendorForm
+          initialData={{
+            contact_email: user?.email,
+            business_name: "",
+          }}
+          onSubmit={handleSubmit}
+          isSubmitting={createMutation.isPending}
+          submitLabel="Create Listing"
+          submitIcon={<Send className="h-5 w-5" />}
+        />
       </div>
     </div>
   );
