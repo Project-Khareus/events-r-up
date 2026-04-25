@@ -9,10 +9,11 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, Store, Edit2, Clock, Eye, Search, Ban, CreditCard, ShieldCheck, ShieldX, ShieldAlert, Flag, Star, MessageSquare } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, Store, Edit2, Clock, Eye, Search, Ban, CreditCard, ShieldCheck, ShieldX, ShieldAlert, Flag, Star, MessageSquare, ArrowRightLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import PendingVendorCard from "../components/admin/PendingVendorCard";
+import TransferVendorDialog from "@/components/admin/TransferVendorDialog";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 import { capitalizeHtmlSentences } from "@/components/utils/capitalizeHtml";
 import { getVendorUrl } from "../utils/vendorUrl";
@@ -61,6 +62,7 @@ export default function AdminVendors() {
   const [suspensionReason, setSuspensionReason] = useState("");
   const [verifyingCardVendorId, setVerifyingCardVendorId] = useState(null);
   const [ghanaCardDialogVendor, setGhanaCardDialogVendor] = useState(null);
+  const [transferVendor, setTransferVendor] = useState(null);
 
   // Fetch reports count
   const { data: pendingReportsCount = 0 } = useQuery({
@@ -728,6 +730,15 @@ export default function AdminVendors() {
                                 <Button
                                   variant="outline"
                                   size="icon"
+                                  className="h-9 w-9 border-indigo-200 hover:bg-indigo-50"
+                                  title="Transfer Listing"
+                                  onClick={() => setTransferVendor(vendor)}
+                                >
+                                  <ArrowRightLeft className="h-4 w-4 text-indigo-500" />
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="icon"
                                   className="h-9 w-9 border-red-200 hover:bg-red-50"
                                   title="Suspend"
                                   onClick={() => handleSuspendClick(vendor)}
@@ -854,6 +865,17 @@ export default function AdminVendors() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* Transfer Dialog */}
+        <TransferVendorDialog
+          open={!!transferVendor}
+          onOpenChange={(open) => !open && setTransferVendor(null)}
+          vendor={transferVendor}
+          onSuccess={() => {
+            queryClient.invalidateQueries(['admin_all_vendors']);
+            setTransferVendor(null);
+          }}
+        />
 
         {/* Suspension Dialog */}
         <Dialog open={suspendDialogOpen} onOpenChange={setSuspendDialogOpen}>
