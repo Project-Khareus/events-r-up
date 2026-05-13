@@ -68,26 +68,25 @@ export default function VendorMarketplace() {
   }, [eventParam, categoryParam]);
 
   const { data: rawVendors = [], isLoading, isFetching } = useQuery({
-    queryKey: ['vendors', vendorPage],
+    queryKey: ['vendors'],
     queryFn: () => base44.entities.Vendor.list('-created_date', 200),
-    staleTime: 60000,
-    cacheTime: 300000,
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
-    refetchOnReconnect: true,
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
     retry: 1,
     keepPreviousData: true
   });
 
-  // Batch fetch reviews with pagination
   const { data: allReviews = [] } = useQuery({
     queryKey: ['all_reviews'],
     queryFn: () => base44.entities.Review.list('-created_date', 150),
-    staleTime: 60000, // 1 minute
-    cacheTime: 300000, // 5 minutes
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
-    refetchOnReconnect: true,
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
     retry: 1
   });
 
@@ -97,8 +96,8 @@ export default function VendorMarketplace() {
       .filter(Boolean)
       .map((v) => v.data ? { id: v.id, ...v.data } : v)
       .filter((v) => v && v.id && (!v.status || v.status === 'approved'));
-    // Seeded daily shuffle so order changes each day but stays stable during a session
-    const seed = Math.floor(Date.now() / 86400000);
+    // Seeded daily shuffle — stable for the entire day
+    const seed = Math.floor(new Date().setHours(0,0,0,0) / 86400000);
     const shuffled = [...approved];
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.abs(((seed * (i + 1) * 9301 + 49297) % 233280)) % (i + 1);
