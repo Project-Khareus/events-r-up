@@ -47,7 +47,7 @@ export default function StepMedia({ formData, setFormData, onNext, onBack }) {
     setGalleryUploading(true);
     try {
       const results = await Promise.all(files.map((f) => base44.integrations.Core.UploadFile({ file: f })));
-      setFormData((prev) => ({ ...prev, gallery_images: [...prev.gallery_images, ...results.map((r) => r.file_url)] }));
+      setFormData((prev) => ({ ...prev, gallery_images: [...(prev.gallery_images || []), ...results.map((r) => r.file_url)] }));
       toast.success(`${files.length} image(s) uploaded!`);
     } catch { toast.error("Failed to upload some images"); }
     finally { setGalleryUploading(false); }
@@ -69,7 +69,7 @@ export default function StepMedia({ formData, setFormData, onNext, onBack }) {
           try {
             const { images } = await base44.functions.invoke('socialMedia', { action: 'fetch_photos', code: event.data.code, redirectUri }).then((r) => r.data);
             if (images?.length > 0) {
-              setFormData((prev) => ({ ...prev, gallery_images: [...prev.gallery_images, ...images] }));
+              setFormData((prev) => ({ ...prev, gallery_images: [...(prev.gallery_images || []), ...images] }));
               toast.success(`Imported ${images.length} photos from Facebook!`);
             } else { toast.info("No uploaded photos found."); }
           } catch { toast.error("Failed to fetch photos"); }
@@ -90,14 +90,14 @@ export default function StepMedia({ formData, setFormData, onNext, onBack }) {
     setVideoUploading(true);
     try {
       const results = await Promise.all(files.map((f) => base44.integrations.Core.UploadFile({ file: f })));
-      setFormData((prev) => ({ ...prev, gallery_videos: [...prev.gallery_videos, ...results.map((r) => r.file_url)] }));
+      setFormData((prev) => ({ ...prev, gallery_videos: [...(prev.gallery_videos || []), ...results.map((r) => r.file_url)] }));
       toast.success(`${files.length} video(s) uploaded!`);
     } catch { toast.error("Failed to upload some videos"); }
     finally { setVideoUploading(false); }
   };
 
   const addService = (service) => {
-    if (service && !formData.services.includes(service)) {
+    if (service && !(formData.services || []).includes(service)) {
       setFormData((prev) => ({ ...prev, services: [...prev.services, service] }));
     }
     setServiceInput("");
@@ -138,7 +138,7 @@ export default function StepMedia({ formData, setFormData, onNext, onBack }) {
             <Label className="mb-2 block text-slate-700">Portfolio Gallery</Label>
             <div className="border-2 border-dashed border-slate-300 rounded-xl p-4 hover:border-indigo-400 transition-colors bg-white">
               <div className="grid grid-cols-3 gap-2 mb-3">
-                {formData.gallery_images.map((url, i) => (
+                {(formData.gallery_images || []).map((url, i) => (
                   <div key={i} className="relative aspect-square">
                     <img src={url} alt={`Gallery ${i + 1}`} className="w-full h-full object-cover rounded-lg" />
                     <button type="button" onClick={() => setFormData((p) => ({ ...p, gallery_images: p.gallery_images.filter((_, idx) => idx !== i) }))} className="absolute top-1 right-1 p-0.5 bg-red-500 text-white rounded-full hover:bg-red-600"><X className="h-3 w-3" /></button>
@@ -162,7 +162,7 @@ export default function StepMedia({ formData, setFormData, onNext, onBack }) {
             <Label className="mb-2 block text-slate-700">Portfolio Videos</Label>
             <div className="border-2 border-dashed border-slate-300 rounded-xl p-4 hover:border-indigo-400 transition-colors bg-white">
               <div className="grid grid-cols-2 gap-2 mb-3">
-                {formData.gallery_videos.map((url, i) => (
+                {(formData.gallery_videos || []).map((url, i) => (
                   <div key={i} className="relative aspect-video">
                     <video src={url} className="w-full h-full object-cover rounded-lg" controls />
                     <button type="button" onClick={() => setFormData((p) => ({ ...p, gallery_videos: p.gallery_videos.filter((_, idx) => idx !== i) }))} className="absolute top-1 right-1 p-0.5 bg-red-500 text-white rounded-full hover:bg-red-600"><X className="h-3 w-3" /></button>
@@ -195,7 +195,7 @@ export default function StepMedia({ formData, setFormData, onNext, onBack }) {
         <div>
           <Label className="mb-2 block">Services Offered</Label>
           <div className="flex flex-wrap gap-2 mb-2">
-            {formData.services.map((service, i) => (
+            {(formData.services || []).map((service, i) => (
               <Badge key={i} variant="secondary" className="px-3 py-1 bg-slate-100 text-slate-700 hover:bg-slate-200">
                 {service}
                 <button onClick={() => setFormData((p) => ({ ...p, services: p.services.filter((s) => s !== service) }))} className="ml-2 hover:text-red-500"><X className="h-3 w-3" /></button>
@@ -219,7 +219,7 @@ export default function StepMedia({ formData, setFormData, onNext, onBack }) {
                 <CommandGroup className="max-h-64 overflow-auto">
                   {COMMON_SERVICES.map((s) => (
                     <CommandItem key={s} onSelect={() => addService(s)}>
-                      <Check className={cn("mr-2 h-4 w-4", formData.services.includes(s) ? "opacity-100" : "opacity-0")} /> {s}
+                      <Check className={cn("mr-2 h-4 w-4", (formData.services || []).includes(s) ? "opacity-100" : "opacity-0")} /> {s}
                     </CommandItem>
                   ))}
                 </CommandGroup>
