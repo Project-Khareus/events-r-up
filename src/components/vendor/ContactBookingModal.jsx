@@ -78,7 +78,7 @@ export default function ContactBookingModal({ vendor, trigger }) {
               
               {vendor.website && (
                 <a
-                  href={vendor.website}
+                  href={vendor.website.startsWith('http') ? vendor.website : `https://${vendor.website}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors"
