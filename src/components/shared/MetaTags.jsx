@@ -1,5 +1,14 @@
 import { useEffect } from "react";
 
+const KHAREUS_DEFAULT_DESCRIPTION = "Khareus is Ghana's premier event vendor marketplace. Find and book trusted vendors for weddings, parties, conferences, and more.";
+
+function stripHtml(html) {
+  if (!html) return "";
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || "";
+}
+
 export default function MetaTags({ 
   title, 
   description, 
@@ -8,6 +17,9 @@ export default function MetaTags({
   type = "website"
 }) {
   useEffect(() => {
+    // Strip HTML and use Khareus fallback if empty
+    const cleanDescription = stripHtml(description)?.trim() || KHAREUS_DEFAULT_DESCRIPTION;
+
     // Update page title
     if (title) {
       document.title = `${title} | Khareus`;
@@ -31,7 +43,7 @@ export default function MetaTags({
 
     // Open Graph tags (Facebook, LinkedIn, etc.)
     setMetaTag('og:title', title);
-    setMetaTag('og:description', description);
+    setMetaTag('og:description', cleanDescription);
     setMetaTag('og:image', image);
     setMetaTag('og:image:secure_url', image);
     setMetaTag('og:image:width', '1200');
@@ -46,7 +58,7 @@ export default function MetaTags({
     setMetaTag('twitter:card', image ? 'summary_large_image' : 'summary', true);
     setMetaTag('twitter:site', '@khareus', true);
     setMetaTag('twitter:title', title, true);
-    setMetaTag('twitter:description', description, true);
+    setMetaTag('twitter:description', cleanDescription, true);
     setMetaTag('twitter:image', image, true);
     setMetaTag('twitter:image:alt', title, true);
 
@@ -56,7 +68,7 @@ export default function MetaTags({
     }
 
     // Standard meta tags
-    setMetaTag('description', description, true);
+    setMetaTag('description', cleanDescription, true);
 
     // Cleanup function to remove added tags when component unmounts
     return () => {
