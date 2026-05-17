@@ -524,11 +524,11 @@ export default function AdminVendors() {
                           })}
                         </p>
                       </div>
-                      <Link to={getVendorUrl(vendor)} target="_blank">
+                      <a href={`${getVendorUrl(vendor)}?id=${vendor.id}`} target="_blank" rel="noopener noreferrer">
                         <Button variant="ghost" size="sm" className="gap-2">
                           View Live <ExternalLink className="h-4 w-4" />
                         </Button>
-                      </Link>
+                      </a>
                     </div>
 
                     {vendor.pending_changes && (
@@ -722,11 +722,11 @@ export default function AdminVendors() {
                                     <MessageSquare className="h-4 w-4 text-slate-600" />
                                   </Button>
                                 </Link>
-                                <Link to={getVendorUrl(vendor)} target="_blank">
+                                <a href={`${getVendorUrl(vendor)}?id=${vendor.id}`} target="_blank" rel="noopener noreferrer">
                                   <Button variant="outline" size="icon" className="h-9 w-9 border-slate-300 hover:bg-slate-100" title="View Listing">
                                     <ExternalLink className="h-4 w-4 text-slate-600" />
                                   </Button>
-                                </Link>
+                                </a>
                                 <Button
                                   variant="outline"
                                   size="icon"

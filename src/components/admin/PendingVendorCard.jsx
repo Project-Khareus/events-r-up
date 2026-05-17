@@ -99,11 +99,11 @@ export default function PendingVendorCard({
                 )}
               </div>
               <div className="flex items-center gap-2 shrink-0">
-                <Link to={getVendorUrl(vendor)} target="_blank">
+                <a href={`${getVendorUrl(vendor)}?id=${vendor.id}`} target="_blank" rel="noopener noreferrer">
                   <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8 text-indigo-600 border-indigo-200 hover:bg-indigo-50 rounded-lg">
                     <Eye className="h-3.5 w-3.5" /> Preview
                   </Button>
-                </Link>
+                </a>
                 <Link to={`/AdminVendorDetail?id=${vendor.id}`}>
                   <Button variant="ghost" size="sm" className="gap-1.5 text-xs h-8 rounded-lg">
                     Admin <ExternalLink className="h-3.5 w-3.5" />

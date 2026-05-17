@@ -87,14 +87,14 @@ export default function VendorDetail() {
   const { data: vendor, isLoading } = useQuery({
     queryKey: ['vendor', vendorIdFromQuery || shortIdFromSlug],
     queryFn: async () => {
-      // Direct ID lookup (legacy ?id= param)
+      // Direct ID lookup (preferred — from ?id= param)
       if (vendorIdFromQuery) {
         const results = await base44.entities.Vendor.filter({ id: vendorIdFromQuery });
         return results[0] ?? null;
       }
       // Slug-based lookup: find vendor whose ID ends with the short ID
       if (shortIdFromSlug) {
-        const allVendors = await base44.entities.Vendor.list('-created_date', 200);
+        const allVendors = await base44.entities.Vendor.list('-created_date', 500);
         const match = allVendors.find(v => v.id.endsWith(shortIdFromSlug));
         return match ?? null;
       }
