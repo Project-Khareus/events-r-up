@@ -90,13 +90,18 @@ export default function VendorDetail() {
       // Direct ID lookup (preferred — from ?id= param)
       if (vendorIdFromQuery) {
         const results = await base44.entities.Vendor.filter({ id: vendorIdFromQuery });
-        return results[0] ?? null;
+        if (results[0]) return results[0];
       }
-      // Slug-based lookup: find vendor whose ID ends with the short ID
+
+      // Reliable fallback: fetch vendors and match by full ID or slug suffix
+      const allVendors = await base44.entities.Vendor.list('-created_date', 1000);
+      if (vendorIdFromQuery) {
+        const directMatch = allVendors.find(v => v.id === vendorIdFromQuery);
+        if (directMatch) return directMatch;
+      }
       if (shortIdFromSlug) {
-        const allVendors = await base44.entities.Vendor.list('-created_date', 500);
-        const match = allVendors.find(v => v.id.endsWith(shortIdFromSlug));
-        return match ?? null;
+        const slugMatch = allVendors.find(v => v.id.endsWith(shortIdFromSlug));
+        return slugMatch ?? null;
       }
       return null;
     },
