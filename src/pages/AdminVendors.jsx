@@ -75,7 +75,7 @@ export default function AdminVendors() {
   });
 
   // Fetch all vendors
-  const { data: allVendors = [], isLoading } = useQuery({
+  const { data: rawVendors = [], isLoading: isLoadingVendors } = useQuery({
     queryKey: ['admin_all_vendors'],
     queryFn: async () => {
        const user = await base44.auth.me();
@@ -83,6 +83,22 @@ export default function AdminVendors() {
        return base44.entities.Vendor.list('-created_date', 200);
     },
   });
+
+  const { data: vendorVerifications = [], isLoading: isLoadingVerifications } = useQuery({
+    queryKey: ['admin_vendor_verifications'],
+    queryFn: () => base44.entities.VendorVerification.list('-created_date', 500),
+  });
+
+  const verificationsByVendorId = Object.fromEntries(
+    vendorVerifications.map((verification) => [verification.vendor_id, verification])
+  );
+
+  const allVendors = rawVendors.map((vendor) => ({
+    ...vendor,
+    ...(verificationsByVendorId[vendor.id] || {})
+  }));
+
+  const isLoading = isLoadingVendors || isLoadingVerifications;
 
   // Filter vendors by search query
   const filterVendors = (vendors) => {
@@ -382,10 +398,12 @@ export default function AdminVendors() {
         toast.error("Ghana Card verification failed: " + data.message);
       }
       queryClient.invalidateQueries(['admin_all_vendors']);
+      queryClient.invalidateQueries(['admin_vendor_verifications']);
       setVerifyingCardVendorId(null);
     },
     onError: (error) => {
       toast.error("Verification error: " + error.message);
+      queryClient.invalidateQueries(['admin_vendor_verifications']);
       setVerifyingCardVendorId(null);
     }
   });
