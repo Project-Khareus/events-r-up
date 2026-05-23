@@ -111,7 +111,7 @@ export default function VendorSignup() {
           }
         }
 
-        return { trial: true, vendorId: newVendor.id, businessName: vendorData.business_name, hasGhanaCard: hasGhanaCard && ghanaCardSaved };
+        return { trial: true, vendorId: newVendor.id, businessName: vendorData.business_name, hasGhanaCard: hasGhanaCard && ghanaCardSaved, ghanaCardProvided: hasGhanaCard };
       }
 
       // For paid plans, use checkout
@@ -124,32 +124,33 @@ export default function VendorSignup() {
     },
     onSuccess: async (data) => {
       if (data.trial) {
-        // Only show toast and auto-navigate if Ghana Card was provided
-        // Otherwise the VendorForm shows the pending dialog
-        if (data.hasGhanaCard) {
+        const needsGhanaCardUpload = !data.hasGhanaCard && !data.ghanaCardProvided;
+
+        // Only show upload-related feedback if Ghana Card details were not provided
+        if (!needsGhanaCardUpload) {
           toast.success("Trial listing created! We'll review it shortly.");
         }
 
         // Send confirmation email
         try {
-          const ghanaCardNote = data.hasGhanaCard
-            ? '<li>Your Ghana Card is being verified</li>'
-            : '<li style="color: #D97706; font-weight: 600;">⚠️ Ghana Card verification is still pending — please edit your listing to upload it</li>';
+          const ghanaCardNote = needsGhanaCardUpload
+            ? '<li style="color: #D97706; font-weight: 600;">⚠️ Ghana Card verification is still pending — please edit your listing to upload it</li>'
+            : '<li>Your Ghana Card details have been received for verification</li>';
 
           await base44.integrations.Core.SendEmail({
             to: user.email,
             from_name: 'Khareus',
-            subject: data.hasGhanaCard ? 'Your Vendor Listing Has Been Submitted!' : 'Listing Submitted — Ghana Card Verification Needed',
+            subject: needsGhanaCardUpload ? 'Listing Submitted — Ghana Card Verification Needed' : 'Your Vendor Listing Has Been Submitted!',
             body: `
               <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
                 <div style="padding: 32px 24px;">
                   <h1 style="color: #4F46E5; font-size: 24px; margin: 0 0 20px 0;">Listing Submitted Successfully!</h1>
                   <p style="color: #334155; font-size: 15px; line-height: 1.6;">Hi ${user.full_name || 'there'},</p>
                   <p style="color: #334155; font-size: 15px; line-height: 1.6;">Your vendor listing <strong>"${data.businessName}"</strong> has been submitted and is now pending review by our team.</p>
-                  ${!data.hasGhanaCard ? `
+                  ${needsGhanaCardUpload ? `
                   <div style="background: #FFFBEB; padding: 16px; border-radius: 8px; margin: 20px 0; border: 1px solid #F59E0B;">
                     <p style="margin: 0; color: #92400E; font-weight: 600; font-size: 14px;">⚠️ Ghana Card Verification Pending</p>
-                    <p style="margin: 8px 0 0; color: #92400E; font-size: 13px;">Your listing will remain pending until you upload your Ghana Card. Please edit your listing to complete this step.</p>
+                    <p style="margin: 8px 0 0; color: #92400E; font-size: 13px;">Please edit your listing to add your Ghana Card details and complete verification.</p>
                   </div>
                   ` : ''}
                   <div style="background: #F8FAFC; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #E2E8F0;">
@@ -186,9 +187,8 @@ export default function VendorSignup() {
           console.error('Failed to notify admin:', e);
         }
 
-        // Only auto-navigate if Ghana Card was provided
-        // Otherwise VendorForm handles navigation via the pending dialog
-        if (data.hasGhanaCard) {
+        // Only show the pending dialog when Ghana Card details were not provided
+        if (!needsGhanaCardUpload) {
           setTimeout(() => {
             navigate(createPageUrl("ManageListing"));
           }, 1500);
