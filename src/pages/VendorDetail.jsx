@@ -81,6 +81,7 @@ export default function VendorDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   // Support both /vendor/:slug and legacy ?id= URLs
   const vendorIdFromQuery = urlParams.get("id");
+  const isAdminPreview = urlParams.get("preview") === "admin";
   const shortIdFromSlug = slug ? parseVendorSlug(slug) : null;
   const [showAllCategories, setShowAllCategories] = React.useState(false);
 
@@ -199,7 +200,7 @@ export default function VendorDetail() {
         </div>
       );
     }
-    if (!isOwnerOrAdmin) {
+    if (!isOwnerOrAdmin && !isAdminPreview) {
       return (
         <div className="min-h-screen bg-white dark:bg-slate-900 flex items-center justify-center">
           <div className="text-center">

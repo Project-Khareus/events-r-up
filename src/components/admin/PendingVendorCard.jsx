@@ -99,7 +99,7 @@ export default function PendingVendorCard({
                 )}
               </div>
               <div className="flex items-center gap-2 shrink-0">
-                <a href={`${getVendorUrl(vendor)}?id=${vendor.id}`} target="_blank" rel="noopener noreferrer">
+                <a href={`${getVendorUrl(vendor)}?id=${vendor.id}&preview=admin`} target="_blank" rel="noopener noreferrer">
                   <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8 text-indigo-600 border-indigo-200 hover:bg-indigo-50 rounded-lg">
                     <Eye className="h-3.5 w-3.5" /> Preview
                   </Button>

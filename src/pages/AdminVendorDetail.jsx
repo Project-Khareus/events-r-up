@@ -281,7 +281,7 @@ export default function AdminVendorDetail() {
                 )}
               </div>
             </div>
-            <Link to={getVendorUrl(vendor)} target="_blank">
+            <Link to={`${getVendorUrl(vendor)}?id=${vendor.id}&preview=admin`} target="_blank">
               <Button variant="outline" size="sm" className="shrink-0 text-indigo-600 border-indigo-200 hover:bg-indigo-50 gap-2">
                 <Eye className="h-4 w-4" /> Preview as Public
               </Button>
