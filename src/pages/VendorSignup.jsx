@@ -258,8 +258,7 @@ export default function VendorSignup() {
 
         <VendorForm
           initialData={{
-            contact_email: user?.email,
-            business_name: user?.full_name
+            contact_email: user?.email
           }}
           onSubmit={handleSubmit}
           isSubmitting={createCheckoutMutation.isPending}
