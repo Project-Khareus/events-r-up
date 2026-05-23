@@ -90,20 +90,14 @@ export default function VendorMarketplace() {
     retry: 1
   });
 
-  // Normalize vendor data and shuffle for variety on homepage
+  // Normalize vendor data and shuffle for variety on each page reload
   const vendors = useMemo(() => {
     const approved = rawVendors
       .filter(Boolean)
       .map((v) => v.data ? { id: v.id, ...v.data } : v)
       .filter((v) => v && v.id && (!v.status || v.status === 'approved'));
-    // Seeded daily shuffle — stable for the entire day
-    const seed = Math.floor(new Date().setHours(0,0,0,0) / 86400000);
-    const shuffled = [...approved];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.abs(((seed * (i + 1) * 9301 + 49297) % 233280)) % (i + 1);
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
+
+    return [...approved].sort(() => Math.random() - 0.5);
   }, [rawVendors]);
 
   const handleAiSearch = useCallback(async (query) => {
