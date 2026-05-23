@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, ArrowLeft, CreditCard, Eye } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, ArrowLeft, CreditCard, Eye, Pencil } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 import { capitalizeHtmlSentences } from "@/components/utils/capitalizeHtml";
@@ -281,11 +281,18 @@ export default function AdminVendorDetail() {
                 )}
               </div>
             </div>
-            <Link to={`${getVendorUrl(vendor)}?id=${vendor.id}&preview=admin`} target="_blank">
-              <Button variant="outline" size="sm" className="shrink-0 text-indigo-600 border-indigo-200 hover:bg-indigo-50 gap-2">
-                <Eye className="h-4 w-4" /> Preview as Public
-              </Button>
-            </Link>
+            <div className="flex gap-2 shrink-0">
+              <Link to={`/EditVendor?id=${vendor.id}&admin=true`}>
+                <Button variant="outline" size="sm" className="text-slate-700 border-slate-300 hover:bg-slate-50 gap-2">
+                  <Pencil className="h-4 w-4" /> Edit Listing
+                </Button>
+              </Link>
+              <Link to={`${getVendorUrl(vendor)}?id=${vendor.id}&preview=admin`} target="_blank">
+                <Button variant="outline" size="sm" className="text-indigo-600 border-indigo-200 hover:bg-indigo-50 gap-2">
+                  <Eye className="h-4 w-4" /> Preview as Public
+                </Button>
+              </Link>
+            </div>
           </div>
 
           {/* Main Image */}

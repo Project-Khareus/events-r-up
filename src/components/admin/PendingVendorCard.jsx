@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, CheckCircle, XCircle, ExternalLink, Eye, CreditCard, ShieldCheck, ShieldAlert, ShieldX, MapPin, Mail, Phone, DollarSign, Calendar } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, ExternalLink, Eye, CreditCard, ShieldCheck, ShieldAlert, ShieldX, MapPin, Mail, Phone, DollarSign, Calendar, Pencil } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 import { getVendorUrl } from "../../utils/vendorUrl";
@@ -104,6 +104,11 @@ export default function PendingVendorCard({
                     <Eye className="h-3.5 w-3.5" /> Preview
                   </Button>
                 </a>
+                <Link to={`/EditVendor?id=${vendor.id}&admin=true`}>
+                  <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8 rounded-lg">
+                    <Pencil className="h-3.5 w-3.5" /> Edit
+                  </Button>
+                </Link>
                 <Link to={`/AdminVendorDetail?id=${vendor.id}`}>
                   <Button variant="ghost" size="sm" className="gap-1.5 text-xs h-8 rounded-lg">
                     Admin <ExternalLink className="h-3.5 w-3.5" />

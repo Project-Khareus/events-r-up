@@ -14,6 +14,7 @@ export default function EditVendor() {
   const queryClient = useQueryClient();
   const urlParams = new URLSearchParams(window.location.search);
   const vendorId = urlParams.get("id");
+  const isAdminEdit = urlParams.get("admin") === "true";
   
   const [user, setUser] = useState(null);
   const [vendor, setVendor] = useState(null);
@@ -116,6 +117,16 @@ export default function EditVendor() {
         pendingChanges.name_change_reasons = nameChangeReasons;
       }
 
+      if (user.role === 'admin' && isAdminEdit) {
+        const adminUpdates = { ...pendingChanges };
+        delete adminUpdates.name_change_reasons;
+        return {
+          updated: await base44.entities.Vendor.update(vendor.id, adminUpdates),
+          changes,
+          adminEdit: true
+        };
+      }
+
       // Store changes in pending_changes field, don't update main listing yet
       return { 
         updated: await base44.entities.Vendor.update(vendor.id, {
@@ -127,7 +138,14 @@ export default function EditVendor() {
         nameChangeReasons
       };
     },
-    onSuccess: async ({ updated, changes, nameChanged, nameChangeReasons }) => {
+    onSuccess: async ({ updated, changes, nameChanged, nameChangeReasons, adminEdit }) => {
+      if (adminEdit) {
+        toast.success("Vendor listing updated successfully!");
+        queryClient.invalidateQueries(['vendor', vendor.id]);
+        navigate(`/AdminVendorDetail?id=${vendor.id}`);
+        return;
+      }
+
       const message = nameChanged 
         ? "Your changes, including the name change, have been submitted for admin review!"
         : "Your changes have been submitted for admin review!";
@@ -214,11 +232,11 @@ export default function EditVendor() {
         <div className="flex items-center justify-between mb-8">
             <Button 
                 variant="ghost" 
-                onClick={() => navigate(createPageUrl("ManageListing"))}
+                onClick={() => navigate(isAdminEdit ? `/AdminVendorDetail?id=${vendor.id}` : createPageUrl("ManageListing"))}
                 className="flex items-center gap-2"
             >
                 <ArrowLeft className="h-4 w-4" />
-                Back to Dashboard
+                {isAdminEdit ? 'Back to Admin' : 'Back to Dashboard'}
             </Button>
             {vendor && (
                 <Button 
@@ -244,9 +262,14 @@ export default function EditVendor() {
                   Your listing is currently pending approval.
               </div>
           )}
-          {vendor.status === 'approved' && !vendor.has_pending_changes && (
+          {vendor.status === 'approved' && !vendor.has_pending_changes && !isAdminEdit && (
               <div className="mt-4 p-3 bg-blue-50 text-blue-800 rounded-lg inline-block text-sm font-medium">
                   Any changes will be submitted for admin review before going live.
+              </div>
+          )}
+          {isAdminEdit && (
+              <div className="mt-4 p-3 bg-indigo-50 text-indigo-800 rounded-lg inline-block text-sm font-medium">
+                  Admin edits will be saved directly to this listing.
               </div>
           )}
           {vendor.has_pending_changes && (

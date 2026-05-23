@@ -740,6 +740,11 @@ export default function AdminVendors() {
                                     <MessageSquare className="h-4 w-4 text-slate-600" />
                                   </Button>
                                 </Link>
+                                <Link to={`/EditVendor?id=${vendor.id}&admin=true`}>
+                                  <Button variant="outline" size="icon" className="h-9 w-9 border-slate-300 hover:bg-slate-100" title="Edit Listing">
+                                    <Edit2 className="h-4 w-4 text-slate-600" />
+                                  </Button>
+                                </Link>
                                 <a href={`${getVendorUrl(vendor)}?id=${vendor.id}&preview=admin`} target="_blank" rel="noopener noreferrer">
                                   <Button variant="outline" size="icon" className="h-9 w-9 border-slate-300 hover:bg-slate-100" title="View Listing">
                                     <ExternalLink className="h-4 w-4 text-slate-600" />
