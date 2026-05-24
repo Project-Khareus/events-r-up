@@ -472,8 +472,19 @@ export default function VendorDetail() {
              {/* Description */}
              <section>
                 <h2 className="text-2xl font-serif font-bold text-slate-900 dark:text-slate-100 mb-3">Description</h2>
+                 <style>{`
+                   .vendor-description,
+                   .vendor-description * {
+                     color: inherit !important;
+                     background: transparent !important;
+                   }
+                   .vendor-description b,
+                   .vendor-description strong {
+                     font-weight: inherit !important;
+                   }
+                 `}</style>
                  <div 
-                   className="prose prose-slate max-w-none text-slate-600 dark:text-slate-300 leading-relaxed"
+                   className="vendor-description prose prose-slate max-w-none text-slate-600 dark:text-slate-300 leading-relaxed"
                    dangerouslySetInnerHTML={{ __html: capitalizeHtmlSentences(vendor.description) || "<p>No description provided.</p>" }}
                  />
              </section>
