@@ -37,31 +37,8 @@
     "date"
   ],
   "rls": {
-    "create": {
-      "created_by": "{{user.email}}"
-    },
-    "read": {
-      "$or": [
-        {
-          "data.vendor_id": {
-            "$in": {
-              "$query": {
-                "entity": "Vendor",
-                "field": "id",
-                "filter": {
-                  "data.user_id": "{{user.id}}"
-                }
-              }
-            }
-          }
-        },
-        {
-          "user_condition": {
-            "role": "admin"
-          }
-        }
-      ]
-    },
+    "create": true,
+    "read": null,
     "update": {
       "user_condition": {
         "role": "admin"
