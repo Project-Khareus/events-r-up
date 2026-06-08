@@ -39,15 +39,11 @@
     "sender_type"
   ],
   "rls": {
-    "create": {
-      "user_condition": {
-        "role": "user"
-      }
-    },
+    "create": true,
     "read": {
       "$or": [
         {
-          "data.conversation_id": {
+          "conversation_id": {
             "$in": {
               "$query": {
                 "entity": "Conversation",
@@ -55,10 +51,10 @@
                 "filter": {
                   "$or": [
                     {
-                      "data.user_id": "{{user.id}}"
+                      "user_id": "{{user.id}}"
                     },
                     {
-                      "data.vendor_id": "{{user.id}}"
+                      "vendor_id": "{{user.id}}"
                     }
                   ]
                 }
@@ -76,7 +72,7 @@
     "update": {
       "$or": [
         {
-          "data.sender_id": "{{user.id}}"
+          "sender_id": "{{user.id}}"
         },
         {
           "user_condition": {
@@ -88,7 +84,7 @@
     "delete": {
       "$or": [
         {
-          "data.sender_id": "{{user.id}}"
+          "sender_id": "{{user.id}}"
         },
         {
           "user_condition": {

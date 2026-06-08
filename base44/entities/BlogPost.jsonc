@@ -1,0 +1,103 @@
+{
+  "name": "BlogPost",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Blog post title"
+    },
+    "slug": {
+      "type": "string",
+      "description": "URL friendly slug"
+    },
+    "excerpt": {
+      "type": "string",
+      "description": "Short summary for the card"
+    },
+    "content": {
+      "type": "string",
+      "description": "Full HTML content"
+    },
+    "cover_image_url": {
+      "type": "string",
+      "description": "Main image for the post"
+    },
+    "author_name": {
+      "type": "string",
+      "description": "Name of the author"
+    },
+    "author_avatar_url": {
+      "type": "string",
+      "description": "Avatar image for the author"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Trends",
+        "Real Weddings",
+        "Planning Tips",
+        "Vendor Spotlights",
+        "Company News"
+      ],
+      "default": "Planning Tips"
+    },
+    "read_time": {
+      "type": "string",
+      "description": "e.g. '5 min read'"
+    },
+    "is_featured": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to show in the big hero section"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "pending",
+        "published",
+        "rejected"
+      ],
+      "default": "pending",
+      "description": "Publication status"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "ID of the user who created the post"
+    }
+  },
+  "required": [
+    "title",
+    "content"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": true,
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

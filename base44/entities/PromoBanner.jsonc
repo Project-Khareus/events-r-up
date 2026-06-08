@@ -1,0 +1,74 @@
+{
+  "name": "PromoBanner",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Main headline for the banner"
+    },
+    "description": {
+      "type": "string",
+      "description": "Supporting text"
+    },
+    "button_text": {
+      "type": "string",
+      "description": "CTA button text"
+    },
+    "link_url": {
+      "type": "string",
+      "description": "URL to navigate to when clicked"
+    },
+    "vendor_id": {
+      "type": "string",
+      "description": "Optional vendor ID if promoting a specific vendor"
+    },
+    "images": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Grid images for the banner"
+    },
+    "badge_text": {
+      "type": "string",
+      "description": "Floating badge text (e.g., 'Special Offer')"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this banner is currently active"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When the promo starts"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When the promo ends"
+    }
+  },
+  "required": [
+    "title",
+    "is_active"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": true,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

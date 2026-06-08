@@ -11,9 +11,12 @@ export default function BiometricLogin({ onSuccess, email }) {
   useEffect(() => {
     // Check if WebAuthn is supported
     const checkSupport = async () => {
-      if (window.PublicKeyCredential) {
+      if (!window.PublicKeyCredential) return;
+      try {
         const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
         setIsSupported(available);
+      } catch {
+        setIsSupported(false);
       }
     };
     checkSupport();

@@ -1,0 +1,52 @@
+{
+  "name": "LegalPage",
+  "type": "object",
+  "properties": {
+    "slug": {
+      "type": "string",
+      "enum": [
+        "privacy",
+        "terms",
+        "contact",
+        "cookies"
+      ],
+      "description": "URL slug for the page"
+    },
+    "title": {
+      "type": "string",
+      "description": "Page title"
+    },
+    "content": {
+      "type": "string",
+      "description": "Page content in markdown or HTML"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date",
+      "description": "When this page was last updated"
+    }
+  },
+  "required": [
+    "slug",
+    "title",
+    "content"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": true,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

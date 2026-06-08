@@ -1,0 +1,115 @@
+{
+  "name": "VendorAvailability",
+  "type": "object",
+  "properties": {
+    "vendor_id": {
+      "type": "string",
+      "description": "ID of the vendor"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "The date being blocked or made available"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "available",
+        "blocked",
+        "booked"
+      ],
+      "default": "available",
+      "description": "Availability status for this date"
+    },
+    "slots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "string",
+            "description": "Time slot (e.g., '09:00 AM', '02:00 PM')"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "available",
+              "booked"
+            ],
+            "default": "available"
+          }
+        }
+      },
+      "description": "Time slots for this date (optional, for hourly bookings)"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional notes about availability"
+    }
+  },
+  "required": [
+    "vendor_id",
+    "date",
+    "status"
+  ],
+  "rls": {
+    "create": {
+      "vendor_id": {
+        "$in": {
+          "$query": {
+            "entity": "Vendor",
+            "field": "id",
+            "filter": {
+              "user_id": "{{user.id}}"
+            }
+          }
+        }
+      }
+    },
+    "read": true,
+    "update": {
+      "$or": [
+        {
+          "vendor_id": {
+            "$in": {
+              "$query": {
+                "entity": "Vendor",
+                "field": "id",
+                "filter": {
+                  "user_id": "{{user.id}}"
+                }
+              }
+            }
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "vendor_id": {
+            "$in": {
+              "$query": {
+                "entity": "Vendor",
+                "field": "id",
+                "filter": {
+                  "user_id": "{{user.id}}"
+                }
+              }
+            }
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

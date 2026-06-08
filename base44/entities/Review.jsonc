@@ -1,0 +1,85 @@
+{
+  "name": "Review",
+  "type": "object",
+  "properties": {
+    "vendor_id": {
+      "type": "string",
+      "description": "ID of the vendor being reviewed"
+    },
+    "rating": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Rating from 1 to 5 stars"
+    },
+    "review_text": {
+      "type": "string",
+      "description": "Written review content"
+    },
+    "reviewer_name": {
+      "type": "string",
+      "description": "Name of the person leaving the review"
+    },
+    "event_type": {
+      "type": "string",
+      "description": "Type of event (wedding, corporate, birthday, etc.)"
+    },
+    "vendor_response": {
+      "type": "string",
+      "description": "Vendor's response to the review"
+    },
+    "vendor_response_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the vendor responded to the review"
+    }
+  },
+  "required": [
+    "vendor_id",
+    "rating",
+    "review_text"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": true,
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "vendor_id": {
+            "$in": {
+              "$query": {
+                "entity": "Vendor",
+                "field": "id",
+                "filter": {
+                  "user_id": "{{user.id}}"
+                }
+              }
+            }
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

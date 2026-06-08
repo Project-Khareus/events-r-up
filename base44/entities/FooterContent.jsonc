@@ -1,0 +1,59 @@
+{
+  "name": "FooterContent",
+  "type": "object",
+  "properties": {
+    "section": {
+      "type": "string",
+      "enum": [
+        "categories",
+        "company",
+        "support",
+        "legal"
+      ],
+      "description": "Footer section this item belongs to"
+    },
+    "label": {
+      "type": "string",
+      "description": "Display text for the link"
+    },
+    "url": {
+      "type": "string",
+      "description": "Link URL (internal page name or external URL)"
+    },
+    "is_external": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this is an external link"
+    },
+    "order": {
+      "type": "number",
+      "description": "Display order within the section"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "section",
+    "label"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": true,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

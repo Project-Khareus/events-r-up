@@ -1,0 +1,107 @@
+{
+  "name": "Conversation",
+  "type": "object",
+  "properties": {
+    "vendor_id": {
+      "type": "string",
+      "description": "ID of the vendor in this conversation"
+    },
+    "vendor_name": {
+      "type": "string",
+      "description": "Name of the vendor for easy display"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "ID of the user in this conversation"
+    },
+    "user_name": {
+      "type": "string",
+      "description": "Name of the user for easy display"
+    },
+    "last_message": {
+      "type": "string",
+      "description": "Preview of the last message"
+    },
+    "last_message_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of last message"
+    },
+    "unread_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of unread messages for the current user"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "archived"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "vendor_id",
+    "user_id"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "user_id": "{{user.id}}"
+        },
+        {
+          "vendor_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_id": "{{user.id}}"
+        },
+        {
+          "vendor_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_id": "{{user.id}}"
+        },
+        {
+          "vendor_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

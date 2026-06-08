@@ -25,8 +25,11 @@ const AuthenticatedApp = () => {
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
+      <div className="fixed inset-0 flex items-center justify-center bg-slate-50 text-slate-700">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
+          <p className="text-sm">Loading your profile...</p>
+        </div>
       </div>
     );
   }
@@ -53,6 +56,16 @@ const AuthenticatedApp = () => {
       <Route path="/vendor/:slug" element={
         <LayoutWrapper currentPageName="VendorDetail">
           <VendorDetailPage />
+        </LayoutWrapper>
+      } />
+      <Route path="/myprofile" element={
+        <LayoutWrapper currentPageName="MyProfile">
+          <Pages.MyProfile />
+        </LayoutWrapper>
+      } />
+      <Route path="/my-profile" element={
+        <LayoutWrapper currentPageName="MyProfile">
+          <Pages.MyProfile />
         </LayoutWrapper>
       } />
       {Object.entries(Pages).map(([path, Page]) => (

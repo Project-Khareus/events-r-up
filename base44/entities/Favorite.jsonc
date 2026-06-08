@@ -1,0 +1,42 @@
+{
+  "name": "Favorite",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "User who favorited"
+    },
+    "event_id": {
+      "type": "string",
+      "description": "Event being favorited (optional)"
+    },
+    "vendor_id": {
+      "type": "string",
+      "description": "Vendor being favorited (optional)"
+    },
+    "item_type": {
+      "type": "string",
+      "enum": [
+        "event",
+        "vendor"
+      ],
+      "description": "Type of item favorited"
+    }
+  },
+  "required": [
+    "user_id",
+    "item_type"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "user_id": "{{user.id}}"
+    },
+    "update": {
+      "user_id": "{{user.id}}"
+    },
+    "delete": {
+      "user_id": "{{user.id}}"
+    }
+  }
+}

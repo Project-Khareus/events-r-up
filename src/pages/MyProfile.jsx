@@ -79,12 +79,32 @@ export default function MyProfile() {
 
   if (isLoading) {
     return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
-        <Skeleton className="h-44 sm:h-56 rounded-xl mb-6" />
-        <div className="grid gap-4 sm:gap-6">
-          <Skeleton className="h-48 rounded-xl" />
-          <Skeleton className="h-32 rounded-xl" />
+      <div className="min-h-screen bg-slate-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
+          <Skeleton className="h-44 sm:h-56 rounded-xl mb-6" />
+          <div className="grid gap-4 sm:gap-6">
+            <Skeleton className="h-48 rounded-xl" />
+            <Skeleton className="h-32 rounded-xl" />
+          </div>
         </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+        <Card className="max-w-md w-full text-center">
+          <CardHeader>
+            <CardTitle>Profile unavailable</CardTitle>
+            <CardDescription>We couldn't load your profile. Please sign in again to continue.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={() => base44.auth.redirectToLogin(window.location.pathname)} className="w-full">
+              Sign in again
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }

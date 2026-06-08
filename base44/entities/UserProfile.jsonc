@@ -1,0 +1,82 @@
+{
+  "name": "UserProfile",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "The auth user ID this profile belongs to"
+    },
+    "display_name": {
+      "type": "string",
+      "description": "Public display name"
+    },
+    "bio": {
+      "type": "string",
+      "description": "Short biography"
+    },
+    "avatar_url": {
+      "type": "string",
+      "description": "Profile picture URL"
+    },
+    "cover_image_url": {
+      "type": "string",
+      "description": "Profile cover image URL"
+    },
+    "location": {
+      "type": "string",
+      "description": "User location"
+    },
+    "website": {
+      "type": "string",
+      "description": "Personal website URL"
+    },
+    "social_links": {
+      "type": "object",
+      "properties": {
+        "twitter": {
+          "type": "string"
+        },
+        "instagram": {
+          "type": "string"
+        },
+        "linkedin": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "required": [
+    "user_id",
+    "display_name"
+  ],
+  "rls": {
+    "create": {
+      "user_id": "{{user.id}}"
+    },
+    "read": true,
+    "update": {
+      "$or": [
+        {
+          "user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

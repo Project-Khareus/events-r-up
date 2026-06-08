@@ -1,0 +1,123 @@
+{
+  "name": "Notification",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "Recipient user ID"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "message",
+        "event_update",
+        "vendor_response",
+        "system",
+        "vendor_approved",
+        "vendor_rejected",
+        "changes_approved",
+        "changes_rejected"
+      ],
+      "default": "system",
+      "description": "Type of notification"
+    },
+    "title": {
+      "type": "string",
+      "description": "Short title"
+    },
+    "message": {
+      "type": "string",
+      "description": "Notification content"
+    },
+    "link": {
+      "type": "string",
+      "description": "Optional URL to navigate to"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false,
+      "description": "Read status"
+    },
+    "action_by": {
+      "type": "string",
+      "description": "Email or name of person who performed the action"
+    },
+    "action_type": {
+      "type": "string",
+      "enum": [
+        "approved",
+        "rejected",
+        "commented",
+        "requested_changes"
+      ],
+      "description": "The specific action taken"
+    },
+    "vendor_id": {
+      "type": "string",
+      "description": "Related vendor ID if applicable"
+    },
+    "vendor_name": {
+      "type": "string",
+      "description": "Vendor business name for context"
+    },
+    "changes_summary": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of fields that were changed"
+    },
+    "reason": {
+      "type": "string",
+      "description": "Reason for rejection or requested changes"
+    }
+  },
+  "required": [
+    "user_id",
+    "title",
+    "message"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "$or": [
+        {
+          "user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

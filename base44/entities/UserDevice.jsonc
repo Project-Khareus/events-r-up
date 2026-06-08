@@ -1,0 +1,74 @@
+{
+  "name": "UserDevice",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "ID of the user"
+    },
+    "device_fingerprint": {
+      "type": "string",
+      "description": "Unique identifier for the device (user agent hash)"
+    },
+    "user_agent": {
+      "type": "string",
+      "description": "Full user agent string"
+    },
+    "ip_address": {
+      "type": "string",
+      "description": "IP address of the device"
+    },
+    "device_name": {
+      "type": "string",
+      "description": "Human readable device name (e.g., Chrome on Windows)"
+    },
+    "last_login": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last time this device was used"
+    }
+  },
+  "required": [
+    "user_id",
+    "device_fingerprint"
+  ],
+  "rls": {
+    "create": true,
+    "read": {
+      "$or": [
+        {
+          "user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

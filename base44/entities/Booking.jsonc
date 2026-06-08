@@ -54,22 +54,20 @@
     "guest_count"
   ],
   "rls": {
-    "create": {
-      "data.user_id": "{{user.id}}"
-    },
+    "create": true,
     "read": {
       "$or": [
         {
-          "data.user_id": "{{user.id}}"
+          "user_id": "{{user.id}}"
         },
         {
-          "data.vendor_id": {
+          "vendor_id": {
             "$in": {
               "$query": {
                 "entity": "Vendor",
                 "field": "id",
                 "filter": {
-                  "data.user_id": "{{user.id}}"
+                  "user_id": "{{user.id}}"
                 }
               }
             }
@@ -85,16 +83,16 @@
     "update": {
       "$or": [
         {
-          "data.user_id": "{{user.id}}"
+          "user_id": "{{user.id}}"
         },
         {
-          "data.vendor_id": {
+          "vendor_id": {
             "$in": {
               "$query": {
                 "entity": "Vendor",
                 "field": "id",
                 "filter": {
-                  "data.user_id": "{{user.id}}"
+                  "user_id": "{{user.id}}"
                 }
               }
             }
@@ -110,16 +108,16 @@
     "delete": {
       "$or": [
         {
-          "data.user_id": "{{user.id}}"
+          "user_id": "{{user.id}}"
         },
         {
-          "data.vendor_id": {
+          "vendor_id": {
             "$in": {
               "$query": {
                 "entity": "Vendor",
                 "field": "id",
                 "filter": {
-                  "data.user_id": "{{user.id}}"
+                  "user_id": "{{user.id}}"
                 }
               }
             }
