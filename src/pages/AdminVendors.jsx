@@ -56,6 +56,9 @@ export default function AdminVendors() {
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
   const [rejectingVendor, setRejectingVendor] = useState(null);
   const [rejectionReason, setRejectionReason] = useState("");
+  const [vendorRejectDialogOpen, setVendorRejectDialogOpen] = useState(false);
+  const [vendorRejectingVendor, setVendorRejectingVendor] = useState(null);
+  const [vendorRejectionReason, setVendorRejectionReason] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [suspendDialogOpen, setSuspendDialogOpen] = useState(false);
   const [suspendingVendor, setSuspendingVendor] = useState(null);
@@ -159,31 +162,54 @@ export default function AdminVendors() {
   });
 
   const rejectMutation = useMutation({
-    mutationFn: async (vendorId) => {
+    mutationFn: async ({ vendor, reason }) => {
       const currentUser = await base44.auth.me();
-      const vendor = pendingVendors.find(v => v.id === vendorId);
-      const result = await base44.entities.Vendor.update(vendorId, { status: 'rejected' });
+      const result = await base44.entities.Vendor.update(vendor.id, { status: 'rejected' });
+      const rejectionMessage = `Unfortunately, your vendor listing "${vendor.business_name}" could not be approved at this time. Reason: ${reason}`;
 
-      // Create in-app notification
-      if (vendor) {
+      if (vendor.contact_email) {
+        try {
+          await base44.integrations.Core.SendEmail({
+            to: vendor.contact_email,
+            subject: 'Your Vendor Listing Was Not Approved',
+            body: `
+              <h1>Listing Not Approved</h1>
+              <p>Your vendor listing <strong>${vendor.business_name}</strong> could not be approved at this time.</p>
+              <h3>Reason:</h3>
+              <p style="background: #fef2f2; padding: 12px; border-radius: 8px; border-left: 4px solid #ef4444;">${reason}</p>
+              <p>Please update your listing and contact admin if you need clarification.</p>
+            `
+          });
+        } catch (error) {
+          console.error('Failed to send rejection email:', error);
+        }
+      }
+
+      try {
         await base44.entities.Notification.create({
           user_id: vendor.user_id,
           type: 'vendor_rejected',
           title: 'Vendor Submission Not Approved',
-          message: `Unfortunately, your vendor listing "${vendor.business_name}" could not be approved at this time. Please contact admin for details.`,
+          message: rejectionMessage,
           link: 'Messages?admin=true',
           action_by: currentUser.full_name || currentUser.email,
           action_type: 'rejected',
           vendor_id: vendor.id,
-          vendor_name: vendor.business_name
+          vendor_name: vendor.business_name,
+          reason
         });
+      } catch (error) {
+        console.error('Failed to create rejection notification:', error);
       }
 
       return result;
     },
     onSuccess: () => {
-      toast.success("Vendor rejected");
+      toast.success("Vendor rejected and notified");
       queryClient.invalidateQueries(['admin_all_vendors']);
+      setVendorRejectDialogOpen(false);
+      setVendorRejectingVendor(null);
+      setVendorRejectionReason("");
     },
   });
 
@@ -302,6 +328,20 @@ export default function AdminVendors() {
       setRejectionReason("");
     },
   });
+
+  const handleVendorRejectClick = (vendor) => {
+    setVendorRejectingVendor(vendor);
+    setVendorRejectDialogOpen(true);
+  };
+
+  const handleVendorRejectConfirm = () => {
+    if (vendorRejectingVendor && vendorRejectionReason.trim()) {
+      rejectMutation.mutate({
+        vendor: vendorRejectingVendor,
+        reason: vendorRejectionReason.trim()
+      });
+    }
+  };
 
   const handleRejectClick = (vendor) => {
     setRejectingVendor(vendor);
@@ -497,7 +537,7 @@ export default function AdminVendors() {
                     key={vendor.id}
                     vendor={vendor}
                     onApprove={(v) => approveMutation.mutate(v)}
-                    onReject={(id) => rejectMutation.mutate(id)}
+                    onReject={(vendor) => handleVendorRejectClick(vendor)}
                     onVerifyCard={(id) => verifyGhanaCardMutation.mutate(id)}
                     onViewCard={(v) => setGhanaCardDialogVendor(v)}
                     isApproving={approveMutation.isPending && approveMutation.variables?.id === vendor.id}
@@ -780,6 +820,50 @@ export default function AdminVendors() {
             )}
           </TabsContent>
         </Tabs>
+
+        {/* Vendor Listing Rejection Dialog */}
+        <Dialog open={vendorRejectDialogOpen} onOpenChange={setVendorRejectDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Reject Vendor Listing</DialogTitle>
+              <DialogDescription>
+                Tell <strong>{vendorRejectingVendor?.business_name}</strong> why their listing was rejected. This reason will be sent to the vendor.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="py-4">
+              <Textarea
+                placeholder="Explain why this listing cannot be approved..."
+                value={vendorRejectionReason}
+                onChange={(e) => setVendorRejectionReason(e.target.value)}
+                rows={4}
+                className="w-full"
+              />
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setVendorRejectDialogOpen(false);
+                  setVendorRejectionReason("");
+                  setVendorRejectingVendor(null);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleVendorRejectConfirm}
+                disabled={rejectMutation.isPending || !vendorRejectionReason.trim()}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                {rejectMutation.isPending ? (
+                  <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Rejecting...</>
+                ) : (
+                  'Reject Listing'
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         {/* Rejection Dialog */}
         <Dialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>

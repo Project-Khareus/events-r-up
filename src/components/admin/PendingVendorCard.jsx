@@ -202,7 +202,7 @@ export default function PendingVendorCard({
           </Button>
           <Button
             variant="outline"
-            onClick={() => onReject?.(vendor.id)}
+            onClick={() => onReject?.(vendor)}
             disabled={isRejecting}
             className="text-red-600 hover:bg-red-50 border-red-200 gap-2 rounded-lg h-9"
           >
