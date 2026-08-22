@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import PullToRefresh from "../components/shared/PullToRefresh";
@@ -9,6 +9,7 @@ import { createPageUrl } from "../utils";
 import SearchBar from "../components/marketplace/SearchBar";
 import FilterControls from "../components/marketplace/FilterControls";
 import MarketplaceContent from "../components/marketplace/MarketplaceContent";
+import { rankVendors } from "@/lib/semanticSearch";
 
 
 const CATEGORY_LABELS = {
@@ -58,10 +59,6 @@ export default function VendorMarketplace() {
   const [minRating, setMinRating] = useState(0);
   const [minYears, setMinYears] = useState(0);
 
-  // AI search
-  const [aiMatchedIds, setAiMatchedIds] = useState(null);
-  const [isAiSearching, setIsAiSearching] = useState(false);
-
   useEffect(() => {
     setEventType(eventParam);
     setCategory(categoryParam);
@@ -100,47 +97,10 @@ export default function VendorMarketplace() {
     return [...approved].sort(() => Math.random() - 0.5);
   }, [rawVendors]);
 
-  const handleAiSearch = useCallback(async (query) => {
-    if (!query?.trim()) {
-      setAiMatchedIds(null);
-      return;
-    }
-    setIsAiSearching(true);
-    const vendorsForAi = vendors.map(v => ({
-      id: v.id,
-      name: v.business_name,
-      description: (v.description || "").slice(0, 120),
-      categories: v.category,
-      event_types: v.event_type,
-      location: v.location,
-      services: v.services?.slice(0, 5),
-      price: v.starting_price,
-    }));
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `You are a vendor search engine. Given the user query and list of vendors, return the IDs of ALL vendors that match. Consider name, description, categories, services, location, and event types. Be generous — include partial matches.\n\nUser query: "${query}"\n\nVendors:\n${JSON.stringify(vendorsForAi)}`,
-      response_json_schema: {
-        type: "object",
-        properties: {
-          matched_ids: { type: "array", items: { type: "string" } }
-        }
-      }
-    });
-    setAiMatchedIds(new Set(result.matched_ids || []));
-    setIsAiSearching(false);
-  }, [vendors]);
-
   const filteredVendors = useMemo(() => {
-    let filtered = vendors.filter((vendor) => {
-      // AI search filter
-      if (aiMatchedIds) {
-        return aiMatchedIds.has(vendor.id);
-      }
+    const searchRanked = searchQuery ? rankVendors(vendors, searchQuery, CATEGORY_LABELS) : vendors;
 
-      const matchesSearch = !searchQuery ||
-      vendor.business_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      vendor.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      vendor.services?.some((s) => s.toLowerCase().includes(searchQuery.toLowerCase()));
-
+    let filtered = searchRanked.filter((vendor) => {
       const vendorEvents = vendor.event_type ? Array.isArray(vendor.event_type) ? vendor.event_type : [vendor.event_type] : [];
       const vendorCategories = vendor.category ? Array.isArray(vendor.category) ? vendor.category : [vendor.category] : [];
 
@@ -158,7 +118,7 @@ export default function VendorMarketplace() {
       const matchesYears = minYears === 0 ||
       vendor.years_in_business && vendor.years_in_business >= minYears;
 
-      return matchesSearch && matchesEvent && matchesCategory && matchesPrice &&
+      return matchesEvent && matchesCategory && matchesPrice &&
       matchesLocation && matchesRating && matchesYears;
     });
 
@@ -174,7 +134,7 @@ export default function VendorMarketplace() {
     }
 
     return filtered;
-  }, [vendors, searchQuery, eventType, category, priceRange, sortBy, location, minRating, minYears, aiMatchedIds]);
+  }, [vendors, searchQuery, eventType, category, priceRange, sortBy, location, minRating, minYears]);
 
   const featuredVendors = useMemo(() => {
     return filteredVendors.filter((v) => v && v.rating >= 4).slice(0, 4);
@@ -194,7 +154,7 @@ export default function VendorMarketplace() {
   }, [vendors]);
 
   // Group vendors by event type for homepage display
-  const isHomepage = eventType === "all" && category === "all" && !searchQuery && !aiMatchedIds;
+  const isHomepage = eventType === "all" && category === "all" && !searchQuery;
 
   const vendorsByEvent = useMemo(() => {
     if (!isHomepage) return [];
@@ -240,7 +200,6 @@ export default function VendorMarketplace() {
     setPriceRange("all");
     setSearchInput("");
     setSearchQuery("");
-    setAiMatchedIds(null);
     setSortBy("relevance");
     setLocation("");
     setAvailableDate(undefined);
@@ -277,7 +236,7 @@ export default function VendorMarketplace() {
         <div className="bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 px-3 py-2.5 sm:px-4 sm:py-3">
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
             <div className="flex-1 min-w-0">
-              <SearchBar value={searchInput} onChange={setSearchInput} onSearch={(q) => { setSearchQuery(q); setAiMatchedIds(null); }} onAiSearch={handleAiSearch} isAiSearching={isAiSearching} location={location} onLocationChange={setLocation} />
+              <SearchBar value={searchInput} onChange={setSearchInput} onSearch={(q) => setSearchQuery((q || "").trim())} location={location} onLocationChange={setLocation} />
             </div>
             <Link to={createPageUrl("EventPlanning")} className="shrink-0">
               <button className="h-10 px-5 border border-slate-900 dark:border-slate-400 text-slate-900 dark:text-slate-200 rounded-full font-medium text-sm hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 transition-all flex items-center gap-2 justify-center whitespace-nowrap">

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Search, ChevronDown, Loader2 } from "lucide-react";
+import { Search, ChevronDown } from "lucide-react";
 
 const LOCATIONS = [
   "All Ghana",
@@ -16,7 +16,7 @@ const LOCATIONS = [
   "Bolgatanga"
 ];
 
-export default function SearchBar({ value, onChange, onSearch, onAiSearch, isAiSearching, location, onLocationChange }) {
+export default function SearchBar({ value, onChange, onSearch, location, onLocationChange }) {
   const [locationOpen, setLocationOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -83,22 +83,11 @@ export default function SearchBar({ value, onChange, onSearch, onAiSearch, isAiS
 
       {/* Search Button */}
       <button
-        onClick={() => {
-          if (onAiSearch && value?.trim()) {
-            onAiSearch(value);
-          } else if (onSearch) {
-            onSearch(value || "");
-          }
-        }}
-        disabled={isAiSearching}
+        onClick={() => onSearch && onSearch(value || "")}
         title="Search vendors"
-        className="group relative shrink-0 h-10 w-10 flex items-center justify-center rounded-full border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 hover:bg-slate-900 dark:hover:bg-slate-500 hover:border-slate-900 dark:hover:border-slate-500 disabled:opacity-60 transition-all"
+        className="group relative shrink-0 h-10 w-10 flex items-center justify-center rounded-full border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 hover:bg-slate-900 dark:hover:bg-slate-500 hover:border-slate-900 dark:hover:border-slate-500 transition-all"
       >
-        {isAiSearching ? (
-          <Loader2 className="h-4 w-4 text-slate-700 dark:text-slate-300 group-hover:text-white animate-spin pointer-events-none" />
-        ) : (
-          <Search className="h-4 w-4 text-slate-700 dark:text-slate-300 group-hover:text-white pointer-events-none" />
-        )}
+        <Search className="h-4 w-4 text-slate-700 dark:text-slate-300 group-hover:text-white pointer-events-none" />
       </button>
     </div>
   );
