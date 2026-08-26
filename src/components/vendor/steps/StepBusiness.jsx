@@ -2,6 +2,7 @@ import React from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import LocationAutocomplete from "@/components/shared/LocationAutocomplete";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, Check, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -133,6 +134,16 @@ export default function StepBusiness({ formData, setFormData, onNext, initialDat
               className="mt-1"
             />
           </div>
+        </div>
+
+        <div>
+          <Label>Location</Label>
+          <LocationAutocomplete
+            value={formData.location}
+            onChange={(location) => setFormData({ ...formData, location })}
+            placeholder="e.g., Osu, Accra, Ghana"
+            className="mt-1"
+          />
         </div>
 
         <div>

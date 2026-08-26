@@ -13,6 +13,7 @@ import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2, Image as ImageIcon, MapPin, Calendar, DollarSign } from "lucide-react";
 import LocationPicker from "../components/events/LocationPicker";
+import LocationAutocomplete from "@/components/shared/LocationAutocomplete";
 
 const THEMES = ["Music", "Food & Drink", "Business", "Arts & Culture", "Sports", "Community", "Party", "Education", "Other"];
 
@@ -212,10 +213,10 @@ export default function CreateEvent() {
             <div className="space-y-4">
                 <div className="space-y-2">
                     <Label>Location Address *</Label>
-                    <Input 
+                    <LocationAutocomplete
                         value={formData.location_address}
-                        onChange={(e) => setFormData(prev => ({ ...prev, location_address: e.target.value }))}
-                        placeholder="e.g., National Theatre, Accra"
+                        onChange={(location_address) => setFormData(prev => ({ ...prev, location_address }))}
+                        placeholder="e.g., National Theatre, Accra, Ghana"
                         required
                     />
                 </div>
