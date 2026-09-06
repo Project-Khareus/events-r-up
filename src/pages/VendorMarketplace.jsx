@@ -226,7 +226,7 @@ export default function VendorMarketplace() {
         <div className="min-h-screen bg-cream dark:bg-[#211B16] pb-[82px] md:pb-0">
           <div className="max-w-[1280px] mx-auto">
             <HomeMasthead />
-            <div className="px-5 md:px-10 pb-8 md:pb-12 flex gap-8">
+            <div className="pl-2 pr-5 md:pl-3 md:pr-10 pb-8 md:pb-12 flex gap-5 md:gap-6">
               <FilterSidebar
                 eventType={eventType}
                 category={category}
@@ -275,7 +275,7 @@ export default function VendorMarketplace() {
                   onLocationChange={setLocation}
                 />
 
-                <div className="-mx-5 md:-mx-10">
+                <div className="-ml-2 -mr-5 md:-ml-3 md:-mr-10">
                   <HomeOccasionDoors vendorsByEvent={vendorsByEvent} />
                   {promoVendor && (
                     <>
