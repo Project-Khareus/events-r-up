@@ -2,16 +2,19 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "../utils";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, Mail, Shield, Calendar, Smartphone, Camera, Loader2 } from "lucide-react";
+import { Shield, Calendar, Smartphone, Camera, Loader2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import BiometricLogin from "../components/auth/BiometricLogin";
 import { useQuery } from "@tanstack/react-query";
+
+const PANEL =
+  "bg-linen dark:bg-[#2A231D] border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] rounded-none";
+const EYEBROW =
+  "text-[10px] font-medium tracking-[0.16em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]";
+const FIELD =
+  "flex items-center gap-2 min-h-[44px] px-3 bg-cream dark:bg-[#211B16] border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] rounded-none text-[14px] text-ink dark:text-[#F1E8E0]";
 
 export default function MyProfile() {
   const navigate = useNavigate();
@@ -79,13 +82,11 @@ export default function MyProfile() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
-          <Skeleton className="h-44 sm:h-56 rounded-xl mb-6" />
-          <div className="grid gap-4 sm:gap-6">
-            <Skeleton className="h-48 rounded-xl" />
-            <Skeleton className="h-32 rounded-xl" />
-          </div>
+      <div className="min-h-screen bg-cream dark:bg-[#211B16]">
+        <div className="max-w-[1000px] mx-auto px-5 md:px-10 py-8 md:py-12 space-y-6">
+          <Skeleton className="h-44 rounded-none" />
+          <Skeleton className="h-48 rounded-none" />
+          <Skeleton className="h-32 rounded-none" />
         </div>
       </div>
     );
@@ -93,169 +94,170 @@ export default function MyProfile() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
-        <Card className="max-w-md w-full text-center">
-          <CardHeader>
-            <CardTitle>Profile unavailable</CardTitle>
-            <CardDescription>We couldn't load your profile. Please sign in again to continue.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button onClick={() => base44.auth.redirectToLogin(window.location.pathname)} className="w-full">
-              Sign in again
-            </Button>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen bg-cream dark:bg-[#211B16] flex items-center justify-center px-5">
+        <div className={`${PANEL} max-w-md w-full text-center p-8`}>
+          <h1 className="font-serif text-[26px] text-ink dark:text-[#F1E8E0]">Profile unavailable</h1>
+          <p className="mt-2 text-[14px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">
+            We couldn't load your profile. Please sign in again to continue.
+          </p>
+          <button
+            onClick={() => base44.auth.redirectToLogin(window.location.pathname)}
+            className="mt-6 w-full min-h-[48px] rounded-none bg-ink dark:bg-[#F1E8E0] text-cream dark:text-[#211B16] text-[11.5px] font-medium tracking-[0.1em] uppercase hover:bg-ink-deep transition-colors"
+          >
+            Sign in again
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/20">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
-        {/* Profile Header Card */}
-        <Card className="mb-6 overflow-hidden">
-          <div className="relative h-20 sm:h-24 group">
-            {userProfile?.cover_image_url ? (
+    <div className="min-h-screen bg-cream dark:bg-[#211B16] pb-[82px] md:pb-0">
+      <div className="max-w-[1000px] mx-auto px-5 md:px-10 py-8 md:py-12">
+        {/* Header */}
+        <div className={`${PANEL} overflow-hidden mb-6`}>
+          <div className="relative h-24 md:h-28 group bg-ink dark:bg-[#3B322B]">
+            {userProfile?.cover_image_url && (
               <img src={userProfile.cover_image_url} alt="Cover" className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full bg-gradient-to-r from-indigo-600 to-indigo-500" />
             )}
-            <label className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/30 transition-colors cursor-pointer">
+            <label className="absolute inset-0 flex items-center justify-center cursor-pointer">
               <input type="file" accept="image/*" className="hidden" onChange={handleCoverUpload} disabled={uploadingCover} />
-              <span className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1.5 text-white text-xs font-medium bg-black/50 px-3 py-1.5 rounded-full">
+              <span className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 text-cream text-[10px] font-medium tracking-[0.16em] uppercase bg-[rgba(42,35,29,0.72)] px-4 py-2">
                 {uploadingCover ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Camera className="h-3.5 w-3.5" />}
-                {uploadingCover ? "Uploading..." : "Change Cover"}
+                {uploadingCover ? "Uploading" : "Change cover"}
               </span>
             </label>
           </div>
-          <div className="px-4 sm:px-6 pb-5 -mt-10 sm:-mt-12">
+          <div className="px-5 md:px-6 pb-5 -mt-10">
             <div className="flex flex-col sm:flex-row sm:items-end gap-4">
-              <Avatar className="h-20 w-20 sm:h-24 sm:w-24 border-4 border-white shadow-md">
+              <Avatar className="h-20 w-20 md:h-24 md:w-24 border-2 border-cream dark:border-[#2A231D]">
                 <AvatarImage src={user?.avatar_url} />
-                <AvatarFallback className="bg-indigo-100 text-indigo-700 text-2xl sm:text-3xl">
+                <AvatarFallback className="bg-[rgba(169,126,46,0.12)] text-gold-text dark:text-gold-dark font-serif text-3xl">
                   {user?.full_name?.[0] || 'U'}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <h1 className="text-xl sm:text-2xl font-bold text-slate-900 truncate">{user?.full_name}</h1>
-                <p className="text-sm text-slate-500 truncate">{user?.email}</p>
+                <h1 className="font-serif text-[26px] md:text-[32px] text-ink dark:text-[#F1E8E0] truncate">{user?.full_name}</h1>
+                <p className="text-[13.5px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)] truncate">{user?.email}</p>
               </div>
-              <div className="flex gap-2 sm:gap-3 shrink-0">
-                <Button variant="outline" size="sm" className="text-xs sm:text-sm" onClick={() => navigate(createPageUrl("UserProfile") + `?userId=${user?.id}`)}>
-                  View Public Profile
-                </Button>
-                <Button size="sm" className="text-xs sm:text-sm" onClick={() => navigate(createPageUrl("Settings"))}>
-                  Edit Profile
-                </Button>
+              <div className="flex gap-3 shrink-0">
+                <button
+                  onClick={() => navigate(createPageUrl("UserProfile") + `?userId=${user?.id}`)}
+                  className="min-h-[44px] px-4 rounded-none border border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] text-ink dark:text-[#F1E8E0] text-[10.5px] font-medium tracking-[0.1em] uppercase hover:bg-[rgba(169,126,46,0.08)] transition-colors"
+                >
+                  Public profile
+                </button>
+                <button
+                  onClick={() => navigate(createPageUrl("Settings"))}
+                  className="min-h-[44px] px-4 rounded-none bg-ink dark:bg-[#F1E8E0] text-cream dark:text-[#211B16] text-[10.5px] font-medium tracking-[0.1em] uppercase hover:bg-ink-deep transition-colors"
+                >
+                  Edit profile
+                </button>
               </div>
             </div>
           </div>
-        </Card>
+        </div>
 
-        <div className="space-y-4 sm:space-y-6">
+        <div className="space-y-6">
           {/* Account Details */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base sm:text-lg">Account Details</CardTitle>
-              <CardDescription>Your basic account information</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <Label className="text-xs text-slate-500">Full Name</Label>
-                  <Input value={user?.full_name || ''} disabled className="h-9" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs text-slate-500">Email</Label>
-                  <Input value={user?.email || ''} disabled className="h-9" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs text-slate-500">Role</Label>
-                  <div className="flex items-center gap-2 h-9 px-3 bg-slate-50 rounded-md border border-slate-200">
-                    <Shield className="h-4 w-4 text-indigo-500" />
-                    <span className="text-sm font-medium capitalize text-slate-700">{user?.role}</span>
-                  </div>
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs text-slate-500">Member Since</Label>
-                  <div className="flex items-center gap-2 h-9 px-3 bg-slate-50 rounded-md border border-slate-200">
-                    <Calendar className="h-4 w-4 text-indigo-500" />
-                    <span className="text-sm text-slate-700">{new Date(user?.created_date).toLocaleDateString()}</span>
-                  </div>
+          <section className={`${PANEL} p-5 md:p-7`}>
+            <h2 className="font-serif text-[22px] text-ink dark:text-[#F1E8E0]">Account details</h2>
+            <p className="mt-1 text-[13.5px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">
+              Your basic account information
+            </p>
+            <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <p className={EYEBROW}>Full name</p>
+                <div className={FIELD}>{user?.full_name || '—'}</div>
+              </div>
+              <div className="space-y-2">
+                <p className={EYEBROW}>Email</p>
+                <div className={`${FIELD} truncate`}>{user?.email || '—'}</div>
+              </div>
+              <div className="space-y-2">
+                <p className={EYEBROW}>Role</p>
+                <div className={FIELD}>
+                  <Shield className="h-4 w-4 text-gold-text dark:text-gold-dark" />
+                  <span className="capitalize">{user?.role}</span>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Biometric Authentication */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base sm:text-lg flex items-center gap-2">
-                <Smartphone className="h-4 w-4 sm:h-5 sm:w-5" />
-                Biometric Authentication
-              </CardTitle>
-              <CardDescription>
-                Enable Face ID or Touch ID for quick and secure login
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {biometricCreds.length > 0 ? (
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 bg-green-100 rounded-full flex items-center justify-center">
-                        <Smartphone className="h-5 w-5 text-green-600" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-slate-900">Face ID Enabled</p>
-                        <p className="text-sm text-slate-600">{biometricCreds[0].device_name}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-sm text-slate-500">
-                    You can now use Face ID to quickly log in to your account
-                  </p>
+              <div className="space-y-2">
+                <p className={EYEBROW}>Member since</p>
+                <div className={FIELD}>
+                  <Calendar className="h-4 w-4 text-gold-text dark:text-gold-dark" />
+                  <span>{new Date(user?.created_date).toLocaleDateString()}</span>
                 </div>
-              ) : (
-                <div className="space-y-3">
-                  <p className="text-sm text-slate-600">
-                    Secure your account with biometric authentication. Once enabled, you can use Face ID or Touch ID to log in instantly.
-                  </p>
+              </div>
+            </div>
+          </section>
+
+          {/* Biometric */}
+          <section className={`${PANEL} p-5 md:p-7`}>
+            <h2 className="font-serif text-[22px] text-ink dark:text-[#F1E8E0] flex items-center gap-2.5">
+              <Smartphone className="h-5 w-5 text-gold-text dark:text-gold-dark" />
+              Biometric authentication
+            </h2>
+            <p className="mt-1 text-[13.5px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">
+              Enable Face ID or Touch ID for quick and secure login
+            </p>
+            {biometricCreds.length > 0 ? (
+              <div className="mt-5">
+                <div className="flex items-center gap-3 p-4 border border-[#A97E2E] bg-[rgba(169,126,46,0.08)] rounded-none">
+                  <Smartphone className="h-5 w-5 text-gold-text dark:text-gold-dark shrink-0" />
+                  <div>
+                    <p className="text-[14px] text-ink dark:text-[#F1E8E0]">Face ID enabled</p>
+                    <p className="text-[13px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">
+                      {biometricCreds[0].device_name}
+                    </p>
+                  </div>
+                </div>
+                <p className="mt-3 text-[13px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">
+                  You can now use Face ID to quickly log in to your account
+                </p>
+              </div>
+            ) : (
+              <div className="mt-5 space-y-3">
+                <p className="text-[13.5px] font-light leading-[1.7] text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">
+                  Secure your account with biometric authentication. Once enabled, you can use Face ID or Touch ID to log in instantly.
+                </p>
+                <div className="[&_button]:rounded-none [&_button]:min-h-[48px] [&_button]:w-full [&_button]:border-[rgba(59,50,43,0.28)] [&_button]:text-[11.5px] [&_button]:font-medium [&_button]:tracking-[0.1em] [&_button]:uppercase">
                   <BiometricLogin />
                 </div>
-              )}
-            </CardContent>
-          </Card>
+              </div>
+            )}
+          </section>
 
           {/* Trusted Devices */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base sm:text-lg">Trusted Devices</CardTitle>
-              <CardDescription>Devices you've used to access your account</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {devices.length === 0 ? (
-                <p className="text-sm text-slate-500">No devices registered yet</p>
-              ) : (
-                <div className="space-y-3">
-                  {devices.map((device) => (
-                    <div key={device.id} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <Smartphone className="h-5 w-5 text-slate-400" />
-                        <div>
-                          <p className="font-medium text-slate-900">{device.device_name}</p>
-                          <p className="text-sm text-slate-500">
-                            Last used: {new Date(device.last_login).toLocaleDateString()}
-                          </p>
-                        </div>
+          <section className={`${PANEL} p-5 md:p-7`}>
+            <h2 className="font-serif text-[22px] text-ink dark:text-[#F1E8E0]">Trusted devices</h2>
+            <p className="mt-1 text-[13.5px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">
+              Devices you've used to access your account
+            </p>
+            {devices.length === 0 ? (
+              <p className="mt-5 text-[13.5px] font-light text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">
+                No devices registered yet
+              </p>
+            ) : (
+              <div className="mt-5 divide-y divide-[rgba(59,50,43,0.14)] dark:divide-[rgba(241,232,224,0.16)] border-t border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]">
+                {devices.map((device) => (
+                  <div key={device.id} className="flex items-center justify-between gap-3 py-4">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <Smartphone className="h-5 w-5 text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)] shrink-0" />
+                      <div className="min-w-0">
+                        <p className="text-[14px] text-ink dark:text-[#F1E8E0] truncate">{device.device_name}</p>
+                        <p className="text-[12.5px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">
+                          Last used {new Date(device.last_login).toLocaleDateString()}
+                        </p>
                       </div>
-                      <div className="text-xs text-slate-400">{device.ip_address}</div>
                     </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                    <span className="text-[11px] font-light text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)] shrink-0">
+                      {device.ip_address}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
         </div>
       </div>
     </div>
