@@ -30,7 +30,7 @@ export default function Layout({ children }) {
     <div className="min-h-screen bg-slate-50 flex flex-col" style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}>
       <style>{`
                     .font-serif {
-                      font-family: 'Playfair Display', Georgia, serif;
+                      font-family: 'Cormorant Garamond', Georgia, serif;
                     }
 
                     /* ============================================

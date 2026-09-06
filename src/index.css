@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Jost:wght@300;400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -76,32 +78,32 @@ button:focus-visible {
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
+    --background: 28 48% 95%;
+    --foreground: 26 16% 20%;
+    --card: 27 47% 97%;
+    --card-foreground: 26 16% 20%;
+    --popover: 27 47% 97%;
+    --popover-foreground: 26 16% 20%;
+    --primary: 26 16% 20%;
+    --primary-foreground: 28 48% 95%;
+    --secondary: 30 33% 91%;
+    --secondary-foreground: 26 16% 20%;
+    --muted: 30 33% 91%;
+    --muted-foreground: 26 12% 45%;
+    --accent: 39 42% 42%;
+    --accent-foreground: 28 48% 95%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
+    --border: 30 25% 84%;
+    --input: 30 25% 84%;
+    --ring: 39 42% 42%;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
+    --sidebar-background: 28 48% 95%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
@@ -156,3 +158,91 @@ button:focus-visible {
     @apply bg-background text-foreground;
   }
 }
+
+/* ============================================
+   KHAREUS BRAND THEME (light)
+   cream #F8F1EB · gold #A97E2E · ink #3B322B
+   Maps existing neutral utilities onto the brand
+   palette so every page inherits the look.
+   ============================================ */
+html:not(.dark) {
+  --khareus-cream: #F8F1EB;
+  --khareus-cream-raised: #FCF7F3;
+  --khareus-sand: #EDE3D9;
+  --khareus-ink: #3B322B;
+  --khareus-gold: #A97E2E;
+  --khareus-line: rgba(59, 50, 43, 0.13);
+}
+
+body {
+  font-family: 'Jost', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 300;
+}
+
+h1, h2, h3, .font-serif {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+html:not(.dark) body { background-color: var(--khareus-cream); color: var(--khareus-ink); }
+
+/* -- Surfaces -- */
+html:not(.dark) .bg-white { background-color: var(--khareus-cream-raised) !important; }
+html:not(.dark) .bg-slate-50,
+html:not(.dark) .bg-gray-50 { background-color: var(--khareus-cream) !important; }
+html:not(.dark) .bg-slate-100,
+html:not(.dark) .bg-gray-100 { background-color: var(--khareus-sand) !important; }
+html:not(.dark) .bg-slate-200,
+html:not(.dark) .bg-gray-200 { background-color: #E6DACE !important; }
+html:not(.dark) .bg-slate-900,
+html:not(.dark) .bg-slate-950,
+html:not(.dark) [class~="bg-slate-900/95"],
+html:not(.dark) [class~="bg-slate-800"] { background-color: var(--khareus-ink) !important; }
+html:not(.dark) .border-slate-700,
+html:not(.dark) .border-slate-800 { border-color: rgba(248, 241, 235, 0.14) !important; }
+
+/* -- Text -- */
+html:not(.dark) .text-slate-900,
+html:not(.dark) .text-slate-950,
+html:not(.dark) .text-gray-900,
+html:not(.dark) .text-stone-800 { color: var(--khareus-ink) !important; }
+html:not(.dark) .text-slate-800,
+html:not(.dark) .text-slate-700,
+html:not(.dark) .text-gray-800,
+html:not(.dark) .text-gray-700 { color: rgba(59, 50, 43, 0.82) !important; }
+html:not(.dark) .text-slate-600,
+html:not(.dark) .text-gray-600 { color: rgba(59, 50, 43, 0.68) !important; }
+html:not(.dark) .text-slate-500,
+html:not(.dark) .text-slate-400,
+html:not(.dark) .text-gray-500 { color: rgba(59, 50, 43, 0.52) !important; }
+
+/* -- Lines -- */
+html:not(.dark) .border-slate-100,
+html:not(.dark) .border-gray-100 { border-color: rgba(59, 50, 43, 0.08) !important; }
+html:not(.dark) .border-slate-200,
+html:not(.dark) .border-gray-200 { border-color: var(--khareus-line) !important; }
+html:not(.dark) .border-slate-300,
+html:not(.dark) .border-gray-300 { border-color: rgba(59, 50, 43, 0.22) !important; }
+html:not(.dark) .divide-slate-100 > * + *,
+html:not(.dark) .divide-slate-200 > * + * { border-color: var(--khareus-line) !important; }
+
+/* -- Gold accents (indigo → brand gold) -- */
+html:not(.dark) .bg-indigo-600,
+html:not(.dark) .bg-indigo-700 { background-color: var(--khareus-gold) !important; }
+html:not(.dark) [class*="hover:bg-indigo-600"]:hover,
+html:not(.dark) [class*="hover:bg-indigo-700"]:hover { background-color: #906B26 !important; }
+html:not(.dark) .text-indigo-600,
+html:not(.dark) .text-indigo-700 { color: var(--khareus-gold) !important; }
+html:not(.dark) .border-indigo-600 { border-color: var(--khareus-gold) !important; }
+html:not(.dark) .bg-indigo-50,
+html:not(.dark) .bg-indigo-100 { background-color: #F1E6D3 !important; }
+
+/* -- Inputs -- */
+html:not(.dark) input,
+html:not(.dark) textarea,
+html:not(.dark) select {
+  background-color: var(--khareus-cream-raised);
+  color: var(--khareus-ink);
+  border-color: var(--khareus-line);
+}
+html:not(.dark) input::placeholder,
+html:not(.dark) textarea::placeholder { color: rgba(59, 50, 43, 0.45); }
