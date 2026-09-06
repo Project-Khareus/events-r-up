@@ -274,35 +274,37 @@ export default function VendorMarketplace() {
                   location={location}
                   onLocationChange={setLocation}
                 />
+
+                <div className="-mx-5 md:-mx-10">
+                  <HomeOccasionDoors vendorsByEvent={vendorsByEvent} />
+                  {promoVendor && (
+                    <>
+                      <div className={rule} />
+                      <HomeVendorOfTheWeek vendor={promoVendor} />
+                    </>
+                  )}
+                  <div className={rule} />
+                  {isLoading ? (
+                    <div className="px-5 md:px-10 py-8 md:py-12 grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-5">
+                      {[0, 1, 2, 3, 4, 5].map((i) => (
+                        <div key={i} className="space-y-3">
+                          <Skeleton className="aspect-square rounded-none" />
+                          <Skeleton className="h-5 w-3/4 rounded-none" />
+                          <Skeleton className="h-4 w-1/2 rounded-none" />
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <HomeNewlyApproved
+                      vendors={vendors}
+                      allReviews={allReviews}
+                      location={location}
+                      totalCount={vendors.length}
+                    />
+                  )}
+                </div>
               </div>
             </div>
-            <div className={rule} />
-            <HomeOccasionDoors vendorsByEvent={vendorsByEvent} />
-            {promoVendor && (
-              <>
-                <div className={rule} />
-                <HomeVendorOfTheWeek vendor={promoVendor} />
-              </>
-            )}
-            <div className={rule} />
-            {isLoading ? (
-              <div className="px-5 md:px-10 py-8 md:py-12 grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-5">
-                {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
-                  <div key={i} className="space-y-3">
-                    <Skeleton className="aspect-square rounded-none" />
-                    <Skeleton className="h-5 w-3/4 rounded-none" />
-                    <Skeleton className="h-4 w-1/2 rounded-none" />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <HomeNewlyApproved
-                vendors={vendors}
-                allReviews={allReviews}
-                location={location}
-                totalCount={vendors.length}
-              />
-            )}
             <HomeTrustStrip />
           </div>
         </div>
