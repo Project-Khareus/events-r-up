@@ -6,7 +6,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 import SearchBar from "../components/marketplace/SearchBar";
 import HomeMasthead from "../components/marketplace/home/HomeMasthead";
-import HomeEventPlanner from "../components/marketplace/home/HomeEventPlanner";
 import FilterSidebar from "../components/marketplace/FilterSidebar";
 import HomeOccasionDoors from "../components/marketplace/home/HomeOccasionDoors";
 import HomeVendorOfTheWeek from "../components/marketplace/home/HomeVendorOfTheWeek";
@@ -275,7 +274,6 @@ export default function VendorMarketplace() {
                   location={location}
                   onLocationChange={setLocation}
                 />
-                <HomeEventPlanner />
               </div>
             </div>
             <div className={rule} />

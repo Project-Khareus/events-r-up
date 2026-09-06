@@ -1,4 +1,5 @@
-import { Search } from "lucide-react";
+import { Search, Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
 import LocationAutocomplete from "@/components/shared/LocationAutocomplete";
 
 export default function SearchBar({ value, onChange, onSearch, location, onLocationChange }) {
@@ -41,6 +42,15 @@ export default function SearchBar({ value, onChange, onSearch, location, onLocat
       >
         <Search className="h-4 w-4 text-cream pointer-events-none" />
       </button>
+
+      {/* Plan an Event */}
+      <Link
+        to="/EventPlanning"
+        className="shrink-0 h-11 px-4 flex items-center gap-2 rounded-full border border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.28)] text-[13.5px] text-ink dark:text-[#F1E8E0] hover:border-[#A97E2E] hover:text-[#8A6522] transition-colors whitespace-nowrap"
+      >
+        <Sparkles className="h-4 w-4" />
+        <span className="hidden sm:inline">Plan an Event</span>
+      </Link>
     </div>
   );
 }
