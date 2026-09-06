@@ -229,14 +229,14 @@ export default function Navbar() {
                           View all
                         </Link>
                       </div>
-                      <div className="max-h-[420px] overflow-y-auto py-1">
+                      <div className="max-h-[420px] overflow-y-auto">
                         {notifications.length === 0 ? (
                           <div className="py-10 text-center">
                             <Bell className="h-8 w-8 text-[rgba(59,50,43,0.25)] mx-auto mb-2" />
                             <p className="text-[13px] text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">No notifications yet</p>
                           </div>
                         ) : (
-                          <div className="px-1">
+                          <div>
                             {notifications.map(notification => (
                               <NotificationItem key={notification.id} notification={notification} compact={true} onRead={handleNotificationRead} />
                             ))}
