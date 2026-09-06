@@ -82,26 +82,25 @@ export default function Messages() {
   }, [conversations, selectedConversationId]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/20">
+    <div className="min-h-screen bg-cream dark:bg-[#241E19]">
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-100 to-indigo-50">
-            <MessageSquare className="h-6 w-6 text-indigo-600" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900">Messages</h1>
-            <p className="text-slate-600">Connect with vendors</p>
-          </div>
+        <div className="mb-10">
+          <p className="text-[11px] uppercase tracking-[0.28em] text-[#8A6522] dark:text-[#C9A055] mb-3">Inbox</p>
+          <h1 className="font-serif text-4xl md:text-5xl text-ink dark:text-[#F1E8E0]">Messages</h1>
+          <p className="mt-2 text-[rgba(59,50,43,0.7)] dark:text-[rgba(241,232,224,0.65)]">
+            Your conversations with vendors and planners.
+          </p>
+          <div className="mt-6 h-px w-16 bg-[#A97E2E]" />
         </div>
 
         {isLoading ? (
           <div className="text-center py-12">
-            <p className="text-slate-600">Loading conversations...</p>
+            <p className="text-sm text-[rgba(59,50,43,0.65)] dark:text-[rgba(241,232,224,0.6)]">Loading conversations...</p>
           </div>
         ) : (
           <div className="grid lg:grid-cols-3 gap-6">
             {/* Conversations List */}
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 min-w-0">
               <ConversationsList
                 conversations={conversations}
                 selectedId={selectedConversationId}
@@ -118,10 +117,12 @@ export default function Messages() {
                   onBack={() => setSelectedConversationId(null)}
                 />
               ) : (
-                <div className="h-[600px] rounded-2xl border-2 border-dashed border-slate-200 flex items-center justify-center">
+                <div className="h-[600px] border border-dashed border-[rgba(59,50,43,0.25)] dark:border-[rgba(241,232,224,0.2)] flex items-center justify-center">
                   <div className="text-center">
-                    <MessageSquare className="h-12 w-12 text-slate-300 mx-auto mb-3" />
-                    <p className="text-slate-600">Select a conversation to start messaging</p>
+                    <MessageSquare className="h-10 w-10 text-[#A97E2E] mx-auto mb-4" />
+                    <p className="text-sm text-[rgba(59,50,43,0.65)] dark:text-[rgba(241,232,224,0.6)]">
+                      Select a conversation to start messaging
+                    </p>
                   </div>
                 </div>
               )}
