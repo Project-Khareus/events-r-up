@@ -83,7 +83,7 @@ export default function SupportChatBot() {
       {/* Promo Tooltip */}
       {showPromo && !open && (
         <div className="fixed bottom-40 md:bottom-24 right-4 z-50 flex flex-col items-end">
-          <div className="relative bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 px-4 py-3 max-w-[220px] mb-2">
+          <div className="relative bg-linen dark:bg-[#221D19] rounded-none border border-[rgba(59,50,43,0.16)] dark:border-[rgba(241,232,224,0.18)] px-4 py-3 max-w-[220px] mb-2">
             <button
               onClick={() => setShowPromo(false)}
               className="absolute top-2 right-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
@@ -91,11 +91,11 @@ export default function SupportChatBot() {
             >
               <X className="h-4 w-4" />
             </button>
-            <p className="text-sm text-slate-800 dark:text-slate-200 pr-4">
-              <span className="font-bold">How can we help?</span> Chat with us now
+            <p className="text-sm text-ink dark:text-[#F1E8E0] pr-4">
+              <span className="font-serif text-base">How can we help?</span> Chat with us now
             </p>
             {/* Tail */}
-            <div className="absolute -bottom-2 right-6 w-4 h-4 bg-white dark:bg-slate-800 border-r border-b border-slate-200 dark:border-slate-700 rotate-45" />
+            <div className="absolute -bottom-2 right-6 w-4 h-4 bg-linen dark:bg-[#221D19] border-r border-b border-[rgba(59,50,43,0.16)] dark:border-[rgba(241,232,224,0.18)] rotate-45" />
           </div>
         </div>
       )}
@@ -103,7 +103,7 @@ export default function SupportChatBot() {
       {/* Floating Button */}
       <button
         onClick={() => { setOpen(o => !o); setShowPromo(false); }}
-        className="fixed bottom-24 md:bottom-6 right-4 z-50 w-14 h-14 rounded-full bg-teal-600 hover:bg-teal-700 text-white shadow-xl flex items-center justify-center transition-all hover:scale-110"
+        className="fixed bottom-24 md:bottom-6 right-4 z-50 w-14 h-14 rounded-full bg-ink hover:bg-ink-deep text-cream border border-[rgba(169,126,46,0.5)] flex items-center justify-center transition-colors"
         aria-label="Open Support Chat"
       >
         {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
@@ -111,31 +111,31 @@ export default function SupportChatBot() {
 
       {/* Chat Window */}
       {open && (
-        <div className="fixed bottom-40 md:bottom-24 right-4 z-50 w-[350px] max-w-[calc(100vw-2rem)] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden" style={{ height: '480px' }}>
+        <div className="fixed bottom-40 md:bottom-24 right-4 z-50 w-[350px] max-w-[calc(100vw-2rem)] bg-cream dark:bg-[#1B1714] rounded-none border border-[rgba(59,50,43,0.18)] dark:border-[rgba(241,232,224,0.18)] flex flex-col overflow-hidden" style={{ height: '480px' }}>
           {/* Header */}
-          <div className="bg-indigo-600 text-white px-4 py-3 flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center">
-              <Bot className="h-5 w-5" />
+          <div className="bg-ink text-cream px-4 py-3 flex items-center gap-3 border-b border-gold/40">
+            <div className="w-9 h-9 rounded-full bg-cream/10 border border-gold/40 flex items-center justify-center">
+              <Bot className="h-5 w-5 text-gold-dark" />
             </div>
             <div>
-              <p className="font-semibold text-sm">Kharis</p>
-              <p className="text-xs text-indigo-200">AI Assistant • Always here to help</p>
+              <p className="font-serif text-base leading-none mb-1">Kharis</p>
+              <p className="text-[10px] uppercase tracking-[0.14em] text-cream/60">AI Assistant • Always here to help</p>
             </div>
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50 dark:bg-slate-900">
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-cream dark:bg-[#1B1714]">
             {messages.map((msg, i) => (
               <div key={i} className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                 {msg.role === "assistant" && (
-                  <div className="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Bot className="h-4 w-4 text-indigo-600" />
+                  <div className="w-7 h-7 rounded-full bg-linen dark:bg-[#221D19] border border-gold/40 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Bot className="h-4 w-4 text-gold-text dark:text-gold-dark" />
                   </div>
                 )}
-                <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${
+                <div className={`max-w-[80%] rounded-none px-3 py-2 text-sm ${
                   msg.role === "user"
-                    ? "bg-indigo-600 text-white rounded-tr-sm"
-                    : "bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-tl-sm shadow-sm"
+                    ? "bg-ink text-cream"
+                    : "bg-linen dark:bg-[#221D19] text-ink dark:text-[#F1E8E0] border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]"
                 }`}>
                   {msg.role === "assistant" ? (
                     <ReactMarkdown className="prose prose-sm max-w-none [&>p]:m-0 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
@@ -146,19 +146,19 @@ export default function SupportChatBot() {
                   )}
                 </div>
                 {msg.role === "user" && (
-                  <div className="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <User className="h-4 w-4 text-white" />
+                  <div className="w-7 h-7 rounded-full bg-ink flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <User className="h-4 w-4 text-cream" />
                   </div>
                 )}
               </div>
             ))}
             {loading && (
               <div className="flex gap-2 justify-start">
-                <div className="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
-                  <Bot className="h-4 w-4 text-indigo-600" />
+                <div className="w-7 h-7 rounded-full bg-linen dark:bg-[#221D19] border border-gold/40 flex items-center justify-center flex-shrink-0">
+                  <Bot className="h-4 w-4 text-gold-text dark:text-gold-dark" />
                 </div>
-                <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl rounded-tl-sm px-3 py-2 shadow-sm">
-                  <Loader2 className="h-4 w-4 animate-spin text-indigo-500" />
+                <div className="bg-linen dark:bg-[#221D19] border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] rounded-none px-3 py-2">
+                  <Loader2 className="h-4 w-4 animate-spin text-gold-text dark:text-gold-dark" />
                 </div>
               </div>
             )}
@@ -167,15 +167,15 @@ export default function SupportChatBot() {
 
           {/* Escalation Banner */}
           {showEscalate && !escalated && (
-            <div className="px-3 py-2 bg-amber-50 border-t border-amber-100 flex items-center justify-between gap-2">
-              <div className="flex items-center gap-1.5 text-xs text-amber-700">
+            <div className="px-3 py-2 bg-linen dark:bg-[#221D19] border-t border-gold/40 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-1.5 text-xs text-ink/70 dark:text-[#F1E8E0]/70">
                 <AlertCircle className="h-3.5 w-3.5 flex-shrink-0" />
                 <span>Not satisfied? Notify an admin.</span>
               </div>
               <button
                 onClick={handleEscalate}
                 disabled={loading || escalated}
-                className="text-xs font-medium text-indigo-600 hover:text-indigo-800 whitespace-nowrap"
+                className="text-[11px] uppercase tracking-[0.14em] text-gold-text dark:text-gold-dark hover:text-ink dark:hover:text-[#F1E8E0] whitespace-nowrap"
               >
                 Notify Admin
               </button>
@@ -183,18 +183,18 @@ export default function SupportChatBot() {
           )}
 
           {/* Input */}
-          <form onSubmit={sendMessage} className="p-3 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 flex gap-2">
+          <form onSubmit={sendMessage} className="p-3 border-t border-[rgba(59,50,43,0.18)] dark:border-[rgba(241,232,224,0.18)] bg-cream dark:bg-[#1B1714] flex gap-2">
             <input
               value={input}
               onChange={e => setInput(e.target.value)}
               placeholder="Ask Kharis anything about Khareus..."
-              className="flex-1 text-sm border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500"
+              className="flex-1 text-sm border border-[rgba(59,50,43,0.18)] dark:border-[rgba(241,232,224,0.18)] rounded-none px-3 py-2 focus:outline-none focus:border-gold bg-linen dark:bg-[#221D19] text-ink dark:text-[#F1E8E0] placeholder:text-ink/40"
               disabled={loading}
             />
             <button
               type="submit"
               disabled={loading || !input.trim()}
-              className="w-9 h-9 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white flex items-center justify-center disabled:opacity-50 transition-colors"
+              className="w-10 h-10 rounded-none bg-ink hover:bg-ink-deep text-cream flex items-center justify-center disabled:opacity-40 transition-colors"
             >
               <Send className="h-4 w-4" />
             </button>
