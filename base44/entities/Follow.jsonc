@@ -17,15 +17,15 @@
   ],
   "rls": {
     "create": {
-      "follower_id": "{{user.id}}"
+      "data.follower_id": "{{user.id}}"
     },
     "read": {
       "$or": [
         {
-          "follower_id": "{{user.id}}"
+          "data.follower_id": "{{user.id}}"
         },
         {
-          "followed_user_id": "{{user.id}}"
+          "data.followed_user_id": "{{user.id}}"
         },
         {
           "user_condition": {
@@ -37,7 +37,7 @@
     "update": {
       "$or": [
         {
-          "follower_id": "{{user.id}}"
+          "data.follower_id": "{{user.id}}"
         },
         {
           "user_condition": {
@@ -49,7 +49,7 @@
     "delete": {
       "$or": [
         {
-          "follower_id": "{{user.id}}"
+          "data.follower_id": "{{user.id}}"
         },
         {
           "user_condition": {

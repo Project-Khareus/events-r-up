@@ -51,13 +51,13 @@
   ],
   "rls": {
     "create": {
-      "user_id": "{{user.id}}"
+      "data.user_id": "{{user.id}}"
     },
-    "read": true,
+    "read": null,
     "update": {
       "$or": [
         {
-          "user_id": "{{user.id}}"
+          "data.user_id": "{{user.id}}"
         },
         {
           "user_condition": {
@@ -69,7 +69,7 @@
     "delete": {
       "$or": [
         {
-          "user_id": "{{user.id}}"
+          "data.user_id": "{{user.id}}"
         },
         {
           "user_condition": {

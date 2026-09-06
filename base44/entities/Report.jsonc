@@ -79,11 +79,13 @@
     "reasons"
   ],
   "rls": {
-    "create": true,
+    "create": {
+      "data.reporter_id": "{{user.id}}"
+    },
     "read": {
       "$or": [
         {
-          "reporter_id": "{{user.id}}"
+          "data.reporter_id": "{{user.id}}"
         },
         {
           "user_condition": {
