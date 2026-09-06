@@ -11,6 +11,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
 import VendorDetailPage from './pages/VendorDetail';
+import OAuthConsent from './pages/OAuthConsent';
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
 const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
@@ -21,6 +22,7 @@ const LayoutWrapper = ({ children, currentPageName }) => Layout ?
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, isAuthenticated, navigateToLogin } = useAuth();
+  const isOAuthConsentRoute = window.location.pathname.toLowerCase().startsWith('/oauth/consent');
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
@@ -31,6 +33,14 @@ const AuthenticatedApp = () => {
           <p className="text-sm">Loading your profile...</p>
         </div>
       </div>
+    );
+  }
+
+  if (isOAuthConsentRoute) {
+    return (
+      <Routes>
+        <Route path="/oauth/consent/*" element={<OAuthConsent />} />
+      </Routes>
     );
   }
 
@@ -48,6 +58,7 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
+      <Route path="/oauth/consent/*" element={<OAuthConsent />} />
       <Route path="/" element={
         <LayoutWrapper currentPageName={mainPageKey}>
           <MainPage />
