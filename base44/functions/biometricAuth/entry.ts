@@ -60,65 +60,15 @@ Deno.serve(async (req) => {
       return Response.json({ success: true });
     }
 
-    if (action === 'login-challenge') {
-      // Generate challenge for login
-      const challengeBytes = crypto.getRandomValues(new Uint8Array(32));
-      const challengeBase64 = base64UrlEncode(challengeBytes);
-
-      // Get user's credentials
-      const users = await base44.asServiceRole.entities.User.filter({ email });
-      if (users.length === 0) {
-        return Response.json({ error: 'User not found' }, { status: 404 });
-      }
-
-      const user = users[0];
-      const credentials = await base44.asServiceRole.entities.BiometricCredential.filter({
-        user_id: user.id
-      });
-
-      if (credentials.length === 0) {
-        return Response.json({ error: 'No biometric credentials registered' }, { status: 404 });
-      }
-
-      return Response.json({
-        challenge: challengeBase64,
-        allowCredentials: credentials.map(c => ({
-          id: c.credential_id,
-          type: 'public-key'
-        }))
-      });
-    }
-
-    if (action === 'login-verify') {
-      // Verify the login credential and create session
-      const users = await base44.asServiceRole.entities.User.filter({ email });
-      if (users.length === 0) {
-        return Response.json({ error: 'User not found' }, { status: 404 });
-      }
-
-      const user = users[0];
-      
-      // Verify credential exists
-      const credentials = await base44.asServiceRole.entities.BiometricCredential.filter({
-        user_id: user.id,
-        credential_id: credential.id
-      });
-
-      if (credentials.length === 0) {
-        return Response.json({ error: 'Invalid credential' }, { status: 401 });
-      }
-
-      // In a production system, you'd verify the signature here
-      // For now, we'll trust the client verification
-      
-      // Create a login token (you'd need to implement proper session management)
-      // For Base44, we'll return success and let the client handle the login
-      
-      return Response.json({ 
-        success: true,
-        userId: user.id,
-        message: 'Biometric authentication successful'
-      });
+    if (action === 'login-challenge' || action === 'login-verify') {
+      // Passwordless biometric sign-in is disabled: this endpoint cannot perform
+      // server-side WebAuthn assertion verification, so accepting it would allow
+      // account impersonation. Biometrics are only used to register a credential
+      // for an already-authenticated user.
+      return Response.json(
+        { error: 'Biometric sign-in is not available. Please sign in with your account.' },
+        { status: 501 }
+      );
     }
 
     return Response.json({ error: 'Invalid action' }, { status: 400 });

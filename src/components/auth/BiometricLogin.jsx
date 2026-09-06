@@ -42,72 +42,6 @@ export default function BiometricLogin({ onSuccess, email }) {
     return bytes.buffer;
   };
 
-  const handleBiometricLogin = async () => {
-    if (!email) {
-      toast.error('Please enter your email first');
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      // Get challenge from server
-      const { data: challengeData } = await base44.functions.invoke('biometricAuth', {
-        action: 'login-challenge',
-        email
-      });
-
-      if (challengeData.error) {
-        toast.error(challengeData.error);
-        return;
-      }
-
-      // Perform WebAuthn authentication
-      const credential = await navigator.credentials.get({
-        publicKey: {
-          challenge: base64ToArrayBuffer(challengeData.challenge),
-          allowCredentials: challengeData.allowCredentials.map(c => ({
-            id: base64ToArrayBuffer(c.id),
-            type: c.type,
-            transports: ['internal']
-          })),
-          timeout: 60000,
-          userVerification: 'required'
-        }
-      });
-
-      if (!credential) {
-        toast.error('Authentication cancelled');
-        return;
-      }
-
-      // Verify with server
-      const { data: verifyData } = await base44.functions.invoke('biometricAuth', {
-        action: 'login-verify',
-        email,
-        credential: {
-          id: arrayBufferToBase64(credential.rawId),
-          response: {
-            authenticatorData: arrayBufferToBase64(credential.response.authenticatorData),
-            signature: arrayBufferToBase64(credential.response.signature)
-          }
-        },
-        challenge: challengeData.challenge
-      });
-
-      if (verifyData.success) {
-        toast.success('Successfully authenticated with Face ID!');
-        onSuccess?.();
-      } else {
-        toast.error('Authentication failed');
-      }
-    } catch (error) {
-      console.error('Biometric login error:', error);
-      toast.error('Failed to authenticate with biometrics');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handleRegisterBiometric = async () => {
     setIsLoading(true);
     try {
@@ -163,6 +97,7 @@ export default function BiometricLogin({ onSuccess, email }) {
 
       if (registerData.success) {
         toast.success('Face ID registered successfully!');
+        onSuccess?.();
       }
     } catch (error) {
       console.error('Biometric registration error:', error);
@@ -179,7 +114,7 @@ export default function BiometricLogin({ onSuccess, email }) {
       <Button
         variant="outline"
         className="w-full"
-        onClick={email ? handleBiometricLogin : handleRegisterBiometric}
+        onClick={handleRegisterBiometric}
         disabled={isLoading}
       >
         {isLoading ? (
@@ -187,13 +122,11 @@ export default function BiometricLogin({ onSuccess, email }) {
         ) : (
           <Fingerprint className="h-5 w-5 mr-2" />
         )}
-        {email ? 'Sign in with Face ID' : 'Enable Face ID'}
+        Enable Face ID
       </Button>
-      {!email && (
-        <p className="text-xs text-slate-500 text-center">
-          You must be logged in to register Face ID
-        </p>
-      )}
+      <p className="text-xs text-slate-500 text-center">
+        You must be logged in to register Face ID
+      </p>
     </div>
   );
 }

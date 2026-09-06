@@ -13,6 +13,7 @@ import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, ArrowLeft, Cr
 import { Link } from "react-router-dom";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 import { capitalizeHtmlSentences } from "@/components/utils/capitalizeHtml";
+import { sanitizeHtml } from "@/lib/sanitizeHtml";
 import { getVendorUrl } from "../utils/vendorUrl";
 import ProposedChanges from "../components/admin/ProposedChanges";
 
@@ -344,7 +345,7 @@ export default function AdminVendorDetail() {
 
           <div className="mb-6">
             <h3 className="font-semibold text-slate-900 mb-2">Description</h3>
-            <div className="text-slate-600 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: capitalizeHtmlSentences(vendor.description) || 'No description provided' }} />
+            <div className="text-slate-600 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: sanitizeHtml(capitalizeHtmlSentences(vendor.description)) || 'No description provided' }} />
           </div>
 
           {/* Ghana Card Verification */}

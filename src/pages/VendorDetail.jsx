@@ -35,6 +35,7 @@ import MobileHeader from "../components/layout/MobileHeader";
 import ReportDialog from "../components/reports/ReportDialog";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 import { capitalizeHtmlSentences } from "@/components/utils/capitalizeHtml";
+import { sanitizeHtml } from "@/lib/sanitizeHtml";
 import { useParams } from "react-router-dom";
 import { parseVendorSlug, getVendorUrl } from "../utils/vendorUrl";
 
@@ -485,7 +486,7 @@ export default function VendorDetail() {
                  `}</style>
                  <div 
                    className="vendor-description prose prose-slate max-w-none text-slate-600 dark:text-slate-300 leading-relaxed"
-                   dangerouslySetInnerHTML={{ __html: capitalizeHtmlSentences(vendor.description) || "<p>No description provided.</p>" }}
+                   dangerouslySetInnerHTML={{ __html: sanitizeHtml(capitalizeHtmlSentences(vendor.description)) || "<p>No description provided.</p>" }}
                  />
              </section>
 
