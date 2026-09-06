@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import SearchBar from "../components/marketplace/SearchBar";
 import HomeMasthead from "../components/marketplace/home/HomeMasthead";
 import FilterSidebar from "../components/marketplace/FilterSidebar";
+import HomeMobileFilters from "../components/marketplace/HomeMobileFilters";
 import HomeOccasionDoors from "../components/marketplace/home/HomeOccasionDoors";
 import HomeVendorOfTheWeek from "../components/marketplace/home/HomeVendorOfTheWeek";
 import HomeNewlyApproved from "../components/marketplace/home/HomeNewlyApproved";
@@ -218,6 +219,26 @@ export default function VendorMarketplace() {
     ]);
   };
 
+  const filterProps = {
+    eventType,
+    category,
+    priceRange,
+    onEventChange: setEventType,
+    onCategoryChange: setCategory,
+    onPriceChange: setPriceRange,
+    onClearFilters: handleClearFilters,
+    sortBy,
+    onSortChange: setSortBy,
+    location,
+    onLocationChange: setLocation,
+    availableDate,
+    onAvailableDateChange: setAvailableDate,
+    minRating,
+    onMinRatingChange: setMinRating,
+    minYears,
+    onMinYearsChange: setMinYears,
+  };
+
   const rule = "h-px bg-[rgba(59,50,43,0.14)] dark:bg-[rgba(241,232,224,0.16)] mx-5 md:mx-10";
 
   if (isHomepage) {
@@ -226,83 +247,45 @@ export default function VendorMarketplace() {
         <div className="min-h-screen bg-cream dark:bg-[#211B16] pb-[82px] md:pb-0">
           <div className="max-w-[1280px] mx-auto">
             <HomeMasthead />
-            <div className="pl-2 pr-5 md:pl-3 md:pr-10 pb-8 md:pb-12 flex gap-5 md:gap-6">
-              <FilterSidebar
-                eventType={eventType}
-                category={category}
-                priceRange={priceRange}
-                onEventChange={setEventType}
-                onCategoryChange={setCategory}
-                onPriceChange={setPriceRange}
-                onClearFilters={handleClearFilters}
-                sortBy={sortBy}
-                onSortChange={setSortBy}
+            <div className="px-5 md:px-10 space-y-6">
+              <HomeMobileFilters {...filterProps} />
+              <SearchBar
+                value={searchInput}
+                onChange={setSearchInput}
+                onSearch={(q) => setSearchQuery((q || "").trim())}
                 location={location}
                 onLocationChange={setLocation}
-                availableDate={availableDate}
-                onAvailableDateChange={setAvailableDate}
-                minRating={minRating}
-                onMinRatingChange={setMinRating}
-                minYears={minYears}
-                onMinYearsChange={setMinYears}
               />
-              <div className="flex-1 min-w-0 space-y-6">
-                <div className="lg:hidden bg-linen dark:bg-[#2A231D] rounded-none border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] px-4 py-3">
-                  <FilterControls
-                    eventType={eventType}
-                    category={category}
-                    priceRange={priceRange}
-                    onEventChange={setEventType}
-                    onCategoryChange={setCategory}
-                    onPriceChange={setPriceRange}
-                    onClearFilters={handleClearFilters}
-                    sortBy={sortBy}
-                    onSortChange={setSortBy}
+            </div>
+            <HomeOccasionDoors vendorsByEvent={vendorsByEvent} />
+            <div className={rule} />
+            <div className="pl-2 pr-5 md:pl-3 md:pr-10 pb-8 md:pb-12 flex gap-5 md:gap-6">
+              <FilterSidebar {...filterProps} />
+              <div className="flex-1 min-w-0 -mr-5 md:-mr-10">
+                {promoVendor && (
+                  <>
+                    <HomeVendorOfTheWeek vendor={promoVendor} />
+                    <div className={rule} />
+                  </>
+                )}
+                {isLoading ? (
+                  <div className="px-5 md:px-10 py-8 md:py-12 grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-5">
+                    {[0, 1, 2, 3, 4, 5].map((i) => (
+                      <div key={i} className="space-y-3">
+                        <Skeleton className="aspect-square rounded-none" />
+                        <Skeleton className="h-5 w-3/4 rounded-none" />
+                        <Skeleton className="h-4 w-1/2 rounded-none" />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <HomeNewlyApproved
+                    vendors={vendors}
+                    allReviews={allReviews}
                     location={location}
-                    onLocationChange={setLocation}
-                    availableDate={availableDate}
-                    onAvailableDateChange={setAvailableDate}
-                    minRating={minRating}
-                    onMinRatingChange={setMinRating}
-                    minYears={minYears}
-                    onMinYearsChange={setMinYears} />
-                </div>
-                <SearchBar
-                  value={searchInput}
-                  onChange={setSearchInput}
-                  onSearch={(q) => setSearchQuery((q || "").trim())}
-                  location={location}
-                  onLocationChange={setLocation}
-                />
-
-                <div className="-ml-2 -mr-5 md:-ml-3 md:-mr-10">
-                  <HomeOccasionDoors vendorsByEvent={vendorsByEvent} />
-                  {promoVendor && (
-                    <>
-                      <div className={rule} />
-                      <HomeVendorOfTheWeek vendor={promoVendor} />
-                    </>
-                  )}
-                  <div className={rule} />
-                  {isLoading ? (
-                    <div className="px-5 md:px-10 py-8 md:py-12 grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-5">
-                      {[0, 1, 2, 3, 4, 5].map((i) => (
-                        <div key={i} className="space-y-3">
-                          <Skeleton className="aspect-square rounded-none" />
-                          <Skeleton className="h-5 w-3/4 rounded-none" />
-                          <Skeleton className="h-4 w-1/2 rounded-none" />
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <HomeNewlyApproved
-                      vendors={vendors}
-                      allReviews={allReviews}
-                      location={location}
-                      totalCount={vendors.length}
-                    />
-                  )}
-                </div>
+                    totalCount={vendors.length}
+                  />
+                )}
               </div>
             </div>
             <HomeTrustStrip />
