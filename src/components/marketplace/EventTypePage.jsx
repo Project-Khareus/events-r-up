@@ -4,16 +4,16 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "../../utils";
 import { ArrowLeft, Sparkles, Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import VendorCard from "./VendorCard";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
+
+const HAIRLINE = "border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]";
 
 export default function EventTypePage({ eventType, title, description, categories = [] }) {
   const location = useLocation();
   const urlParams = new URLSearchParams(location.search);
   const categoryFromUrl = urlParams.get("category") || "all";
-  
+
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl);
 
@@ -49,63 +49,56 @@ export default function EventTypePage({ eventType, title, description, categorie
     });
   }, [vendors, eventType, searchQuery, selectedCategory]);
 
+  const pill = (active) =>
+    `px-4 py-2 min-h-[44px] rounded-none text-[13px] tracking-[0.06em] uppercase transition-colors ${
+      active
+        ? "bg-ink text-cream dark:bg-cream dark:text-ink"
+        : `bg-transparent text-ink/70 dark:text-cream/70 hover:text-gold-text dark:hover:text-gold-dark ${HAIRLINE}`
+    }`;
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
-        <div className="max-w-7xl mx-auto px-6 py-12 lg:py-16">
-          <Link 
-            to={createPageUrl("VendorMarketplace")}
-            className="inline-flex items-center gap-2 text-slate-300 hover:text-white mb-6 transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Marketplace
-          </Link>
-          <h1 className="text-4xl lg:text-5xl font-serif font-bold mb-4">
-            {title}
-          </h1>
-          <p className="text-xl text-slate-300 max-w-2xl">
-            {description}
-          </p>
-        </div>
+    <div className="min-h-screen bg-cream dark:bg-[#1B1714] text-ink dark:text-[#F1E8E0]">
+      {/* Masthead */}
+      <div className="max-w-7xl mx-auto px-6 pt-10 pb-8 lg:pt-14">
+        <Link
+          to={createPageUrl("VendorMarketplace")}
+          className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-gold-text dark:text-gold-dark hover:text-ink dark:hover:text-cream transition-colors mb-6"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" />
+          Back to Marketplace
+        </Link>
+        <h1 className="font-serif text-5xl lg:text-6xl leading-[1.05] mb-3">
+          {title}
+        </h1>
+        <p className="text-lg text-ink/70 dark:text-[#F1E8E0]/70 max-w-2xl">
+          {description}
+        </p>
+        <div className="mt-6 w-16 h-px bg-gold" />
       </div>
 
-      {/* Filters */}
-      <div className="max-w-7xl mx-auto px-6 -mt-8">
-        <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-6">
-          <div className="flex flex-col gap-6">
-            {/* Search */}
+      {/* Search + filters */}
+      <div className="max-w-7xl mx-auto px-6">
+        <div className={`bg-linen dark:bg-[#221D19] ${HAIRLINE} p-6`}>
+          <div className="flex flex-col gap-5">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-              <Input 
-                placeholder={`Search ${title.toLowerCase()} vendors...`} 
-                className="pl-10 h-12 text-lg bg-slate-50 border-slate-200"
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gold" />
+              <input
+                placeholder={`Search ${title.toLowerCase()} vendors`}
+                className={`w-full pl-10 pr-4 h-12 bg-transparent rounded-none ${HAIRLINE} text-base text-ink dark:text-[#F1E8E0] placeholder:text-ink/40 dark:placeholder:text-[#F1E8E0]/40 focus:outline-none focus:border-gold`}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
 
-            {/* Category Pills */}
             <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setSelectedCategory("all")}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  selectedCategory === "all"
-                    ? "bg-indigo-600 text-white"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                }`}
-              >
+              <button onClick={() => setSelectedCategory("all")} className={pill(selectedCategory === "all")}>
                 All Categories
               </button>
               {categories.map((cat) => (
                 <button
                   key={cat.id}
                   onClick={() => setSelectedCategory(cat.id)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                    selectedCategory === cat.id
-                      ? "bg-indigo-600 text-white"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                  }`}
+                  className={pill(selectedCategory === cat.id)}
                 >
                   {cat.name}
                 </button>
@@ -116,27 +109,25 @@ export default function EventTypePage({ eventType, title, description, categorie
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <p className="text-slate-600 mb-8">
-          <span className="font-semibold text-slate-900">{filteredVendors.length}</span> vendors found
+        <p className="text-[11px] uppercase tracking-[0.18em] text-ink/60 dark:text-[#F1E8E0]/60 mb-8">
+          {filteredVendors.length} vendors found
         </p>
 
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[...Array(8)].map((_, i) => (
               <div key={i} className="space-y-3">
-                <Skeleton className="h-48 rounded-2xl" />
-                <Skeleton className="h-5 w-3/4" />
-                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-48 rounded-none" />
+                <Skeleton className="h-5 w-3/4 rounded-none" />
+                <Skeleton className="h-4 w-full rounded-none" />
               </div>
             ))}
           </div>
         ) : filteredVendors.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 mb-4">
-              <Sparkles className="h-8 w-8 text-slate-400" />
-            </div>
-            <h3 className="text-xl font-semibold text-slate-900 mb-2">No vendors found</h3>
-            <p className="text-slate-600">Try adjusting your search or category filter</p>
+          <div className={`text-center py-16 ${HAIRLINE} bg-linen dark:bg-[#221D19]`}>
+            <Sparkles className="h-7 w-7 text-gold mx-auto mb-4" />
+            <h3 className="font-serif text-2xl mb-2">No vendors found</h3>
+            <p className="text-ink/60 dark:text-[#F1E8E0]/60">Try adjusting your search or category filter</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
