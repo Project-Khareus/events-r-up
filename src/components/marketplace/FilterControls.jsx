@@ -134,16 +134,20 @@ export default function FilterControls({
     if (onSortChange) onSortChange("relevance");
   };
 
+  const vLabel = "block text-[9.5px] font-medium tracking-[0.15em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]";
+  const vSubLabel = "text-[11px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)] flex items-center gap-1.5";
+  const vTrigger = "w-full h-10 text-[14px] rounded-none bg-cream dark:bg-[#211B16] border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] text-ink dark:text-[#F1E8E0] shadow-none focus:ring-1 focus:ring-[#A97E2E]";
+
   if (layout === "vertical") {
     return (
-      <div className="space-y-4">
-        <div className="space-y-3">
-          <label className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Event Type</label>
+      <div className="space-y-5">
+        <div className="space-y-2">
+          <label className={vLabel}>Event Type</label>
           <Select value={eventType} onValueChange={handleEventChange}>
-            <SelectTrigger className="w-full h-9 text-sm rounded-none">
+            <SelectTrigger className={vTrigger}>
               <SelectValue placeholder="Event Type" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="rounded-none">
               {EVENT_TYPES.map((type) => (
                 <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
               ))}
@@ -151,13 +155,13 @@ export default function FilterControls({
           </Select>
         </div>
 
-        <div className="space-y-3">
-          <label className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Category</label>
+        <div className="space-y-2">
+          <label className={vLabel}>Category</label>
           <Select value={category} onValueChange={onCategoryChange}>
-            <SelectTrigger className="w-full h-9 text-sm rounded-none">
+            <SelectTrigger className={vTrigger}>
               <SelectValue placeholder="Category" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="rounded-none">
               {categories.map((cat) => (
                 <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
               ))}
@@ -165,13 +169,13 @@ export default function FilterControls({
           </Select>
         </div>
 
-        <div className="space-y-3">
-          <label className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Price Range</label>
+        <div className="space-y-2">
+          <label className={vLabel}>Price Range</label>
           <Select value={priceRange} onValueChange={onPriceChange}>
-            <SelectTrigger className="w-full h-9 text-sm rounded-none">
+            <SelectTrigger className={vTrigger}>
               <SelectValue placeholder="Price" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="rounded-none">
               {PRICE_RANGES.map((price) => (
                 <SelectItem key={price.value} value={price.value}>{price.label}</SelectItem>
               ))}
@@ -180,13 +184,13 @@ export default function FilterControls({
         </div>
 
         {onSortChange && (
-          <div className="space-y-3">
-            <label className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Sort By</label>
+          <div className="space-y-2">
+            <label className={vLabel}>Sort By</label>
             <Select value={sortBy} onValueChange={onSortChange}>
-              <SelectTrigger className="w-full h-9 text-sm rounded-none">
+              <SelectTrigger className={vTrigger}>
                 <SelectValue placeholder="Sort By" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="rounded-none">
                 {SORT_OPTIONS.map((option) => (
                   <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
                 ))}
@@ -195,31 +199,31 @@ export default function FilterControls({
           </div>
         )}
 
-        <div className="border-t border-slate-200 dark:border-slate-700 pt-4 mt-4">
-          <p className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">Advanced</p>
-          
+        <div className="border-t border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] pt-5 mt-5 space-y-4">
+          <p className={vLabel}>Advanced</p>
+
           {onLocationChange && (
-            <div className="space-y-1.5 mb-3">
-              <label className="text-xs font-medium text-slate-600 dark:text-slate-300 flex items-center gap-1">
-                <MapPin className="h-3.5 w-3.5" /> Location
+            <div className="space-y-2">
+              <label className={vSubLabel}>
+                <MapPin className="h-3.5 w-3.5 text-gold-text dark:text-gold-dark" /> Location
               </label>
-              <Input placeholder="City or region..." value={location} onChange={(e) => onLocationChange(e.target.value)} className="rounded-none h-9 text-sm" />
+              <Input placeholder="City or region..." value={location} onChange={(e) => onLocationChange(e.target.value)} className="rounded-none h-10 text-[14px] bg-cream dark:bg-[#211B16] border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] text-ink dark:text-[#F1E8E0] shadow-none focus-visible:ring-1 focus-visible:ring-[#A97E2E]" />
             </div>
           )}
 
           {onAvailableDateChange && (
-            <div className="space-y-1.5 mb-3">
-              <label className="text-xs font-medium text-slate-600 dark:text-slate-300 flex items-center gap-1">
-                <CalendarIcon className="h-3.5 w-3.5" /> Available Date
+            <div className="space-y-2">
+              <label className={vSubLabel}>
+                <CalendarIcon className="h-3.5 w-3.5 text-gold-text dark:text-gold-dark" /> Available Date
               </label>
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full justify-start text-left font-normal rounded-none h-9 text-sm">
+                  <Button variant="outline" className="w-full justify-start text-left font-normal rounded-none h-10 text-[14px] bg-cream dark:bg-[#211B16] border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] text-ink dark:text-[#F1E8E0] shadow-none hover:bg-cream dark:hover:bg-[#211B16]">
                     <CalendarIcon className="mr-2 h-3.5 w-3.5" />
                     {availableDate ? format(availableDate, "PPP") : "Select date"}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
+                <PopoverContent className="w-auto p-0 rounded-none" align="start">
                   <Calendar mode="single" selected={availableDate} onSelect={onAvailableDateChange} disabled={(date) => date < new Date()} initialFocus />
                 </PopoverContent>
               </Popover>
@@ -227,17 +231,17 @@ export default function FilterControls({
           )}
 
           {onMinRatingChange && (
-            <div className="space-y-1.5 mb-3">
-              <label className="text-xs font-medium text-slate-600 dark:text-slate-300 flex items-center gap-1">
-                <Star className="h-3.5 w-3.5" /> Min. Rating: {minRating > 0 ? `${minRating}+` : 'Any'}
+            <div className="space-y-2">
+              <label className={vSubLabel}>
+                <Star className="h-3.5 w-3.5 text-gold-text dark:text-gold-dark" /> Min. Rating: {minRating > 0 ? `${minRating}+` : 'Any'}
               </label>
               <Slider value={[minRating]} onValueChange={(value) => onMinRatingChange(value[0])} max={5} step={0.5} />
             </div>
           )}
 
           {onMinYearsChange && (
-            <div className="space-y-1.5 mb-3">
-              <label className="text-xs font-medium text-slate-600 dark:text-slate-300">
+            <div className="space-y-2">
+              <label className={vSubLabel}>
                 Min. Years: {minYears > 0 ? `${minYears}+` : 'Any'}
               </label>
               <Slider value={[minYears]} onValueChange={(value) => onMinYearsChange(value[0])} max={20} step={1} />
@@ -246,7 +250,7 @@ export default function FilterControls({
         </div>
 
         {hasFilters && (
-          <Button variant="outline" size="sm" className="w-full rounded-none gap-1.5 text-xs" onClick={handleClearAll}>
+          <Button variant="outline" size="sm" className="w-full rounded-none gap-1.5 text-[11px] font-medium tracking-[0.1em] uppercase h-10 bg-transparent border-[#A97E2E] text-gold-text dark:text-gold-dark hover:bg-[rgba(169,126,46,0.08)]" onClick={handleClearAll}>
             <X className="h-3.5 w-3.5" /> Clear All Filters
           </Button>
         )}

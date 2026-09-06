@@ -6,7 +6,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 import SearchBar from "../components/marketplace/SearchBar";
 import HomeMasthead from "../components/marketplace/home/HomeMasthead";
-import HomeSearchSpine from "../components/marketplace/home/HomeSearchSpine";
+import HomeEventPlanner from "../components/marketplace/home/HomeEventPlanner";
+import FilterSidebar from "../components/marketplace/FilterSidebar";
 import HomeOccasionDoors from "../components/marketplace/home/HomeOccasionDoors";
 import HomeVendorOfTheWeek from "../components/marketplace/home/HomeVendorOfTheWeek";
 import HomeNewlyApproved from "../components/marketplace/home/HomeNewlyApproved";
@@ -226,17 +227,57 @@ export default function VendorMarketplace() {
         <div className="min-h-screen bg-cream dark:bg-[#211B16] pb-[82px] md:pb-0">
           <div className="max-w-[1280px] mx-auto">
             <HomeMasthead />
-            <HomeSearchSpine
-              eventType={eventType}
-              onEventChange={setEventType}
-              location={location}
-              onLocationChange={setLocation}
-              availableDate={availableDate}
-              onAvailableDateChange={setAvailableDate}
-              searchInput={searchInput}
-              onSearchInputChange={setSearchInput}
-              onSearch={(q) => setSearchQuery((q || "").trim())}
-            />
+            <div className="px-5 md:px-10 pb-8 md:pb-12 flex gap-8">
+              <FilterSidebar
+                eventType={eventType}
+                category={category}
+                priceRange={priceRange}
+                onEventChange={setEventType}
+                onCategoryChange={setCategory}
+                onPriceChange={setPriceRange}
+                onClearFilters={handleClearFilters}
+                sortBy={sortBy}
+                onSortChange={setSortBy}
+                location={location}
+                onLocationChange={setLocation}
+                availableDate={availableDate}
+                onAvailableDateChange={setAvailableDate}
+                minRating={minRating}
+                onMinRatingChange={setMinRating}
+                minYears={minYears}
+                onMinYearsChange={setMinYears}
+              />
+              <div className="flex-1 min-w-0 space-y-6">
+                <div className="lg:hidden bg-linen dark:bg-[#2A231D] rounded-none border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] px-4 py-3">
+                  <FilterControls
+                    eventType={eventType}
+                    category={category}
+                    priceRange={priceRange}
+                    onEventChange={setEventType}
+                    onCategoryChange={setCategory}
+                    onPriceChange={setPriceRange}
+                    onClearFilters={handleClearFilters}
+                    sortBy={sortBy}
+                    onSortChange={setSortBy}
+                    location={location}
+                    onLocationChange={setLocation}
+                    availableDate={availableDate}
+                    onAvailableDateChange={setAvailableDate}
+                    minRating={minRating}
+                    onMinRatingChange={setMinRating}
+                    minYears={minYears}
+                    onMinYearsChange={setMinYears} />
+                </div>
+                <SearchBar
+                  value={searchInput}
+                  onChange={setSearchInput}
+                  onSearch={(q) => setSearchQuery((q || "").trim())}
+                  location={location}
+                  onLocationChange={setLocation}
+                />
+                <HomeEventPlanner />
+              </div>
+            </div>
             <div className={rule} />
             <HomeOccasionDoors vendorsByEvent={vendorsByEvent} />
             {promoVendor && (
@@ -281,30 +322,25 @@ export default function VendorMarketplace() {
         <div className="flex gap-8">
 
           {/* Sidebar Filters - Desktop */}
-          <aside className="hidden lg:block w-64 shrink-0">
-            <div className="sticky top-4 bg-linen dark:bg-[#2A231D] rounded-none border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] p-4 max-h-[calc(100vh-2rem)] overflow-y-auto">
-              <h3 className="text-[10px] font-medium tracking-[0.15em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)] mb-4">Filters</h3>
-              <FilterControls
-                eventType={eventType}
-                category={category}
-                priceRange={priceRange}
-                onEventChange={setEventType}
-                onCategoryChange={setCategory}
-                onPriceChange={setPriceRange}
-                onClearFilters={handleClearFilters}
-                sortBy={sortBy}
-                onSortChange={setSortBy}
-                location={location}
-                onLocationChange={setLocation}
-                availableDate={availableDate}
-                onAvailableDateChange={setAvailableDate}
-                minRating={minRating}
-                onMinRatingChange={setMinRating}
-                minYears={minYears}
-                onMinYearsChange={setMinYears}
-                layout="vertical" />
-            </div>
-          </aside>
+          <FilterSidebar
+            eventType={eventType}
+            category={category}
+            priceRange={priceRange}
+            onEventChange={setEventType}
+            onCategoryChange={setCategory}
+            onPriceChange={setPriceRange}
+            onClearFilters={handleClearFilters}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
+            location={location}
+            onLocationChange={setLocation}
+            availableDate={availableDate}
+            onAvailableDateChange={setAvailableDate}
+            minRating={minRating}
+            onMinRatingChange={setMinRating}
+            minYears={minYears}
+            onMinYearsChange={setMinYears}
+          />
 
           <div className="flex-1 min-w-0">
             {/* Mobile Filters - Top */}
