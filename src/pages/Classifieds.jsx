@@ -235,22 +235,22 @@ export default function Classifieds() {
 
   return (
     <PullToRefresh onRefresh={handleRefresh}>
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-cream dark:bg-[#1B1714] text-ink dark:text-[#F1E8E0]">
       {/* Search Header - Sticky */}
-      <div className="sticky top-0 z-30 bg-white border-b border-slate-200 shadow-sm">
+      <div className="sticky top-0 z-30 bg-cream/95 dark:bg-[#1B1714]/95 backdrop-blur-md border-b border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]">
         <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-4">
           
           {/* Location Picker Header Row */}
-          <div className="flex items-center gap-2 mb-4 text-slate-700">
-            <span className="text-sm font-semibold text-slate-500 uppercase tracking-wide">Browsing events in</span>
+          <div className="flex items-center gap-2 mb-4">
+            <span className="text-[11px] uppercase tracking-[0.18em] text-ink/50 dark:text-[#F1E8E0]/50">Browsing events in</span>
             <DropdownMenu open={locationDropdownOpen} onOpenChange={setLocationDropdownOpen}>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-2 text-indigo-600 font-bold text-lg hover:bg-indigo-50 px-3 py-1.5 rounded-lg transition-colors outline-none focus:ring-2 focus:ring-indigo-100">
+                <button className="flex items-center gap-2 font-serif text-xl text-gold-text dark:text-gold-dark px-2 py-1.5 rounded-none transition-colors outline-none hover:text-ink dark:hover:text-cream">
                   {locationState.label}
-                  <ChevronDown className="h-5 w-5" />
+                  <ChevronDown className="h-4 w-4" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-72 p-2">
+              <DropdownMenuContent align="start" className="w-72 p-2 rounded-none bg-linen dark:bg-[#221D19] border-[rgba(59,50,43,0.14)]">
                 {/* Custom location input */}
                 <div className="p-2">
                   <div className="relative">
@@ -266,7 +266,7 @@ export default function Classifieds() {
                           setLocationDropdownOpen(false);
                         }
                       }}
-                      className="pl-9 h-10 text-sm rounded-lg"
+                      className="pl-9 h-10 text-sm rounded-none bg-transparent"
                     />
                   </div>
                   {locationInput.trim() && (
@@ -276,7 +276,7 @@ export default function Classifieds() {
                         setLocationInput("");
                         setLocationDropdownOpen(false);
                       }}
-                      className="w-full mt-2 flex items-center gap-2 p-2 text-sm text-indigo-600 font-medium hover:bg-indigo-50 rounded-lg transition-colors"
+                      className="w-full mt-2 flex items-center gap-2 p-2 text-sm text-gold-text dark:text-gold-dark rounded-none transition-colors hover:text-ink dark:hover:text-cream"
                     >
                       <Search className="h-4 w-4" />
                       Search "{locationInput.trim()}"
@@ -287,10 +287,10 @@ export default function Classifieds() {
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem 
-                  className="flex items-center gap-3 p-3 cursor-pointer text-indigo-600 font-medium focus:text-indigo-700 focus:bg-indigo-50"
+                  className="flex items-center gap-3 p-3 cursor-pointer rounded-none text-gold-text dark:text-gold-dark"
                   onClick={handleUseCurrentLocation}
                 >
-                  <Crosshair className="h-5 w-5" />
+                  <Crosshair className="h-4 w-4" />
                   <div className="flex flex-col">
                     <span>Use my current location</span>
                   </div>
@@ -302,7 +302,7 @@ export default function Classifieds() {
                   className="flex items-center gap-3 p-3 cursor-pointer"
                   onClick={() => setLocationState({ type: 'online', label: 'Online Events', lat: null, lng: null })}
                 >
-                  <MonitorPlay className="h-5 w-5 text-slate-500" />
+                  <MonitorPlay className="h-4 w-4 text-gold" />
                   <span>Browse online events</span>
                 </DropdownMenuItem>
 
@@ -312,7 +312,7 @@ export default function Classifieds() {
                   className="flex items-center gap-3 p-3 cursor-pointer"
                   onClick={() => setLocationState({ type: 'all', label: 'All Locations', lat: null, lng: null })}
                 >
-                  <Navigation className="h-5 w-5 text-slate-500" />
+                  <Navigation className="h-4 w-4 text-gold" />
                   <span>All Locations</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -322,10 +322,10 @@ export default function Classifieds() {
           <div className="flex flex-col md:flex-row gap-4 items-center">
              {/* Search */}
              <div className="relative flex-1 w-full max-w-2xl">
-               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gold" />
                <Input 
                  placeholder={`Search events in ${locationState.label === 'Choose a location' ? 'all locations' : locationState.label}`}
-                 className="pl-11 h-12 bg-slate-50 border-0 focus-visible:ring-1 focus-visible:ring-indigo-500 rounded-full text-base"
+                 className="pl-11 h-12 bg-transparent border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] focus-visible:ring-0 focus-visible:border-gold rounded-none text-base"
                  value={searchQuery}
                  onChange={(e) => setSearchQuery(e.target.value)}
                />
@@ -334,7 +334,7 @@ export default function Classifieds() {
              {/* Right Side Actions */}
              <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
                 <Link to={createPageUrl("CreateEvent")}>
-                   <Button className="rounded-full bg-indigo-600 hover:bg-indigo-700 font-medium">
+                   <Button className="rounded-none h-12 px-6 bg-ink hover:bg-ink-deep text-cream text-[11px] uppercase tracking-[0.16em]">
                      <Plus className="h-4 w-4 mr-2" />
                      Create Event
                    </Button>
@@ -348,10 +348,10 @@ export default function Classifieds() {
               <button
                 key={theme}
                 onClick={() => setSelectedTheme(theme)}
-                className={`px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                className={`px-4 py-2 min-h-[44px] rounded-none text-[11px] uppercase tracking-[0.14em] whitespace-nowrap transition-colors border ${
                   selectedTheme === theme 
-                    ? 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200' 
-                    : 'bg-white text-slate-600 hover:bg-slate-50'
+                    ? 'bg-ink text-cream border-ink dark:bg-cream dark:text-ink dark:border-cream' 
+                    : 'bg-transparent text-ink/70 dark:text-[#F1E8E0]/70 border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] hover:text-gold-text dark:hover:text-gold-dark'
                 }`}
               >
                 {theme}
@@ -364,9 +364,9 @@ export default function Classifieds() {
       <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-8">
         {/* Title Section */}
         <div className="mb-8">
-            <h6 className={`${locationState.label === 'Choose a location' ? 'text-2xl md:text-3xl' : 'text-3xl md:text-4xl'} font-bold text-slate-900 font-serif`}>
+            <h6 className={`${locationState.label === 'Choose a location' ? 'text-3xl md:text-4xl' : 'text-4xl md:text-5xl'} font-serif leading-tight`}>
               {selectedTheme === "All" ? "Events in " : `${selectedTheme} events in `}
-              <span className="text-indigo-600 underline decoration-indigo-200 underline-offset-4 decoration-4">
+              <span className="text-gold-text dark:text-gold-dark">
                 {locationState.label === 'Choose a location' ? 'All Locations' : locationState.label}
               </span>
             </h6>
@@ -377,17 +377,17 @@ export default function Classifieds() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
             {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
               <div key={i} className="space-y-4">
-                <Skeleton className="aspect-[3/2] w-full rounded-lg" />
-                <Skeleton className="h-6 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
-                <Skeleton className="h-4 w-1/4" />
+                <Skeleton className="aspect-[3/2] w-full rounded-none" />
+                <Skeleton className="h-6 w-3/4 rounded-none" />
+                <Skeleton className="h-4 w-1/2 rounded-none" />
+                <Skeleton className="h-4 w-1/4 rounded-none" />
               </div>
             ))}
           </div>
         ) : (
           <>
             {usingFallback && (
-              <div className="mb-6 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-indigo-800">
+              <div className="mb-6 rounded-none border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] bg-linen dark:bg-[#221D19] px-4 py-3 text-sm text-ink/70 dark:text-[#F1E8E0]/70">
                 No events near {locationState.label === 'Choose a location' ? 'your area' : locationState.label}. Showing upcoming events instead.
               </div>
             )}
@@ -402,7 +402,7 @@ export default function Classifieds() {
                 <Button 
                   onClick={() => setPage(p => p + 1)} 
                   disabled={isFetching}
-                  className="bg-indigo-600 hover:bg-indigo-700"
+                  className="rounded-none h-12 px-8 bg-ink hover:bg-ink-deep text-cream text-[11px] uppercase tracking-[0.16em]"
                 >
                   {isFetching ? (
                     <>
