@@ -1,23 +1,21 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { Heart, PartyPopper, Building2, Flower2, ArrowRight } from "lucide-react";
+import { Heart, PartyPopper, Building2, Flower2, Check } from "lucide-react";
+import StepHeading from "./StepHeading";
+import StepNav from "./StepNav";
 
 const EVENT_TYPES = [
-  { value: "weddings", label: "Weddings", icon: Heart, description: "Find the perfect vendors for your big day", color: "from-rose-500 to-pink-600", bg: "bg-rose-50", border: "border-rose-200", text: "text-rose-600" },
-  { value: "parties", label: "Parties", icon: PartyPopper, description: "Birthday, anniversary, or any celebration", color: "from-amber-500 to-orange-600", bg: "bg-amber-50", border: "border-amber-200", text: "text-amber-600" },
-  { value: "conference", label: "Conference", icon: Building2, description: "Corporate events & professional meetings", color: "from-blue-500 to-indigo-600", bg: "bg-blue-50", border: "border-blue-200", text: "text-blue-600" },
-  { value: "funeral", label: "Funeral", icon: Flower2, description: "Respectful memorial & tribute services", color: "from-slate-500 to-slate-700", bg: "bg-slate-50", border: "border-slate-300", text: "text-slate-600" },
+  { value: "weddings", label: "Weddings", icon: Heart, description: "Find the perfect vendors for your big day" },
+  { value: "parties", label: "Parties", icon: PartyPopper, description: "Birthday, anniversary, or any celebration" },
+  { value: "conference", label: "Conference", icon: Building2, description: "Corporate events & professional meetings" },
+  { value: "funeral", label: "Funeral", icon: Flower2, description: "Respectful memorial & tribute services" },
 ];
 
 export default function EventTypeSelector({ value, onChange, onNext }) {
   return (
-    <div className="space-y-6">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-2">What type of event are you planning?</h2>
-        <p className="text-slate-600 dark:text-slate-300">Choose one to get started</p>
-      </div>
+    <div>
+      <StepHeading title="What type of event are you planning?" subtitle="Choose one to get started" />
 
-      <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
+      <div className="grid sm:grid-cols-2 gap-3 max-w-2xl mx-auto">
         {EVENT_TYPES.map((type) => {
           const Icon = type.icon;
           const isSelected = value === type.value;
@@ -25,39 +23,28 @@ export default function EventTypeSelector({ value, onChange, onNext }) {
             <button
               key={type.value}
               onClick={() => onChange(type.value)}
-              className={`relative p-5 rounded-2xl text-left transition-all duration-200 border-2 group ${
+              className={`relative p-5 min-h-[48px] text-left rounded-none border transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#A97E2E] ${
                 isSelected
-                  ? "border-indigo-400 dark:border-slate-400 bg-indigo-50 dark:bg-slate-700 shadow-md scale-[1.02]"
-                  : "border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500 hover:shadow-md bg-white dark:bg-slate-800"
+                  ? "border-[#A97E2E] bg-[rgba(169,126,46,0.08)]"
+                  : "border-[rgba(59,50,43,0.22)] dark:border-[rgba(241,232,224,0.16)] hover:border-[#A97E2E]"
               }`}
             >
-              <div className={`inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br ${type.color} mb-3 shadow-sm`}>
-                <Icon className="h-5 w-5 text-white" />
-              </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{type.label}</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{type.description}</p>
+              <Icon className={`h-5 w-5 ${isSelected ? "text-[#A97E2E]" : "text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]"}`} />
+              <h3 className="mt-3 font-serif text-[21px] text-ink dark:text-[#F1E8E0]">{type.label}</h3>
+              <p className="mt-1 text-[13px] font-light leading-relaxed text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">
+                {type.description}
+              </p>
               {isSelected && (
-                <div className="absolute top-4 right-4 w-6 h-6 rounded-full bg-indigo-600 dark:bg-slate-500 flex items-center justify-center">
-                  <svg className="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
+                <span className="absolute top-4 right-4 w-5 h-5 rounded-full bg-gold flex items-center justify-center">
+                  <Check className="h-3 w-3 text-cream" />
+                </span>
               )}
             </button>
           );
         })}
       </div>
 
-      <div className="flex justify-center mt-8">
-        <Button
-          onClick={onNext}
-          disabled={!value}
-          className="px-8 h-12 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-base font-medium gap-2 shadow-lg shadow-indigo-200 transition-all disabled:shadow-none"
-        >
-          Continue
-          <ArrowRight className="h-4 w-4" />
-        </Button>
-      </div>
+      <StepNav onNext={onNext} nextDisabled={!value} />
     </div>
   );
 }

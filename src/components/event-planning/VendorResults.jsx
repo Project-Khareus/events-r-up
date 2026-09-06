@@ -1,11 +1,11 @@
 import React, { useState, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { ChevronLeft, SlidersHorizontal } from "lucide-react";
 import VendorCard from "../marketplace/VendorCard";
 import { Skeleton } from "@/components/ui/skeleton";
+import StepHeading from "./StepHeading";
+import { outlineBtn } from "./StepNav";
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
   const R = 3959; // Earth's radius in miles
@@ -139,76 +139,75 @@ export default function VendorResults({ eventType, location, budget, selectedCat
   };
 
   return (
-    <div className="space-y-6">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">Perfect Vendors for Your Event</h2>
-        <p className="text-slate-600">
-          Found {filteredAndSortedVendors.length} vendors within your GH₵ {parseInt(budget).toLocaleString()} budget
-        </p>
-      </div>
+    <div>
+      <StepHeading
+        title="Vendors matched to your plan"
+        subtitle={`Found ${filteredAndSortedVendors.length} vendors within your GH₵ ${parseInt(budget || 0).toLocaleString()} budget`}
+      />
 
       {/* Priority Toggle */}
-      <div className="flex items-center justify-center gap-4 p-4 bg-slate-50 rounded-xl">
-        <SlidersHorizontal className="h-5 w-5 text-slate-600" />
-        <span className="text-sm font-medium text-slate-700">Prioritize:</span>
-        <div className="flex gap-2">
-          <Button
-            variant={prioritize === "budget" ? "default" : "outline"}
-            onClick={() => setPrioritize("budget")}
-            className="rounded-xl"
+      <div className="flex flex-wrap items-center justify-center gap-3 py-4 border-y border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]">
+        <SlidersHorizontal className="h-4 w-4 text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]" />
+        <span className="text-[10px] font-medium tracking-[0.16em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">Prioritize</span>
+        {[
+          { key: "budget", label: "Budget" },
+          { key: "proximity", label: "Proximity" },
+        ].map((option) => (
+          <button
+            key={option.key}
+            type="button"
+            onClick={() => setPrioritize(option.key)}
+            className={`min-h-[40px] px-5 rounded-none border text-[11px] font-medium tracking-[0.1em] uppercase transition-colors ${
+              prioritize === option.key
+                ? "border-[#A97E2E] bg-[rgba(169,126,46,0.08)] text-gold-text dark:text-gold-dark"
+                : "border-[rgba(59,50,43,0.22)] dark:border-[rgba(241,232,224,0.16)] text-ink dark:text-[#F1E8E0] hover:border-[#A97E2E]"
+            }`}
           >
-            Budget
-          </Button>
-          <Button
-            variant={prioritize === "proximity" ? "default" : "outline"}
-            onClick={() => setPrioritize("proximity")}
-            className="rounded-xl"
-          >
-            Proximity
-          </Button>
-        </div>
+            {option.label}
+          </button>
+        ))}
       </div>
 
       {/* Results */}
       {isLoading ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mt-8">
           {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-96 rounded-2xl" />
+            <Skeleton key={i} className="h-96 rounded-none" />
           ))}
         </div>
       ) : filteredAndSortedVendors.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-lg text-slate-600 mb-4">
-            No vendors found matching your criteria
+        <div className="text-center py-14">
+          <p className="font-serif text-[22px] text-ink dark:text-[#F1E8E0]">
+            No vendors match these criteria yet
           </p>
-          <p className="text-sm text-slate-500">
-            Try increasing your budget or expanding your location radius
+          <p className="mt-2 text-[13.5px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">
+            Try raising your budget or widening your location radius.
           </p>
         </div>
       ) : (
-        <div className="space-y-10">
+        <div className="space-y-10 mt-8">
           {Object.entries(vendorsByCategory).map(([category, categoryVendors]) => (
             <div key={category}>
-              <h3 className="text-xl font-bold text-slate-900 mb-4 border-b pb-2">
+              <h3 className="font-serif text-[22px] text-ink dark:text-[#F1E8E0] pb-3 mb-5 border-b border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]">
                 {categoryLabels[category] || category}
-                <span className="text-sm font-normal text-slate-500 ml-2">
-                  ({categoryVendors.length} options)
+                <span className="ml-2 text-[10px] font-sans font-medium tracking-[0.14em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">
+                  {categoryVendors.length} options
                 </span>
               </h3>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {categoryVendors.map((vendor) => (
                   <div key={vendor.id} className="relative">
                     <VendorCard vendor={vendor} />
-                    <div className="absolute top-4 right-4 flex flex-col gap-1">
+                    <div className="absolute top-3 left-3 flex flex-col items-start gap-1">
                       {vendor.starting_price && (
-                        <Badge className="bg-green-600">
+                        <span className="px-2 py-1 bg-gold text-cream text-[10px] font-medium tracking-[0.12em] uppercase">
                           From GH₵ {vendor.starting_price.toLocaleString()}
-                        </Badge>
+                        </span>
                       )}
                       {vendor.distance < 999 && (
-                        <Badge className="bg-indigo-600">
+                        <span className="px-2 py-1 bg-ink text-cream text-[10px] font-medium tracking-[0.12em] uppercase">
                           {vendor.distance.toFixed(1)} mi
-                        </Badge>
+                        </span>
                       )}
                     </div>
                   </div>
@@ -219,15 +218,11 @@ export default function VendorResults({ eventType, location, budget, selectedCat
         </div>
       )}
 
-      <div className="flex justify-center mt-8">
-        <Button
-          onClick={onBack}
-          variant="outline"
-          className="px-8 h-12 rounded-xl"
-        >
-          <ChevronLeft className="h-4 w-4 mr-2" />
+      <div className="flex justify-center mt-10">
+        <button type="button" onClick={onBack} className={`${outlineBtn} inline-flex items-center gap-1.5`}>
+          <ChevronLeft className="h-4 w-4" />
           Adjust Criteria
-        </Button>
+        </button>
       </div>
     </div>
   );

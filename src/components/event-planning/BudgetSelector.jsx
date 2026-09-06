@@ -1,7 +1,7 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ChevronLeft, Wallet } from "lucide-react";
+import { Wallet } from "lucide-react";
+import StepHeading from "./StepHeading";
+import StepNav from "./StepNav";
 
 const BUDGET_PRESETS = [
   { label: "Under GH₵ 5,000", value: 5000, tag: "Intimate" },
@@ -11,34 +11,38 @@ const BUDGET_PRESETS = [
   { label: "GH₵ 50,000+", value: 100000, tag: "Grand" }
 ];
 
+const inputClass =
+  "w-full h-14 rounded-none bg-transparent border border-[rgba(59,50,43,0.22)] dark:border-[rgba(241,232,224,0.16)] text-[15px] text-ink dark:text-[#F1E8E0] placeholder:text-[rgba(59,50,43,0.4)] focus:outline-none focus:border-[#A97E2E]";
+
 export default function BudgetSelector({ value, onChange, onNext, onBack }) {
   return (
-    <div className="space-y-6">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-2">What's your budget?</h2>
-        <p className="text-slate-600 dark:text-slate-300">This helps us show vendors within your price range</p>
-      </div>
+    <div>
+      <StepHeading title="What's your budget?" subtitle="This helps us show vendors within your price range" />
 
-      <div className="max-w-md mx-auto space-y-6">
+      <div className="max-w-md mx-auto space-y-8">
         <div>
-          <label className="text-sm font-semibold mb-2 block text-slate-800 dark:text-slate-200">Enter custom amount</label>
-          <div className="relative">
-            <Wallet className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-            <span className="absolute left-12 top-1/2 -translate-y-1/2 text-sm font-semibold text-slate-500">GH₵</span>
-            <Input
+          <label className="text-[10px] font-medium tracking-[0.16em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">
+            Enter custom amount
+          </label>
+          <div className="relative mt-2">
+            <Wallet className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[rgba(59,50,43,0.45)]" />
+            <span className="absolute left-11 top-1/2 -translate-y-1/2 text-[13px] text-[rgba(59,50,43,0.55)] dark:text-[rgba(241,232,224,0.6)]">GH₵</span>
+            <input
               type="number"
               min="0"
               step="100"
               placeholder="10,000"
               value={value}
               onChange={(e) => onChange(e.target.value)}
-              className="pl-[5.5rem] h-14 rounded-xl text-lg border-slate-200 focus:border-indigo-400 focus:ring-indigo-400"
+              className={`${inputClass} pl-[5.25rem]`}
             />
           </div>
         </div>
 
         <div>
-          <p className="text-sm font-medium text-slate-400 mb-3 text-center">— or pick a range —</p>
+          <p className="text-[10px] font-medium tracking-[0.16em] uppercase text-center text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)] mb-3">
+            or pick a range
+          </p>
           <div className="grid gap-2">
             {BUDGET_PRESETS.map((preset) => {
               const isSelected = value === preset.value.toString();
@@ -47,16 +51,16 @@ export default function BudgetSelector({ value, onChange, onNext, onBack }) {
                   key={preset.value}
                   type="button"
                   onClick={() => onChange(preset.value.toString())}
-                  className={`w-full h-12 rounded-xl flex items-center justify-between px-5 text-sm font-medium transition-all border-2 ${
+                  className={`w-full min-h-[48px] px-5 rounded-none flex items-center justify-between text-[14px] border transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#A97E2E] ${
                     isSelected
-                      ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300"
-                      : "border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-500 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
+                      ? "border-[#A97E2E] bg-[rgba(169,126,46,0.08)] text-ink dark:text-[#F1E8E0]"
+                      : "border-[rgba(59,50,43,0.22)] dark:border-[rgba(241,232,224,0.16)] text-[rgba(59,50,43,0.8)] dark:text-[rgba(241,232,224,0.82)] hover:border-[#A97E2E]"
                   }`}
                 >
-                  <span>{preset.label}</span>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${
-                    isSelected ? "bg-indigo-100 text-indigo-600" : "bg-slate-100 text-slate-500"
-                  }`}>{preset.tag}</span>
+                  <span className="font-light">{preset.label}</span>
+                  <span className={`text-[10px] font-medium tracking-[0.14em] uppercase ${isSelected ? "text-gold-text dark:text-gold-dark" : "text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]"}`}>
+                    {preset.tag}
+                  </span>
                 </button>
               );
             })}
@@ -64,23 +68,7 @@ export default function BudgetSelector({ value, onChange, onNext, onBack }) {
         </div>
       </div>
 
-      <div className="flex gap-3 justify-center mt-8">
-        <Button
-          onClick={onBack}
-          variant="outline"
-          className="px-6 h-12 rounded-xl border-slate-300 text-slate-700"
-        >
-          <ChevronLeft className="h-4 w-4 mr-1" />
-          Back
-        </Button>
-        <Button
-          onClick={onNext}
-          disabled={!value || value <= 0}
-          className="px-8 h-12 rounded-xl bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-200 disabled:shadow-none"
-        >
-          Find Vendors
-        </Button>
-      </div>
+      <StepNav onBack={onBack} onNext={onNext} nextLabel="Find Vendors" nextDisabled={!value || value <= 0} />
     </div>
   );
 }

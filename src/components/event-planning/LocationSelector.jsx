@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { MapPin, ChevronLeft, Loader2 } from "lucide-react";
+import { MapPin, Loader2 } from "lucide-react";
+import StepHeading from "./StepHeading";
+import StepNav from "./StepNav";
+
+const inputClass =
+  "w-full h-14 rounded-none bg-transparent border border-[rgba(59,50,43,0.22)] dark:border-[rgba(241,232,224,0.16)] text-[15px] text-ink dark:text-[#F1E8E0] placeholder:text-[rgba(59,50,43,0.4)] focus:outline-none focus:border-[#A97E2E]";
+
+const labelClass =
+  "text-[10px] font-medium tracking-[0.16em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]";
 
 export default function LocationSelector({ value, onChange, onNext, onBack }) {
   const [searchQuery, setSearchQuery] = useState(value?.name || "");
@@ -67,44 +72,39 @@ export default function LocationSelector({ value, onChange, onNext, onBack }) {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-2">Where is your event?</h2>
-        <p className="text-slate-600 dark:text-slate-300">We'll find vendors near your location</p>
-      </div>
+    <div>
+      <StepHeading title="Where is your event?" subtitle="We'll find vendors near your location" />
 
-      <div className="max-w-md mx-auto space-y-4">
+      <div className="max-w-md mx-auto space-y-6">
         <div className="relative">
-          <Label className="text-sm font-medium mb-2 block text-slate-700 dark:text-slate-200">
-            Event Location *
-          </Label>
-          <div className="relative">
-            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-            <Input
+          <label className={labelClass}>Event location *</label>
+          <div className="relative mt-2">
+            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[rgba(59,50,43,0.45)]" />
+            <input
               type="text"
               placeholder="Search for a city or address..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-14 rounded-xl text-base pl-12 pr-10 border-slate-200 focus:border-indigo-400 focus:ring-indigo-400"
+              className={`${inputClass} pl-11 pr-10`}
             />
             {isSearching && (
-              <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-indigo-500 animate-spin" />
+              <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gold animate-spin" />
             )}
           </div>
 
           {suggestions.length > 0 && (
-            <div className="absolute z-10 w-full mt-2 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl shadow-xl max-h-64 overflow-y-auto">
+            <div className="absolute z-20 w-full mt-1 bg-linen dark:bg-[#2A231D] border border-[rgba(59,50,43,0.22)] dark:border-[rgba(241,232,224,0.16)] max-h-64 overflow-y-auto">
               {suggestions.map((location, idx) => (
                 <button
                   key={idx}
                   onClick={() => handleSelectLocation(location)}
-                  className="w-full px-4 py-3 text-left hover:bg-indigo-50 dark:hover:bg-slate-600 transition-colors border-b border-slate-100 dark:border-slate-600 last:border-b-0 group"
+                  className="w-full px-4 py-3 min-h-[48px] text-left hover:bg-[rgba(169,126,46,0.08)] transition-colors border-b border-[rgba(59,50,43,0.1)] dark:border-[rgba(241,232,224,0.1)] last:border-b-0"
                 >
                   <div className="flex items-start gap-3">
-                    <MapPin className="h-5 w-5 text-indigo-500 mt-0.5 shrink-0" />
+                    <MapPin className="h-4 w-4 text-gold mt-0.5 shrink-0" />
                     <div>
-                      <p className="font-medium text-slate-900 dark:text-white group-hover:text-indigo-700 dark:group-hover:text-indigo-300">{location.name}</p>
-                      <p className="text-sm text-slate-500 dark:text-slate-300">{location.formatted_address}</p>
+                      <p className="text-[14px] text-ink dark:text-[#F1E8E0]">{location.name}</p>
+                      <p className="text-[12px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">{location.formatted_address}</p>
                     </div>
                   </div>
                 </button>
@@ -114,52 +114,34 @@ export default function LocationSelector({ value, onChange, onNext, onBack }) {
         </div>
 
         {selectedLocation && (
-          <div className="p-4 bg-indigo-50 dark:bg-indigo-950/50 rounded-xl border border-indigo-200 dark:border-indigo-800">
+          <div className="p-4 border border-[#A97E2E] bg-[rgba(169,126,46,0.08)]">
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
-                <MapPin className="h-4 w-4 text-indigo-600" />
-              </div>
+              <MapPin className="h-4 w-4 text-gold mt-0.5 shrink-0" />
               <div>
-                <p className="font-semibold text-slate-900 dark:text-white">{selectedLocation.name}</p>
-                <p className="text-sm text-slate-600 dark:text-slate-300">{selectedLocation.formatted_address}</p>
+                <p className="font-serif text-[17px] text-ink dark:text-[#F1E8E0]">{selectedLocation.name}</p>
+                <p className="text-[12.5px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">{selectedLocation.formatted_address}</p>
               </div>
             </div>
           </div>
         )}
 
         <div>
-          <Label className="text-sm font-medium mb-2 block text-slate-700 dark:text-slate-200">Search Radius</Label>
-          <div className="flex items-center gap-3">
-            <Input
+          <label className={labelClass}>Search radius</label>
+          <div className="flex items-center gap-3 mt-2">
+            <input
               type="number"
               min="1"
               max="100"
               value={radius}
               onChange={(e) => setRadius(parseInt(e.target.value))}
-              className="rounded-xl h-11 w-24 text-center"
+              className="h-12 w-24 rounded-none bg-transparent border border-[rgba(59,50,43,0.22)] dark:border-[rgba(241,232,224,0.16)] text-[15px] text-center text-ink dark:text-[#F1E8E0] focus:outline-none focus:border-[#A97E2E]"
             />
-            <span className="text-sm text-slate-500 dark:text-slate-400">miles from your location</span>
+            <span className="text-[13px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">miles from your location</span>
           </div>
         </div>
       </div>
 
-      <div className="flex gap-3 justify-center mt-8">
-        <Button
-          onClick={onBack}
-          variant="outline"
-          className="px-6 h-12 rounded-xl border-slate-300 text-slate-700"
-        >
-          <ChevronLeft className="h-4 w-4 mr-1" />
-          Back
-        </Button>
-        <Button
-          onClick={handleContinue}
-          disabled={!selectedLocation}
-          className="px-8 h-12 rounded-xl bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-200 disabled:shadow-none"
-        >
-          Continue
-        </Button>
-      </div>
+      <StepNav onBack={onBack} onNext={handleContinue} nextDisabled={!selectedLocation} />
     </div>
   );
 }

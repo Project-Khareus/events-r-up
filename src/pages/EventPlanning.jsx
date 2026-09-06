@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Sparkles, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import EventTypeSelector from "../components/event-planning/EventTypeSelector";
 import LocationSelector from "../components/event-planning/LocationSelector";
 import BudgetSelector from "../components/event-planning/BudgetSelector";
@@ -34,65 +34,58 @@ export default function EventPlanning() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
-      {/* Hero Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-        <div className="absolute inset-0 opacity-15">
-          <div className="absolute top-10 left-10 w-72 h-72 bg-indigo-400 rounded-full blur-[120px]" />
-          <div className="absolute bottom-0 right-20 w-96 h-96 bg-purple-400 rounded-full blur-[150px]" />
-        </div>
-        <div className="relative max-w-4xl mx-auto px-6 py-10 sm:py-14 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 text-white text-sm font-medium mb-5">
-            <Sparkles className="h-4 w-4" />
-            AI-Powered Vendor Matching
-          </div>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-white mb-3 leading-tight">
-            Plan Your Perfect Event
-          </h1>
-          <p className="text-base sm:text-lg text-slate-200 max-w-xl mx-auto">
-            Answer a few questions and we'll match you with the best vendors for your occasion
-          </p>
-        </div>
+    <div className="min-h-screen bg-cream dark:bg-[#211B16]">
+      {/* Masthead */}
+      <div className="bg-ink dark:bg-[#2A231D] px-6 py-12 sm:py-16 text-center">
+        <p className="text-[10px] font-medium tracking-[0.22em] uppercase text-[#C9A055]">
+          Plan an event
+        </p>
+        <h1 className="mt-4 font-serif text-[30px] sm:text-[42px] leading-[1.15] text-cream max-w-2xl mx-auto">
+          Tell us the occasion, we'll shortlist the vendors
+        </h1>
+        <p className="mt-4 text-[14.5px] font-light leading-[1.7] text-[rgba(248,241,235,0.72)] max-w-xl mx-auto">
+          Five short steps — occasion, city, budget, the services you need — and we match you to approved listings.
+        </p>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 -mt-6 sm:-mt-8 relative z-10 pb-16">
-        {/* Progress Stepper */}
-        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200/80 dark:border-slate-700 p-4 sm:p-6 mb-6">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
+        {/* Progress stepper */}
+        <div className="border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] bg-linen dark:bg-[#2A231D] p-4 sm:p-6 mb-6">
           <div className="flex items-center justify-between">
             {steps.map((s, idx) => (
               <React.Fragment key={s.number}>
                 <button
                   onClick={() => canNavigateToStep(s.number) && setStep(s.number)}
                   disabled={!canNavigateToStep(s.number)}
-                  className="flex flex-col items-center gap-1.5 group"
+                  className={`flex flex-col items-center gap-2 ${canNavigateToStep(s.number) ? "cursor-pointer" : "cursor-not-allowed"}`}
                 >
-                  <div
-                    className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
+                  <span
+                    className={`w-10 h-10 rounded-full flex items-center justify-center font-serif text-[15px] border transition-colors ${
                       step === s.number
-                        ? "bg-indigo-600 text-white shadow-lg shadow-indigo-300 dark:shadow-indigo-900 scale-110"
+                        ? "bg-gold text-cream border-gold"
                         : step > s.number
-                        ? "bg-indigo-600 text-white"
-                        : "bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-300"
-                    } ${canNavigateToStep(s.number) ? "cursor-pointer group-hover:scale-110" : "cursor-not-allowed"}`}
+                        ? "bg-transparent text-gold-text dark:text-gold-dark border-gold"
+                        : "bg-transparent text-[rgba(59,50,43,0.42)] dark:text-[rgba(241,232,224,0.42)] border-[rgba(59,50,43,0.22)] dark:border-[rgba(241,232,224,0.18)]"
+                    }`}
                   >
                     {step > s.number ? <Check className="h-4 w-4" /> : s.number}
-                  </div>
+                  </span>
                   <span
-                    className={`text-xs sm:text-sm font-semibold hidden sm:block transition-colors ${
-                      step === s.number ? "text-indigo-700 dark:text-indigo-400" : step > s.number ? "text-indigo-600 dark:text-indigo-400" : "text-slate-400 dark:text-slate-500"
+                    className={`text-[10px] font-medium tracking-[0.12em] uppercase hidden sm:block ${
+                      step >= s.number
+                        ? "text-ink dark:text-[#F1E8E0]"
+                        : "text-[rgba(59,50,43,0.42)] dark:text-[rgba(241,232,224,0.42)]"
                     }`}
                   >
                     {s.title}
                   </span>
                 </button>
                 {idx < steps.length - 1 && (
-                  <div className="flex-1 mx-1 sm:mx-2">
-                    <div className="h-1 rounded-full bg-slate-200 dark:bg-slate-600 overflow-hidden">
-                      <div
-                        className={`h-full rounded-full transition-all duration-500 bg-indigo-600`}
-                        style={{ width: step > s.number ? '100%' : '0%' }}
-                      />
-                    </div>
+                  <div className="flex-1 mx-2 h-px bg-[rgba(59,50,43,0.14)] dark:bg-[rgba(241,232,224,0.16)] relative">
+                    <div
+                      className="absolute inset-y-0 left-0 bg-gold transition-all duration-500"
+                      style={{ width: step > s.number ? "100%" : "0%" }}
+                    />
                   </div>
                 )}
               </React.Fragment>
@@ -100,8 +93,8 @@ export default function EventPlanning() {
           </div>
         </div>
 
-        {/* Step Content */}
-        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200/80 dark:border-slate-700 p-6 sm:p-10">
+        {/* Step content */}
+        <div className="border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] bg-linen dark:bg-[#2A231D] p-6 sm:p-10">
           {step === 1 && (
             <EventTypeSelector
               value={eventType}

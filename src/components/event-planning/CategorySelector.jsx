@@ -1,7 +1,7 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { ChevronLeft, Check } from "lucide-react";
+import { Check } from "lucide-react";
+import StepHeading from "./StepHeading";
+import StepNav, { outlineBtn } from "./StepNav";
 
 const EVENT_CATEGORY_MAP = {
   weddings: [
@@ -70,33 +70,19 @@ export default function CategorySelector({ eventType, budget, selectedCategories
   };
 
   return (
-    <div className="space-y-6">
-      <div className="text-center mb-6">
-        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-2">
-          Which vendors do you need?
-        </h2>
-        <p className="text-slate-600 dark:text-slate-300">
-          Select services your GH₵ {parseInt(budget).toLocaleString()} budget should cover
-        </p>
-      </div>
+    <div>
+      <StepHeading
+        title="Which vendors do you need?"
+        subtitle={`Select services your GH₵ ${parseInt(budget || 0).toLocaleString()} budget should cover`}
+      />
 
-      <div className="flex justify-center gap-3 mb-4">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={selectAll}
-          className="rounded-xl text-sm h-9 border-slate-300"
-        >
+      <div className="flex justify-center gap-3 mb-6">
+        <button type="button" onClick={selectAll} className={`${outlineBtn} min-h-[40px] px-5`}>
           Select All
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={clearAll}
-          className="rounded-xl text-sm h-9 border-slate-300"
-        >
+        </button>
+        <button type="button" onClick={clearAll} className={`${outlineBtn} min-h-[40px] px-5`}>
           Clear All
-        </Button>
+        </button>
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 max-w-5xl mx-auto">
@@ -106,53 +92,40 @@ export default function CategorySelector({ eventType, budget, selectedCategories
             <button
               key={category.value}
               onClick={() => toggleCategory(category.value)}
-              className={`relative p-4 rounded-xl text-left transition-all duration-200 border-2 group ${
+              className={`relative p-4 min-h-[48px] text-left rounded-none border transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#A97E2E] ${
                 isSelected
-                  ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/50 shadow-sm"
-                  : "border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500 bg-white dark:bg-slate-800 hover:shadow-sm"
+                  ? "border-[#A97E2E] bg-[rgba(169,126,46,0.08)]"
+                  : "border-[rgba(59,50,43,0.22)] dark:border-[rgba(241,232,224,0.16)] hover:border-[#A97E2E]"
               }`}
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
-                  <h3 className={`font-semibold text-sm mb-0.5 ${
-                    isSelected ? "text-indigo-700 dark:text-indigo-300" : "text-slate-800 dark:text-slate-100"
-                  }`}>
+                  <h3 className="font-serif text-[16px] leading-snug text-ink dark:text-[#F1E8E0]">
                     {category.label}
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                  <p className="mt-0.5 text-[12px] font-light leading-relaxed text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">
                     {category.description}
                   </p>
                 </div>
-                <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-all ${
+                <span className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
                   isSelected
-                    ? "bg-indigo-600"
-                    : "border-2 border-slate-300 dark:border-slate-500 group-hover:border-slate-400"
+                    ? "bg-gold"
+                    : "border border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.2)]"
                 }`}>
-                  {isSelected && <Check className="h-3 w-3 text-white" />}
-                </div>
+                  {isSelected && <Check className="h-3 w-3 text-cream" />}
+                </span>
               </div>
             </button>
           );
         })}
       </div>
 
-      <div className="flex gap-3 justify-center mt-8">
-        <Button
-          onClick={onBack}
-          variant="outline"
-          className="px-6 h-12 rounded-xl border-slate-300 text-slate-700"
-        >
-          <ChevronLeft className="h-4 w-4 mr-1" />
-          Back
-        </Button>
-        <Button
-          onClick={onNext}
-          disabled={selectedCategories.length === 0}
-          className="px-8 h-12 rounded-xl bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-200 disabled:shadow-none"
-        >
-          View Results ({selectedCategories.length} selected)
-        </Button>
-      </div>
+      <StepNav
+        onBack={onBack}
+        onNext={onNext}
+        nextLabel={`View Results (${selectedCategories.length})`}
+        nextDisabled={selectedCategories.length === 0}
+      />
     </div>
   );
 }
