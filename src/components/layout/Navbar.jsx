@@ -3,13 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "../../utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { 
-  Menu, X, Home, Compass, MessageCircle, CalendarDays, 
-  Bell, User, LogOut, Settings, PlusCircle, ShieldCheck, FileText, CheckSquare, Store, Heart
+import {
+  Menu, Home, MessageCircle, CalendarDays,
+  Bell, User, LogOut, Settings, ShieldCheck, FileText, CheckSquare, Store, Heart,
+  PartyPopper, Mic, Bird
   } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useTheme } from "next-themes";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import NotificationItem from "../notifications/NotificationItem";
@@ -77,11 +77,19 @@ const EVENT_MENUS = [
   }
 ];
 
+const MOBILE_EVENT_LINKS = [
+  { label: "Weddings", page: "Weddings", icon: Heart },
+  { label: "Parties", page: "Parties", icon: PartyPopper },
+  { label: "Conferences", page: "Conference", icon: Mic },
+  { label: "Funerals", page: "Funeral", icon: Bird },
+];
+
+const mobileLinkClass = "flex items-center gap-3 px-4 py-3 min-h-[44px] rounded-none text-ink dark:text-[#F1E8E0] hover:bg-[rgba(169,126,46,0.1)] transition-colors";
+
 export default function Navbar() {
   const navigate = useNavigate();
-  const { theme, setTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
+
   const { data: user, isLoading } = useQuery({
     queryKey: ['currentUser'],
     queryFn: async () => {
@@ -144,39 +152,35 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-slate-900/95 backdrop-blur-md sticky top-0 z-50 border-b border-slate-700">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
-          
-          {/* Logo */}
-          <Link to={createPageUrl("VendorMarketplace")} className="flex items-center group">
-            <span className="font-sans font-semibold text-2xl text-white tracking-[0.15em] uppercase group-hover:scale-105 transition-transform">
+    <nav className="bg-cream dark:bg-[#211B16] sticky top-0 z-50 border-b border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]">
+      <div className="max-w-[1280px] mx-auto px-5 md:px-10">
+        <div className="flex justify-between items-center h-[72px]">
+
+          {/* Wordmark */}
+          <Link to={createPageUrl("VendorMarketplace")} className="flex items-center">
+            <span className="font-serif font-medium text-[20px] text-ink dark:text-[#F1E8E0] tracking-[0.36em] uppercase">
               Khareus
             </span>
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden lg:flex items-center gap-8">
-            <Link to={createPageUrl("VendorMarketplace")} className="text-sm font-semibold text-slate-200 hover:text-white transition-colors">
-              Home
-            </Link>
-            
+          <div className="hidden lg:flex items-center gap-7">
             <div className="flex items-center gap-6">
               {EVENT_MENUS.map((menu) => (
                 <div key={menu.title} className="relative group">
-                  <Link 
+                  <Link
                     to={createPageUrl(menu.title)}
-                    className="text-sm font-semibold text-slate-200 hover:text-white transition-colors py-2 flex items-center gap-1"
+                    className="text-[13.5px] text-ink dark:text-[#F1E8E0] hover:text-gold-text dark:hover:text-gold-dark transition-colors py-2 flex items-center gap-1"
                   >
                     {menu.title}
                   </Link>
-                  <div className="absolute top-full left-0 w-64 bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-slate-100 dark:border-slate-800 p-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all transform translate-y-2 group-hover:translate-y-0 z-50">
+                  <div className="absolute top-full left-0 w-64 bg-linen dark:bg-[#2A231D] rounded-none border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] p-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all z-50">
                     <div className="py-1">
                       {menu.categories.map((cat) => (
                         <Link
                           key={cat.id}
                           to={`${createPageUrl(menu.title)}?category=${cat.id}`}
-                          className="block px-4 py-2 text-sm text-slate-600 hover:text-indigo-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white rounded-lg transition-colors"
+                          className="block px-4 py-2 text-[13px] font-light rounded-none text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)] hover:text-ink dark:hover:text-[#F1E8E0] hover:bg-cream dark:hover:bg-[#211B16] transition-colors"
                         >
                           {cat.name}
                         </Link>
@@ -187,49 +191,49 @@ export default function Navbar() {
               ))}
             </div>
 
-            <Link to={createPageUrl("Classifieds")} className="text-sm font-semibold text-slate-200 hover:text-white transition-colors">
+            <Link to={createPageUrl("Classifieds")} className="text-[13px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)] hover:text-ink dark:hover:text-[#F1E8E0] transition-colors">
               Public Events
             </Link>
-            <Link to={createPageUrl("Blog")} className="text-sm font-semibold text-slate-200 hover:text-white transition-colors">
+            <Link to={createPageUrl("Blog")} className="text-[13px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)] hover:text-ink dark:hover:text-[#F1E8E0] transition-colors">
               Blog
             </Link>
           </div>
 
           {/* Right Side Actions */}
-          <div className="hidden lg:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-3">
             {isLoading ? (
-              <div className="h-8 w-24 bg-slate-100 rounded-full animate-pulse" />
+              <div className="h-8 w-24 bg-linen dark:bg-[#2A231D] animate-pulse" />
             ) : user ? (
               <>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="rounded-full relative">
-                        <Bell className="h-5 w-5 text-slate-200" />
+                      <Button variant="ghost" size="icon" className="rounded-full relative" aria-label="Notifications">
+                        <Bell className="h-5 w-5 text-ink dark:text-[#F1E8E0]" />
                         {unreadCount > 0 && (
-                          <span className="absolute top-2 right-2 h-2.5 w-2.5 bg-red-500 rounded-full border-2 border-white dark:border-slate-900 animate-pulse" />
+                          <span className="absolute top-2 right-2 h-2 w-2 bg-[#A97E2E] rounded-full" />
                         )}
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-96 p-0 rounded-xl shadow-xl border-slate-200 dark:border-slate-700">
-                      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-slate-700">
+                    <DropdownMenuContent align="end" className="w-96 p-0 rounded-none border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] bg-linen dark:bg-[#2A231D]">
+                      <div className="flex items-center justify-between px-4 py-3 border-b border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]">
                         <div className="flex items-center gap-2">
-                          <h4 className="font-semibold text-sm text-slate-900 dark:text-slate-100">Notifications</h4>
+                          <h4 className="font-serif text-[17px] text-ink dark:text-[#F1E8E0]">Notifications</h4>
                           {unreadCount > 0 && (
-                            <span className="text-[11px] font-medium bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300 px-1.5 py-0.5 rounded-full">
+                            <span className="text-[11px] text-cream bg-[#8A6522] px-1.5 py-0.5">
                               {unreadCount}
                             </span>
                           )}
                         </div>
-                        <Link to={createPageUrl("Notifications")} className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors">
+                        <Link to={createPageUrl("Notifications")} className="text-[12px] text-gold-text dark:text-gold-dark hover:underline">
                           View all
                         </Link>
                       </div>
                       <div className="max-h-[420px] overflow-y-auto py-1">
                         {notifications.length === 0 ? (
                           <div className="py-10 text-center">
-                            <Bell className="h-8 w-8 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
-                            <p className="text-sm text-slate-500 dark:text-slate-400">No notifications yet</p>
+                            <Bell className="h-8 w-8 text-[rgba(59,50,43,0.25)] mx-auto mb-2" />
+                            <p className="text-[13px] text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">No notifications yet</p>
                           </div>
                         ) : (
                           <div className="px-1">
@@ -242,29 +246,29 @@ export default function Navbar() {
                     </DropdownMenuContent>
                   </DropdownMenu>
 
-                  <Link to={createPageUrl("Messages")}>
+                  <Link to={createPageUrl("Messages")} aria-label="Messages">
                     <Button variant="ghost" size="icon" className="rounded-full">
-                      <MessageCircle className="h-5 w-5 text-slate-200" />
+                      <MessageCircle className="h-5 w-5 text-ink dark:text-[#F1E8E0]" />
                     </Button>
                   </Link>
                 </div>
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                      <Avatar className="h-10 w-10 border-2 border-white shadow-sm">
+                    <Button variant="ghost" className="relative h-10 w-10 rounded-full" aria-label="Account menu">
+                      <Avatar className="h-10 w-10 border border-[rgba(59,50,43,0.14)]">
                         <AvatarImage src={avatarUrl} alt={user.full_name} />
-                        <AvatarFallback className="bg-indigo-100 text-indigo-700 font-bold">
+                        <AvatarFallback className="bg-linen text-gold-text font-medium">
                           {user.full_name?.[0] || 'U'}
                         </AvatarFallback>
                       </Avatar>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuContent className="w-56 rounded-none bg-linen dark:bg-[#2A231D] border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]" align="end" forceMount>
                     <DropdownMenuLabel className="font-normal">
                       <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">{user.full_name || 'User'}</p>
-                        <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                        <p className="text-[13px] text-ink dark:text-[#F1E8E0] leading-none">{user.full_name || 'User'}</p>
+                        <p className="text-[11.5px] leading-none text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">{user.email}</p>
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
@@ -304,7 +308,7 @@ export default function Navbar() {
                         <span>My Favorites</span>
                       </Link>
                     </DropdownMenuItem>
-                    
+
                     {user.role === 'admin' && (
                        <>
                           <DropdownMenuSeparator />
@@ -346,18 +350,16 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <Link to={createPageUrl("Join")}>
-                  <Button variant="ghost" className="text-slate-200 hover:text-white font-semibold">
-                    Log in
-                  </Button>
+                <Link to={createPageUrl("Join")} className="text-[13px] text-ink dark:text-[#F1E8E0] hover:text-gold-text dark:hover:text-gold-dark transition-colors px-2">
+                  Log in
                 </Link>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button className="bg-white text-slate-900 hover:bg-slate-100 rounded-full px-6">
-                      For Vendors
-                    </Button>
+                    <button className="bg-[#8A6522] hover:bg-[#75551C] text-cream text-[11.5px] font-medium tracking-[0.1em] uppercase px-[18px] py-[10px] rounded-none transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#A97E2E]">
+                      List your business
+                    </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuContent align="end" className="w-48 rounded-none bg-linen dark:bg-[#2A231D] border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]">
                     <DropdownMenuItem asChild className="cursor-pointer">
                         <Link to={createPageUrl("ManageListing")}>Manage Listing</Link>
                     </DropdownMenuItem>
@@ -371,148 +373,79 @@ export default function Navbar() {
           <div className="lg:hidden flex items-center gap-4">
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-700">
-                  <Menu className="h-5 w-5 text-slate-200" />
+                <Button variant="ghost" size="icon" className="rounded-full" aria-label="Open menu">
+                  <Menu className="h-5 w-5 text-ink dark:text-[#F1E8E0]" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[280px] p-0 border-0">
-                <div className="flex flex-col h-full bg-gradient-to-b from-slate-900 to-slate-950">
-                {/* Header */}
-                <div className="p-6 border-b border-slate-700/50">
-                  <div className="flex items-center">
-                    <span className="font-sans font-semibold text-xl text-white tracking-[0.15em] uppercase">
+              <SheetContent side="right" className="w-[280px] p-0 border-0 bg-cream dark:bg-[#211B16]">
+                <div className="flex flex-col h-full bg-cream dark:bg-[#211B16]">
+                  {/* Header */}
+                  <div className="p-6 border-b border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]">
+                    <span className="font-serif font-medium text-[18px] text-ink dark:text-[#F1E8E0] tracking-[0.3em] uppercase">
                       Khareus
                     </span>
                   </div>
-                </div>
 
                   {/* Nav Links */}
-                  <div className="flex-1 overflow-y-auto py-6 px-4">
+                  <div className="flex-1 overflow-y-auto py-5 px-3">
                     <div className="space-y-1">
-                      <Link 
-                        to={createPageUrl("VendorMarketplace")} 
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
-                      >
-                        <Home className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                        <span className="font-medium">Home</span>
+                      <Link to={createPageUrl("VendorMarketplace")} onClick={() => setMobileMenuOpen(false)} className={mobileLinkClass}>
+                        <Home className="h-5 w-5" />
+                        <span className="text-[14.5px]">Home</span>
                       </Link>
-                      
-                      <Link 
-                        to={createPageUrl("Weddings")} 
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
-                      >
-                        <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform">💍</div>
-                        <span className="font-medium">Weddings</span>
+
+                      {MOBILE_EVENT_LINKS.map((item) => (
+                        <Link key={item.page} to={createPageUrl(item.page)} onClick={() => setMobileMenuOpen(false)} className={mobileLinkClass}>
+                          <item.icon className="h-5 w-5" />
+                          <span className="text-[14.5px]">{item.label}</span>
+                        </Link>
+                      ))}
+
+                      <Link to={createPageUrl("Blog")} onClick={() => setMobileMenuOpen(false)} className={mobileLinkClass}>
+                        <FileText className="h-5 w-5" />
+                        <span className="text-[14.5px]">Blog</span>
                       </Link>
-                      
-                      <Link 
-                        to={createPageUrl("Parties")} 
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
-                      >
-                        <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform">🎉</div>
-                        <span className="font-medium">Parties</span>
-                      </Link>
-                      
-                      <Link 
-                        to={createPageUrl("Conference")} 
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
-                      >
-                        <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform">🎤</div>
-                        <span className="font-medium">Conferences</span>
-                      </Link>
-                      
-                      <Link 
-                        to={createPageUrl("Funeral")} 
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
-                      >
-                        <div className="h-5 w-5 flex items-center justify-center group-hover:scale-110 transition-transform">🕊️</div>
-                        <span className="font-medium">Funerals</span>
-                      </Link>
-                      
-                      <Link 
-                        to={createPageUrl("Blog")} 
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
-                      >
-                        <FileText className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                        <span className="font-medium">Blog</span>
-                      </Link>
-                      
-                      <Link 
-                        to={createPageUrl("Classifieds")} 
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
-                      >
-                        <CalendarDays className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                        <span className="font-medium">Public Events</span>
+
+                      <Link to={createPageUrl("Classifieds")} onClick={() => setMobileMenuOpen(false)} className={mobileLinkClass}>
+                        <CalendarDays className="h-5 w-5" />
+                        <span className="text-[14.5px]">Public Events</span>
                       </Link>
                     </div>
 
                     {user && (
                       <>
-                        <div className="my-6 px-4">
-                          <div className="h-px bg-gradient-to-r from-transparent via-slate-700 to-transparent" />
-                        </div>
-                        
+                        <div className="my-5 h-px bg-[rgba(59,50,43,0.14)] dark:bg-[rgba(241,232,224,0.16)]" />
+
                         <div className="space-y-1">
-                          <Link 
-                            to={createPageUrl("MyProfile")} 
-                            onClick={() => setMobileMenuOpen(false)}
-                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
-                          >
-                            <User className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                            <span className="font-medium">My Profile</span>
-                          </Link>
-                          
-                          <Link 
-                            to={createPageUrl("Settings")} 
-                            onClick={() => setMobileMenuOpen(false)}
-                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
-                          >
-                            <Settings className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                            <span className="font-medium">Settings</span>
+                          <Link to={createPageUrl("MyProfile")} onClick={() => setMobileMenuOpen(false)} className={mobileLinkClass}>
+                            <User className="h-5 w-5" />
+                            <span className="text-[14.5px]">My Profile</span>
                           </Link>
 
-                          <Link 
-                            to={createPageUrl("ManageListing")} 
-                            onClick={() => setMobileMenuOpen(false)}
-                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
-                          >
-                            <Store className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                            <span className="font-medium">Manage Listing</span>
+                          <Link to={createPageUrl("Settings")} onClick={() => setMobileMenuOpen(false)} className={mobileLinkClass}>
+                            <Settings className="h-5 w-5" />
+                            <span className="text-[14.5px]">Settings</span>
                           </Link>
 
-                          <Link 
-                            to={createPageUrl("Bookings")} 
-                            onClick={() => setMobileMenuOpen(false)}
-                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
-                          >
-                            <CalendarDays className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                            <span className="font-medium">My Bookings</span>
+                          <Link to={createPageUrl("ManageListing")} onClick={() => setMobileMenuOpen(false)} className={mobileLinkClass}>
+                            <Store className="h-5 w-5" />
+                            <span className="text-[14.5px]">Manage Listing</span>
                           </Link>
 
-                          <Link 
-                            to={createPageUrl("MyFavorites")} 
-                            onClick={() => setMobileMenuOpen(false)}
-                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all group"
-                          >
-                            <Heart className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                            <span className="font-medium">My Favorites</span>
+                          <Link to={createPageUrl("Bookings")} onClick={() => setMobileMenuOpen(false)} className={mobileLinkClass}>
+                            <CalendarDays className="h-5 w-5" />
+                            <span className="text-[14.5px]">My Bookings</span>
+                          </Link>
+
+                          <Link to={createPageUrl("MyFavorites")} onClick={() => setMobileMenuOpen(false)} className={mobileLinkClass}>
+                            <Heart className="h-5 w-5" />
+                            <span className="text-[14.5px]">My Favorites</span>
                           </Link>
 
                           {user.role === 'admin' && (
-                            <Link 
-                              to={createPageUrl("AdminVendors")} 
-                              onClick={() => setMobileMenuOpen(false)}
-                              className="flex items-center gap-3 px-4 py-3 rounded-xl text-indigo-400 hover:bg-indigo-950 hover:text-indigo-300 transition-all group"
-                            >
-                              <ShieldCheck className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                              <span className="font-medium">Admin Panel</span>
+                            <Link to={createPageUrl("AdminVendors")} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 min-h-[44px] text-gold-text dark:text-gold-dark hover:bg-[rgba(169,126,46,0.1)] transition-colors">
+                              <ShieldCheck className="h-5 w-5" />
+                              <span className="text-[14.5px]">Admin Panel</span>
                             </Link>
                           )}
                         </div>
@@ -521,25 +454,25 @@ export default function Navbar() {
                   </div>
 
                   {/* Footer */}
-                  <div className="p-4 border-t border-slate-700/50">
+                  <div className="p-4 border-t border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]">
                     {user ? (
-                      <button 
-                        onClick={() => { setMobileMenuOpen(false); handleLogout(); }} 
-                        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-950/30 text-red-400 hover:bg-red-950/50 transition-all font-medium"
+                      <button
+                        onClick={() => { setMobileMenuOpen(false); handleLogout(); }}
+                        className="w-full flex items-center justify-center gap-2 px-4 py-3 min-h-[44px] rounded-none border border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] text-ink dark:text-[#F1E8E0] hover:bg-[rgba(169,126,46,0.1)] transition-colors text-[11.5px] font-medium tracking-[0.1em] uppercase"
                       >
-                        <LogOut className="h-5 w-5" />
+                        <LogOut className="h-4 w-4" />
                         <span>Log out</span>
                       </button>
                     ) : (
                       <div className="space-y-2">
                         <Link to={createPageUrl("Join")} onClick={() => setMobileMenuOpen(false)} className="block">
-                          <button className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 text-white hover:from-indigo-700 hover:to-indigo-800 transition-all font-medium shadow-lg shadow-indigo-900/30">
-                            Sign Up / Login
+                          <button className="w-full px-4 py-3 min-h-[44px] rounded-none bg-[#8A6522] hover:bg-[#75551C] text-cream text-[11.5px] font-medium tracking-[0.1em] uppercase transition-colors">
+                            Sign up / Log in
                           </button>
                         </Link>
                         <Link to={createPageUrl("VendorSignup")} onClick={() => setMobileMenuOpen(false)} className="block">
-                          <button className="w-full px-4 py-3 rounded-xl border-2 border-slate-600 text-slate-300 hover:border-indigo-500 hover:text-indigo-400 transition-all font-medium">
-                            List Your Business
+                          <button className="w-full px-4 py-3 min-h-[44px] rounded-none border border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] text-ink dark:text-[#F1E8E0] hover:bg-[rgba(169,126,46,0.1)] transition-colors text-[11.5px] font-medium tracking-[0.1em] uppercase">
+                            List your business
                           </button>
                         </Link>
                       </div>

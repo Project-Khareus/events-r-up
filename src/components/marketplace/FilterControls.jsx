@@ -140,7 +140,7 @@ export default function FilterControls({
         <div className="space-y-3">
           <label className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Event Type</label>
           <Select value={eventType} onValueChange={handleEventChange}>
-            <SelectTrigger className="w-full h-9 text-sm rounded-lg">
+            <SelectTrigger className="w-full h-9 text-sm rounded-none">
               <SelectValue placeholder="Event Type" />
             </SelectTrigger>
             <SelectContent>
@@ -154,7 +154,7 @@ export default function FilterControls({
         <div className="space-y-3">
           <label className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Category</label>
           <Select value={category} onValueChange={onCategoryChange}>
-            <SelectTrigger className="w-full h-9 text-sm rounded-lg">
+            <SelectTrigger className="w-full h-9 text-sm rounded-none">
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
@@ -168,7 +168,7 @@ export default function FilterControls({
         <div className="space-y-3">
           <label className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Price Range</label>
           <Select value={priceRange} onValueChange={onPriceChange}>
-            <SelectTrigger className="w-full h-9 text-sm rounded-lg">
+            <SelectTrigger className="w-full h-9 text-sm rounded-none">
               <SelectValue placeholder="Price" />
             </SelectTrigger>
             <SelectContent>
@@ -183,7 +183,7 @@ export default function FilterControls({
           <div className="space-y-3">
             <label className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Sort By</label>
             <Select value={sortBy} onValueChange={onSortChange}>
-              <SelectTrigger className="w-full h-9 text-sm rounded-lg">
+              <SelectTrigger className="w-full h-9 text-sm rounded-none">
                 <SelectValue placeholder="Sort By" />
               </SelectTrigger>
               <SelectContent>
@@ -203,7 +203,7 @@ export default function FilterControls({
               <label className="text-xs font-medium text-slate-600 dark:text-slate-300 flex items-center gap-1">
                 <MapPin className="h-3.5 w-3.5" /> Location
               </label>
-              <Input placeholder="City or region..." value={location} onChange={(e) => onLocationChange(e.target.value)} className="rounded-lg h-9 text-sm" />
+              <Input placeholder="City or region..." value={location} onChange={(e) => onLocationChange(e.target.value)} className="rounded-none h-9 text-sm" />
             </div>
           )}
 
@@ -214,7 +214,7 @@ export default function FilterControls({
               </label>
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full justify-start text-left font-normal rounded-lg h-9 text-sm">
+                  <Button variant="outline" className="w-full justify-start text-left font-normal rounded-none h-9 text-sm">
                     <CalendarIcon className="mr-2 h-3.5 w-3.5" />
                     {availableDate ? format(availableDate, "PPP") : "Select date"}
                   </Button>
@@ -246,7 +246,7 @@ export default function FilterControls({
         </div>
 
         {hasFilters && (
-          <Button variant="outline" size="sm" className="w-full rounded-lg gap-1.5 text-xs" onClick={handleClearAll}>
+          <Button variant="outline" size="sm" className="w-full rounded-none gap-1.5 text-xs" onClick={handleClearAll}>
             <X className="h-3.5 w-3.5" /> Clear All Filters
           </Button>
         )}
@@ -259,7 +259,7 @@ export default function FilterControls({
       {/* Main Filters Row - horizontally scrollable on mobile */}
       <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto pb-1 -mb-1 sm:flex-wrap sm:overflow-visible sm:pb-0 sm:mb-0" style={{scrollbarWidth:'none',WebkitOverflowScrolling:'touch'}}>
         <Select value={eventType} onValueChange={handleEventChange}>
-          <SelectTrigger className="w-[120px] sm:w-40 h-9 sm:h-10 text-xs sm:text-sm rounded-xl shrink-0">
+          <SelectTrigger className="w-[120px] sm:w-40 h-9 sm:h-10 text-xs sm:text-sm rounded-none shrink-0">
             <SelectValue placeholder="Event Type" />
           </SelectTrigger>
           <SelectContent>
@@ -272,7 +272,7 @@ export default function FilterControls({
         </Select>
 
         <Select value={category} onValueChange={onCategoryChange}>
-          <SelectTrigger className="w-[130px] sm:w-56 h-9 sm:h-10 text-xs sm:text-sm rounded-xl shrink-0">
+          <SelectTrigger className="w-[130px] sm:w-56 h-9 sm:h-10 text-xs sm:text-sm rounded-none shrink-0">
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent>
@@ -285,7 +285,7 @@ export default function FilterControls({
         </Select>
 
         <Select value={priceRange} onValueChange={onPriceChange}>
-          <SelectTrigger className="w-[100px] sm:w-32 h-9 sm:h-10 text-xs sm:text-sm rounded-xl shrink-0">
+          <SelectTrigger className="w-[100px] sm:w-32 h-9 sm:h-10 text-xs sm:text-sm rounded-none shrink-0">
             <SelectValue placeholder="Price" />
           </SelectTrigger>
           <SelectContent>
@@ -299,7 +299,7 @@ export default function FilterControls({
 
         {onSortChange && (
           <Select value={sortBy} onValueChange={onSortChange}>
-            <SelectTrigger className="w-[130px] sm:w-48 h-9 sm:h-10 text-xs sm:text-sm rounded-xl shrink-0">
+            <SelectTrigger className="w-[130px] sm:w-48 h-9 sm:h-10 text-xs sm:text-sm rounded-none shrink-0">
               <SelectValue placeholder="Sort By" />
             </SelectTrigger>
             <SelectContent>
@@ -316,7 +316,7 @@ export default function FilterControls({
           variant="outline"
           size="sm"
           onClick={() => setShowAdvanced(!showAdvanced)}
-          className={`rounded-xl gap-1.5 h-9 sm:h-10 text-xs sm:text-sm shrink-0 ${hasAdvancedFilters ? 'border-indigo-500 text-indigo-600' : ''}`}
+          className={`rounded-none gap-1.5 h-9 sm:h-10 text-xs sm:text-sm shrink-0 ${hasAdvancedFilters ? 'border-indigo-500 text-indigo-600' : ''}`}
         >
           <SlidersHorizontal className="h-3.5 w-3.5" />
           <span className="hidden sm:inline">Advanced</span>
@@ -341,7 +341,7 @@ export default function FilterControls({
 
       {/* Advanced Filters Section */}
       {showAdvanced && (
-        <div className="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-4 space-y-4 border border-slate-200 dark:border-slate-700">
+        <div className="bg-slate-50 dark:bg-slate-800/60 rounded-none p-4 space-y-4 border border-slate-200 dark:border-slate-700">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Location Filter */}
             {onLocationChange && (
@@ -354,7 +354,7 @@ export default function FilterControls({
                   placeholder="City or region..."
                   value={location}
                   onChange={(e) => onLocationChange(e.target.value)}
-                  className="rounded-xl"
+                  className="rounded-none"
                 />
               </div>
             )}
@@ -370,7 +370,7 @@ export default function FilterControls({
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
-                      className="w-full justify-start text-left font-normal rounded-xl"
+                      className="w-full justify-start text-left font-normal rounded-none"
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {availableDate ? format(availableDate, "PPP") : "Select date"}

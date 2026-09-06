@@ -17,7 +17,7 @@ function LoadingSkeleton() {
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 px-2">
       {[0, 1, 2, 3, 4, 5].map((i) => (
         <div key={i} className="space-y-3 sm:space-y-4">
-          <Skeleton className="h-48 sm:h-56 lg:h-64 rounded-xl sm:rounded-2xl" />
+          <Skeleton className="h-48 sm:h-56 lg:h-64 rounded-none" />
           <Skeleton className="h-5 sm:h-6 w-3/4" />
           <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-2/3" />
@@ -30,11 +30,11 @@ function LoadingSkeleton() {
 function EmptyState() {
   return (
     <div className="text-center py-12 sm:py-20 px-4">
-      <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-slate-100 mb-3 sm:mb-4">
-        <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-slate-400" />
+      <div className="inline-flex items-center justify-center w-14 h-14 bg-linen dark:bg-[#2A231D] border border-[rgba(59,50,43,0.14)] mb-4">
+        <Sparkles className="h-6 w-6 text-[#A97E2E]" />
       </div>
-      <h3 className="text-lg sm:text-xl font-semibold text-slate-900 mb-2">No vendors found</h3>
-      <p className="text-sm sm:text-base text-slate-600">Try adjusting your filters or search terms</p>
+      <h3 className="font-serif text-[24px] text-ink dark:text-[#F1E8E0] mb-2">No vendors found</h3>
+      <p className="text-[14.5px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">Try adjusting your filters or search terms</p>
     </div>
   );
 }
@@ -76,8 +76,8 @@ function FilteredView({ featuredVendors, regularVendors, allReviews, vendorsPerP
       {featuredVendors.length > 0 ? (
         <div>
           <div className="flex items-center gap-2 mb-4 sm:mb-6">
-            <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-slate-500" />
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Featured Vendors</h2>
+            <TrendingUp className="h-4 w-4 text-[#A97E2E]" />
+            <h2 className="font-serif text-[27px] text-ink dark:text-[#F1E8E0]">Featured Vendors</h2>
           </div>
           <VendorGrid vendors={featuredVendors} allReviews={allReviews} />
         </div>
@@ -85,7 +85,7 @@ function FilteredView({ featuredVendors, regularVendors, allReviews, vendorsPerP
       {regularVendors.length > 0 ? (
         <div>
           {featuredVendors.length > 0 ? (
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4 sm:mb-6">All Vendors</h2>
+            <h2 className="font-serif text-[27px] text-ink dark:text-[#F1E8E0] mb-4 sm:mb-6">All Vendors</h2>
           ) : null}
           <VendorGrid vendors={regularVendors} allReviews={allReviews} />
         </div>
@@ -96,7 +96,7 @@ function FilteredView({ featuredVendors, regularVendors, allReviews, vendorsPerP
             onClick={onLoadMore}
             disabled={isFetching}
             size="lg"
-            className="bg-slate-900 hover:bg-black"
+            className="rounded-none bg-ink hover:bg-ink-deep text-cream text-[11.5px] font-medium tracking-[0.1em] uppercase"
           >
             {isFetching ? (
               <>
@@ -139,8 +139,8 @@ export default function MarketplaceContent({
     <>
       {searchQuery && (
         <div className="mb-6 sm:mb-8 px-2">
-          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-            <span className="font-semibold text-slate-900 dark:text-slate-100">{filteredVendors.length}</span> vendors found
+          <p className="text-[14.5px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">
+            <span className="font-serif text-[19px] text-ink dark:text-[#F1E8E0]">{filteredVendors.length}</span> vendors found
           </p>
         </div>
       )}

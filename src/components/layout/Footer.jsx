@@ -147,7 +147,7 @@ export default function Footer() {
           href={item.url} 
           target="_blank" 
           rel="noopener noreferrer"
-          className="text-slate-400 hover:text-white transition-colors text-sm"
+          className="text-[12.5px] font-light text-[rgba(248,241,235,0.8)] hover:text-cream transition-colors"
         >
           {item.label}
         </a>
@@ -156,7 +156,7 @@ export default function Footer() {
     return (
       <Link 
         to={createPageUrl(item.url)}
-        className="text-slate-400 hover:text-white transition-colors text-sm"
+        className="text-[12.5px] font-light text-[rgba(248,241,235,0.8)] hover:text-cream transition-colors"
       >
         {item.label}
       </Link>
@@ -164,14 +164,22 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-slate-900 border-t border-slate-800">
+    <footer className="bg-ink-deep">
       {/* Main Footer */}
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+      <div className="max-w-[1280px] mx-auto px-5 md:px-10 py-12">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
+          <div className="col-span-2 md:col-span-1">
+            <Link to={createPageUrl("VendorMarketplace")} className="font-serif font-medium text-[20px] tracking-[0.36em] uppercase text-cream">
+              Khareus
+            </Link>
+            <p className="mt-4 text-[12.5px] font-light leading-relaxed text-[rgba(248,241,235,0.6)] max-w-[220px]">
+              Ghana's reviewed marketplace for wedding, party, conference and funeral vendors.
+            </p>
+          </div>
           {Object.entries(sections).map(([key, section]) => (
             <div key={key}>
-              <h4 className="font-semibold text-white mb-4">{section.title}</h4>
-              <ul className="space-y-2">
+              <h4 className="text-[10px] font-medium tracking-[0.15em] uppercase text-[rgba(248,241,235,0.5)] mb-4">{section.title}</h4>
+              <ul className="space-y-2.5">
                 {section.items.map((item, idx) => (
                   <li key={idx}>{renderLink(item)}</li>
                 ))}
@@ -182,23 +190,23 @@ export default function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-slate-800">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+      <div className="border-t border-[rgba(248,241,235,0.14)]">
+        <div className="max-w-[1280px] mx-auto px-5 md:px-10 py-5">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-slate-400 text-sm">
+            <p className="text-[12px] font-light text-[rgba(248,241,235,0.6)]">
               © {new Date().getFullYear()} Khareus. All Rights Reserved.
             </p>
-            <div className="flex items-center gap-4 text-sm">
-              <Link to={createPageUrl("LegalPage?slug=privacy")} className="text-slate-400 hover:text-white transition-colors">
+            <div className="flex items-center gap-5 text-[12px] font-light">
+              <Link to={createPageUrl("LegalPage?slug=privacy")} className="text-[rgba(248,241,235,0.8)] hover:text-cream transition-colors">
                 Privacy
               </Link>
-              <Link to={createPageUrl("LegalPage?slug=terms")} className="text-slate-400 hover:text-white transition-colors">
+              <Link to={createPageUrl("LegalPage?slug=terms")} className="text-[rgba(248,241,235,0.8)] hover:text-cream transition-colors">
                 Terms
               </Link>
-              <Link to={createPageUrl("LegalPage?slug=cookies")} className="text-slate-400 hover:text-white transition-colors">
+              <Link to={createPageUrl("LegalPage?slug=cookies")} className="text-[rgba(248,241,235,0.8)] hover:text-cream transition-colors">
                 Cookies
               </Link>
-              <Link to={createPageUrl("LegalPage?slug=contact")} className="text-slate-400 hover:text-white transition-colors">
+              <Link to={createPageUrl("LegalPage?slug=contact")} className="text-[rgba(248,241,235,0.8)] hover:text-cream transition-colors">
                 Contact
               </Link>
             </div>

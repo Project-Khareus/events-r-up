@@ -24,46 +24,46 @@ export default function MobileBottomNav() {
   };
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-slate-200/50 dark:border-slate-800/50 z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+    <nav
+      className="md:hidden fixed bottom-0 left-0 right-0 bg-linen/95 dark:bg-[#2A231D]/95 backdrop-blur-sm border-t border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] z-50"
+      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+    >
       <div className="flex justify-around items-center h-16 px-2">
         {NAV_ITEMS.map((item) => {
           const isActive = getIsActive(item);
-          
+
           return (
             <Link
               key={item.name}
               to={createPageUrl(item.page)}
-              className="relative flex flex-col items-center justify-center flex-1 py-2 group no-underline"
+              aria-label={item.name}
+              aria-current={isActive ? "page" : undefined}
+              className="flex flex-col items-center justify-center flex-1 min-h-[44px] py-2 no-underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#8A6522]"
             >
-              <div className={`flex flex-col items-center justify-center gap-1 transition-all duration-300 ${
-                isActive 
-                  ? "scale-110" 
-                  : "scale-100 group-hover:scale-105"
-              }`}>
-                <div className={`p-2 rounded-2xl transition-all duration-300 ${
-                  isActive 
-                    ? "bg-indigo-600 shadow-lg shadow-indigo-200 dark:shadow-indigo-900/50" 
-                    : "bg-transparent group-hover:bg-slate-100 dark:group-hover:bg-slate-800"
-                }`}>
-                  <item.icon className={`h-5 w-5 transition-all duration-300 ${
-                    isActive 
-                      ? "text-white stroke-[2.5]" 
-                      : "text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200"
-                  }`} />
+              <div className="flex flex-col items-center justify-center gap-1">
+                <div
+                  className={`h-8 w-10 flex items-center justify-center rounded-full transition-colors duration-200 ${
+                    isActive ? "bg-[#8A6522]" : "bg-transparent"
+                  }`}
+                >
+                  <item.icon
+                    className={`h-5 w-5 ${
+                      isActive
+                        ? "text-cream"
+                        : "text-[rgba(59,50,43,0.55)] dark:text-[rgba(241,232,224,0.6)]"
+                    }`}
+                  />
                 </div>
-                <span className={`text-[10px] font-medium transition-all duration-300 ${
-                  isActive 
-                    ? "text-indigo-600 dark:text-indigo-400" 
-                    : "text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200"
-                }`}>
+                <span
+                  className={`text-[9.5px] ${
+                    isActive
+                      ? "text-[#8A6522] dark:text-gold-dark"
+                      : "text-[rgba(59,50,43,0.55)] dark:text-[rgba(241,232,224,0.6)]"
+                  }`}
+                >
                   {item.name}
                 </span>
               </div>
-              
-              {/* Active indicator */}
-              {isActive && (
-                <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-transparent via-indigo-600 to-transparent rounded-full" />
-              )}
             </Link>
           );
         })}

@@ -2,11 +2,15 @@ import React, { useState, useMemo, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import PullToRefresh from "../components/shared/PullToRefresh";
-import { Wand2 } from "lucide-react";
-import { Link } from "react-router-dom";
-import { createPageUrl } from "../utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import SearchBar from "../components/marketplace/SearchBar";
+import HomeMasthead from "../components/marketplace/home/HomeMasthead";
+import HomeSearchSpine from "../components/marketplace/home/HomeSearchSpine";
+import HomeOccasionDoors from "../components/marketplace/home/HomeOccasionDoors";
+import HomeVendorOfTheWeek from "../components/marketplace/home/HomeVendorOfTheWeek";
+import HomeNewlyApproved from "../components/marketplace/home/HomeNewlyApproved";
+import HomeTrustStrip from "../components/marketplace/home/HomeTrustStrip";
 import FilterControls from "../components/marketplace/FilterControls";
 import MarketplaceContent from "../components/marketplace/MarketplaceContent";
 import { rankVendors } from "@/lib/semanticSearch";
@@ -214,47 +218,72 @@ export default function VendorMarketplace() {
     ]);
   };
 
+  const rule = "h-px bg-[rgba(59,50,43,0.14)] dark:bg-[rgba(241,232,224,0.16)] mx-5 md:mx-10";
+
+  if (isHomepage) {
+    return (
+      <PullToRefresh onRefresh={handleRefresh}>
+        <div className="min-h-screen bg-cream dark:bg-[#211B16] pb-[82px] md:pb-0">
+          <div className="max-w-[1280px] mx-auto">
+            <HomeMasthead />
+            <HomeSearchSpine
+              eventType={eventType}
+              onEventChange={setEventType}
+              location={location}
+              onLocationChange={setLocation}
+              availableDate={availableDate}
+              onAvailableDateChange={setAvailableDate}
+              searchInput={searchInput}
+              onSearchInputChange={setSearchInput}
+              onSearch={(q) => setSearchQuery((q || "").trim())}
+            />
+            <div className={rule} />
+            <HomeOccasionDoors vendorsByEvent={vendorsByEvent} />
+            {promoVendor && (
+              <>
+                <div className={rule} />
+                <HomeVendorOfTheWeek vendor={promoVendor} />
+              </>
+            )}
+            <div className={rule} />
+            {isLoading ? (
+              <div className="px-5 md:px-10 py-8 md:py-12 grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-5">
+                {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
+                  <div key={i} className="space-y-3">
+                    <Skeleton className="aspect-square rounded-none" />
+                    <Skeleton className="h-5 w-3/4 rounded-none" />
+                    <Skeleton className="h-4 w-1/2 rounded-none" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <HomeNewlyApproved
+                vendors={vendors}
+                allReviews={allReviews}
+                location={location}
+                totalCount={vendors.length}
+              />
+            )}
+            <HomeTrustStrip />
+          </div>
+        </div>
+      </PullToRefresh>
+    );
+  }
+
   return (
-    <PullToRefresh onRefresh={handleRefresh}><div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
-        <div className="max-w-7xl mx-auto px-6 py-6 sm:py-8 lg:py-10">
-          <div className="max-w-3xl">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold mb-2 leading-tight tracking-tight">
-              Find Your Perfect
-              <span className="inline sm:block text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300 italic"> Event Vendors</span>
-            </h1>
-            <p className="text-base sm:text-lg text-slate-300 leading-relaxed">
-              Discover exceptional vendors for your special moments.
-            </p>
-          </div>
+    <PullToRefresh onRefresh={handleRefresh}><div className="min-h-screen bg-cream dark:bg-[#211B16] pb-[82px] md:pb-0">
+      <div className="max-w-[1280px] mx-auto px-5 md:px-10 py-6 md:py-10">
+        <div className="mb-6">
+          <SearchBar value={searchInput} onChange={setSearchInput} onSearch={(q) => setSearchQuery((q || "").trim())} location={location} onLocationChange={setLocation} />
         </div>
-      </div>
 
-      {/* Search & Filters */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-5 sm:-mt-6">
-        <div className="bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 px-3 py-2.5 sm:px-4 sm:py-3">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
-            <div className="flex-1 min-w-0">
-              <SearchBar value={searchInput} onChange={setSearchInput} onSearch={(q) => setSearchQuery((q || "").trim())} location={location} onLocationChange={setLocation} />
-            </div>
-            <Link to={createPageUrl("EventPlanning")} className="shrink-0">
-              <button className="h-10 px-5 border border-slate-900 dark:border-slate-400 text-slate-900 dark:text-slate-200 rounded-full font-medium text-sm hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 transition-all flex items-center gap-2 justify-center whitespace-nowrap">
-                <Wand2 className="h-3.5 w-3.5" />
-                Plan an Event
-              </button>
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-5 sm:py-8">
-        <div className="flex gap-6">
+        <div className="flex gap-8">
 
           {/* Sidebar Filters - Desktop */}
           <aside className="hidden lg:block w-64 shrink-0">
-            <div className="sticky top-4 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-4 max-h-[calc(100vh-2rem)] overflow-y-auto">
-              <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-3 text-sm uppercase tracking-wide">Filters</h3>
+            <div className="sticky top-4 bg-linen dark:bg-[#2A231D] rounded-none border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] p-4 max-h-[calc(100vh-2rem)] overflow-y-auto">
+              <h3 className="text-[10px] font-medium tracking-[0.15em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)] mb-4">Filters</h3>
               <FilterControls
                 eventType={eventType}
                 category={category}
@@ -280,7 +309,7 @@ export default function VendorMarketplace() {
           <div className="flex-1 min-w-0">
             {/* Mobile Filters - Top */}
             <div className="lg:hidden mb-4">
-              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 px-4 py-2.5">
+              <div className="bg-linen dark:bg-[#2A231D] rounded-none border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] px-4 py-3">
                 <FilterControls
                   eventType={eventType}
                   category={category}

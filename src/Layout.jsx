@@ -29,9 +29,6 @@ export default function Layout({ children }) {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col" style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}>
       <style>{`
-                    .font-serif {
-                      font-family: Georgia, 'Times New Roman', serif;
-                    }
 
                     /* ============================================
                        SEMANTIC COLOR TOKENS

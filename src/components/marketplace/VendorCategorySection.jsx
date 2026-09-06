@@ -32,14 +32,14 @@ export default function VendorCategorySection({ title, eventType, category, vend
       <div className="flex items-center gap-4 mb-4 px-1">
         <Link 
           to={targetUrl}
-          className="text-sm font-semibold tracking-widest uppercase text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors whitespace-nowrap"
+          className="text-[14px] font-medium tracking-[0.1em] uppercase text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)] hover:text-ink dark:hover:text-[#F1E8E0] transition-colors whitespace-nowrap"
         >
           {title}
         </Link>
-        <div className="flex-1 h-px bg-slate-300 dark:bg-slate-600" />
+        <div className="flex-1 h-px bg-[rgba(59,50,43,0.14)] dark:bg-[rgba(241,232,224,0.16)]" />
         <Link 
           to={targetUrl}
-          className="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 whitespace-nowrap"
+          className="text-[13px] text-gold-text dark:text-gold-dark hover:underline whitespace-nowrap"
         >
           See all
         </Link>
@@ -64,7 +64,7 @@ export default function VendorCategorySection({ title, eventType, category, vend
         <div className="md:hidden flex justify-center mt-3">
           <Link
             to={targetUrl}
-            className="flex items-center gap-1.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 transition-colors"
+            className="flex items-center gap-1.5 text-[13px] text-gold-text dark:text-gold-dark hover:underline"
           >
             {`See all ${vendors.length} vendors`}
             <ChevronRight className="h-4 w-4" />

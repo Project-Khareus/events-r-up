@@ -76,7 +76,7 @@ export default function SplashScreen() {
         >
           <span
             style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
+              fontFamily: "'Cormorant Garamond', Georgia, serif",
               fontSize: 42,
               fontWeight: 700,
               color: "#ffffff",
@@ -117,7 +117,7 @@ export default function SplashScreen() {
           {/* Tagline */}
           <p
             style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
+              fontFamily: "'Cormorant Garamond', Georgia, serif",
               fontSize: 15,
               fontStyle: "italic",
               color: "#94a3b8",

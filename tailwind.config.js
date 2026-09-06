@@ -8,12 +8,27 @@ module.exports = {
     ],
   theme: {
   	extend: {
+  		fontFamily: {
+  			sans: ['Jost', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+  			serif: ['"Cormorant Garamond"', 'Georgia', 'serif']
+  		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
+  			cream: '#F8F1EB',
+  			linen: '#FCF8F4',
+  			ink: {
+  				DEFAULT: '#3B322B',
+  				deep: '#2A231D'
+  			},
+  			gold: {
+  				DEFAULT: '#A97E2E',
+  				text: '#8A6522',
+  				dark: '#C9A055'
+  			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {

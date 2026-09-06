@@ -10,15 +10,16 @@ export default function SearchBar({ value, onChange, onSearch, location, onLocat
           value={location || ""}
           onChange={(nextLocation) => onLocationChange(nextLocation)}
           placeholder="All Ghana"
-          inputClassName="h-10 rounded-full bg-slate-100 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 shadow-none"
+          inputClassName="h-11 rounded-none bg-linen dark:bg-[#2A231D] border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] text-ink dark:text-[#F1E8E0] shadow-none text-[14.5px]"
         />
       </div>
 
       {/* Search Input */}
       <div className="relative flex-1 min-w-0">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[rgba(59,50,43,0.45)] pointer-events-none" />
         <input
           type="text"
+          aria-label="Search vendors"
           placeholder="Try: 'photographer in Accra for wedding' or 'affordable caterer'"
           value={value || ""}
           onChange={(e) => {
@@ -26,17 +27,19 @@ export default function SearchBar({ value, onChange, onSearch, location, onLocat
             if (!e.target.value && onSearch) onSearch("");
           }}
           onKeyDown={(e) => { if (e.key === 'Enter' && onSearch) onSearch(value || ""); }}
-          className="w-full h-10 pl-9 pr-3 text-sm border border-slate-200 dark:border-slate-600 rounded-full bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-300 focus:border-slate-300 transition-all"
+          className="w-full h-11 pl-9 pr-3 text-[14.5px] rounded-none border border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] bg-linen dark:bg-[#2A231D] text-ink dark:text-[#F1E8E0] placeholder:text-[rgba(59,50,43,0.45)] focus:outline-none focus:ring-1 focus:ring-[#A97E2E] focus:border-[#A97E2E] transition-colors"
         />
       </div>
 
       {/* Search Button */}
       <button
+        type="button"
         onClick={() => onSearch && onSearch(value || "")}
         title="Search vendors"
-        className="group relative shrink-0 h-10 w-10 flex items-center justify-center rounded-full border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 hover:bg-slate-900 dark:hover:bg-slate-500 hover:border-slate-900 dark:hover:border-slate-500 transition-all"
+        aria-label="Search vendors"
+        className="shrink-0 h-11 w-11 flex items-center justify-center rounded-none bg-[#8A6522] hover:bg-[#75551C] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#A97E2E]"
       >
-        <Search className="h-4 w-4 text-slate-700 dark:text-slate-300 group-hover:text-white pointer-events-none" />
+        <Search className="h-4 w-4 text-cream pointer-events-none" />
       </button>
     </div>
   );
