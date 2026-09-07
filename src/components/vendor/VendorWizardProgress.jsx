@@ -19,23 +19,27 @@ export default function VendorWizardProgress({ currentStep }) {
           const isCurrent = i === currentStep;
           return (
             <React.Fragment key={i}>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2.5">
                 <div
                   className={cn(
-                    "w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold border-2 transition-all",
+                    "w-9 h-9 rounded-none flex items-center justify-center text-[12px] border transition-colors",
                     isComplete
-                      ? "bg-indigo-600 border-indigo-600 text-white"
+                      ? "bg-[#A97E2E] border-[#A97E2E] text-cream"
                       : isCurrent
-                      ? "border-indigo-600 text-indigo-600 bg-indigo-50"
-                      : "border-slate-300 text-slate-400 bg-white"
+                      ? "border-[#A97E2E] text-gold-text dark:text-gold-dark bg-[rgba(169,126,46,0.1)]"
+                      : "border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]"
                   )}
                 >
                   {isComplete ? <Check className="h-4 w-4" /> : i + 1}
                 </div>
                 <span
                   className={cn(
-                    "text-sm font-medium",
-                    isCurrent ? "text-indigo-700" : isComplete ? "text-slate-700" : "text-slate-400"
+                    "text-[10px] font-medium tracking-[0.14em] uppercase",
+                    isCurrent
+                      ? "text-gold-text dark:text-gold-dark"
+                      : isComplete
+                      ? "text-ink dark:text-[#F1E8E0]"
+                      : "text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]"
                   )}
                 >
                   {step.label}
@@ -44,8 +48,8 @@ export default function VendorWizardProgress({ currentStep }) {
               {i < STEPS.length - 1 && (
                 <div
                   className={cn(
-                    "flex-1 h-0.5 mx-3",
-                    i < currentStep ? "bg-indigo-600" : "bg-slate-200"
+                    "flex-1 h-px mx-4",
+                    i < currentStep ? "bg-[#A97E2E]" : "bg-[rgba(59,50,43,0.14)] dark:bg-[rgba(241,232,224,0.16)]"
                   )}
                 />
               )}
@@ -57,18 +61,20 @@ export default function VendorWizardProgress({ currentStep }) {
       {/* Mobile */}
       <div className="sm:hidden">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-semibold text-indigo-700">
+          <span className="text-[10px] font-medium tracking-[0.16em] uppercase text-gold-text dark:text-gold-dark">
             Step {currentStep + 1} of {STEPS.length}
           </span>
-          <span className="text-sm text-slate-500">{STEPS[currentStep].label}</span>
+          <span className="text-[12.5px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">
+            {STEPS[currentStep].label}
+          </span>
         </div>
         <div className="flex gap-1.5">
           {STEPS.map((_, i) => (
             <div
               key={i}
               className={cn(
-                "h-1.5 flex-1 rounded-full transition-all",
-                i <= currentStep ? "bg-indigo-600" : "bg-slate-200"
+                "h-1 flex-1 transition-colors",
+                i <= currentStep ? "bg-[#A97E2E]" : "bg-[rgba(59,50,43,0.14)] dark:bg-[rgba(241,232,224,0.16)]"
               )}
             />
           ))}

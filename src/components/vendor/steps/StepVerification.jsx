@@ -1,14 +1,10 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 import { compressImage } from "@/components/utils/imageCompress";
 import { CreditCard, Upload, Loader2, X, Check, AlertCircle, ArrowLeft, Info } from "lucide-react";
+import { PANEL, H2, SUB, LABEL, INPUT, BTN_PRIMARY, BTN_GHOST, DROP } from "./wizardStyles";
 
 const PLANS = [
   { key: "trial", name: "Trial", desc: "1 month free (max 3)", price: "Free", unit: "/mo", isTrial: true,
@@ -24,20 +20,20 @@ const PLANS = [
 function ImageUploadBox({ label, fieldValue, onUpload, onClear, uploading, hint }) {
   return (
     <div>
-      <Label className="mb-2 block">{label}</Label>
-      <div className="border-2 border-dashed border-amber-300 rounded-xl p-4 text-center hover:border-amber-400 transition-colors bg-white">
+      <p className={`${LABEL} mb-2`}>{label}</p>
+      <div className={`${DROP} text-center`}>
         {fieldValue ? (
           <div className="relative">
-            <img src={fieldValue} alt={label} className="w-full h-32 object-cover rounded-lg" />
-            <button type="button" onClick={onClear} className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"><X className="h-4 w-4" /></button>
+            <img src={fieldValue} alt={label} className="w-full h-32 object-cover" />
+            <button type="button" onClick={onClear} className="absolute top-2 right-2 p-1.5 bg-ink text-cream hover:bg-ink-deep"><X className="h-3.5 w-3.5" /></button>
           </div>
         ) : (
-          <label className="cursor-pointer block py-4">
+          <label className="cursor-pointer block py-5">
             <input type="file" accept="image/*" onChange={onUpload} className="hidden" disabled={uploading} />
-            {uploading ? <Loader2 className="h-8 w-8 mx-auto text-amber-600 animate-spin" /> : (
+            {uploading ? <Loader2 className="h-7 w-7 mx-auto text-gold-text dark:text-gold-dark animate-spin" /> : (
               <>
-                <Upload className="h-8 w-8 mx-auto text-amber-400 mb-1" />
-                <p className="text-sm text-slate-600">{hint}</p>
+                <Upload className="h-7 w-7 mx-auto text-gold-text dark:text-gold-dark mb-2" />
+                <p className="text-[12.5px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">{hint}</p>
               </>
             )}
           </label>
@@ -68,29 +64,32 @@ export default function StepVerification({ formData, setFormData, onBack, onSubm
     }
   };
 
+  const selectedPlan = PLANS.find((p) => p.key === formData.subscription_type);
+
   return (
     <div className="space-y-6">
       {/* Ghana Card Verification */}
-      <Card className="p-6 rounded-2xl border-amber-200 bg-amber-50/40">
-        <h2 className="text-lg font-semibold text-slate-900 mb-1 flex items-center gap-2">
-          <CreditCard className="h-5 w-5 text-amber-600" />
-          Ghana Card Verification <span className="text-xs text-slate-400 font-normal">(Optional)</span>
+      <div className={PANEL}>
+        <h2 className={`${H2} flex items-center gap-2.5`}>
+          <CreditCard className="h-5 w-5 text-gold-text dark:text-gold-dark" />
+          Ghana Card verification
+          <span className="text-[10px] font-sans font-medium tracking-[0.16em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">Optional</span>
         </h2>
-        <p className="text-sm text-slate-500 mb-4">Upload your Ghana Card to speed up verification. You can also add it later by editing your listing.</p>
+        <p className={SUB}>Upload your Ghana Card to speed up verification. You can also add it later by editing your listing.</p>
 
-        <div className="space-y-4">
+        <div className="mt-6 space-y-5">
           <div>
-            <Label>Ghana Card Number *</Label>
+            <p className={LABEL}>Ghana Card number *</p>
             <Input
               value={formData.ghana_card_number}
               onChange={(e) => setFormData({ ...formData, ghana_card_number: e.target.value })}
               placeholder="e.g. GHA-XXXXXXXXX-X"
-              className="mt-1"
+              className={INPUT}
             />
           </div>
           <div className="grid md:grid-cols-3 gap-4">
             <ImageUploadBox
-              label="Card Front"
+              label="Card front"
               fieldValue={formData.ghana_card_image_url}
               onUpload={makeUploadHandler("ghana_card_image_url", setGhanaCardUploading)}
               onClear={() => setFormData((p) => ({ ...p, ghana_card_image_url: "" }))}
@@ -98,7 +97,7 @@ export default function StepVerification({ formData, setFormData, onBack, onSubm
               hint="Front side"
             />
             <ImageUploadBox
-              label="Card Back"
+              label="Card back"
               fieldValue={formData.ghana_card_back_image_url}
               onUpload={makeUploadHandler("ghana_card_back_image_url", setGhanaCardBackUploading)}
               onClear={() => setFormData((p) => ({ ...p, ghana_card_back_image_url: "" }))}
@@ -106,7 +105,7 @@ export default function StepVerification({ formData, setFormData, onBack, onSubm
               hint="Back side"
             />
             <ImageUploadBox
-              label="Your Selfie"
+              label="Your selfie"
               fieldValue={formData.ghana_card_selfie_url}
               onUpload={makeUploadHandler("ghana_card_selfie_url", setSelfieUploading)}
               onClear={() => setFormData((p) => ({ ...p, ghana_card_selfie_url: "" }))}
@@ -116,17 +115,19 @@ export default function StepVerification({ formData, setFormData, onBack, onSubm
           </div>
         </div>
 
-        <div className="mt-3 flex items-start gap-2 text-xs text-slate-500 bg-white rounded-lg p-3 border border-amber-200">
-          <AlertCircle className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" />
-          <span>Your Ghana Card information is kept confidential and won't be displayed publicly.</span>
+        <div className="mt-5 flex items-start gap-2.5 p-3 border border-[rgba(169,126,46,0.35)] bg-[rgba(169,126,46,0.08)]">
+          <AlertCircle className="h-4 w-4 text-gold-text dark:text-gold-dark shrink-0 mt-0.5" />
+          <span className="text-[12.5px] font-light text-[rgba(59,50,43,0.72)] dark:text-[rgba(241,232,224,0.72)]">
+            Your Ghana Card information is kept confidential and won't be displayed publicly.
+          </span>
         </div>
-      </Card>
+      </div>
 
       {/* Subscription Plan */}
-      <Card className="p-6 rounded-2xl border-slate-300 bg-white">
-        <h2 className="text-lg font-semibold text-slate-900 mb-4">Choose a Plan</h2>
+      <div className={PANEL}>
+        <h2 className={H2}>Choose a plan</h2>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
           {PLANS.map((plan) => {
             const isSelected = formData.subscription_type === plan.key;
             return (
@@ -134,72 +135,57 @@ export default function StepVerification({ formData, setFormData, onBack, onSubm
                 key={plan.key}
                 type="button"
                 onClick={() => setFormData({ ...formData, subscription_type: plan.key })}
-                className={cn(
-                  "p-4 border-2 rounded-xl transition-all text-left relative",
+                className={`relative p-4 text-left rounded-none border transition-colors ${
                   isSelected
-                    ? plan.isTrial
-                      ? "border-green-600 bg-green-50 shadow-md"
-                      : "border-indigo-600 bg-indigo-50 shadow-md"
-                    : "border-slate-300 hover:border-slate-400 bg-white"
-                )}
+                    ? "border-[#A97E2E] bg-[rgba(169,126,46,0.1)]"
+                    : "border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] hover:border-[#A97E2E]"
+                }`}
               >
                 {plan.badge && (
-                  <Badge className="absolute -top-2 -right-2 bg-green-600 text-white hover:bg-green-700 text-xs">
+                  <span className="absolute -top-2.5 right-3 bg-[#A97E2E] text-cream text-[9px] font-medium tracking-[0.14em] uppercase px-2 py-1">
                     {plan.badge}
-                  </Badge>
+                  </span>
                 )}
-                <div className="flex items-start justify-between mb-2">
-                  <h3 className="text-slate-900 font-bold">{plan.name}</h3>
-                  {isSelected && (
-                    <Check className={plan.isTrial ? "h-4 w-4 text-green-600" : "h-4 w-4 text-indigo-600"} />
-                  )}
+                <div className="flex items-start justify-between gap-2">
+                  <h3 className="font-serif text-[20px] text-ink dark:text-[#F1E8E0]">{plan.name}</h3>
+                  {isSelected && <Check className="h-4 w-4 text-gold-text dark:text-gold-dark shrink-0 mt-1" />}
                 </div>
-                <p className="text-slate-600 text-xs mb-2">{plan.desc}</p>
-                <div className="text-slate-900 text-xl font-bold">
+                <p className="mt-0.5 text-[12px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">{plan.desc}</p>
+                <p className="mt-3 font-serif text-[22px] text-ink dark:text-[#F1E8E0]">
                   {plan.price}
-                  <span className="text-xs text-slate-500 font-normal">{plan.unit}</span>
-                </div>
+                  <span className="text-[11px] font-sans font-light text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">{plan.unit}</span>
+                </p>
               </button>
             );
           })}
         </div>
 
-        {/* Info bubble for selected plan */}
-        {formData.subscription_type && (
-          <div className="mt-4 flex items-start gap-2.5 rounded-lg border border-indigo-200 bg-indigo-50 p-3">
-            <Info className="h-4 w-4 text-indigo-600 flex-shrink-0 mt-0.5" />
+        {selectedPlan && (
+          <div className="mt-5 flex items-start gap-2.5 p-3 border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] bg-cream dark:bg-[#211B16]">
+            <Info className="h-4 w-4 text-gold-text dark:text-gold-dark shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-medium text-indigo-800">
-                {PLANS.find((p) => p.key === formData.subscription_type)?.name} Plan
-              </p>
-              <p className="text-xs text-indigo-700 mt-0.5">
-                {PLANS.find((p) => p.key === formData.subscription_type)?.info}
-              </p>
+              <p className="text-[10px] font-medium tracking-[0.16em] uppercase text-gold-text dark:text-gold-dark">{selectedPlan.name} plan</p>
+              <p className="mt-1 text-[12.5px] font-light leading-[1.6] text-[rgba(59,50,43,0.72)] dark:text-[rgba(241,232,224,0.72)]">{selectedPlan.info}</p>
             </div>
           </div>
         )}
-      </Card>
+      </div>
 
       <div className="flex justify-between">
-        <Button type="button" variant="outline" onClick={onBack} className="gap-2">
+        <button type="button" onClick={onBack} className={BTN_GHOST}>
           <ArrowLeft className="h-4 w-4" /> Back
-        </Button>
-        <Button
-          type="button"
-          disabled={isSubmitting}
-          onClick={onSubmit}
-          className="bg-indigo-600 hover:bg-indigo-700 px-8 h-12 text-base rounded-xl gap-2"
-        >
+        </button>
+        <button type="button" disabled={isSubmitting} onClick={onSubmit} className={`${BTN_PRIMARY} px-8`}>
           {isSubmitting ? (
             <>
-              <Loader2 className="h-5 w-5 animate-spin" /> Processing...
+              <Loader2 className="h-4 w-4 animate-spin" /> Processing
             </>
           ) : (
             <>
               {submitIcon && <span>{submitIcon}</span>} {submitLabel}
             </>
           )}
-        </Button>
+        </button>
       </div>
     </div>
   );

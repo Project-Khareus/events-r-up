@@ -244,7 +244,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
               Your listing <strong>"{formData.business_name}"</strong> will be submitted and reviewed by our team before it goes live on Khareus.
             </DialogDescription>
           </DialogHeader>
-          <div className="bg-slate-50 rounded-lg p-4 space-y-2 text-sm text-slate-700">
+          <div className="bg-cream dark:bg-[#211B16] border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] rounded-none p-4 space-y-2 text-[13.5px] font-light text-ink dark:text-[#F1E8E0]">
             <p><strong>Business:</strong> {formData.business_name}</p>
             {formData.event_type.length > 0 && <p><strong>Event Types:</strong> {formData.event_type.join(", ")}</p>}
             {formData.category.length > 0 && <p><strong>Categories:</strong> {formData.category.length} selected</p>}
@@ -252,14 +252,14 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
             <p><strong>Plan:</strong> {formData.subscription_type?.charAt(0).toUpperCase() + formData.subscription_type?.slice(1)}</p>
           </div>
           {!hasGhanaCard && (
-            <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg p-3">
-              <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
-              <p className="text-sm text-amber-700">You haven't uploaded your Ghana Card yet. Your listing will be submitted but will remain pending until verification is completed. You can add it later by editing your listing.</p>
+            <div className="flex items-start gap-2 bg-[rgba(169,126,46,0.08)] border border-[rgba(169,126,46,0.35)] rounded-none p-3">
+              <AlertTriangle className="h-4 w-4 text-gold-text dark:text-gold-dark shrink-0 mt-0.5" />
+              <p className="text-[13px] font-light text-[rgba(59,50,43,0.72)] dark:text-[rgba(241,232,224,0.72)]">You haven't uploaded your Ghana Card yet. Your listing will be submitted but will remain pending until verification is completed. You can add it later by editing your listing.</p>
             </div>
           )}
           <DialogFooter>
             <Button variant="outline" onClick={() => setReviewDialogOpen(false)}>Go Back</Button>
-            <Button onClick={confirmSubmit} className="bg-indigo-600 hover:bg-indigo-700">Confirm & Submit</Button>
+            <Button onClick={confirmSubmit} className="rounded-none bg-ink hover:bg-ink-deep text-cream text-[11px] font-medium tracking-[0.1em] uppercase min-h-[44px]">Confirm & Submit</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -276,12 +276,12 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
               Your listing <strong>"{formData.business_name}"</strong> has been submitted for review.
             </DialogDescription>
           </DialogHeader>
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 space-y-2">
+          <div className="bg-[rgba(169,126,46,0.08)] border border-[rgba(169,126,46,0.35)] rounded-none p-4">
             <div className="flex items-start gap-2">
-              <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+              <AlertTriangle className="h-5 w-5 text-gold-text dark:text-gold-dark shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-semibold text-amber-800">Ghana Card Verification Pending</p>
-                <p className="text-sm text-amber-700 mt-1">
+                <p className="text-[10px] font-medium tracking-[0.16em] uppercase text-gold-text dark:text-gold-dark">Ghana Card verification pending</p>
+                <p className="text-[13px] font-light text-[rgba(59,50,43,0.72)] dark:text-[rgba(241,232,224,0.72)] mt-1.5">
                   Your listing will remain pending until you upload your Ghana Card for identity verification. You can add it by editing your listing.
                 </p>
               </div>
@@ -306,7 +306,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
                 setGhanaCardPendingDialogOpen(false);
                 navigate('/ManageListing');
               }}
-              className="bg-indigo-600 hover:bg-indigo-700"
+              className="rounded-none bg-ink hover:bg-ink-deep text-cream text-[11px] font-medium tracking-[0.1em] uppercase min-h-[44px]"
             >
               Go to Dashboard
             </Button>
@@ -344,7 +344,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => { setNameChangeDialogOpen(false); setNameChangeReasons([]); }}>Cancel</Button>
-            <Button onClick={confirmNameChange} className="bg-indigo-600 hover:bg-indigo-700">Confirm & Submit for Approval</Button>
+            <Button onClick={confirmNameChange} className="rounded-none bg-ink hover:bg-ink-deep text-cream text-[11px] font-medium tracking-[0.1em] uppercase min-h-[44px]">Confirm & Submit for Approval</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

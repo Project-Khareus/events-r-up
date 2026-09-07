@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { PANEL, H2, SUB, LABEL, INPUT, BTN_PRIMARY, BTN_GHOST, DROP } from "./wizardStyles";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -104,29 +102,29 @@ export default function StepMedia({ formData, setFormData, onNext, onBack }) {
   };
 
   return (
-    <Card className="p-6 rounded-2xl border-slate-300 bg-white">
-      <h2 className="text-lg font-semibold text-slate-900 mb-1">Showcase your work</h2>
-      <p className="text-sm text-slate-500 mb-6">Add images, videos, describe your services and set pricing.</p>
+    <div className={PANEL}>
+      <h2 className={H2}>Showcase your work</h2>
+      <p className={SUB}>Add images, videos, describe your services and set pricing.</p>
 
-      <div className="space-y-6">
+      <div className="mt-6 space-y-6">
         {/* Main Image + Gallery */}
         <div className="grid md:grid-cols-3 gap-6">
           <div>
-            <Label className="mb-2 block text-slate-700">Main Business Image</Label>
-            <div className="border-2 border-dashed border-slate-300 rounded-xl p-4 text-center hover:border-indigo-400 transition-colors bg-white">
+            <p className={`${LABEL} mb-2`}>Main business image</p>
+            <div className={`${DROP} text-center`}>
               {formData.image_url ? (
                 <div className="relative">
-                  <img src={formData.image_url} alt="Business" className="w-full h-48 object-cover rounded-lg" />
-                  <button type="button" onClick={() => setFormData((p) => ({ ...p, image_url: "" }))} className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"><X className="h-4 w-4" /></button>
+                  <img src={formData.image_url} alt="Business" className="w-full h-48 object-cover" />
+                  <button type="button" onClick={() => setFormData((p) => ({ ...p, image_url: "" }))} className="absolute top-2 right-2 p-1.5 bg-ink text-cream hover:bg-ink-deep"><X className="h-3.5 w-3.5" /></button>
                 </div>
               ) : (
                 <label className="cursor-pointer block py-8">
                   <input type="file" accept="image/*" onChange={handleMainImageUpload} className="hidden" disabled={imageUploading} />
-                  {imageUploading ? <Loader2 className="h-10 w-10 mx-auto text-indigo-600 animate-spin" /> : (
+                  {imageUploading ? <Loader2 className="h-8 w-8 mx-auto text-gold-text dark:text-gold-dark animate-spin" /> : (
                     <>
-                      <Upload className="h-10 w-10 mx-auto text-slate-400 mb-2" />
-                      <p className="text-sm text-slate-600">Click to upload</p>
-                      <p className="text-xs text-slate-400 mt-1">Cover photo</p>
+                      <Upload className="h-8 w-8 mx-auto text-gold-text dark:text-gold-dark mb-2" />
+                      <p className="text-[13px] text-ink dark:text-[#F1E8E0]">Click to upload</p>
+                      <p className="text-[11px] font-light text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)] mt-1">Cover photo</p>
                     </>
                   )}
                 </label>
@@ -135,42 +133,42 @@ export default function StepMedia({ formData, setFormData, onNext, onBack }) {
           </div>
 
           <div>
-            <Label className="mb-2 block text-slate-700">Portfolio Gallery</Label>
-            <div className="border-2 border-dashed border-slate-300 rounded-xl p-4 hover:border-indigo-400 transition-colors bg-white">
+            <p className={`${LABEL} mb-2`}>Portfolio gallery</p>
+            <div className={DROP}>
               <div className="grid grid-cols-3 gap-2 mb-3">
                 {(formData.gallery_images || []).map((url, i) => (
                   <div key={i} className="relative aspect-square">
-                    <img src={url} alt={`Gallery ${i + 1}`} className="w-full h-full object-cover rounded-lg" />
-                    <button type="button" onClick={() => setFormData((p) => ({ ...p, gallery_images: p.gallery_images.filter((_, idx) => idx !== i) }))} className="absolute top-1 right-1 p-0.5 bg-red-500 text-white rounded-full hover:bg-red-600"><X className="h-3 w-3" /></button>
+                    <img src={url} alt={`Gallery ${i + 1}`} className="w-full h-full object-cover" />
+                    <button type="button" onClick={() => setFormData((p) => ({ ...p, gallery_images: p.gallery_images.filter((_, idx) => idx !== i) }))} className="absolute top-1 right-1 p-1 bg-ink text-cream hover:bg-ink-deep"><X className="h-3 w-3" /></button>
                   </div>
                 ))}
-                <label className="aspect-square border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-indigo-400 bg-white">
+                <label className="aspect-square border border-dashed border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] flex items-center justify-center cursor-pointer hover:border-[#A97E2E]">
                   <input type="file" accept="image/*" multiple onChange={handleGalleryUpload} className="hidden" disabled={galleryUploading} />
-                  {galleryUploading ? <Loader2 className="h-6 w-6 text-indigo-600 animate-spin" /> : <Plus className="h-6 w-6 text-slate-400" />}
+                  {galleryUploading ? <Loader2 className="h-5 w-5 text-gold-text dark:text-gold-dark animate-spin" /> : <Plus className="h-5 w-5 text-gold-text dark:text-gold-dark" />}
                 </label>
               </div>
-              <div className="flex flex-col gap-2 mt-4">
-                <div className="relative"><div className="absolute inset-0 flex items-center"><span className="w-full border-t border-slate-200" /></div><div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-2 text-slate-500 font-medium">Or import from</span></div></div>
-                <Button type="button" variant="outline" onClick={handleFacebookImport} className="w-full gap-2 text-blue-600 border-blue-200 hover:bg-blue-50" disabled={galleryUploading}>
-                  <Facebook className="h-4 w-4" /> Import from Facebook
-                </Button>
+              <div className="flex flex-col gap-3 mt-4">
+                <div className="relative"><div className="absolute inset-0 flex items-center"><span className="w-full border-t border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]" /></div><div className="relative flex justify-center"><span className="bg-cream dark:bg-[#211B16] px-2 text-[9.5px] font-medium tracking-[0.16em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">Or import from</span></div></div>
+                <button type="button" onClick={handleFacebookImport} className={`${BTN_GHOST} w-full`} disabled={galleryUploading}>
+                  <Facebook className="h-4 w-4" /> Facebook
+                </button>
               </div>
             </div>
           </div>
 
           <div>
-            <Label className="mb-2 block text-slate-700">Portfolio Videos</Label>
-            <div className="border-2 border-dashed border-slate-300 rounded-xl p-4 hover:border-indigo-400 transition-colors bg-white">
+            <p className={`${LABEL} mb-2`}>Portfolio videos</p>
+            <div className={DROP}>
               <div className="grid grid-cols-2 gap-2 mb-3">
                 {(formData.gallery_videos || []).map((url, i) => (
                   <div key={i} className="relative aspect-video">
-                    <video src={url} className="w-full h-full object-cover rounded-lg" controls />
-                    <button type="button" onClick={() => setFormData((p) => ({ ...p, gallery_videos: p.gallery_videos.filter((_, idx) => idx !== i) }))} className="absolute top-1 right-1 p-0.5 bg-red-500 text-white rounded-full hover:bg-red-600"><X className="h-3 w-3" /></button>
+                    <video src={url} className="w-full h-full object-cover" controls />
+                    <button type="button" onClick={() => setFormData((p) => ({ ...p, gallery_videos: p.gallery_videos.filter((_, idx) => idx !== i) }))} className="absolute top-1 right-1 p-1 bg-ink text-cream hover:bg-ink-deep"><X className="h-3 w-3" /></button>
                   </div>
                 ))}
-                <label className="aspect-video border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-indigo-400 bg-white">
+                <label className="aspect-video border border-dashed border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] flex items-center justify-center cursor-pointer hover:border-[#A97E2E]">
                   <input type="file" accept="video/*" multiple onChange={handleVideoUpload} className="hidden" disabled={videoUploading} />
-                  {videoUploading ? <Loader2 className="h-6 w-6 text-indigo-600 animate-spin" /> : <Plus className="h-6 w-6 text-slate-400" />}
+                  {videoUploading ? <Loader2 className="h-5 w-5 text-gold-text dark:text-gold-dark animate-spin" /> : <Plus className="h-5 w-5 text-gold-text dark:text-gold-dark" />}
                 </label>
               </div>
             </div>
@@ -179,8 +177,8 @@ export default function StepMedia({ formData, setFormData, onNext, onBack }) {
 
         {/* Description */}
         <div>
-          <Label>Description</Label>
-          <div className="mt-1">
+          <p className={LABEL}>Description</p>
+          <div className="mt-2 [&_.ql-toolbar]:rounded-none [&_.ql-container]:rounded-none [&_.ql-toolbar]:border-[rgba(59,50,43,0.28)] [&_.ql-container]:border-[rgba(59,50,43,0.28)]">
             <ReactQuill
               theme="snow"
               value={formData.description || ""}
@@ -193,18 +191,18 @@ export default function StepMedia({ formData, setFormData, onNext, onBack }) {
 
         {/* Services */}
         <div>
-          <Label className="mb-2 block">Services Offered</Label>
-          <div className="flex flex-wrap gap-2 mb-2">
+          <p className={`${LABEL} mb-2`}>Services offered</p>
+          <div className="flex flex-wrap gap-2 mb-3">
             {(formData.services || []).map((service, i) => (
-              <Badge key={i} variant="secondary" className="px-3 py-1 bg-slate-100 text-slate-700 hover:bg-slate-200">
+              <span key={i} className="inline-flex items-center gap-2 px-3 py-1.5 border border-[#A97E2E] bg-[rgba(169,126,46,0.1)] text-[12.5px] text-gold-text dark:text-gold-dark">
                 {service}
-                <button onClick={() => setFormData((p) => ({ ...p, services: p.services.filter((s) => s !== service) }))} className="ml-2 hover:text-red-500"><X className="h-3 w-3" /></button>
-              </Badge>
+                <button onClick={() => setFormData((p) => ({ ...p, services: p.services.filter((s) => s !== service) }))}><X className="h-3 w-3" /></button>
+              </span>
             ))}
           </div>
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="outline" role="combobox" className="w-full justify-between text-left font-normal text-slate-500">
+              <Button variant="outline" role="combobox" className="w-full h-11 justify-between text-left font-normal rounded-none bg-cream dark:bg-[#211B16] border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] text-[13px] text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">
                 {serviceInput || "Type or select a service..."} <Plus className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
@@ -212,7 +210,7 @@ export default function StepMedia({ formData, setFormData, onNext, onBack }) {
               <Command>
                 <CommandInput placeholder="Search services..." value={serviceInput} onValueChange={setServiceInput} />
                 <CommandEmpty>
-                  <button type="button" className="w-full text-left px-2 py-1.5 text-sm text-indigo-600 hover:bg-indigo-50 rounded-sm" onClick={() => addService(serviceInput)}>
+                  <button type="button" className="w-full text-left px-2 py-1.5 text-sm text-gold-text dark:text-gold-dark hover:bg-[rgba(169,126,46,0.08)]" onClick={() => addService(serviceInput)}>
                     Add "{serviceInput}"
                   </button>
                 </CommandEmpty>
@@ -231,32 +229,32 @@ export default function StepMedia({ formData, setFormData, onNext, onBack }) {
         {/* Location + Price */}
         <div className="grid md:grid-cols-3 gap-4">
           <div>
-            <Label>Location</Label>
-            <Input value={formData.location} onChange={(e) => setFormData({ ...formData, location: e.target.value })} placeholder="City, State" className="mt-1" />
+            <p className={LABEL}>Location</p>
+            <Input value={formData.location} onChange={(e) => setFormData({ ...formData, location: e.target.value })} placeholder="City, State" className={INPUT} />
           </div>
           <div>
-            <Label>Years in Business</Label>
-            <Input type="number" value={formData.years_in_business} onChange={(e) => setFormData({ ...formData, years_in_business: e.target.value })} placeholder="e.g., 5" className="mt-1" />
+            <p className={LABEL}>Years in business</p>
+            <Input type="number" value={formData.years_in_business} onChange={(e) => setFormData({ ...formData, years_in_business: e.target.value })} placeholder="e.g., 5" className={INPUT} />
           </div>
           <div>
-            <Label>Starting Price</Label>
-            <div className="flex gap-2 mt-1">
+            <p className={LABEL}>Starting price</p>
+            <div className="flex gap-2 mt-2">
               <Select value={formData.price_currency || "GHS"} onValueChange={(val) => setFormData({ ...formData, price_currency: val })}>
-                <SelectTrigger className="w-[120px] shrink-0"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="w-[120px] h-11 shrink-0 rounded-none bg-cream dark:bg-[#211B16] border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)]"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {CURRENCY_OPTIONS.map((c) => (<SelectItem key={c.code} value={c.code}>{c.symbol} {c.code}</SelectItem>))}
                 </SelectContent>
               </Select>
-              <Input type="number" value={formData.starting_price} onChange={(e) => setFormData({ ...formData, starting_price: e.target.value })} placeholder="e.g., 500" />
+              <Input type="number" value={formData.starting_price} onChange={(e) => setFormData({ ...formData, starting_price: e.target.value })} placeholder="e.g., 500" className="h-11 mt-0 rounded-none bg-cream dark:bg-[#211B16] border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)]" />
             </div>
           </div>
         </div>
       </div>
 
       <div className="flex justify-between mt-8">
-        <Button type="button" variant="outline" onClick={onBack} className="gap-2"><ArrowLeft className="h-4 w-4" /> Back</Button>
-        <Button type="button" onClick={onNext} className="bg-indigo-600 hover:bg-indigo-700 gap-2 px-6">Next <ArrowRight className="h-4 w-4" /></Button>
+        <button type="button" onClick={onBack} className={BTN_GHOST}><ArrowLeft className="h-4 w-4" /> Back</button>
+        <button type="button" onClick={onNext} className={BTN_PRIMARY}>Next <ArrowRight className="h-4 w-4" /></button>
       </div>
-    </Card>
+    </div>
   );
 }

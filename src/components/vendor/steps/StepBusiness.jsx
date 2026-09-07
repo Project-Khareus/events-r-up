@@ -1,10 +1,8 @@
 import React from "react";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import LocationAutocomplete from "@/components/shared/LocationAutocomplete";
-import { Button } from "@/components/ui/button";
 import { AlertCircle, Check, ArrowRight } from "lucide-react";
+import { PANEL, H2, SUB, LABEL, INPUT, BTN_PRIMARY, CHIP, CHIP_ON } from "./wizardStyles";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -105,50 +103,50 @@ export default function StepBusiness({ formData, setFormData, onNext, initialDat
   };
 
   return (
-    <Card className="p-6 rounded-2xl border-slate-300 bg-white">
-      <h2 className="text-lg font-semibold text-slate-900 mb-1">Tell us about your business</h2>
-      <p className="text-sm text-slate-500 mb-6">Start with the basics — your name and what you do.</p>
+    <div className={PANEL}>
+      <h2 className={H2}>Tell us about your business</h2>
+      <p className={SUB}>Start with the basics — your name and what you do.</p>
 
-      <div className="space-y-5">
+      <div className="mt-6 space-y-6">
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <Label>Business Name *</Label>
+            <p className={LABEL}>Business name *</p>
             <Input
               value={formData.business_name}
               onChange={(e) => setFormData({ ...formData, business_name: e.target.value })}
               placeholder="Your business name"
-              className="mt-1"
+              className={INPUT}
             />
             {initialData?.id && initialData?.business_name && (
-              <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
+              <p className="text-[12px] font-light text-gold-text dark:text-gold-dark mt-1.5 flex items-center gap-1.5">
                 <AlertCircle className="h-3 w-3" /> Name changes require admin approval
               </p>
             )}
           </div>
           <div>
-            <Label>Slogan / Tagline</Label>
+            <p className={LABEL}>Slogan / tagline</p>
             <Input
               value={formData.slogan}
               onChange={(e) => setFormData({ ...formData, slogan: e.target.value })}
               placeholder="Your catchy tagline"
-              className="mt-1"
+              className={INPUT}
             />
           </div>
         </div>
 
         <div>
-          <Label>Location</Label>
+          <p className={LABEL}>Location</p>
           <LocationAutocomplete
             value={formData.location}
             onChange={(location) => setFormData({ ...formData, location })}
             placeholder="e.g., Osu, Accra, Ghana"
-            className="mt-1"
+            className="mt-2"
           />
         </div>
 
         <div>
-          <Label className="mb-2 block">Event Types * (Select all that apply)</Label>
-          <div className="flex flex-wrap gap-2">
+          <p className={`${LABEL} mb-3`}>Event types * (select all that apply)</p>
+          <div className="flex flex-wrap gap-2.5">
             {EVENT_TYPES.map((type) => {
               const isSelected = formData.event_type.includes(type.value);
               return (
@@ -156,15 +154,10 @@ export default function StepBusiness({ formData, setFormData, onNext, initialDat
                   key={type.value}
                   type="button"
                   onClick={() => toggleEventType(type.value)}
-                  className={cn(
-                    "px-4 py-2 rounded-full text-sm font-medium border transition-colors",
-                    isSelected
-                      ? "bg-indigo-600 text-white border-indigo-600 hover:bg-indigo-700"
-                      : "bg-white text-slate-800 border-slate-300 hover:bg-slate-100"
-                  )}
+                  className={isSelected ? CHIP_ON : CHIP}
                 >
                   {type.label}
-                  {isSelected && <Check className="inline-block ml-1 h-3 w-3" />}
+                  {isSelected && <Check className="h-3 w-3" />}
                 </button>
               );
             })}
@@ -173,11 +166,11 @@ export default function StepBusiness({ formData, setFormData, onNext, initialDat
 
         {formData.event_type.length > 0 && (
           <div>
-            <Label className="mb-2 block">Categories * (Select all that apply)</Label>
+            <p className={`${LABEL} mb-3`}>Categories * (select all that apply)</p>
             {availableCategories.length === 0 ? (
-              <p className="text-sm text-slate-500 italic">No specific categories found.</p>
+              <p className={SUB}>No specific categories found.</p>
             ) : (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2.5">
                 {availableCategories.map((cat) => {
                   const isSelected = formData.category.includes(cat.value);
                   return (
@@ -185,15 +178,10 @@ export default function StepBusiness({ formData, setFormData, onNext, initialDat
                       key={cat.value}
                       type="button"
                       onClick={() => toggleCategory(cat.value)}
-                      className={cn(
-                        "px-3 py-1.5 rounded-full text-sm font-medium border transition-colors",
-                        isSelected
-                          ? "bg-indigo-100 text-indigo-800 border-indigo-200 hover:bg-indigo-200"
-                          : "bg-white text-slate-800 border-slate-300 hover:bg-slate-100"
-                      )}
+                      className={isSelected ? CHIP_ON : CHIP}
                     >
                       {cat.label}
-                      {isSelected && <Check className="inline-block ml-1 h-3 w-3" />}
+                      {isSelected && <Check className="h-3 w-3" />}
                     </button>
                   );
                 })}
@@ -204,10 +192,10 @@ export default function StepBusiness({ formData, setFormData, onNext, initialDat
       </div>
 
       <div className="flex justify-end mt-8">
-        <Button onClick={handleNext} className="bg-indigo-600 hover:bg-indigo-700 gap-2 px-6">
+        <button type="button" onClick={handleNext} className={BTN_PRIMARY}>
           Next <ArrowRight className="h-4 w-4" />
-        </Button>
+        </button>
       </div>
-    </Card>
+    </div>
   );
 }

@@ -214,46 +214,40 @@ export default function VendorSignup() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+      <div className="min-h-screen bg-cream dark:bg-[#211B16] flex items-center justify-center">
+        <Loader2 className="h-7 w-7 animate-spin text-gold-text dark:text-gold-dark" />
       </div>);
 
   }
 
   if (isSubmitted && paymentSuccess) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 flex items-center justify-center p-6">
-        <Card className="max-w-md w-full p-8 text-center">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="h-8 w-8 text-green-600" />
-          </div>
-          <h1 className="text-2xl font-bold text-slate-900 mb-4">Payment Successful!</h1>
-          <p className="text-slate-600 mb-4">
-            Your subscription is active and your vendor listing is being created.
+      <div className="min-h-screen bg-cream dark:bg-[#211B16] flex items-center justify-center p-6">
+        <div className="max-w-md w-full p-8 text-center bg-linen dark:bg-[#2A231D] border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] rounded-none">
+          <CheckCircle className="h-9 w-9 mx-auto text-gold-text dark:text-gold-dark" />
+          <h1 className="mt-5 font-serif text-[30px] text-ink dark:text-[#F1E8E0]">Payment successful</h1>
+          <p className="mt-3 text-[14px] font-light leading-[1.7] text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">
+            Your subscription is active and your vendor listing is being created. We'll notify you once it's approved and published.
           </p>
-          <p className="text-slate-600 mb-6">
-            We'll notify you once it's approved and published.
-          </p>
-          <Button
+          <button
             onClick={() => navigate(createPageUrl("ManageListing"))}
-            className="bg-indigo-600 hover:bg-indigo-700">
-
-            Go to Dashboard
-          </Button>
-        </Card>
+            className="mt-6 w-full min-h-[48px] rounded-none bg-ink dark:bg-[#F1E8E0] text-cream dark:text-[#211B16] text-[11.5px] font-medium tracking-[0.1em] uppercase hover:bg-ink-deep transition-colors">
+            Go to dashboard
+          </button>
+        </div>
       </div>);
 
   }
 
   return (
-    <div className="min-h-screen bg-white py-12 px-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-700 mb-6">
-            <Store className="h-8 w-8 text-white" />
-          </div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Create Your Vendor Listing</h1>
-          <p className="text-slate-600">Join Khareus and reach thousands of event planners</p>
+    <div className="min-h-screen bg-cream dark:bg-[#211B16] py-10 md:py-14 px-5 md:px-10 pb-[82px] md:pb-14">
+      <div className="max-w-[1000px] mx-auto">
+        <div className="text-center mb-9 pb-8 border-b border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]">
+          <Store className="h-7 w-7 mx-auto text-gold-text dark:text-gold-dark" />
+          <h1 className="mt-4 font-serif text-[30px] md:text-[40px] leading-[1.15] text-ink dark:text-[#F1E8E0]">Create your vendor listing</h1>
+          <p className="mt-2 text-[14.5px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">
+            Join Khareus and reach thousands of event planners
+          </p>
         </div>
 
         <VendorForm
