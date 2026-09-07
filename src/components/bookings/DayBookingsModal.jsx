@@ -27,27 +27,7 @@ export default function DayBookingsModal({ date, bookings, isVendor, open, onClo
       await base44.entities.Booking.update(bookingId, { status: newStatus });
       
       try {
-        const statusMessages = {
-          confirmed: "Your booking request has been confirmed!",
-          declined: "Unfortunately, your booking request has been declined."
-        };
-        
-        await base44.integrations.Core.SendEmail({
-          to: booking.user_email,
-          subject: `Booking Update: ${statusMessages[newStatus]}`,
-          body: `
-            <h2>Booking Status Update</h2>
-            <p>Dear ${booking.user_name},</p>
-            <p>${statusMessages[newStatus]}</p>
-            
-            <h3>Booking Details:</h3>
-            <ul>
-              <li><strong>Vendor:</strong> ${booking.vendor_name}</li>
-              <li><strong>Event Date:</strong> ${format(new Date(booking.event_date), "MMMM d, yyyy")}</li>
-              <li><strong>Guest Count:</strong> ${booking.guest_count}</li>
-            </ul>
-          `
-        });
+        await base44.functions.invoke("notifyBookingStatusChange", { bookingId, newStatus });
       } catch (emailError) {
         console.error("Failed to send email:", emailError);
       }

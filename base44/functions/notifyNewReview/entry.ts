@@ -70,7 +70,7 @@ Deno.serve(async (req) => {
                 ${button('View Review', `${SITE_URL}/VendorDetail?id=${vendor.id}#reviews`)}
             `;
 
-            await base44.integrations.Core.SendEmail({
+            await base44.asServiceRole.integrations.Core.SendEmail({
                 to: vendorEmail,
                 subject: `⭐ New ${review.rating}-Star Review for ${vendor.business_name}`,
                 body: emailTemplate('New Customer Review!', '#4F46E5', content)

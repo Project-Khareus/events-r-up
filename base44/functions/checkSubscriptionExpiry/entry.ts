@@ -100,7 +100,7 @@ Deno.serve(async (req) => {
           <p style="color: #64748b; font-size: 13px; margin-top: 24px;">Need help? Reply to this email or contact our support team.</p>
         `;
 
-        await base44.integrations.Core.SendEmail({
+        await base44.asServiceRole.integrations.Core.SendEmail({
           to: vendorEmail,
           subject: `⚠️ Your Khareus trial has ended — subscribe to stay listed`,
           body: emailTemplate('Your Trial Has Ended', '#DC2626', content)
@@ -140,7 +140,7 @@ Deno.serve(async (req) => {
           ? `⚠️ Your Khareus ${planLabel.toLowerCase()} expires tomorrow!`
           : `🔔 Your Khareus ${planLabel.toLowerCase()} expires in ${daysUntilExpiry} days`;
 
-        await base44.integrations.Core.SendEmail({
+        await base44.asServiceRole.integrations.Core.SendEmail({
           to: vendorEmail,
           subject,
           body: emailTemplate('Subscription Expiring Soon', urgencyColor, content)

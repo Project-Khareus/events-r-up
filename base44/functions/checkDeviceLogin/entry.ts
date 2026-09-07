@@ -81,7 +81,7 @@ Deno.serve(async (req) => {
         });
 
         // Send email notification
-        await base44.integrations.Core.SendEmail({
+        await base44.asServiceRole.integrations.Core.SendEmail({
           to: user.email,
           subject: 'New Device Login Detected',
           body: `

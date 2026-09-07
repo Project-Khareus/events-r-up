@@ -131,46 +131,11 @@ export default function VendorSignup() {
           toast.success("Trial listing created! We'll review it shortly.");
         }
 
-        // Send confirmation email
+        // Send confirmation email from the backend
         try {
-          const ghanaCardNote = needsGhanaCardUpload
-            ? '<li style="color: #D97706; font-weight: 600;">⚠️ Ghana Card verification is still pending — please edit your listing to upload it</li>'
-            : '<li>Your Ghana Card details have been received for verification</li>';
-
-          await base44.integrations.Core.SendEmail({
-            to: user.email,
-            from_name: 'Khareus',
-            subject: needsGhanaCardUpload ? 'Listing Submitted — Ghana Card Verification Needed' : 'Your Vendor Listing Has Been Submitted!',
-            body: `
-              <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
-                <div style="padding: 32px 24px;">
-                  <h1 style="color: #4F46E5; font-size: 24px; margin: 0 0 20px 0;">Listing Submitted Successfully!</h1>
-                  <p style="color: #334155; font-size: 15px; line-height: 1.6;">Hi ${user.full_name || 'there'},</p>
-                  <p style="color: #334155; font-size: 15px; line-height: 1.6;">Your vendor listing <strong>"${data.businessName}"</strong> has been submitted and is now pending review by our team.</p>
-                  ${needsGhanaCardUpload ? `
-                  <div style="background: #FFFBEB; padding: 16px; border-radius: 8px; margin: 20px 0; border: 1px solid #F59E0B;">
-                    <p style="margin: 0; color: #92400E; font-weight: 600; font-size: 14px;">⚠️ Ghana Card Verification Pending</p>
-                    <p style="margin: 8px 0 0; color: #92400E; font-size: 13px;">Please edit your listing to add your Ghana Card details and complete verification.</p>
-                  </div>
-                  ` : ''}
-                  <div style="background: #F8FAFC; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #E2E8F0;">
-                    <p style="margin: 4px 0; color: #334155;"><strong>What happens next?</strong></p>
-                    <ul style="color: #334155; font-size: 14px; line-height: 1.8;">
-                      <li>Our team will review your listing within 24-48 hours</li>
-                      ${ghanaCardNote}
-                      <li>You'll receive an email when your listing is approved</li>
-                      <li>You can view and edit your listing anytime from your dashboard</li>
-                    </ul>
-                  </div>
-                  <p style="color: #334155; font-size: 15px; line-height: 1.6;">Want to make changes? You can edit your listing:</p>
-                  <a href="https://khareus.com/EditVendor?id=${data.vendorId}" style="display: inline-block; padding: 12px 28px; background-color: #4F46E5; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; margin: 16px 0;">Edit My Listing</a>
-                  <a href="https://khareus.com/ManageListing" style="display: inline-block; padding: 12px 28px; background-color: #ffffff; color: #4F46E5; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; margin: 16px 0 16px 8px; border: 2px solid #4F46E5;">View My Listings</a>
-                </div>
-                <div style="border-top: 1px solid #E2E8F0; padding: 20px 24px; text-align: center;">
-                  <p style="color: #94A3B8; font-size: 12px; margin: 0;">&copy; ${new Date().getFullYear()} Khareus. All rights reserved.</p>
-                </div>
-              </div>
-            `
+          await base44.functions.invoke("notifyTrialListingSubmitted", {
+            vendorId: data.vendorId,
+            needsGhanaCardUpload
           });
         } catch (e) {
           console.error('Failed to send vendor confirmation email:', e);

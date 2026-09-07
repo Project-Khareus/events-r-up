@@ -73,7 +73,7 @@ Deno.serve(async (req) => {
                 </p>
             `;
 
-            await base44.integrations.Core.SendEmail({
+            await base44.asServiceRole.integrations.Core.SendEmail({
                 to: emailToSend,
                 subject: `Update on Your ${BRAND} Listing Application`,
                 body: emailTemplate('Listing Application Update', '#DC2626', content)

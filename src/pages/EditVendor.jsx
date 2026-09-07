@@ -176,35 +176,12 @@ export default function EditVendor() {
         );
         await Promise.all(notificationPromises);
 
-        // Send email notification to first admin
-        if (adminUsers.length > 0) {
-          const emailSubject = nameChanged 
-            ? `Vendor Name Change Request: ${vendor.business_name}`
-            : `Vendor Update: ${vendor.business_name}`;
-          
-          const emailBody = `
-            <h1>${nameChanged ? 'Vendor Name Change Request' : 'Vendor Update Pending Review'}</h1>
-            <p><strong>${vendor.business_name}</strong> has submitted changes for approval.</p>
-            <p><strong>Fields updated:</strong> ${changesText}</p>
-            ${nameChanged ? `
-              <div style="background: #fef3c7; padding: 16px; border-radius: 8px; margin: 16px 0; border-left: 4px solid #f59e0b;">
-                <h3 style="margin: 0 0 8px 0; color: #92400e;">⚠️ Business Name Change</h3>
-                <p style="margin: 0; color: #78350f;"><strong>Reasons:</strong></p>
-                <ul style="margin: 8px 0; color: #78350f;">
-                  ${nameChangeReasons.map(reason => `<li>${reason}</li>`).join('')}
-                </ul>
-              </div>
-            ` : ''}
-            <p>Please log in to the admin dashboard to review and approve these changes.</p>
-            <p><a href="https://khareus.com${createPageUrl('AdminVendors')}" style="display: inline-block; padding: 12px 24px; background-color: #4F46E5; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0;">Review Changes</a></p>
-          `;
-
-          await base44.integrations.Core.SendEmail({
-            to: adminUsers[0].email,
-            subject: emailSubject,
-            body: emailBody
-          });
-        }
+        // Email the admins from the backend
+        await base44.functions.invoke("notifyVendorChangesSubmitted", {
+          vendorId: vendor.id,
+          changes,
+          nameChangeReasons
+        });
       } catch (error) {
         console.error('Failed to notify admins:', error);
       }

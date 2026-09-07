@@ -98,65 +98,13 @@ export default function AdminReports() {
         });
       }
 
-      // Send email to reporter
-      if (report.reporter_email) {
-        await base44.integrations.Core.SendEmail({
-          to: report.reporter_email,
-          subject: `Update on your report for "${report.target_name}"`,
-          body: `
-            <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-              <div style="padding: 32px 24px;">
-                <h1 style="color: #1E293B; font-size: 22px; margin: 0 0 16px;">Report Update</h1>
-                <p style="color: #334155; font-size: 15px; line-height: 1.6;">
-                  Thank you for your report regarding <strong>${report.target_name}</strong>. Our team has reviewed it.
-                </p>
-                <div style="background: #F1F5F9; padding: 16px; border-radius: 8px; margin: 16px 0;">
-                  <p style="margin: 0 0 8px; font-weight: 600; color: #1E293B;">Outcome: ${outcomeLabel}</p>
-                  <p style="margin: 0; color: #475569; font-size: 14px;">${outcomeDesc}</p>
-                </div>
-                ${notes ? `<div style="margin: 16px 0;"><p style="font-weight: 600; color: #1E293B; margin: 0 0 4px;">Admin Notes:</p><p style="color: #475569; font-size: 14px; margin: 0;">${notes}</p></div>` : ''}
-                <p style="color: #64748B; font-size: 13px; margin-top: 24px;">If you have further concerns, please don't hesitate to reach out.</p>
-              </div>
-              <div style="border-top: 1px solid #E2E8F0; padding: 16px 24px; text-align: center;">
-                <p style="color: #94A3B8; font-size: 12px; margin: 0;">&copy; ${new Date().getFullYear()} Khareus. All rights reserved.</p>
-              </div>
-            </div>
-          `
-        });
-      }
-
-      // Send email to vendor
-      if (report.target_type === "vendor") {
-        const vendor = vendors.find(v => v.id === report.target_id);
-        if (vendor?.contact_email) {
-          await base44.integrations.Core.SendEmail({
-            to: vendor.contact_email,
-            subject: `Action taken on your listing "${vendor.business_name}"`,
-            body: `
-              <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <div style="padding: 32px 24px;">
-                  <h1 style="color: #1E293B; font-size: 22px; margin: 0 0 16px;">Listing Review Notice</h1>
-                  <p style="color: #334155; font-size: 15px; line-height: 1.6;">
-                    Your listing <strong>${vendor.business_name}</strong> was reviewed following a user report.
-                  </p>
-                  <div style="background: #FEF2F2; padding: 16px; border-radius: 8px; border-left: 4px solid #EF4444; margin: 16px 0;">
-                    <p style="margin: 0 0 8px; font-weight: 600; color: #1E293B;">Action Taken: ${outcomeLabel}</p>
-                    <p style="margin: 0; color: #475569; font-size: 14px;">${outcomeDesc}</p>
-                  </div>
-                  ${notes ? `<div style="margin: 16px 0;"><p style="font-weight: 600; color: #1E293B; margin: 0 0 4px;">Notes:</p><p style="color: #475569; font-size: 14px; margin: 0;">${notes}</p></div>` : ''}
-                  <p style="color: #334155; font-size: 15px; line-height: 1.6;">
-                    If you believe this was a mistake or wish to appeal, please contact us through the messaging feature in your dashboard.
-                  </p>
-                  <a href="https://khareus.com/Messages?admin=true" style="display: inline-block; padding: 12px 28px; background-color: #4F46E5; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; margin: 16px 0;">Contact Admin</a>
-                </div>
-                <div style="border-top: 1px solid #E2E8F0; padding: 16px 24px; text-align: center;">
-                  <p style="color: #94A3B8; font-size: 12px; margin: 0;">&copy; ${new Date().getFullYear()} Khareus. All rights reserved.</p>
-                </div>
-              </div>
-            `
-          });
-        }
-      }
+      // Notify the reporter (and the vendor when applicable) by email
+      await base44.functions.invoke("notifyReportOutcome", {
+        reportId: report.id,
+        outcomeLabel,
+        outcomeDesc,
+        notes
+      });
 
       return { report, outcome };
     },

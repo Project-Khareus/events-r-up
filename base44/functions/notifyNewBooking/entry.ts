@@ -73,7 +73,7 @@ Deno.serve(async (req) => {
                 ${button('View Booking', `${SITE_URL}/Bookings`)}
             `;
 
-            await base44.integrations.Core.SendEmail({
+            await base44.asServiceRole.integrations.Core.SendEmail({
                 to: vendorEmail,
                 subject: `🎉 New Booking Request from ${booking.user_name}`,
                 body: emailTemplate('New Booking Request!', '#4F46E5', vendorContent)
@@ -100,7 +100,7 @@ Deno.serve(async (req) => {
                 ${button('View My Bookings', `${SITE_URL}/Bookings`)}
             `;
 
-            await base44.integrations.Core.SendEmail({
+            await base44.asServiceRole.integrations.Core.SendEmail({
                 to: booking.user_email,
                 subject: `Booking Request Sent to ${vendor.business_name}`,
                 body: emailTemplate('Booking Request Received', '#4F46E5', customerContent)

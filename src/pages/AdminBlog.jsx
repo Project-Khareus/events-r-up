@@ -87,11 +87,7 @@ export default function AdminBlog() {
       if (newPost.status === 'pending' && !isAdmin) {
           toast.success("Post submitted for approval!");
           // Send email async without blocking
-          base44.integrations.Core.SendEmail({
-              to: import.meta.env.VITE_ADMIN_EMAIL || "admin@omnievents.com",
-              subject: "New Blog Post Submission",
-              body: `User ${user.full_name} has submitted a new blog post titled "${newPost.title}" for approval.`
-          }).catch(() => {});
+          base44.functions.invoke("notifyBlogSubmission", { postId: newPost.id, isUpdate: false }).catch(() => {});
       } else {
           toast.success("Post saved successfully");
       }
@@ -111,11 +107,7 @@ export default function AdminBlog() {
       if (updatedPost.status === 'pending' && !isAdmin) {
            toast.success("Post submitted for approval!");
            // Send email async without blocking
-           base44.integrations.Core.SendEmail({
-               to: import.meta.env.VITE_ADMIN_EMAIL || "admin@omnievents.com",
-               subject: "Blog Post Submission Updated",
-               body: `User ${user.full_name} has updated and submitted the blog post titled "${updatedPost.title}" for approval.`
-           }).catch(() => {});
+           base44.functions.invoke("notifyBlogSubmission", { postId: updatedPost.id, isUpdate: true }).catch(() => {});
       } else {
           toast.success("Post updated successfully");
       }

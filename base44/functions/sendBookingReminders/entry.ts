@@ -97,7 +97,7 @@ Deno.serve(async (req) => {
                         <p style="color: #64748B; font-size: 14px; margin-top: 24px;">We hope your event is amazing! 🎊</p>
                     `;
 
-                    await base44.integrations.Core.SendEmail({
+                    await base44.asServiceRole.integrations.Core.SendEmail({
                         to: booking.user_email,
                         subject,
                         body: emailTemplate('Event Reminder', '#4F46E5', content)
@@ -130,7 +130,7 @@ Deno.serve(async (req) => {
                         ${button('View Booking Details', `${SITE_URL}/Bookings`)}
                     `;
 
-                    await base44.integrations.Core.SendEmail({
+                    await base44.asServiceRole.integrations.Core.SendEmail({
                         to: vendorEmail,
                         subject: `📅 Event Reminder: ${booking.user_name} - ${eventDate}`,
                         body: emailTemplate('Upcoming Event Reminder', '#4F46E5', vendorContent)

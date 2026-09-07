@@ -65,7 +65,7 @@ Deno.serve(async (req) => {
             ${button('Review Listing', `${SITE_URL}/AdminVendors`)}
         `;
 
-        await base44.integrations.Core.SendEmail({
+        await base44.asServiceRole.integrations.Core.SendEmail({
             to: adminEmail,
             subject: `New Vendor Registration: ${business_name}`,
             body: emailTemplate('New Vendor Registration', '#4F46E5', content)

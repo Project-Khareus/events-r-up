@@ -169,17 +169,7 @@ export default function AdminVendors() {
 
       if (vendor.contact_email) {
         try {
-          await base44.integrations.Core.SendEmail({
-            to: vendor.contact_email,
-            subject: 'Your Vendor Listing Was Not Approved',
-            body: `
-              <h1>Listing Not Approved</h1>
-              <p>Your vendor listing <strong>${vendor.business_name}</strong> could not be approved at this time.</p>
-              <h3>Reason:</h3>
-              <p style="background: #fef2f2; padding: 12px; border-radius: 8px; border-left: 4px solid #ef4444;">${reason}</p>
-              <p>Please update your listing and contact admin if you need clarification.</p>
-            `
-          });
+          await base44.functions.invoke("notifyVendorAction", { vendorId: vendor.id, action: 'rejected', reason });
         } catch (error) {
           console.error('Failed to send rejection email:', error);
         }
@@ -235,17 +225,7 @@ export default function AdminVendors() {
 
       // Send email notification to vendor
       try {
-        await base44.integrations.Core.SendEmail({
-          to: vendor.contact_email,
-          subject: 'Your Vendor Changes Have Been Approved ✅',
-          body: `
-            <h1>Changes Approved!</h1>
-            <p>Great news! Your recent changes to <strong>${vendor.business_name}</strong> have been approved and are now live.</p>
-            <p><strong>Approved by:</strong> ${currentUser.full_name || 'Admin'}</p>
-            <p><a href="${viewLink}" style="color: #4F46E5; text-decoration: none;">View Your Public Listing →</a></p>
-            <p><a href="${manageLink}" style="color: #4F46E5; text-decoration: none;">Manage Your Listing →</a></p>
-          `
-        });
+        await base44.functions.invoke("notifyVendorAction", { vendorId: vendor.id, action: 'changes_approved' });
 
         // Create in-app notification
         await base44.entities.Notification.create({
@@ -287,21 +267,7 @@ export default function AdminVendors() {
 
       // Send email notification to vendor
       try {
-        await base44.integrations.Core.SendEmail({
-          to: vendor.contact_email,
-          subject: 'Vendor Changes Require Revision',
-          body: `
-            <h1>Changes Need Revision</h1>
-            <p>Your recent changes to <strong>${vendor.business_name}</strong> could not be approved at this time.</p>
-            <p><strong>Reviewed by:</strong> ${currentUser.full_name || 'Admin'}</p>
-            <h3>Reason:</h3>
-            <p style="background: #f1f5f9; padding: 12px; border-radius: 8px;">${reason || 'No specific reason provided'}</p>
-            <p>Please review and resubmit your changes:</p>
-            <p><a href="${manageLink}" style="color: #4F46E5; text-decoration: none;">Edit Your Listing →</a></p>
-            <p><a href="${viewLink}" style="color: #4F46E5; text-decoration: none;">View Current Public Listing →</a></p>
-            <p><a href="${messageLink}" style="color: #4F46E5; text-decoration: none;">Message Admin for Clarification →</a></p>
-          `
-        });
+        await base44.functions.invoke("notifyVendorAction", { vendorId: vendor.id, action: 'changes_rejected', reason });
 
         // Create in-app notification
         await base44.entities.Notification.create({
@@ -370,19 +336,7 @@ export default function AdminVendors() {
       const messageLink = `https://khareus.com/messages?admin=true`;
 
       try {
-        await base44.integrations.Core.SendEmail({
-          to: vendor.contact_email,
-          subject: 'Your Vendor Listing Has Been Suspended',
-          body: `
-            <h1>Listing Suspended</h1>
-            <p>Your vendor listing <strong>${vendor.business_name}</strong> has been suspended and is no longer visible to users.</p>
-            <p><strong>Suspended by:</strong> ${currentUser.full_name || 'Admin'}</p>
-            <h3>Reason:</h3>
-            <p style="background: #fef2f2; padding: 12px; border-radius: 8px; border-left: 4px solid #ef4444;">${reason || 'No specific reason provided'}</p>
-            <p>If you believe this is a mistake or would like to resolve the issues, please contact us:</p>
-            <p><a href="${messageLink}" style="display: inline-block; padding: 12px 24px; background-color: #4F46E5; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0;">Contact Admin</a></p>
-          `
-        });
+        await base44.functions.invoke("notifyVendorAction", { vendorId: vendor.id, action: 'suspended', reason });
 
         await base44.entities.Notification.create({
           user_id: vendor.user_id,

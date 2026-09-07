@@ -75,7 +75,7 @@ Deno.serve(async (req) => {
             ${button('View Message', `${SITE_URL}/Messages?conversation=${conversation.id}`)}
         `;
 
-        await base44.integrations.Core.SendEmail({
+        await base44.asServiceRole.integrations.Core.SendEmail({
             to: recipient.email,
             subject: `💬 New message from ${message.sender_name}`,
             body: emailTemplate('New Message', '#4F46E5', content)

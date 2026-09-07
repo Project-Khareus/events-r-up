@@ -26,28 +26,8 @@ export default function LocationSelector({ value, onChange, onNext, onBack }) {
     const timer = setTimeout(async () => {
       setIsSearching(true);
       try {
-        const response = await base44.integrations.Core.InvokeLLM({
-          prompt: `Find and return geocoded locations for the search query: "${searchQuery}". Return the top 5 most relevant results with their coordinates. Include cities, states, and countries in the results.`,
-          add_context_from_internet: true,
-          response_json_schema: {
-            type: "object",
-            properties: {
-              locations: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    name: { type: "string" },
-                    formatted_address: { type: "string" },
-                    lat: { type: "number" },
-                    lng: { type: "number" }
-                  }
-                }
-              }
-            }
-          }
-        });
-        setSuggestions(response.locations || []);
+        const { data } = await base44.functions.invoke("geocodeLocation", { query: searchQuery });
+        setSuggestions(data?.locations || []);
       } catch (error) {
         console.error("Location search failed:", error);
         setSuggestions([]);

@@ -50,16 +50,8 @@ export default function AdminEvents() {
       date: e.event_date,
       status: e.status,
     }));
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `You are a search engine for event listings. Given the user query and list of events, return the IDs of events that match the query. Consider title, description, theme, location, organizer, and date.\n\nUser query: "${searchQuery}"\n\nEvents:\n${JSON.stringify(eventsForAi)}`,
-      response_json_schema: {
-        type: "object",
-        properties: {
-          matched_ids: { type: "array", items: { type: "string" } }
-        }
-      }
-    });
-    setAiMatchedIds(new Set(result.matched_ids || []));
+    const { data: result } = await base44.functions.invoke("searchEventsAi", { query: searchQuery });
+    setAiMatchedIds(new Set(result?.matched_ids || []));
     setIsAiSearching(false);
   };
 

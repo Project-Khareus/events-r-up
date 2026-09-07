@@ -90,7 +90,7 @@ Deno.serve(async (req) => {
                 ${button('View All Bookings', `${SITE_URL}/Bookings`, '#64748B')}
             `;
 
-            await base44.integrations.Core.SendEmail({
+            await base44.asServiceRole.integrations.Core.SendEmail({
                 to: booking.user_email,
                 subject: config.subject,
                 body: emailTemplate(config.title, config.color, content)
