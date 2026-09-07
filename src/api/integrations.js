@@ -1,24 +1,8 @@
 import { base44 } from './base44Client';
 
-
-
-
-export const Core = base44.integrations.Core;
-
-export const InvokeLLM = base44.integrations.Core.InvokeLLM;
-
-export const SendEmail = base44.integrations.Core.SendEmail;
-
-export const SendSMS = base44.integrations.Core.SendSMS;
-
+// Only file uploads run from the browser. Every other integration
+// (email, AI, image generation, data extraction) is called from
+// backend functions so integration credits can't be spent from the client.
 export const UploadFile = base44.integrations.Core.UploadFile;
 
-export const GenerateImage = base44.integrations.Core.GenerateImage;
-
-export const ExtractDataFromUploadedFile = base44.integrations.Core.ExtractDataFromUploadedFile;
-
-
-
-
-
-
+export const UploadPrivateFile = base44.integrations.Core.UploadPrivateFile;
