@@ -40,10 +40,10 @@ export default async function(req) {
       return Response.json({ error: 'Vendor ID is required' }, { status: 400 });
     }
 
-    const vendor = await base44.asServiceRole.entities.Vendor.get(vendor_id);
+    const vendor = await base44.asServiceRole.entities.Vendor.get(vendor_id).catch(() => null);
 
     if (!vendor) {
-      return Response.json({ error: 'Vendor not found' }, { status: 404 });
+      return Response.json({ error: 'This listing no longer exists. Refresh the page.' }, { status: 404 });
     }
 
     await base44.asServiceRole.entities.Vendor.update(vendor_id, {

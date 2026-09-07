@@ -158,6 +158,7 @@ export default function AdminVendors() {
     },
     onError: (error) => {
       toast.error("Failed to approve vendor: " + error.message);
+      queryClient.invalidateQueries(['admin_all_vendors']);
     }
   });
 
