@@ -80,37 +80,57 @@ function labelsFor(values, labels = {}) {
   return items.flatMap((item) => [item, labels[item]].filter(Boolean));
 }
 
+const MATCH_THRESHOLD = 0.5;
+
+function subjectFields(vendor, categoryLabels) {
+  return [
+    { value: vendor.business_name, weight: 9 },
+    { value: vendor.slogan, weight: 6 },
+    { value: vendor.services, weight: 6 },
+    { value: labelsFor(vendor.category, categoryLabels), weight: 5 },
+    { value: labelsFor(vendor.event_type, EVENT_LABELS), weight: 4 },
+    { value: vendor.description, weight: 3 }
+  ];
+}
+
 export function rankVendors(vendors, query, categoryLabels = {}) {
   const queryTokens = tokenize(query);
   if (!queryTokens.length) return vendors;
 
   const normalizedQuery = normalizeWord(query);
 
-  return vendors
-    .map((vendor, index) => {
-      const fields = [
-        { value: vendor.business_name, weight: 9 },
-        { value: vendor.slogan, weight: 6 },
-        { value: vendor.services, weight: 6 },
-        { value: labelsFor(vendor.category, categoryLabels), weight: 5 },
-        { value: labelsFor(vendor.event_type, EVENT_LABELS), weight: 4 },
-        { value: vendor.location, weight: 4 },
-        { value: vendor.description, weight: 3 }
-      ];
+  // Score every token against subject fields and against location, per vendor.
+  const scored = vendors.map((vendor, index) => {
+    const fields = subjectFields(vendor, categoryLabels);
+    const perToken = queryTokens.map((token) => {
+      const subject = fields.reduce(
+        (total, field) => total + bestFieldScore(token, field.value) * field.weight,
+        0
+      );
+      const locationMatch = bestFieldScore(token, vendor.location);
+      return { subject, locationMatch };
+    });
+    return { vendor, index, perToken };
+  });
 
-      const score = queryTokens.reduce((total, token) => {
-        const tokenScore = fields.reduce((fieldTotal, field) => {
-          return fieldTotal + bestFieldScore(token, field.value) * field.weight;
-        }, 0);
-        return total + tokenScore;
-      }, 0);
-
+  // Every query term must be accounted for by the vendor — either as a
+  // service/subject match or as a location match. A vendor that only shares
+  // the location word ("Accra") no longer qualifies for "photographer in Accra".
+  return scored
+    .filter(({ perToken }) =>
+      perToken.every(({ subject, locationMatch }) =>
+        subject > 0 || locationMatch >= MATCH_THRESHOLD
+      )
+    )
+    .map(({ vendor, index, perToken }) => {
+      const score = perToken.reduce(
+        (total, { subject, locationMatch }) => total + subject + locationMatch * 4,
+        0
+      );
       const normalizedName = normalizeWord(vendor.business_name);
       const nameBoost = normalizedName && normalizedName.includes(normalizedQuery) ? 1000 : 0;
-
-      return { vendor, score: score + nameBoost, index };
+      return { vendor, index, score: score + nameBoost };
     })
-    .filter((item) => item.score > 0)
     .sort((a, b) => b.score - a.score || a.index - b.index)
     .map((item) => item.vendor);
 }
