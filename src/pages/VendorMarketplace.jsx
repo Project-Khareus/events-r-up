@@ -71,11 +71,11 @@ export default function VendorMarketplace() {
 
   const { data: rawVendors = [], isLoading, isFetching } = useQuery({
     queryKey: ['vendors'],
-    queryFn: () => base44.entities.Vendor.list('-created_date', 200),
-    staleTime: 5 * 60 * 1000,
+    queryFn: () => base44.entities.Vendor.list('-created_date', 400),
+    staleTime: 60 * 1000,
     cacheTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnReconnect: false,
     retry: 1,
     keepPreviousData: true
