@@ -7,6 +7,7 @@ const OCCASIONS = [
     eventType: "weddings",
     label: "Weddings",
     page: "Weddings",
+    image: "https://media.base44.com/images/public/69224d81efa2f499554b5019/290b267c3_generated_image.png",
     categories: [
       { name: "Photography & Videography", id: "photography_videography" },
       { name: "Catering", id: "catering" },
@@ -18,6 +19,7 @@ const OCCASIONS = [
     eventType: "parties",
     label: "Parties",
     page: "Parties",
+    image: "https://media.base44.com/images/public/69224d81efa2f499554b5019/71aed7123_generated_image.png",
     categories: [
       { name: "Event Venues", id: "event_grounds" },
       { name: "Music / Karaoke", id: "music_karaoke_mc" },
@@ -29,6 +31,7 @@ const OCCASIONS = [
     eventType: "conference",
     label: "Conferences",
     page: "Conference",
+    image: "https://media.base44.com/images/public/69224d81efa2f499554b5019/376180ff6_generated_image.png",
     categories: [
       { name: "Conference Facilities", id: "conference_facilities" },
       { name: "Rapporteur Services", id: "rapporteur_services" },
@@ -39,6 +42,7 @@ const OCCASIONS = [
     eventType: "funeral",
     label: "Funerals",
     page: "Funeral",
+    image: "https://media.base44.com/images/public/69224d81efa2f499554b5019/e21bc3fc3_generated_image.png",
     categories: [
       { name: "Caskets", id: "caskets" },
       { name: "Catering & Drinks", id: "catering_drinks" },
@@ -54,18 +58,11 @@ export default function HomeOccasionDoors({ vendorsByEvent = [] }) {
     return map;
   }, [vendorsByEvent]);
 
-  const usedImages = new Set();
-
   return (
     <section className="px-5 md:px-10 py-8 md:py-12">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
         {OCCASIONS.map((occasion) => {
           const groupVendors = byEvent[occasion.eventType] || [];
-          const ranked = [...groupVendors]
-            .filter((v) => v.image_url)
-            .sort((a, b) => (b.rating || 0) - (a.rating || 0));
-          const best = ranked.find((v) => !usedImages.has(v.image_url)) || ranked[0];
-          if (best?.image_url) usedImages.add(best.image_url);
 
           return (
             <div key={occasion.eventType}>
@@ -73,14 +70,12 @@ export default function HomeOccasionDoors({ vendorsByEvent = [] }) {
                 to={createPageUrl(occasion.page)}
                 className="relative block h-[132px] md:h-[236px] overflow-hidden bg-linen dark:bg-[#2A231D] border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] group focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#A97E2E]"
               >
-                {best?.image_url ? (
-                  <img
-                    src={best.image_url}
-                    alt={`${occasion.label} vendors on Khareus`}
-                    loading="lazy"
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                ) : null}
+                <img
+                  src={occasion.image}
+                  alt={`${occasion.label} vendors on Khareus`}
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
                 <div
                   className="absolute inset-x-0 bottom-0 h-2/3"
                   style={{ background: "linear-gradient(to top, rgba(42,35,29,0.92), rgba(42,35,29,0.35))" }}
