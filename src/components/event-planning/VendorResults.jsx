@@ -51,12 +51,20 @@ export default function VendorResults({ eventType, location, budget, selectedCat
     const relevantCategories = selectedCategories || [];
     const budgetValue = parseFloat(budget);
     
-    let filtered = vendors.filter(vendor => {
+    const normalized = vendors
+      .filter(Boolean)
+      .map((v) => (v.data ? { id: v.id, ...v.data } : v))
+      .filter((v) => v && v.id && (!v.status || v.status === "approved"));
+
+    let filtered = normalized.filter(vendor => {
+      const vendorEvents = vendor.event_type ? (Array.isArray(vendor.event_type) ? vendor.event_type : [vendor.event_type]) : [];
+      const vendorCategories = vendor.category ? (Array.isArray(vendor.category) ? vendor.category : [vendor.category]) : [];
+
       // Filter by event type
-      if (vendor.event_type !== eventType) return false;
-      
+      if (eventType && vendorEvents.length && !vendorEvents.includes(eventType)) return false;
+
       // Filter by category
-      if (!relevantCategories.includes(vendor.category)) return false;
+      if (relevantCategories.length && vendorCategories.length && !vendorCategories.some((c) => relevantCategories.includes(c))) return false;
       
       // Filter by budget using starting_price
       if (vendor.starting_price && vendor.starting_price > budgetValue) {
@@ -80,7 +88,7 @@ export default function VendorResults({ eventType, location, budget, selectedCat
 
     // Add distance to each vendor
     filtered = filtered.map(vendor => {
-      const vendorCoords = parseLocation(vendor.location);
+      const vendorCoords = parseLocation(vendor.location) || null;
       const distance = vendorCoords && location?.lat && location?.lng
         ? calculateDistance(location.lat, location.lng, vendorCoords.lat, vendorCoords.lng)
         : 999;
@@ -104,15 +112,18 @@ export default function VendorResults({ eventType, location, budget, selectedCat
 
   // Group vendors by category for better display
   const vendorsByCategory = useMemo(() => {
+    const relevant = selectedCategories || [];
     const grouped = {};
     filteredAndSortedVendors.forEach(vendor => {
-      if (!grouped[vendor.category]) {
-        grouped[vendor.category] = [];
-      }
-      grouped[vendor.category].push(vendor);
+      const cats = vendor.category ? (Array.isArray(vendor.category) ? vendor.category : [vendor.category]) : ["others"];
+      const matching = cats.filter((c) => relevant.includes(c));
+      (matching.length ? matching : [cats[0] || "others"]).forEach((c) => {
+        if (!grouped[c]) grouped[c] = [];
+        grouped[c].push(vendor);
+      });
     });
     return grouped;
-  }, [filteredAndSortedVendors]);
+  }, [filteredAndSortedVendors, selectedCategories]);
 
   const categoryLabels = {
     bridal_fashion: "Bridal Fashion & Accessories",
