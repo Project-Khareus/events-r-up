@@ -89,6 +89,7 @@ export default function EventDetail() {
 
   const isPending = event.status === 'pending';
   const isRejected = event.status === 'rejected';
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location_address || "")}`;
 
 
   return (
@@ -135,10 +136,15 @@ export default function EventDetail() {
                     <Calendar className="h-5 w-5 shrink-0" />
                     <span>{format(new Date(event.event_date), 'EEEE, MMMM d, yyyy • h:mm a')}</span>
                 </div>
-                <div className="flex items-center gap-2">
+                <a
+                    href={mapsUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-2 hover:underline underline-offset-4"
+                >
                     <MapPin className="h-5 w-5 shrink-0" />
                     <span>{event.location_address}</span>
-                </div>
+                </a>
             </div>
          </div>
       </div>
@@ -167,16 +173,23 @@ export default function EventDetail() {
                             <div className="bg-indigo-100 p-4 rounded-full mb-4">
                                 <MapPin className="h-8 w-8 text-indigo-600" />
                             </div>
-                            <h3 className="text-lg font-semibold text-slate-900 mb-2">{event.location_address}</h3>
-                            <p className="text-sm text-slate-500 mb-6">
-                                {event.location_lat?.toFixed(4)}, {event.location_lng?.toFixed(4)}
-                            </p>
+                            <a
+                                href={mapsUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-lg font-semibold text-slate-900 mb-2 hover:underline underline-offset-4"
+                            >
+                                {event.location_address}
+                            </a>
+                            <p className="text-sm text-slate-500 mb-6">Tap to open in Google Maps and get directions</p>
                             <div className="flex flex-wrap gap-3 justify-center">
-                                <Button onClick={() => setShowMap(true)} variant="outline" className="bg-white">
-                                    View on Map
-                                </Button>
+                                {(event.location_lat && event.location_lng) && (
+                                    <Button onClick={() => setShowMap(true)} variant="outline" className="bg-white">
+                                        View on Map
+                                    </Button>
+                                )}
                                 <a 
-                                    href={`https://www.google.com/maps/search/?api=1&query=${event.location_lat},${event.location_lng}`} 
+                                    href={mapsUrl}
                                     target="_blank" 
                                     rel="noreferrer"
                                 >

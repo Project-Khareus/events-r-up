@@ -11,8 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Loader2, Image as ImageIcon, MapPin, Calendar, DollarSign } from "lucide-react";
-import LocationPicker from "../components/events/LocationPicker";
+import { Loader2, Image as ImageIcon, Calendar, DollarSign } from "lucide-react";
 import LocationAutocomplete from "@/components/shared/LocationAutocomplete";
 
 const THEMES = ["Music", "Food & Drink", "Business", "Arts & Culture", "Sports", "Community", "Party", "Education", "Other"];
@@ -38,7 +37,8 @@ export default function CreateEvent() {
     recurrence_end_date: ""
   });
   
-  const [mapPosition, setMapPosition] = useState(null); // { lat: 0, lng: 0 }
+  // Coordinates captured automatically from the selected location suggestion
+  const [mapPosition, setMapPosition] = useState(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -92,11 +92,6 @@ export default function CreateEvent() {
       return;
     }
     
-    if (!mapPosition) {
-        toast.error("Please select a location on the map");
-        return;
-    }
-
     setIsLoading(true);
     
     // Check for duplicates
@@ -119,11 +114,14 @@ export default function CreateEvent() {
     const eventData = {
       ...formData,
       user_id: user.id,
-      location_lat: mapPosition.lat,
-      location_lng: mapPosition.lng,
       price: formData.is_paid ? parseFloat(formData.price) : 0,
       status: 'pending' // Explicitly set pending
     };
+
+    if (mapPosition) {
+      eventData.location_lat = mapPosition.lat;
+      eventData.location_lng = mapPosition.lng;
+    }
 
     createEventMutation.mutate(eventData);
   };
@@ -210,21 +208,15 @@ export default function CreateEvent() {
             </div>
 
             {/* Location */}
-            <div className="space-y-4">
-                <div className="space-y-2">
-                    <Label>Location Address *</Label>
-                    <LocationAutocomplete
-                        value={formData.location_address}
-                        onChange={(location_address) => setFormData(prev => ({ ...prev, location_address }))}
-                        placeholder="e.g., National Theatre, Accra, Ghana"
-                        required
-                    />
-                </div>
-                <div className="space-y-2">
-                    <Label>Pin Location on Map *</Label>
-                    <LocationPicker position={mapPosition} setPosition={setMapPosition} />
-                    <p className="text-xs text-slate-500">Click on the map to set the exact location pin.</p>
-                </div>
+            <div className="space-y-2">
+                <Label>Location Address *</Label>
+                <LocationAutocomplete
+                    value={formData.location_address}
+                    onChange={(location_address) => setFormData(prev => ({ ...prev, location_address }))}
+                    onSelect={(suggestion) => setMapPosition({ lat: parseFloat(suggestion.lat), lng: parseFloat(suggestion.lon) })}
+                    placeholder="e.g., National Theatre, Accra, Ghana"
+                    required
+                />
             </div>
 
             {/* Pricing */}

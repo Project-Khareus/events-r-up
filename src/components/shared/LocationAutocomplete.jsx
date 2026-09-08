@@ -2,9 +2,26 @@ import { useEffect, useRef, useState } from "react";
 import { Loader2, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+function conciseLabel(item) {
+  const parts = String(item.display_name || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const primary = parts[0] || "";
+  const address = item.address || {};
+  const city =
+    address.city || address.town || address.village ||
+    address.suburb || address.municipality || address.county || "";
+  if (!city || primary.toLowerCase().includes(city.toLowerCase())) {
+    return primary || item.display_name || "";
+  }
+  return `${primary}, ${city}`;
+}
+
 export default function LocationAutocomplete({
   value,
   onChange,
+  onSelect,
   placeholder = "Start typing a Ghana location...",
   className,
   inputClassName,
@@ -72,7 +89,8 @@ export default function LocationAutocomplete({
   }, [query, open]);
 
   const selectSuggestion = (suggestion) => {
-    onChange(suggestion.display_name);
+    onChange(conciseLabel(suggestion));
+    if (onSelect) onSelect(suggestion);
     setOpen(false);
     setSuggestions([]);
     setActiveIndex(-1);

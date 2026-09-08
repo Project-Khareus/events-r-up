@@ -12,7 +12,6 @@ import { Switch } from "@/components/ui/switch";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2, Image as ImageIcon, DollarSign, ArrowLeft } from "lucide-react";
-import LocationPicker from "../components/events/LocationPicker";
 import LocationAutocomplete from "@/components/shared/LocationAutocomplete";
 
 const THEMES = ["Music", "Food & Drink", "Business", "Arts & Culture", "Sports", "Community", "Party", "Education", "Other"];
@@ -133,17 +132,15 @@ export default function EditEvent() {
       return;
     }
     
-    if (!mapPosition) {
-      toast.error("Please select a location on the map");
-      return;
-    }
-
     const eventData = {
       ...formData,
-      location_lat: mapPosition.lat,
-      location_lng: mapPosition.lng,
       price: formData.is_paid ? parseFloat(formData.price) : 0,
     };
+
+    if (mapPosition) {
+      eventData.location_lat = mapPosition.lat;
+      eventData.location_lng = mapPosition.lng;
+    }
 
     updateEventMutation.mutate(eventData);
   };
@@ -263,21 +260,15 @@ export default function EditEvent() {
             </div>
 
             {/* Location */}
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label>Location Address *</Label>
-                <LocationAutocomplete
-                  value={formData.location_address}
-                  onChange={(location_address) => setFormData(prev => ({ ...prev, location_address }))}
-                  placeholder="e.g., National Theatre, Accra, Ghana"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Pin Location on Map *</Label>
-                <LocationPicker position={mapPosition} setPosition={setMapPosition} />
-                <p className="text-xs text-slate-500">Click on the map to set the exact location pin.</p>
-              </div>
+            <div className="space-y-2">
+              <Label>Location Address *</Label>
+              <LocationAutocomplete
+                value={formData.location_address}
+                onChange={(location_address) => setFormData(prev => ({ ...prev, location_address }))}
+                onSelect={(suggestion) => setMapPosition({ lat: parseFloat(suggestion.lat), lng: parseFloat(suggestion.lon) })}
+                placeholder="e.g., National Theatre, Accra, Ghana"
+                required
+              />
             </div>
 
             {/* Pricing */}
