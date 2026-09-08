@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { ArrowLeft, Calendar, MapPin, DollarSign, Tag, User, Flag } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, DollarSign, Tag, User, Flag, Pencil } from "lucide-react";
 import ShareButton from "../components/shared/ShareButton";
 import MetaTags from "../components/shared/MetaTags";
 import { format } from "date-fns";
@@ -39,6 +39,11 @@ export default function EventDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   const eventId = urlParams.get("id");
   const [showMap, setShowMap] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    base44.auth.me().then(setCurrentUser).catch(() => setCurrentUser(null));
+  }, []);
 
   const { data: events = [], isLoading } = useQuery({
     queryKey: ['events'],
@@ -50,7 +55,7 @@ export default function EventDetail() {
   const nearbyEvents = useMemo(() => {
     if (!event || !events.length) return [];
     return events
-      .filter(e => e.id !== event.id && e.status === 'approved')
+      .filter(e => e.id !== event.id && e.status === 'approved' && new Date(e.event_date) >= new Date())
       .map(e => ({
           ...e,
           distance: getDistanceFromLatLonInKm(event.location_lat, event.location_lng, e.location_lat, e.location_lng)
@@ -62,7 +67,7 @@ export default function EventDetail() {
   const similarEvents = useMemo(() => {
     if (!event || !events.length) return [];
     return events
-      .filter(e => e.id !== event.id && e.status === 'approved' && e.theme === event.theme)
+      .filter(e => e.id !== event.id && e.status === 'approved' && e.theme === event.theme && new Date(e.event_date) >= new Date())
       .slice(0, 4);
   }, [event, events]);
 
@@ -90,6 +95,7 @@ export default function EventDetail() {
   const isPending = event.status === 'pending';
   const isRejected = event.status === 'rejected';
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location_address || "")}`;
+  const canEdit = currentUser && (currentUser.role === 'admin' || event.user_id === currentUser.id || event.created_by_id === currentUser.id);
 
 
   return (
@@ -108,44 +114,47 @@ export default function EventDetail() {
             {isPending ? 'This event is pending approval and is visible only to you and admins.' : 'This event has been rejected.'}
         </div>
       )}
-      <div className="h-[400px] md:h-[500px] w-full relative bg-slate-900">
+      {/* Hero Image — full strength, no overlay */}
+      <div className="h-[320px] md:h-[460px] w-full overflow-hidden bg-slate-100">
          <img 
             src={event.image_url || "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=80&w=2000"} 
             alt={event.title}
-            className="w-full h-full object-cover opacity-60"
+            className="w-full h-full object-cover"
          />
-         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-transparent" />
-         
-         <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12 max-w-7xl mx-auto">
-            <Link to={createPageUrl("Classifieds")} className="hidden md:inline-flex items-center text-white/80 hover:text-white mb-6 transition-colors">
-                <ArrowLeft className="h-4 w-4 mr-2" /> Back to Classifieds
-            </Link>
-            <div className="flex flex-wrap gap-3 mb-4">
-                <Badge className="bg-indigo-600 hover:bg-indigo-700 border-0 text-white text-base px-4 py-1">
-                    {event.theme}
-                </Badge>
-                <Badge variant="secondary" className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border-0 text-base px-4 py-1">
-                    {event.is_paid ? (event.price ? `$${event.price}` : 'Paid') : 'Free Entry'}
-                </Badge>
-            </div>
-            <h1 className="text-3xl md:text-5xl font-serif font-bold text-white mb-4 drop-shadow-lg">
-                {event.title}
-            </h1>
-            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-6 text-white/90 text-base sm:text-lg">
-                <div className="flex items-center gap-2">
-                    <Calendar className="h-5 w-5 shrink-0" />
-                    <span>{format(new Date(event.event_date), 'EEEE, MMMM d, yyyy • h:mm a')}</span>
-                </div>
-                <a
-                    href={mapsUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-2 hover:underline underline-offset-4"
-                >
-                    <MapPin className="h-5 w-5 shrink-0" />
-                    <span>{event.location_address}</span>
-                </a>
-            </div>
+      </div>
+
+      {/* Event info band below the image */}
+      <div className="w-full bg-cream dark:bg-[#1B1714] text-ink dark:text-[#F1E8E0] border-b border-ink/10 dark:border-[#F1E8E0]/10">
+         <div className="max-w-7xl mx-auto px-6 py-8 md:py-10">
+             <Link to={createPageUrl("Classifieds")} className="hidden md:inline-flex items-center text-ink/60 dark:text-[#F1E8E0]/60 hover:text-gold-text dark:hover:text-gold-dark mb-4 transition-colors">
+                 <ArrowLeft className="h-4 w-4 mr-2" /> Back to Classifieds
+             </Link>
+             <div className="flex flex-wrap gap-3 mb-4">
+                 <Badge className="bg-gold hover:bg-gold border-0 text-cream text-base px-4 py-1">
+                     {event.theme}
+                 </Badge>
+                 <Badge variant="outline" className="bg-transparent border-ink/30 dark:border-[#F1E8E0]/30 text-ink dark:text-[#F1E8E0] text-base px-4 py-1">
+                     {event.is_paid ? (event.price ? `$${event.price}` : 'Paid') : 'Free Entry'}
+                 </Badge>
+             </div>
+             <h1 className="text-3xl md:text-5xl font-serif font-bold text-ink dark:text-[#F1E8E0] mb-4">
+                 {event.title}
+             </h1>
+             <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-6 text-ink/80 dark:text-[#F1E8E0]/80 text-base sm:text-lg">
+                 <div className="flex items-center gap-2">
+                     <Calendar className="h-5 w-5 shrink-0 text-gold-text dark:text-gold-dark" />
+                     <span>{format(new Date(event.event_date), 'EEEE, MMMM d, yyyy • h:mm a')}</span>
+                 </div>
+                 <a
+                     href={mapsUrl}
+                     target="_blank"
+                     rel="noreferrer"
+                     className="flex items-center gap-2 hover:underline underline-offset-4"
+                 >
+                     <MapPin className="h-5 w-5 shrink-0 text-gold-text dark:text-gold-dark" />
+                     <span>{event.location_address}</span>
+                 </a>
+             </div>
          </div>
       </div>
 
@@ -271,6 +280,14 @@ export default function EventDetail() {
                                 <AddToCalendarButton event={event} />
                             </div>
                         </div>
+                        {canEdit && (
+                            <Link to={createPageUrl("EditEvent") + `?id=${event.id}`}>
+                                <Button variant="outline" className="w-full gap-2">
+                                    <Pencil className="h-4 w-4" />
+                                    Edit Event
+                                </Button>
+                            </Link>
+                        )}
                         <Button className="w-full bg-indigo-600 hover:bg-indigo-700 h-12 text-lg">
                             Register / Buy Ticket
                         </Button>
