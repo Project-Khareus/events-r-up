@@ -73,7 +73,7 @@ export default function EventDetail() {
 
   if (isLoading) {
     return (
-       <div className="min-h-screen bg-white p-6">
+       <div className="min-h-screen bg-cream dark:bg-[#1B1714] p-6">
           <div className="max-w-6xl mx-auto space-y-8">
              <Skeleton className="h-8 w-32" />
              <Skeleton className="h-[400px] w-full rounded-2xl" />
@@ -99,7 +99,7 @@ export default function EventDetail() {
 
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-20">
+    <div className="min-h-screen bg-cream dark:bg-[#1B1714] text-ink dark:text-[#F1E8E0] pb-20">
       <MetaTags 
         title={event.title}
         description={event.description || `Join us at ${event.title} on ${format(new Date(event.event_date), 'MMMM d, yyyy')}`}
@@ -114,12 +114,12 @@ export default function EventDetail() {
             {isPending ? 'This event is pending approval and is visible only to you and admins.' : 'This event has been rejected.'}
         </div>
       )}
-      {/* Hero Image — full strength, no overlay */}
-      <div className="h-[320px] md:h-[460px] w-full overflow-hidden bg-slate-100">
+      {/* Hero Image — full flyer at natural aspect, no overlay */}
+      <div className="w-full bg-linen dark:bg-[#221B15] flex justify-center">
          <img 
             src={event.image_url || "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=80&w=2000"} 
             alt={event.title}
-            className="w-full h-full object-cover"
+            className="w-auto max-w-full max-h-[75vh] object-contain"
          />
       </div>
 
@@ -127,14 +127,14 @@ export default function EventDetail() {
       <div className="w-full bg-cream dark:bg-[#1B1714] text-ink dark:text-[#F1E8E0] border-b border-ink/10 dark:border-[#F1E8E0]/10">
          <div className="max-w-7xl mx-auto px-6 py-8 md:py-10">
              <Link to={createPageUrl("Classifieds")} className="hidden md:inline-flex items-center text-ink/60 dark:text-[#F1E8E0]/60 hover:text-gold-text dark:hover:text-gold-dark mb-4 transition-colors">
-                 <ArrowLeft className="h-4 w-4 mr-2" /> Back to Classifieds
+                 <ArrowLeft className="h-4 w-4 mr-2" /> Back to Public Events
              </Link>
              <div className="flex flex-wrap gap-3 mb-4">
                  <Badge className="bg-gold hover:bg-gold border-0 text-cream text-base px-4 py-1">
                      {event.theme}
                  </Badge>
                  <Badge variant="outline" className="bg-transparent border-ink/30 dark:border-[#F1E8E0]/30 text-ink dark:text-[#F1E8E0] text-base px-4 py-1">
-                     {event.is_paid ? (event.price ? `$${event.price}` : 'Paid') : 'Free Entry'}
+                     {event.is_paid ? (event.price ? `GH₵${event.price}` : 'Paid') : 'Free Entry'}
                  </Badge>
              </div>
              <h1 className="text-3xl md:text-5xl font-serif font-bold text-ink dark:text-[#F1E8E0] mb-4">
@@ -163,8 +163,8 @@ export default function EventDetail() {
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-12">
                 <section>
-                    <h2 className="text-2xl font-bold text-slate-900 mb-4">About this Event</h2>
-                    <div className="prose prose-lg prose-slate text-slate-600 leading-relaxed">
+                    <h2 className="text-2xl font-serif font-bold text-ink dark:text-[#F1E8E0] mb-4">About this Event</h2>
+                    <div className="prose prose-lg text-ink/70 dark:text-[#F1E8E0]/70 leading-relaxed">
                         {event.description ? (
                             <p className="whitespace-pre-wrap">{event.description}</p>
                         ) : (
@@ -175,25 +175,25 @@ export default function EventDetail() {
 
                 {/* Map Section */}
                 <section>
-                    <h2 className="text-2xl font-bold text-slate-900 mb-4">Location</h2>
+                    <h2 className="text-2xl font-serif font-bold text-ink dark:text-[#F1E8E0] mb-4">Location</h2>
                     
                     {!showMap ? (
-                        <div className="rounded-xl border border-slate-200 shadow-sm bg-slate-50 p-8 flex flex-col items-center justify-center text-center">
-                            <div className="bg-indigo-100 p-4 rounded-full mb-4">
-                                <MapPin className="h-8 w-8 text-indigo-600" />
+                        <div className="rounded-none border border-ink/10 dark:border-[#F1E8E0]/10 bg-linen dark:bg-[#221B15] p-8 flex flex-col items-center justify-center text-center">
+                            <div className="bg-gold/10 p-4 rounded-full mb-4 border border-gold/30">
+                                <MapPin className="h-8 w-8 text-gold-text dark:text-gold-dark" />
                             </div>
                             <a
                                 href={mapsUrl}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="text-lg font-semibold text-slate-900 mb-2 hover:underline underline-offset-4"
+                                className="text-lg font-semibold text-ink dark:text-[#F1E8E0] mb-2 hover:underline underline-offset-4"
                             >
                                 {event.location_address}
                             </a>
-                            <p className="text-sm text-slate-500 mb-6">Tap to open in Google Maps and get directions</p>
+                            <p className="text-sm text-ink/50 dark:text-[#F1E8E0]/50 mb-6">Tap to open in Google Maps and get directions</p>
                             <div className="flex flex-wrap gap-3 justify-center">
                                 {(event.location_lat && event.location_lng) && (
-                                    <Button onClick={() => setShowMap(true)} variant="outline" className="bg-white">
+                                    <Button onClick={() => setShowMap(true)} variant="outline" className="rounded-none border-ink/20 dark:border-[#F1E8E0]/20">
                                         View on Map
                                     </Button>
                                 )}
@@ -202,12 +202,12 @@ export default function EventDetail() {
                                     target="_blank" 
                                     rel="noreferrer"
                                 >
-                                    <Button>Get Directions</Button>
+                                    <Button className="rounded-none bg-gold-text hover:bg-gold-text/90 text-cream">Get Directions</Button>
                                 </a>
                             </div>
                         </div>
                     ) : (
-                        <div className="rounded-xl overflow-hidden border border-slate-200 shadow-sm h-[400px] relative z-0">
+                        <div className="rounded-none overflow-hidden border border-ink/10 dark:border-[#F1E8E0]/10 h-[400px] relative z-0">
                             <MapContainer 
                                 center={[event.location_lat || 0, event.location_lng || 0]} 
                                 zoom={14} 
@@ -225,7 +225,7 @@ export default function EventDetail() {
                             <Button 
                                 variant="secondary" 
                                 size="sm" 
-                                className="absolute top-4 right-4 z-[1000] shadow-md bg-white hover:bg-slate-100"
+                                className="absolute top-4 right-4 z-[1000] bg-white hover:bg-cream text-ink rounded-none"
                                 onClick={() => setShowMap(false)}
                             >
                                 Hide Map
@@ -237,37 +237,37 @@ export default function EventDetail() {
 
             {/* Sidebar / Actions */}
             <div className="lg:col-span-1 space-y-8">
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 sticky top-24">
-                    <h3 className="font-bold text-slate-900 mb-4">Event Details</h3>
+                <div className="bg-linen dark:bg-[#221B15] p-6 rounded-none border border-ink/10 dark:border-[#F1E8E0]/10 sticky top-24">
+                    <h3 className="font-serif font-bold text-ink dark:text-[#F1E8E0] mb-4">Event Details</h3>
                     
                     <div className="space-y-4 mb-8">
                         <div className="flex items-start gap-3">
-                            <Tag className="h-5 w-5 text-slate-400 mt-0.5" />
+                            <Tag className="h-5 w-5 text-gold-text dark:text-gold-dark mt-0.5" />
                             <div>
-                                <p className="text-sm text-slate-500">Category</p>
-                                <p className="font-medium text-slate-900">{event.theme}</p>
+                                <p className="text-sm text-ink/50 dark:text-[#F1E8E0]/50">Category</p>
+                                <p className="font-medium text-ink dark:text-[#F1E8E0]">{event.theme}</p>
                             </div>
                         </div>
                         <div className="flex items-start gap-3">
-                            <DollarSign className="h-5 w-5 text-slate-400 mt-0.5" />
+                            <DollarSign className="h-5 w-5 text-gold-text dark:text-gold-dark mt-0.5" />
                             <div>
-                                <p className="text-sm text-slate-500">Cost</p>
-                                <p className="font-medium text-slate-900">
-                                    {event.is_paid ? (event.price ? `$${event.price}` : 'Paid') : 'Free Entry'}
+                                <p className="text-sm text-ink/50 dark:text-[#F1E8E0]/50">Cost</p>
+                                <p className="font-medium text-ink dark:text-[#F1E8E0]">
+                                    {event.is_paid ? (event.price ? `GH₵${event.price}` : 'Paid') : 'Free Entry'}
                                 </p>
                             </div>
                         </div>
                     </div>
 
                     {/* Organizer Info - Modified */}
-                    <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-100 mb-4">
-                        <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center border border-indigo-200 text-indigo-700 font-bold overflow-hidden">
+                    <div className="flex items-center gap-3 p-3 bg-cream dark:bg-[#1B1714] rounded-none border border-ink/10 dark:border-[#F1E8E0]/10 mb-4">
+                        <div className="h-10 w-10 rounded-full bg-gold/10 flex items-center justify-center border border-gold/30 text-gold-text font-bold overflow-hidden">
                              {/* Note: In a real scenario we might fetch user details to get avatar, here we just show an icon or initial */}
                              <User className="h-5 w-5" />
                         </div>
                         <div>
-                            <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Organizer</p>
-                            <p className="font-medium text-slate-900 line-clamp-1">
+                            <p className="text-xs text-ink/50 dark:text-[#F1E8E0]/50 uppercase tracking-wider font-semibold">Organizer</p>
+                            <p className="font-medium text-ink dark:text-[#F1E8E0] line-clamp-1">
                                 {event.organizer_name || (event.user_id ? "Event Organizer" : "Unknown")}
                             </p>
                         </div>
@@ -282,13 +282,13 @@ export default function EventDetail() {
                         </div>
                         {canEdit && (
                             <Link to={createPageUrl("EditEvent") + `?id=${event.id}`}>
-                                <Button variant="outline" className="w-full gap-2">
+                                <Button variant="outline" className="w-full gap-2 rounded-none border-ink/20 dark:border-[#F1E8E0]/20">
                                     <Pencil className="h-4 w-4" />
                                     Edit Event
                                 </Button>
                             </Link>
                         )}
-                        <Button className="w-full bg-indigo-600 hover:bg-indigo-700 h-12 text-lg">
+                        <Button className="w-full bg-gold-text hover:bg-gold-text/90 text-cream rounded-none h-12 text-lg">
                             Register / Buy Ticket
                         </Button>
                         <ShareButton 
@@ -303,7 +303,7 @@ export default function EventDetail() {
                           targetId={event.id}
                           targetName={event.title}
                           trigger={
-                            <Button variant="outline" size="default" className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 gap-2">
+                            <Button variant="outline" size="default" className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 rounded-none gap-2">
                               <Flag className="h-4 w-4" />
                               Report this event
                             </Button>
@@ -319,7 +319,7 @@ export default function EventDetail() {
             {nearbyEvents.length > 0 && (
                 <section>
                     <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-2xl font-bold text-slate-900">Nearby Events</h2>
+                        <h2 className="text-2xl font-serif font-bold text-ink dark:text-[#F1E8E0]">Nearby Events</h2>
                     </div>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         {nearbyEvents.map(e => <EventCard key={e.id} event={e} />)}
@@ -330,7 +330,7 @@ export default function EventDetail() {
             {similarEvents.length > 0 && (
                 <section>
                      <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-2xl font-bold text-slate-900">Similar Themes</h2>
+                        <h2 className="text-2xl font-serif font-bold text-ink dark:text-[#F1E8E0]">Similar Themes</h2>
                         <Link to={createPageUrl("Classifieds")} className="text-indigo-600 hover:text-indigo-700 font-medium">View all</Link>
                     </div>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
