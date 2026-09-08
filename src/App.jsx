@@ -69,6 +69,11 @@ const AuthenticatedApp = () => {
           <VendorDetailPage />
         </LayoutWrapper>
       } />
+      <Route path="/event/:slug" element={
+        <LayoutWrapper currentPageName="EventDetail">
+          <Pages.EventDetail />
+        </LayoutWrapper>
+      } />
       <Route path="/myprofile" element={
         <LayoutWrapper currentPageName="MyProfile">
           <Pages.MyProfile />

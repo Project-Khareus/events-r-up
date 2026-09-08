@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "../utils";
+import { generateUniqueEventSlug } from "@/utils/eventSlug";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -115,6 +116,7 @@ export default function CreateEvent() {
     const eventData = {
       ...formData,
       user_id: user.id,
+      slug: await generateUniqueEventSlug(formData.title),
       price: formData.is_paid ? parseFloat(formData.price) : 0,
       status: 'pending' // Explicitly set pending
     };

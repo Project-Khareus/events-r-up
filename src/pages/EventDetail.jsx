@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -38,6 +38,7 @@ function deg2rad(deg) {
 export default function EventDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   const eventId = urlParams.get("id");
+  const { slug: slugParam } = useParams();
   const [showMap, setShowMap] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
 
@@ -50,7 +51,7 @@ export default function EventDetail() {
     queryFn: () => base44.entities.EventListing.list(),
   });
 
-  const event = useMemo(() => events.find(e => e.id === eventId), [events, eventId]);
+  const event = useMemo(() => events.find(e => slugParam ? e.slug === slugParam : e.id === eventId), [events, eventId, slugParam]);
 
   const nearbyEvents = useMemo(() => {
     if (!event || !events.length) return [];
@@ -96,6 +97,10 @@ export default function EventDetail() {
   const isRejected = event.status === 'rejected';
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location_address || "")}`;
   const canEdit = currentUser && (currentUser.role === 'admin' || event.user_id === currentUser.id || event.created_by_id === currentUser.id);
+  // Pretty, name-based link for this event
+  const eventUrl = event.slug ? `${window.location.origin}/event/${encodeURIComponent(event.slug)}` : window.location.href;
+  // Server-side preview endpoint for social platforms (Facebook et al. don't run page scripts)
+  const sharePreviewUrl = `${window.location.origin}/functions/shareEvent?${event.slug ? `slug=${encodeURIComponent(event.slug)}` : `id=${event.id}`}`;
 
 
   return (
@@ -104,7 +109,7 @@ export default function EventDetail() {
         title={event.title}
         description={event.description || `Join us at ${event.title} on ${format(new Date(event.event_date), 'MMMM d, yyyy')}`}
         image={event.image_url}
-        url={window.location.href}
+        url={eventUrl}
         type="event"
       />
       <MobileHeader title={event.title} />
@@ -292,7 +297,8 @@ export default function EventDetail() {
                             Register / Buy Ticket
                         </Button>
                         <ShareButton 
-                          url={window.location.href}
+                          url={eventUrl}
+                          socialUrl={sharePreviewUrl}
                           title={event.title}
                           description={event.description || `Join us at ${event.title}`}
                           variant="outline"

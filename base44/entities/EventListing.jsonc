@@ -1,46 +1,89 @@
 {
   "name": "EventListing",
-  "type": "object",
   "properties": {
-    "title": {
-      "type": "string",
-      "description": "Title of the event"
-    },
     "description": {
-      "type": "string",
-      "description": "Full description of the event"
+      "description": "Full description of the event",
+      "type": "string"
     },
-    "organizer_name": {
-      "type": "string",
-      "description": "Name of the event organizer or organization"
+    "event_date": {
+      "description": "Date and time of the event",
+      "format": "date-time",
+      "type": "string"
     },
     "image_url": {
-      "type": "string",
-      "description": "Cover image URL"
-    },
-    "location_address": {
-      "type": "string",
-      "description": "Text address of the location"
-    },
-    "location_lat": {
-      "type": "number",
-      "description": "Latitude for map pin"
-    },
-    "location_lng": {
-      "type": "number",
-      "description": "Longitude for map pin"
+      "description": "Cover image URL",
+      "type": "string"
     },
     "is_paid": {
-      "type": "boolean",
       "default": false,
-      "description": "Whether the event is free or paid"
+      "description": "Whether the event is free or paid",
+      "type": "boolean"
+    },
+    "is_recurring": {
+      "default": false,
+      "description": "Whether this is a recurring event",
+      "type": "boolean"
+    },
+    "location_address": {
+      "description": "Text address of the location",
+      "type": "string"
+    },
+    "location_lat": {
+      "description": "Latitude for map pin",
+      "maximum": 90,
+      "minimum": -90,
+      "type": "number"
+    },
+    "location_lng": {
+      "description": "Longitude for map pin",
+      "maximum": 180,
+      "minimum": -180,
+      "type": "number"
+    },
+    "organizer_name": {
+      "description": "Name of the event organizer or organization",
+      "type": "string"
     },
     "price": {
-      "type": "number",
-      "description": "Price if paid"
+      "description": "Price if paid",
+      "type": "number"
+    },
+    "recurrence_end_date": {
+      "description": "When the recurring event series ends",
+      "format": "date-time",
+      "type": "string"
+    },
+    "recurrence_frequency": {
+      "description": "Frequency of recurrence",
+      "enum": [
+        "daily",
+        "weekly",
+        "monthly",
+        "custom"
+      ],
+      "type": "string"
+    },
+    "recurrence_pattern": {
+      "description": "Custom recurrence pattern (e.g., 'Every Monday and Wednesday')",
+      "type": "string"
+    },
+    "slug": {
+      "description": "URL-friendly unique identifier derived from the event title, used for shareable /event/{slug} links",
+      "type": "string"
+    },
+    "status": {
+      "default": "pending",
+      "description": "Approval status of the event",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "type": "string"
     },
     "theme": {
-      "type": "string",
+      "default": "Other",
+      "description": "Event theme/category",
       "enum": [
         "Music",
         "Food & Drink",
@@ -52,51 +95,15 @@
         "Education",
         "Other"
       ],
-      "default": "Other",
-      "description": "Event theme/category"
+      "type": "string"
     },
-    "event_date": {
-      "type": "string",
-      "format": "date-time",
-      "description": "Date and time of the event"
+    "title": {
+      "description": "Title of the event",
+      "type": "string"
     },
     "user_id": {
-      "type": "string",
-      "description": "ID of the user who posted the event"
-    },
-    "status": {
-      "type": "string",
-      "enum": [
-        "pending",
-        "approved",
-        "rejected"
-      ],
-      "default": "pending",
-      "description": "Approval status of the event"
-    },
-    "is_recurring": {
-      "type": "boolean",
-      "default": false,
-      "description": "Whether this is a recurring event"
-    },
-    "recurrence_frequency": {
-      "type": "string",
-      "enum": [
-        "daily",
-        "weekly",
-        "monthly",
-        "custom"
-      ],
-      "description": "Frequency of recurrence"
-    },
-    "recurrence_pattern": {
-      "type": "string",
-      "description": "Custom recurrence pattern (e.g., 'Every Monday and Wednesday', 'First Friday of the month')"
-    },
-    "recurrence_end_date": {
-      "type": "string",
-      "format": "date-time",
-      "description": "When the recurring event series ends"
+      "description": "ID of the user who posted the event",
+      "type": "string"
     }
   },
   "required": [
@@ -107,13 +114,12 @@
   ],
   "rls": {
     "create": {
-      "created_by_id": "{{user.id}}"
+      "created_by": "{{user.email}}"
     },
-    "read": null,
-    "update": {
+    "delete": {
       "$or": [
         {
-          "created_by_id": "{{user.id}}"
+          "created_by": "{{user.email}}"
         },
         {
           "user_condition": {
@@ -122,10 +128,11 @@
         }
       ]
     },
-    "delete": {
+    "read": true,
+    "update": {
       "$or": [
         {
-          "created_by_id": "{{user.id}}"
+          "created_by": "{{user.email}}"
         },
         {
           "user_condition": {
@@ -134,5 +141,6 @@
         }
       ]
     }
-  }
+  },
+  "type": "object"
 }

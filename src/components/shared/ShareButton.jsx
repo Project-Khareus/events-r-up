@@ -14,12 +14,16 @@ export default function ShareButton({
   url, 
   title, 
   description,
+  socialUrl,
   variant = "outline",
   size = "default",
   className = ""
 }) {
   const [copied, setCopied] = useState(false);
   const shareUrl = url || window.location.href;
+  // URL used for platforms that render link previews (Facebook, Twitter, LinkedIn) —
+  // point it at an endpoint that serves the item's own og:image/og:title server-side.
+  const previewUrl = socialUrl || shareUrl;
 
   const handleCopyLink = async () => {
     try {
@@ -51,7 +55,7 @@ export default function ShareButton({
   };
 
   const shareToSocial = (platform) => {
-    const encodedUrl = encodeURIComponent(shareUrl);
+    const encodedUrl = encodeURIComponent(previewUrl);
     const encodedTitle = encodeURIComponent(title || "");
     const encodedDescription = encodeURIComponent(description || "");
 
