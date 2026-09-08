@@ -24,6 +24,7 @@ export default function CreateEvent() {
   
   const [formData, setFormData] = useState({
     title: "",
+    organizer_name: "",
     description: "",
     image_url: "",
     location_address: "",
@@ -177,6 +178,15 @@ export default function CreateEvent() {
                 placeholder="e.g., Summer Jazz Festival"
                 required
               />
+            </div>
+            <div className="space-y-2">
+              <Label>Organizer Name</Label>
+              <Input 
+                value={formData.organizer_name}
+                onChange={(e) => setFormData(prev => ({ ...prev, organizer_name: e.target.value }))}
+                placeholder="e.g., Live Wire Productions"
+              />
+              <p className="text-xs text-slate-500">The person or organization hosting the event.</p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">

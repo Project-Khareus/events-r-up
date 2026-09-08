@@ -25,6 +25,7 @@ export default function EditEvent() {
   const [user, setUser] = useState(null);
   const [formData, setFormData] = useState({
     title: "",
+    organizer_name: "",
     description: "",
     image_url: "",
     location_address: "",
@@ -63,6 +64,7 @@ export default function EditEvent() {
     if (event) {
       setFormData({
         title: event.title || "",
+        organizer_name: event.organizer_name || "",
         description: event.description || "",
         image_url: event.image_url || "",
         location_address: event.location_address || "",
@@ -231,6 +233,15 @@ export default function EditEvent() {
                 placeholder="e.g., Summer Jazz Festival"
                 required
               />
+            </div>
+            <div className="space-y-2">
+              <Label>Organizer Name</Label>
+              <Input 
+                value={formData.organizer_name}
+                onChange={(e) => setFormData(prev => ({ ...prev, organizer_name: e.target.value }))}
+                placeholder="e.g., Live Wire Productions"
+              />
+              <p className="text-xs text-slate-500">The person or organization hosting the event.</p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">

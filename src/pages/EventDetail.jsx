@@ -259,8 +259,7 @@ export default function EventDetail() {
                         <div>
                             <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Organizer</p>
                             <p className="font-medium text-slate-900 line-clamp-1">
-                                {event.user_id ? "Event Organizer" : "Unknown"} 
-                                {/* Ideally we would fetch the user name here, but for now just static or placeholder if not joined */}
+                                {event.organizer_name || (event.user_id ? "Event Organizer" : "Unknown")}
                             </p>
                         </div>
                     </div>
