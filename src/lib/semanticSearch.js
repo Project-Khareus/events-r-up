@@ -1,7 +1,7 @@
 const STOP_WORDS = new Set([
   "a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "in", "into",
-  "near", "of", "on", "or", "the", "to", "with", "vendor", "vendors", "service", "services"
-]);
+  "near", "of", "on", "or", "the", "to", "with", "up", "vendor", "vendors", "service", "services"
+  ]);
 
 const EVENT_LABELS = {
   weddings: "Weddings",
@@ -65,8 +65,19 @@ function levenshtein(a, b) {
 function wordScore(queryToken, fieldWord) {
   if (!queryToken || !fieldWord) return 0;
   if (queryToken === fieldWord) return 1;
-  if (fieldWord.includes(queryToken) || queryToken.includes(fieldWord)) return 0.72;
-  if (Math.min(queryToken.length, fieldWord.length) >= 4 && levenshtein(queryToken, fieldWord) <= 2) return 0.55;
+  // Substring matches only count when both words are long enough for the
+  // overlap to be meaningful ("makeup" contains "make", but "pickup" must not
+  // count as a match for "up").
+  const minLen = Math.min(queryToken.length, fieldWord.length);
+  if (minLen >= 4 && (fieldWord.includes(queryToken) || queryToken.includes(fieldWord))) return 0.72;
+  // Fuzzy matches are rare-word only: same first two letters and a tight
+  // edit distance ("assist" must not count for "artist").
+  const maxDistance = minLen >= 8 ? 2 : minLen >= 5 ? 1 : 0;
+  if (
+    maxDistance > 0 &&
+    queryToken.slice(0, 2) === fieldWord.slice(0, 2) &&
+    levenshtein(queryToken, fieldWord) <= maxDistance
+  ) return 0.55;
   return 0;
 }
 
@@ -99,9 +110,30 @@ export function rankVendors(vendors, query, categoryLabels = {}) {
 
   const normalizedQuery = normalizeWord(query);
 
+  // Common service phrases people search for map to marketplace categories —
+  // "make up artist" / "mua" reaches beauty vendors even when their text
+  // never uses the word "artist".
+  const QUERY_CATEGORY_HINTS = [
+    { pattern: /make\s?up|\bmua\b/, categories: ["beauty_personal_care"] }
+  ];
+  const hintCategories = new Set(
+    QUERY_CATEGORY_HINTS.filter((hint) => hint.pattern.test(normalizedQuery))
+      .flatMap((hint) => hint.categories)
+  );
+
+  // Multi-word queries like "make up artist" also count as a single phrase
+  // ("makeupartist"), so vendors listing "Makeup Artist" rank as exact hits.
+  const phraseKey = queryTokens.join("");
+
   // Score every token against subject fields and against location, per vendor.
   const scored = vendors.map((vendor, index) => {
     const fields = subjectFields(vendor, categoryLabels);
+    const subjectText = fields.map((f) => normalizeWord(Array.isArray(f.value) ? f.value.join(" ") : f.value)).join(" ");
+    const phraseMatch = subjectText.replace(/\s+/g, " ").includes(phraseKey) ||
+      subjectText.split(" ").join("").includes(phraseKey);
+    const hintMatch = hintCategories.size > 0 &&
+      (Array.isArray(vendor.category) ? vendor.category : [vendor.category])
+        .some((c) => hintCategories.has(c));
     const perToken = queryTokens.map((token) => {
       const subject = fields.reduce(
         (total, field) => total + bestFieldScore(token, field.value) * field.weight,
@@ -110,23 +142,25 @@ export function rankVendors(vendors, query, categoryLabels = {}) {
       const locationMatch = bestFieldScore(token, vendor.location);
       return { subject, locationMatch };
     });
-    return { vendor, index, perToken };
+    return { vendor, index, perToken, phraseMatch, hintMatch };
   });
 
   // Every query term must be accounted for by the vendor — either as a
   // service/subject match or as a location match. A vendor that only shares
   // the location word ("Accra") no longer qualifies for "photographer in Accra".
   return scored
-    .filter(({ perToken }) =>
+    .filter(({ perToken, phraseMatch, hintMatch }) =>
+      phraseMatch ||
+      hintMatch ||
       perToken.every(({ subject, locationMatch }) =>
         subject > 0 || locationMatch >= MATCH_THRESHOLD
       )
     )
-    .map(({ vendor, index, perToken }) => {
+    .map(({ vendor, index, perToken, phraseMatch, hintMatch }) => {
       const score = perToken.reduce(
         (total, { subject, locationMatch }) => total + subject + locationMatch * 4,
         0
-      );
+      ) + (phraseMatch ? 500 : 0) + (hintMatch ? 50 : 0);
       const normalizedName = normalizeWord(vendor.business_name);
       const nameBoost = normalizedName && normalizedName.includes(normalizedQuery) ? 1000 : 0;
       return { vendor, index, score: score + nameBoost };
