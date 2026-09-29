@@ -129,8 +129,12 @@ export function rankVendors(vendors, query, categoryLabels = {}) {
   const scored = vendors.map((vendor, index) => {
     const fields = subjectFields(vendor, categoryLabels);
     const subjectText = fields.map((f) => normalizeWord(Array.isArray(f.value) ? f.value.join(" ") : f.value)).join(" ");
-    const phraseMatch = subjectText.replace(/\s+/g, " ").includes(phraseKey) ||
-      subjectText.split(" ").join("").includes(phraseKey);
+    // Phrase matching only makes sense for multi-word queries — for a single
+    // token it degenerates into substring matching ("car" inside "care").
+    const phraseMatch = queryTokens.length > 1 && (
+      subjectText.replace(/\s+/g, " ").includes(phraseKey) ||
+      subjectText.split(" ").join("").includes(phraseKey)
+    );
     const hintMatch = hintCategories.size > 0 &&
       (Array.isArray(vendor.category) ? vendor.category : [vendor.category])
         .some((c) => hintCategories.has(c));
