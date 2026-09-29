@@ -13,22 +13,24 @@ const EVENT_SECTIONS = [
 export default function HomeNewlyApproved({ vendors = [], allReviews = [], location, totalCount }) {
   if (!vendors.length) return null;
 
-  // Group vendors by event type (a vendor can appear in more than one section)
-  const groups = EVENT_SECTIONS.map((section) => ({
-    ...section,
-    vendors: vendors.filter((v) => {
+  // Each vendor appears in exactly ONE section (its first matching category)
+  // so nothing repeats on the front page.
+  const seen = new Set();
+  const groups = EVENT_SECTIONS.map((section) => {
+    const matching = vendors.filter((v) => {
+      if (seen.has(v.id)) return false;
       const events = v.event_type
         ? Array.isArray(v.event_type) ? v.event_type : [v.event_type]
         : [];
       return events.includes(section.key);
-    }).slice(0, 8),
-    count: vendors.filter((v) => {
-      const events = v.event_type
-        ? Array.isArray(v.event_type) ? v.event_type : [v.event_type]
-        : [];
-      return events.includes(section.key);
-    }).length,
-  })).filter((g) => g.vendors.length > 0);
+    });
+    matching.forEach((v) => seen.add(v.id));
+    return {
+      ...section,
+      count: matching.length,
+      vendors: matching.slice(0, 8),
+    };
+  }).filter((g) => g.vendors.length > 0);
 
   if (groups.length === 0) return null;
 
@@ -54,7 +56,7 @@ export default function HomeNewlyApproved({ vendors = [], allReviews = [], locat
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-5">
             {group.vendors.map((vendor) => (
               <VendorCard
-                key={`${group.key}-${vendor.id}`}
+                key={vendor.id}
                 vendor={vendor}
                 reviews={allReviews.filter((r) => r.vendor_id === vendor.id)}
               />
