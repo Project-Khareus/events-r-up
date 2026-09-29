@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "../utils";
+import formatVendorLocation from "@/components/utils/formatLocation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -316,7 +317,7 @@ export default function AdminVendorDetail() {
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Location</h3>
-              <p className="text-slate-600">{vendor.location || 'N/A'}</p>
+              <p className="text-slate-600">{vendor.location ? formatVendorLocation(vendor.location) : 'N/A'}</p>
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Starting Price</h3>

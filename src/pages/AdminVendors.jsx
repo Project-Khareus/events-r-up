@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import formatVendorLocation from "@/components/utils/formatLocation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -722,7 +723,7 @@ export default function AdminVendors() {
                               {CATEGORY_LABELS[primaryCategory] || primaryCategory || '-'}
                             </td>
                             <td className="px-4 py-4 text-sm text-slate-600">
-                              {vendor.location || '-'}
+                              {vendor.location ? formatVendorLocation(vendor.location) : '-'}
                             </td>
                             <td className="px-4 py-4">
                               <div className="flex items-center gap-0.5">

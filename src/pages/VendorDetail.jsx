@@ -1,5 +1,6 @@
 import React from "react";
 import { base44 } from "@/api/base44Client";
+import formatVendorLocation from "@/components/utils/formatLocation";
 import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -307,7 +308,7 @@ export default function VendorDetail() {
               {vendor.location && (
                 <div className="flex items-center gap-2 text-slate-500 text-sm">
                   <MapPin className="h-4 w-4" />
-                  <span>{vendor.location}</span>
+                  <span>{formatVendorLocation(vendor.location)}</span>
                 </div>
               )}
             </div>

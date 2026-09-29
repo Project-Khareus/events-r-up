@@ -3,6 +3,7 @@ import { MapPin, Star, ImageIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getVendorUrl } from "../../utils/vendorUrl";
 import VendorFavoriteButton from "../vendor/VendorFavoriteButton";
+import formatVendorLocation from "@/components/utils/formatLocation";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 
 const CATEGORY_LABELS = {
@@ -73,7 +74,7 @@ export default function VendorListItem({ vendor, reviews = [], variant = "row" }
                 {vendor.location && (
                   <div className="flex items-center gap-1">
                     <MapPin className="h-3 w-3 text-white/70 shrink-0" />
-                    <span className="text-[11px] text-white/80 truncate">{vendor.location}</span>
+                    <span className="text-[11px] text-white/80 truncate">{formatVendorLocation(vendor.location)}</span>
                   </div>
                 )}
                 {avgRating > 0 && (
@@ -199,7 +200,7 @@ export default function VendorListItem({ vendor, reviews = [], variant = "row" }
             {vendor.location && (
               <div className="flex items-center gap-1 mt-0.5">
                 <MapPin className="h-2.5 w-2.5 text-slate-400 shrink-0" />
-                <span className="text-[11px] text-slate-500 dark:text-slate-400 truncate">{vendor.location}</span>
+                <span className="text-[11px] text-slate-500 dark:text-slate-400 truncate">{formatVendorLocation(vendor.location)}</span>
               </div>
             )}
           </div>
