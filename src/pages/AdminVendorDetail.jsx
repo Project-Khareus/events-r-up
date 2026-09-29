@@ -51,19 +51,33 @@ export default function AdminVendorDetail() {
   const approveMutation = useMutation({
     mutationFn: async () => {
       const currentUser = await base44.auth.me();
-      const result = await base44.functions.invoke('approveVendor', { vendor_id: vendorId });
+      const result = await base44.entities.Vendor.update(vendorId, { status: 'approved' });
 
-      await base44.entities.Notification.create({
-        user_id: vendor.user_id,
-        type: 'vendor_approved',
-        title: 'Vendor Approved!',
-        message: `Congratulations! Your vendor listing "${vendor.business_name}" has been approved and is now live.`,
-        link: getVendorUrl(vendor).substring(1),
-        action_by: currentUser.full_name || currentUser.email,
-        action_type: 'approved',
-        vendor_id: vendor.id,
-        vendor_name: vendor.business_name
-      });
+      try {
+        await base44.functions.invoke('approveVendor', {
+          business_name: vendor.business_name,
+          contact_email: vendor.contact_email,
+          user_id: vendor.user_id
+        });
+      } catch (emailErr) {
+        console.error("Approval email failed:", emailErr);
+      }
+
+      try {
+        await base44.entities.Notification.create({
+          user_id: vendor.user_id,
+          type: 'vendor_approved',
+          title: 'Vendor Approved!',
+          message: `Congratulations! Your vendor listing "${vendor.business_name}" has been approved and is now live.`,
+          link: getVendorUrl(vendor).substring(1),
+          action_by: currentUser.full_name || currentUser.email,
+          action_type: 'approved',
+          vendor_id: vendor.id,
+          vendor_name: vendor.business_name
+        });
+      } catch (notifErr) {
+        console.error("In-app notification failed:", notifErr);
+      }
 
       return result;
     },

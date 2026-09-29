@@ -1,5 +1,8 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 
+// Sends the "listing approved" email. The approval itself (status update)
+// is done by the admin's page directly, so this function never blocks approval.
+
 const BRAND = 'Khareus';
 const SITE_URL = 'https://khareus.com';
 
@@ -25,86 +28,53 @@ function button(text, url, color = '#4F46E5') {
   return `<a href="${url}" style="display: inline-block; padding: 12px 28px; background-color: ${color}; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; margin: 16px 0;">${text}</a>`;
 }
 
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
 export default async function(req) {
   try {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
-
     if (!user || user.role !== 'admin') {
       return Response.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
-    const { vendor_id } = await req.json().catch(() => ({}));
+    const { business_name, contact_email, user_id } = await req.json().catch(() => ({}));
 
-    if (!vendor_id) {
-      return Response.json({ error: 'Vendor ID is required' }, { status: 400 });
-    }
-
-    // Fetch the vendor with retries — transient errors must not be mistaken
-    // for "vendor not found" (which returns a misleading 404 to the admin).
-    let vendor = null;
-    let lastError = null;
-    for (let attempt = 0; attempt < 5; attempt++) {
+    let emailToSend = contact_email;
+    if (!emailToSend && user_id) {
       try {
-        vendor = await base44.asServiceRole.entities.Vendor.get(vendor_id);
-        break;
-      } catch (err) {
-        lastError = err;
-        const status = err?.status || err?.response?.status;
-        if (status === 404) break; // genuinely missing — stop retrying
-        await new Promise((r) => setTimeout(r, 800 * (attempt + 1)));
-      }
-    }
-
-    if (!vendor) {
-      console.error('approveVendor: vendor get failed after retries:', lastError?.message, lastError?.status);
-      return Response.json({
-        error: `Could not load this listing${lastError ? ` (last error: ${lastError.message})` : ''}. Please try again.`
-      }, { status: 404 });
-    }
-
-    await base44.asServiceRole.entities.Vendor.update(vendor_id, {
-      status: 'approved'
-    });
-
-    let emailSent = false;
-    try {
-      let emailToSend = vendor.contact_email;
-
-      if (!emailToSend && vendor.user_id) {
-        const vendorUser = await base44.asServiceRole.entities.User.get(vendor.user_id);
+        const vendorUser = await base44.asServiceRole.entities.User.get(user_id);
         emailToSend = vendorUser?.email;
+      } catch (e) {
+        console.error('Owner lookup failed:', e.message);
       }
-
-      if (emailToSend) {
-        const content = `
-          <p style="color: #334155; font-size: 15px; line-height: 1.6;">
-            Great news! Your vendor listing for <strong>${vendor.business_name}</strong> has been approved and is now live on ${BRAND}.
-          </p>
-          <p style="color: #334155; font-size: 15px; line-height: 1.6;">
-            Customers can now discover your services in our marketplace. You can manage your listing, track bookings, and respond to inquiries from your dashboard.
-          </p>
-          ${button('Manage Your Listing', `${SITE_URL}/ManageListing`)}
-        `;
-
-        await base44.asServiceRole.integrations.Core.SendEmail({
-          to: emailToSend,
-          subject: `Your ${BRAND} Listing is Approved!`,
-          body: emailTemplate('Congratulations!', '#10B981', content)
-        });
-        emailSent = true;
-      }
-    } catch (emailError) {
-      console.error('Email notification failed (non-blocking):', emailError.message);
     }
 
-    return Response.json({
-      success: true,
-      message: emailSent ? 'Vendor approved and notified' : 'Vendor approved (email notification could not be sent)',
-      emailSent
+    if (!emailToSend) {
+      return Response.json({ success: true, emailSent: false });
+    }
+
+    const content = `
+      <p style="color: #334155; font-size: 15px; line-height: 1.6;">
+        Great news! Your vendor listing for <strong>${escapeHtml(business_name)}</strong> has been approved and is now live on ${BRAND}.
+      </p>
+      <p style="color: #334155; font-size: 15px; line-height: 1.6;">
+        Customers can now discover your services in our marketplace. You can manage your listing, track bookings, and respond to inquiries from your dashboard.
+      </p>
+      ${button('Manage Your Listing', `${SITE_URL}/ManageListing`)}
+    `;
+
+    await base44.asServiceRole.integrations.Core.SendEmail({
+      to: emailToSend,
+      subject: `Your ${BRAND} Listing is Approved!`,
+      body: emailTemplate('Congratulations!', '#10B981', content)
     });
+
+    return Response.json({ success: true, emailSent: true });
   } catch (error) {
-    console.error('Approval error:', error);
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error('Approval email error:', error);
+    return Response.json({ success: true, emailSent: false, error: error.message });
   }
 }

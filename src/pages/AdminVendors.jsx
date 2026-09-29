@@ -124,7 +124,22 @@ export default function AdminVendors() {
       const vendorId = typeof vendor === 'string' ? vendor : vendor.id;
       const vendorObj = typeof vendor === 'object' ? vendor : pendingVendors.find(v => v.id === vendorId) || allVendors.find(v => v.id === vendorId);
       const currentUser = await base44.auth.me();
-      const result = await base44.functions.invoke('approveVendor', { vendor_id: vendorId });
+      // Approve directly with admin permissions — this is the step that must succeed
+      await base44.entities.Vendor.update(vendorId, { status: 'approved' });
+
+      // Email is non-blocking — approval already succeeded
+      let emailSent = false;
+      try {
+        const res = await base44.functions.invoke('approveVendor', {
+          business_name: vendorObj?.business_name,
+          contact_email: vendorObj?.contact_email,
+          user_id: vendorObj?.user_id
+        });
+        emailSent = !!res?.data?.emailSent;
+      } catch (emailErr) {
+        console.error("Approval email failed:", emailErr);
+      }
+      const result = { data: { emailSent } };
 
       // Create in-app notification (non-blocking — approval already succeeded)
       if (vendorObj) {
