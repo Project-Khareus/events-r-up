@@ -191,7 +191,7 @@ export default function Navbar() {
               ))}
             </div>
 
-            <Link to={createPageUrl("PublicEvents")} className="text-[13px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)] hover:text-ink dark:hover:text-[#F1E8E0] transition-colors">
+            <Link to={createPageUrl("PublicEvents")} className="text-[13px] font-semibold text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)] hover:text-ink dark:hover:text-[#F1E8E0] transition-colors">
               Public Events
             </Link>
             <Link to={createPageUrl("Blog")} className="text-[13px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)] hover:text-ink dark:hover:text-[#F1E8E0] transition-colors">
