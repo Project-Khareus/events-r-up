@@ -128,7 +128,7 @@ export default function MyFavorites() {
                   Browse Vendors
                 </Button>
               </Link>
-              <Link to={createPageUrl("Classifieds")}>
+              <Link to={createPageUrl("PublicEvents")}>
                 <Button variant="outline">
                   <Calendar className="mr-2 h-4 w-4" />
                   Browse Events

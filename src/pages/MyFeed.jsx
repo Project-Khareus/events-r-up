@@ -107,7 +107,7 @@ export default function MyFeed() {
                     </div>
                     <h2 className="text-xl font-bold text-slate-900 mb-2">Your feed is empty</h2>
                     <p className="text-slate-500 mb-6">Follow authors and event creators to see their latest updates here.</p>
-                    <Link to={createPageUrl("Classifieds")}>
+                    <Link to={createPageUrl("PublicEvents")}>
                         <Button>Explore Events</Button>
                     </Link>
                 </div>

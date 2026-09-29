@@ -131,7 +131,7 @@ export default function UserProfile() {
             {profileError ? "Please try again in a moment." : "This user hasn't set up their public profile yet."}
           </p>
           <Link
-            to={createPageUrl("Classifieds")}
+            to={createPageUrl("PublicEvents")}
             className="mt-6 inline-flex items-center min-h-[48px] px-6 rounded-none bg-ink dark:bg-[#F1E8E0] text-cream dark:text-[#211B16] text-[11.5px] font-medium tracking-[0.1em] uppercase hover:bg-ink-deep transition-colors"
           >
             Back to events

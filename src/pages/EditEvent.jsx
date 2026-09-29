@@ -162,7 +162,7 @@ export default function EditEvent() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-slate-900 mb-2">Event not found</h2>
-          <Button onClick={() => navigate(createPageUrl("Classifieds"))}>
+          <Button onClick={() => navigate(createPageUrl("PublicEvents"))}>
             Back to Events
           </Button>
         </div>

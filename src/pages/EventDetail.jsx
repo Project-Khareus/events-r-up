@@ -131,7 +131,7 @@ export default function EventDetail() {
       {/* Event info band below the image */}
       <div className="w-full bg-cream dark:bg-[#1B1714] text-ink dark:text-[#F1E8E0] border-b border-ink/10 dark:border-[#F1E8E0]/10">
          <div className="max-w-7xl mx-auto px-6 py-8 md:py-10">
-             <Link to={createPageUrl("Classifieds")} className="hidden md:inline-flex items-center text-ink/60 dark:text-[#F1E8E0]/60 hover:text-gold-text dark:hover:text-gold-dark mb-4 transition-colors">
+             <Link to={createPageUrl("PublicEvents")} className="hidden md:inline-flex items-center text-ink/60 dark:text-[#F1E8E0]/60 hover:text-gold-text dark:hover:text-gold-dark mb-4 transition-colors">
                  <ArrowLeft className="h-4 w-4 mr-2" /> Back to Public Events
              </Link>
              <div className="flex flex-wrap gap-3 mb-4">
@@ -337,7 +337,7 @@ export default function EventDetail() {
                 <section>
                      <div className="flex items-center justify-between mb-6">
                         <h2 className="text-2xl font-serif font-bold text-ink dark:text-[#F1E8E0]">Similar Themes</h2>
-                        <Link to={createPageUrl("Classifieds")} className="text-indigo-600 hover:text-indigo-700 font-medium">View all</Link>
+                        <Link to={createPageUrl("PublicEvents")} className="text-indigo-600 hover:text-indigo-700 font-medium">View all</Link>
                     </div>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         {similarEvents.map(e => <EventCard key={e.id} event={e} />)}

@@ -84,7 +84,7 @@ const DEFAULT_SECTIONS = {
     title: "Explore",
     items: [
       ...EVENT_MENUS.map(menu => ({ label: menu.title, url: menu.title })),
-      { label: "Public Events", url: "Classifieds" },
+      { label: "Public Events", url: "PublicEvents" },
     ]
   },
   company: {

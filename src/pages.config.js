@@ -56,7 +56,7 @@ import Blog from './pages/Blog';
 import BlogPostDetail from './pages/BlogPostDetail';
 import Bookings from './pages/Bookings';
 import CategoryPage from './pages/CategoryPage';
-import Classifieds from './pages/Classifieds';
+import PublicEvents from './pages/PublicEvents';
 import CompleteProfile from './pages/CompleteProfile';
 import Conference from './pages/Conference';
 import Conferences from './pages/Conferences';
@@ -106,7 +106,7 @@ export const PAGES = {
     "BlogPostDetail": BlogPostDetail,
     "Bookings": Bookings,
     "CategoryPage": CategoryPage,
-    "Classifieds": Classifieds,
+    "PublicEvents": PublicEvents,
     "CompleteProfile": CompleteProfile,
     "Conference": Conference,
     "Conferences": Conferences,

@@ -191,7 +191,7 @@ export default function Navbar() {
               ))}
             </div>
 
-            <Link to={createPageUrl("Classifieds")} className="text-[13px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)] hover:text-ink dark:hover:text-[#F1E8E0] transition-colors">
+            <Link to={createPageUrl("PublicEvents")} className="text-[13px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)] hover:text-ink dark:hover:text-[#F1E8E0] transition-colors">
               Public Events
             </Link>
             <Link to={createPageUrl("Blog")} className="text-[13px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)] hover:text-ink dark:hover:text-[#F1E8E0] transition-colors">
@@ -406,7 +406,7 @@ export default function Navbar() {
                         <span className="text-[14.5px]">Blog</span>
                       </Link>
 
-                      <Link to={createPageUrl("Classifieds")} onClick={() => setMobileMenuOpen(false)} className={mobileLinkClass}>
+                      <Link to={createPageUrl("PublicEvents")} onClick={() => setMobileMenuOpen(false)} className={mobileLinkClass}>
                         <CalendarDays className="h-5 w-5" />
                         <span className="text-[14.5px]">Public Events</span>
                       </Link>

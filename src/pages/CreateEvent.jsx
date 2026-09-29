@@ -68,7 +68,7 @@ export default function CreateEvent() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['events'] });
       toast.success("Event submitted for approval! It will appear once approved.");
-      navigate(createPageUrl("Classifieds"));
+      navigate(createPageUrl("PublicEvents"));
     },
     onError: () => toast.error("Failed to publish event")
   });
