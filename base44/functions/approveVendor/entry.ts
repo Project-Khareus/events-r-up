@@ -43,19 +43,24 @@ export default async function(req) {
     // Fetch the vendor with retries — transient errors must not be mistaken
     // for "vendor not found" (which returns a misleading 404 to the admin).
     let vendor = null;
-    for (let attempt = 0; attempt < 3; attempt++) {
+    let lastError = null;
+    for (let attempt = 0; attempt < 5; attempt++) {
       try {
         vendor = await base44.asServiceRole.entities.Vendor.get(vendor_id);
         break;
       } catch (err) {
+        lastError = err;
         const status = err?.status || err?.response?.status;
         if (status === 404) break; // genuinely missing — stop retrying
-        await new Promise((r) => setTimeout(r, 600 * (attempt + 1)));
+        await new Promise((r) => setTimeout(r, 800 * (attempt + 1)));
       }
     }
 
     if (!vendor) {
-      return Response.json({ error: 'This listing no longer exists. Refresh the page.' }, { status: 404 });
+      console.error('approveVendor: vendor get failed after retries:', lastError?.message, lastError?.status);
+      return Response.json({
+        error: `Could not load this listing${lastError ? ` (last error: ${lastError.message})` : ''}. Please try again.`
+      }, { status: 404 });
     }
 
     await base44.asServiceRole.entities.Vendor.update(vendor_id, {
