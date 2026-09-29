@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import formatVendorLocation from "@/components/utils/formatLocation";
+import { buildApprovedChanges } from "@/lib/vendorPendingChanges";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -222,14 +223,11 @@ export default function AdminVendors() {
 
   const approveChangesMutation = useMutation({
     mutationFn: async (vendor) => {
-      // Apply pending changes to the main vendor record
-      const { pending_changes, ...rest } = vendor;
-      const updatedData = {
-        ...pending_changes,
-        pending_changes: null,
-        has_pending_changes: false
-      };
+      const updatedData = buildApprovedChanges(vendor.pending_changes);
       return { updated: await base44.entities.Vendor.update(vendor.id, updatedData), vendor };
+    },
+    onError: (error) => {
+      toast.error("Failed to approve changes: " + (error?.response?.data?.message || error.message));
     },
     onSuccess: async ({ updated, vendor }) => {
       const currentUser = await base44.auth.me();
