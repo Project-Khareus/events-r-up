@@ -30,7 +30,7 @@ const CATEGORY_LABELS = {
   others: "Others"
 };
 
-export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
+export default function VendorCard({ vendor, reviews = [], size = "auto", showCategory = true }) {
   const [imageError, setImageError] = React.useState(false);
   const currency = vendor ? getCurrencyByCode(vendor.price_currency) : null;
 
@@ -83,7 +83,7 @@ export default function VendorCard({ vendor, reviews = [], size = "auto" }) {
           </div>
 
           <div className="pt-2.5 pb-[13px] px-3 flex flex-col flex-1">
-            {categories.length > 0 && (
+            {showCategory && categories.length > 0 && (
               <span className="text-[9.5px] font-normal tracking-[0.14em] uppercase text-gold-text dark:text-gold-dark mb-1.5">
                 {CATEGORY_LABELS[categories[0]] || categories[0]}
               </span>

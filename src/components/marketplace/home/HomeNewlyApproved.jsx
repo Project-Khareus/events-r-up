@@ -65,6 +65,7 @@ export default function HomeNewlyApproved({ vendors = [], allReviews = [], locat
               <VendorCard
                 key={vendor.id}
                 vendor={vendor}
+                showCategory={false}
                 reviews={allReviews.filter((r) => r.vendor_id === vendor.id)}
               />
             ))}
