@@ -13,32 +13,39 @@ const EVENT_SECTIONS = [
 export default function HomeNewlyApproved({ vendors = [], allReviews = [], location, totalCount }) {
   if (!vendors.length) return null;
 
-  // Each vendor appears in exactly ONE section (its first matching category)
-  // so nothing repeats on the front page.
-  const seen = new Set();
-  const groups = EVENT_SECTIONS.map((section) => {
-    const matching = vendors.filter((v) => {
-      if (seen.has(v.id)) return false;
-      const events = v.event_type
-        ? Array.isArray(v.event_type) ? v.event_type : [v.event_type]
-        : [];
-      return events.includes(section.key);
-    });
-    matching.forEach((v) => seen.add(v.id));
-    return {
-      ...section,
-      count: matching.length,
-      vendors: matching.slice(0, 8),
-    };
-  }).filter((g) => g.vendors.length > 0);
+  // Each vendor appears in exactly ONE section so nothing repeats, but vendors
+  // are spread evenly: each goes to the matching category with the fewest
+  // vendors so far, so no section starves.
+  const groups = EVENT_SECTIONS.map((section) => ({ ...section, count: 0, assigned: [] }));
+  const groupByKey = Object.fromEntries(groups.map((g) => [g.key, g]));
+  const matchCount = Object.fromEntries(EVENT_SECTIONS.map((s) => [s.key, 0]));
 
-  if (groups.length === 0) return null;
+  vendors.forEach((v) => {
+    const events = v.event_type
+      ? Array.isArray(v.event_type) ? v.event_type : [v.event_type]
+      : [];
+    const matching = EVENT_SECTIONS.filter((s) => events.includes(s.key));
+    if (!matching.length) return;
+    matching.forEach((s) => { matchCount[s.key] += 1; });
+    const target = matching.reduce((best, s) =>
+      groupByKey[s.key].assigned.length < groupByKey[best.key].assigned.length ? s : best
+    );
+    groupByKey[target.key].assigned.push(v);
+  });
+
+  const displayGroups = groups.map((g) => ({
+    ...g,
+    count: matchCount[g.key],
+    vendors: g.assigned.slice(0, 8),
+  })).filter((g) => g.vendors.length > 0);
+
+  if (displayGroups.length === 0) return null;
 
   const seeAllUrl = (key) => `${createPageUrl("VendorMarketplace")}?event=${key}`;
 
   return (
     <section className="px-5 md:px-10 py-8 md:py-12 space-y-8 md:space-y-10">
-      {groups.map((group) => (
+      {displayGroups.map((group) => (
         <div key={group.key}>
           <div className="flex items-baseline justify-between gap-4 mb-4 md:mb-5">
             <h2 className="font-serif text-[22px] md:text-[27px] text-ink dark:text-[#F1E8E0]">
