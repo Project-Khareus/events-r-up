@@ -40,7 +40,19 @@ export default async function(req) {
       return Response.json({ error: 'Vendor ID is required' }, { status: 400 });
     }
 
-    const vendor = await base44.asServiceRole.entities.Vendor.get(vendor_id).catch(() => null);
+    // Fetch the vendor with retries — transient errors must not be mistaken
+    // for "vendor not found" (which returns a misleading 404 to the admin).
+    let vendor = null;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        vendor = await base44.asServiceRole.entities.Vendor.get(vendor_id);
+        break;
+      } catch (err) {
+        const status = err?.status || err?.response?.status;
+        if (status === 404) break; // genuinely missing — stop retrying
+        await new Promise((r) => setTimeout(r, 600 * (attempt + 1)));
+      }
+    }
 
     if (!vendor) {
       return Response.json({ error: 'This listing no longer exists. Refresh the page.' }, { status: 404 });
