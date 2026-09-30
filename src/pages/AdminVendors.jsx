@@ -120,6 +120,7 @@ export default function AdminVendors() {
   const pendingVendors = filterVendors(allVendors.filter(v => v.status === 'pending'));
   const vendorsWithChanges = filterVendors(allVendors.filter(v => v.has_pending_changes));
   const approvedVendors = filterVendors(allVendors.filter(v => v.status === 'approved' && !v.has_pending_changes));
+  const suspendedVendors = filterVendors(allVendors.filter(v => v.status === 'suspended'));
 
   const approveMutation = useMutation({
     mutationFn: async (vendor) => {
@@ -394,6 +395,39 @@ export default function AdminVendors() {
     }
   };
 
+  const unsuspendVendorMutation = useMutation({
+    mutationFn: async (vendor) => {
+      const currentUser = await base44.auth.me();
+      const result = await base44.entities.Vendor.update(vendor.id, { 
+        status: 'approved',
+        suspension_reason: null
+      });
+      try {
+        await base44.entities.Notification.create({
+          user_id: vendor.user_id,
+          type: 'system',
+          title: 'Listing Reinstated',
+          message: `Your vendor listing "${vendor.business_name}" has been reinstated and is live again.`,
+          link: 'ManageListing',
+          action_by: currentUser.full_name || currentUser.email,
+          action_type: 'approved',
+          vendor_id: vendor.id,
+          vendor_name: vendor.business_name
+        });
+      } catch (error) {
+        console.error('Failed to create reinstatement notification:', error);
+      }
+      return result;
+    },
+    onSuccess: () => {
+      toast.success("Vendor reinstated");
+      queryClient.invalidateQueries(['admin_all_vendors']);
+    },
+    onError: (error) => {
+      toast.error("Failed to reinstate vendor: " + error.message);
+    }
+  });
+
   const verifyGhanaCardMutation = useMutation({
     mutationFn: async (vendorId) => {
       setVerifyingCardVendorId(vendorId);
@@ -481,6 +515,10 @@ export default function AdminVendors() {
             </TabsTrigger>
             <TabsTrigger value="all" className="gap-2">
               All Vendors ({approvedVendors.length})
+            </TabsTrigger>
+            <TabsTrigger value="suspended" className="gap-2 text-red-600">
+              <Ban className="h-4 w-4" />
+              Suspended ({suspendedVendors.length})
             </TabsTrigger>
             <Link to="/AdminReports">
               <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700 hover:bg-red-50 gap-1.5 ml-2">
@@ -776,6 +814,94 @@ export default function AdminVendors() {
                                   onClick={() => handleSuspendClick(vendor)}
                                 >
                                   <Ban className="h-4 w-4 text-red-500" />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="suspended">
+            {suspendedVendors.length === 0 ? (
+              <Card className="p-12 text-center bg-white">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle className="h-8 w-8 text-green-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900">No suspended vendors</h3>
+                <p className="text-slate-500">Suspended vendor listings will appear here.</p>
+              </Card>
+            ) : (
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="bg-slate-100 border-b border-slate-200">
+                        <th className="text-left px-6 py-3.5 text-sm font-semibold text-slate-600">Name</th>
+                        <th className="text-left px-4 py-3.5 text-sm font-semibold text-slate-600">Category</th>
+                        <th className="text-left px-4 py-3.5 text-sm font-semibold text-slate-600">Location</th>
+                        <th className="text-left px-4 py-3.5 text-sm font-semibold text-slate-600">Reason</th>
+                        <th className="text-center px-4 py-3.5 text-sm font-semibold text-slate-600">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {suspendedVendors.map((vendor) => {
+                        const primaryCategory = Array.isArray(vendor.category) ? vendor.category[0] : vendor.category;
+                        return (
+                          <tr key={vendor.id} className="hover:bg-slate-50 transition-colors">
+                            <td className="px-6 py-4">
+                              <div className="flex items-center gap-3">
+                                <div className="h-11 w-11 rounded-full bg-slate-200 overflow-hidden flex-shrink-0">
+                                  {vendor.image_url ? (
+                                    <img src={vendor.image_url} alt={vendor.business_name} className="h-full w-full object-cover" />
+                                  ) : (
+                                    <div className="h-full w-full flex items-center justify-center">
+                                      <Store className="h-5 w-5 text-slate-400" />
+                                    </div>
+                                  )}
+                                </div>
+                                <span className="font-semibold text-slate-900 truncate max-w-[200px]">{vendor.business_name}</span>
+                              </div>
+                            </td>
+                            <td className="px-4 py-4 text-sm text-slate-600">
+                              {CATEGORY_LABELS[primaryCategory] || primaryCategory || '-'}
+                            </td>
+                            <td className="px-4 py-4 text-sm text-slate-600">
+                              {vendor.location ? formatVendorLocation(vendor.location) : '-'}
+                            </td>
+                            <td className="px-4 py-4 text-sm text-red-600 max-w-[250px]">
+                              {vendor.suspension_reason || 'No reason provided'}
+                            </td>
+                            <td className="px-4 py-4">
+                              <div className="flex items-center justify-center gap-2">
+                                <Link to={`/AdminVendorDetail?id=${vendor.id}`}>
+                                  <Button variant="outline" size="icon" className="h-9 w-9 border-slate-300 hover:bg-slate-100" title="Review">
+                                    <MessageSquare className="h-4 w-4 text-slate-600" />
+                                  </Button>
+                                </Link>
+                                <a href={`${getVendorUrl(vendor)}?id=${vendor.id}&preview=admin`} target="_blank" rel="noopener noreferrer">
+                                  <Button variant="outline" size="icon" className="h-9 w-9 border-slate-300 hover:bg-slate-100" title="View Listing">
+                                    <ExternalLink className="h-4 w-4 text-slate-600" />
+                                  </Button>
+                                </a>
+                                <Button
+                                  variant="outline"
+                                  size="icon"
+                                  className="h-9 w-9 border-green-200 hover:bg-green-50"
+                                  title="Reinstate"
+                                  disabled={unsuspendVendorMutation.isPending && unsuspendVendorMutation.variables?.id === vendor.id}
+                                  onClick={() => unsuspendVendorMutation.mutate(vendor)}
+                                >
+                                  {unsuspendVendorMutation.isPending && unsuspendVendorMutation.variables?.id === vendor.id ? (
+                                    <Loader2 className="h-4 w-4 text-green-600 animate-spin" />
+                                  ) : (
+                                    <CheckCircle className="h-4 w-4 text-green-600" />
+                                  )}
                                 </Button>
                               </div>
                             </td>
