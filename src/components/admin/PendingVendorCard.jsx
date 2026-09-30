@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, CheckCircle, XCircle, ExternalLink, Eye, CreditCard, ShieldCheck, ShieldAlert, ShieldX, MapPin, Mail, Phone, DollarSign, Calendar, Pencil } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, ExternalLink, Eye, CreditCard, ShieldCheck, ShieldAlert, ShieldX, MapPin, Mail, Phone, DollarSign, Calendar, Pencil, MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 import { getVendorUrl } from "../../utils/vendorUrl";
@@ -52,6 +52,13 @@ function formatPhone(phone) {
   if (phone.startsWith('+')) return phone;
   if (phone.startsWith('0')) return '+233' + phone.substring(1);
   return '+233' + phone;
+}
+
+function getWhatsAppLink(phone) {
+  if (!phone) return null;
+  const digits = formatPhone(phone).replace(/\D/g, '');
+  const text = encodeURIComponent(`Hello! This is the Khareus team regarding your vendor listing.`);
+  return `https://wa.me/${digits}?text=${text}`;
 }
 
 export default function PendingVendorCard({
@@ -105,6 +112,13 @@ export default function PendingVendorCard({
                     <Eye className="h-3.5 w-3.5" /> Preview
                   </Button>
                 </a>
+                {getWhatsAppLink(vendor.contact_phone) && (
+                  <a href={getWhatsAppLink(vendor.contact_phone)} target="_blank" rel="noopener noreferrer">
+                    <Button size="sm" className="gap-1.5 text-xs h-8 bg-[#25D366] hover:bg-[#1EBE5A] text-white rounded-lg">
+                      <MessageCircle className="h-3.5 w-3.5" /> WhatsApp
+                    </Button>
+                  </a>
+                )}
                 <Link to={`/EditVendor?id=${vendor.id}&admin=true`}>
                   <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8 rounded-lg">
                     <Pencil className="h-3.5 w-3.5" /> Edit
