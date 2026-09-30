@@ -41,7 +41,7 @@ export default function LocationSelector({ value, onChange, onNext, onBack }) {
 
   const handleSelectLocation = (location) => {
     setSelectedLocation(location);
-    setSearchQuery(location.formatted_address);
+    setSearchQuery(location.name);
     setSuggestions([]);
   };
 
@@ -99,7 +99,7 @@ export default function LocationSelector({ value, onChange, onNext, onBack }) {
               <MapPin className="h-4 w-4 text-gold mt-0.5 shrink-0" />
               <div>
                 <p className="font-serif text-[17px] text-ink dark:text-[#F1E8E0]">{selectedLocation.name}</p>
-                <p className="text-[12.5px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">{selectedLocation.formatted_address}</p>
+                <p className="text-[12.5px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">We'll use this area to find nearby vendors.</p>
               </div>
             </div>
           </div>
