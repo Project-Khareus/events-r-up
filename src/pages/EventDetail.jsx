@@ -6,6 +6,7 @@ import { createPageUrl } from "../utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import EventPhotoGallery from "@/components/events/EventPhotoGallery";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { ArrowLeft, Calendar, MapPin, DollarSign, Tag, User, Flag, Pencil } from "lucide-react";
 import ShareButton from "../components/shared/ShareButton";
@@ -125,13 +126,11 @@ export default function EventDetail() {
         </div>
       )}
       {/* Hero Image — full flyer at natural aspect, no overlay */}
-      <div className="w-full bg-linen dark:bg-[#221B15] flex justify-center">
-         <img 
-            src={event.image_url || "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=80&w=2000"} 
-            alt={event.title}
-            className="w-auto max-w-full max-h-[75vh] object-contain"
-         />
-      </div>
+      <EventPhotoGallery
+        cover={event.image_url}
+        images={event.gallery_images || []}
+        title={event.title}
+      />
 
       {/* Event info band below the image */}
       <div className="w-full bg-cream dark:bg-[#1B1714] text-ink dark:text-[#F1E8E0] border-b border-ink/10 dark:border-[#F1E8E0]/10">

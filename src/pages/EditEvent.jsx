@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
+import EventGalleryUpload from "@/components/events/EventGalleryUpload";
 import { Loader2, Image as ImageIcon, DollarSign, ArrowLeft } from "lucide-react";
 import LocationAutocomplete from "@/components/shared/LocationAutocomplete";
 
@@ -68,6 +69,7 @@ export default function EditEvent() {
         organizer_name: event.organizer_name || "",
         description: event.description || "",
         image_url: event.image_url || "",
+        gallery_images: event.gallery_images || [],
         location_address: event.location_address || "",
         is_paid: event.is_paid || false,
         price: event.price ? event.price.toString() : "",
@@ -225,6 +227,12 @@ export default function EditEvent() {
                 </div>
               </div>
             </div>
+
+            {/* Extra Photos */}
+            <EventGalleryUpload
+              value={formData.gallery_images}
+              onChange={(gallery_images) => setFormData(prev => ({ ...prev, gallery_images }))}
+            />
 
             {/* Basic Info */}
             <div className="space-y-2">

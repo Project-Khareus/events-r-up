@@ -14,6 +14,13 @@
       "description": "Cover image URL",
       "type": "string"
     },
+    "gallery_images": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array",
+      "description": "Additional event photos"
+    },
     "is_paid": {
       "default": false,
       "description": "Whether the event is free or paid",

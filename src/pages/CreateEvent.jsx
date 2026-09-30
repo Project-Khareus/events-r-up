@@ -13,6 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2, Image as ImageIcon, Calendar, DollarSign } from "lucide-react";
+import EventGalleryUpload from "@/components/events/EventGalleryUpload";
 import LocationAutocomplete from "@/components/shared/LocationAutocomplete";
 
 const THEMES = ["Music", "Food & Drink", "Business", "Arts & Culture", "Sports", "Community", "Party", "Education", "Other"];
@@ -28,6 +29,7 @@ export default function CreateEvent() {
     organizer_name: "",
     description: "",
     image_url: "",
+    gallery_images: [],
     location_address: "",
     is_paid: false,
     price: "",
@@ -167,11 +169,17 @@ export default function CreateEvent() {
                         className="cursor-pointer"
                     />
                     <p className="text-xs text-slate-500 mt-2">Recommended size: 1200x600px. Max 5MB.</p>
-                </div>
-              </div>
-            </div>
+                    </div>
+                    </div>
+                    </div>
 
-            {/* Basic Info */}
+                    {/* Extra Photos */}
+                    <EventGalleryUpload
+                    value={formData.gallery_images}
+                    onChange={(gallery_images) => setFormData(prev => ({ ...prev, gallery_images }))}
+                    />
+
+                    {/* Basic Info */}
             <div className="space-y-2">
               <Label>Event Title *</Label>
               <Input 
