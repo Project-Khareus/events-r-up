@@ -57,7 +57,8 @@ function formatPhone(phone) {
 function getWhatsAppLink(phone) {
   if (!phone) return null;
   const digits = formatPhone(phone).replace(/\D/g, '');
-  const text = encodeURIComponent(`Hello! This is the Khareus team regarding your vendor listing.`);
+  const editLink = `${window.location.origin}/ManageListing`;
+  const text = encodeURIComponent(`Hello! This is the Khareus team regarding your vendor listing. You can view and edit your listing here: ${editLink}`);
   return `https://wa.me/${digits}?text=${text}`;
 }
 
