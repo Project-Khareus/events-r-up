@@ -142,6 +142,11 @@ export default function VendorDetail() {
     staleTime: 300000,
   });
 
+  // Jump to top when a different vendor is opened (e.g. from Related Vendors)
+  React.useEffect(() => {
+    if (vendor) window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [vendor?.id]);
+
   // Track profile view after vendor loads (non-critical, delayed)
   React.useEffect(() => {
     if (!vendor?.id) return;
