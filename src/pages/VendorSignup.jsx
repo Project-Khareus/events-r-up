@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Store, Loader2, CheckCircle, Send } from "lucide-react";
 import VendorForm from "../components/vendor/VendorForm";
+import { normalizeVendorName } from "@/utils/vendorUrl";
 
 export default function VendorSignup() {
   const navigate = useNavigate();
@@ -59,10 +60,22 @@ export default function VendorSignup() {
         years_in_business: restData.years_in_business ? parseInt(restData.years_in_business) : undefined
       };
 
+      const allVendors = await base44.entities.Vendor.filter({ user_id: user.id });
+      const existingVendor = allVendors.find(
+        (vendor) => normalizeVendorName(vendor.business_name) === normalizeVendorName(vendorData.business_name)
+      );
+
+      if (existingVendor) {
+        const reusedVendor = await base44.entities.Vendor.update(existingVendor.id, {
+          ...vendorData,
+          ghana_card_status: hasGhanaCard ? 'pending' : existingVendor.ghana_card_status
+        });
+        return { reused: true, vendorId: reusedVendor.id };
+      }
+
       // Check if trial is selected
       if (data.subscription_type === 'trial') {
         // Count existing trial listings for this user
-        const allVendors = await base44.entities.Vendor.filter({ user_id: user.id });
         const trialCount = allVendors.filter((v) => v.is_trial === true).length;
 
         if (trialCount >= 3) {
@@ -123,6 +136,12 @@ export default function VendorSignup() {
       return response.data;
     },
     onSuccess: async (data) => {
+      if (data.reused) {
+        toast.success("Your existing listing has been updated.");
+        navigate(createPageUrl("ManageListing"));
+        return;
+      }
+
       if (data.trial) {
         const needsGhanaCardUpload = !data.hasGhanaCard && !data.ghanaCardProvided;
 

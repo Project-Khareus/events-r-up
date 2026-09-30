@@ -34,3 +34,17 @@ export function parseVendorSlug(slug) {
   if (lastHyphen === -1 || lastHyphen === slug.length - 1) return slug;
   return slug.substring(lastHyphen + 1);
 }
+
+export function normalizeVendorName(name) {
+  return (name || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/[\s-]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+export function getVendorNameFromSlug(slug) {
+  if (!slug) return "";
+  const lastHyphen = slug.lastIndexOf("-");
+  return normalizeVendorName(lastHyphen === -1 ? slug : slug.slice(0, lastHyphen));
+}

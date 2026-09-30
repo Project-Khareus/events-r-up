@@ -38,7 +38,7 @@ import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 import { capitalizeHtmlSentences } from "@/components/utils/capitalizeHtml";
 import { sanitizeHtml } from "@/lib/sanitizeHtml";
 import { useParams } from "react-router-dom";
-import { parseVendorSlug, getVendorUrl } from "../utils/vendorUrl";
+import { parseVendorSlug, getVendorUrl, getVendorNameFromSlug, normalizeVendorName } from "../utils/vendorUrl";
 
 const CATEGORY_LABELS = {
   event_planner: "Event Planner",
@@ -104,8 +104,17 @@ export default function VendorDetail() {
       }
       if (shortIdFromSlug) {
         const slugMatch = allVendors.find(v => v.id.endsWith(shortIdFromSlug));
-        return slugMatch ?? null;
+        if (slugMatch) return slugMatch;
       }
+
+      const slugName = getVendorNameFromSlug(slug);
+      if (slugName) {
+        return allVendors.find((v) => {
+          const vendorName = normalizeVendorName(v.business_name);
+          return vendorName === slugName || vendorName.startsWith(`${slugName}-`);
+        }) ?? null;
+      }
+
       return null;
     },
     enabled: !!(vendorIdFromQuery || shortIdFromSlug),
