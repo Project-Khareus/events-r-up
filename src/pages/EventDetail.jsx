@@ -188,68 +188,6 @@ export default function EventDetail() {
                     </section>
                 )}
 
-                {/* Map Section */}
-                <section>
-                    <h2 className="text-2xl font-serif font-bold text-ink dark:text-[#F1E8E0] mb-4">Location</h2>
-                    
-                    {!showMap ? (
-                        <div className="rounded-none border border-ink/10 dark:border-[#F1E8E0]/10 bg-linen dark:bg-[#221B15] p-4 sm:p-5 flex items-center gap-4 flex-wrap">
-                            <div className="bg-gold/10 p-2.5 rounded-full border border-gold/30 shrink-0">
-                                <MapPin className="h-5 w-5 text-gold-text dark:text-gold-dark" />
-                            </div>
-                            <div className="flex-1 min-w-[180px]">
-                                <a
-                                    href={mapsUrl}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="font-semibold text-ink dark:text-[#F1E8E0] hover:underline underline-offset-4"
-                                >
-                                    {event.location_address}
-                                </a>
-                                <p className="text-sm text-ink/50 dark:text-[#F1E8E0]/50">Open in Google Maps for directions</p>
-                            </div>
-                            <div className="flex flex-wrap gap-2">
-                                {(event.location_lat && event.location_lng) && (
-                                    <Button onClick={() => setShowMap(true)} variant="outline" size="sm" className="rounded-none border-ink/20 dark:border-[#F1E8E0]/20">
-                                        View on Map
-                                    </Button>
-                                )}
-                                <a 
-                                    href={mapsUrl}
-                                    target="_blank" 
-                                    rel="noreferrer"
-                                >
-                                    <Button size="sm" className="rounded-none bg-gold-text hover:bg-gold-text/90 text-cream">Get Directions</Button>
-                                </a>
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="rounded-none overflow-hidden border border-ink/10 dark:border-[#F1E8E0]/10 h-[400px] relative z-0">
-                            <MapContainer 
-                                center={[event.location_lat || 0, event.location_lng || 0]} 
-                                zoom={14} 
-                                scrollWheelZoom={false}
-                                style={{ height: "100%", width: "100%" }}
-                            >
-                                <TileLayer
-                                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                />
-                                <Marker position={[event.location_lat || 0, event.location_lng || 0]}>
-                                    <Popup>{event.location_address}</Popup>
-                                </Marker>
-                            </MapContainer>
-                            <Button 
-                                variant="secondary" 
-                                size="sm" 
-                                className="absolute top-4 right-4 z-[1000] bg-white hover:bg-cream text-ink rounded-none"
-                                onClick={() => setShowMap(false)}
-                            >
-                                Hide Map
-                            </Button>
-                        </div>
-                    )}
-                </section>
             </div>
 
             {/* Sidebar / Actions */}
@@ -272,6 +210,56 @@ export default function EventDetail() {
                                 <p className="font-medium text-ink dark:text-[#F1E8E0]">
                                     {event.is_paid ? (event.price ? `GH₵${event.price}` : 'Paid') : 'Free Entry'}
                                 </p>
+                            </div>
+                        </div>
+                        <div className="flex items-start gap-3">
+                            <MapPin className="h-5 w-5 text-gold-text dark:text-gold-dark mt-0.5" />
+                            <div>
+                                <p className="text-sm text-ink/50 dark:text-[#F1E8E0]/50">Location</p>
+                                <a
+                                    href={mapsUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="font-medium text-ink dark:text-[#F1E8E0] hover:underline underline-offset-4 break-words"
+                                >
+                                    {event.location_address}
+                                </a>
+                                <div className="flex flex-wrap gap-2 mt-2">
+                                    {(event.location_lat && event.location_lng) && (
+                                        <Button onClick={() => setShowMap(true)} variant="outline" size="sm" className="rounded-none border-ink/20 dark:border-[#F1E8E0]/20">
+                                            View on Map
+                                        </Button>
+                                    )}
+                                    <a href={mapsUrl} target="_blank" rel="noreferrer">
+                                        <Button size="sm" className="rounded-none bg-gold-text hover:bg-gold-text/90 text-cream">Get Directions</Button>
+                                    </a>
+                                </div>
+                                {showMap && (event.location_lat && event.location_lng) && (
+                                    <div className="mt-3 rounded-none overflow-hidden border border-ink/10 dark:border-[#F1E8E0]/10 h-[220px] relative z-0">
+                                        <MapContainer
+                                            center={[event.location_lat, event.location_lng]}
+                                            zoom={14}
+                                            scrollWheelZoom={false}
+                                            style={{ height: "100%", width: "100%" }}
+                                        >
+                                            <TileLayer
+                                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                            />
+                                            <Marker position={[event.location_lat, event.location_lng]}>
+                                                <Popup>{event.location_address}</Popup>
+                                            </Marker>
+                                        </MapContainer>
+                                        <Button
+                                            variant="secondary"
+                                            size="sm"
+                                            className="absolute top-2 right-2 z-[1000] bg-white hover:bg-cream text-ink rounded-none"
+                                            onClick={() => setShowMap(false)}
+                                        >
+                                            Hide Map
+                                        </Button>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
