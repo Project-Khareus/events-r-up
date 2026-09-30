@@ -70,7 +70,7 @@ const EVENT_MENUS = [
       { name: "Caskets", id: "caskets" },
       { name: "Catering & Drinks", id: "catering_drinks" },
       { name: "Décor & Logistics Setup", id: "decor_logistics" },
-      { name: "Fashion / Wreaths", id: "fashion_wreaths" },
+      { name: "Wreaths", id: "wreaths" },
       { name: "Car Rentals", id: "car_rentals" },
       { name: "Others", id: "others" },
     ]

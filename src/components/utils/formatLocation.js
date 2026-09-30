@@ -43,6 +43,12 @@ function clean(raw) {
 
 const stripCase = (s) => s.toLowerCase().replace(/[^a-z\s-]/g, '').trim();
 
+export function getLocationCity(raw) {
+  const formatted = formatVendorLocation(raw);
+  const parts = formatted.split(',').map((part) => stripCase(part)).filter(Boolean);
+  return CITIES.find((city) => parts.includes(city)) || "";
+}
+
 export default function formatVendorLocation(raw) {
   const cleaned = clean(raw);
   if (!cleaned) return raw || '';

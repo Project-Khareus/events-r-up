@@ -10,7 +10,7 @@ const EVENT_MENUS = [
     title: "Weddings",
     categories: [
       { name: "Bridal Fashion & Accessories", id: "bridal_fashion" },
-      { name: "Make-Up Artistes", id: "makeup_artistes" },
+      { name: "Make-Up Artists", id: "beauty_personal_care" },
       { name: "Décor & Logistics Setup", id: "decor_logistics" },
       { name: "Event Grounds", id: "event_grounds" },
       { name: "Photography & Videography", id: "photography_videography" },
@@ -30,7 +30,7 @@ const EVENT_MENUS = [
     title: "Parties",
     categories: [
       { name: "Event Grounds", id: "event_grounds" },
-      { name: "Make-Up Artistes", id: "makeup_artistes" },
+      { name: "Make-Up Artists", id: "beauty_personal_care" },
       { name: "Décor & Logistics Setup", id: "decor_logistics" },
       { name: "Photography & Videography", id: "photography_videography" },
       { name: "Design & Creatives", id: "design_creatives" },
@@ -57,7 +57,7 @@ const EVENT_MENUS = [
       { name: "Caskets", id: "caskets" },
       { name: "Catering & Drinks", id: "catering_drinks" },
       { name: "Décor & Logistics Setup", id: "decor_logistics" },
-      { name: "Fashion / Wreaths", id: "fashion_wreaths" },
+      { name: "Wreaths", id: "wreaths" },
       { name: "Car Rentals", id: "car_rentals" },
       { name: "Others", id: "others" },
     ]

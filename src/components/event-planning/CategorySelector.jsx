@@ -5,8 +5,9 @@ import StepNav, { outlineBtn } from "./StepNav";
 
 const EVENT_CATEGORY_MAP = {
   weddings: [
+    { value: "event_planner", label: "Event Planner", description: "Planning and coordination" },
     { value: "bridal_fashion", label: "Bridal Fashion & Accessories", description: "Wedding dresses, veils, suits" },
-    { value: "makeup_artistes", label: "Make-Up Artistes", description: "Bridal makeup & hair" },
+    { value: "beauty_personal_care", label: "Make-Up Artists", description: "Bridal makeup & hair" },
     { value: "decor_logistics", label: "Décor & Logistics Setup", description: "Venue decoration & setup" },
     { value: "event_grounds", label: "Event Grounds", description: "Wedding venues" },
     { value: "photography_videography", label: "Photography & Videography", description: "Photos & video coverage" },
@@ -22,8 +23,9 @@ const EVENT_CATEGORY_MAP = {
     { value: "rent_a_team", label: "Rent-a-Team", description: "Bridal train, groomsmen" },
   ],
   parties: [
+    { value: "event_planner", label: "Event Planner", description: "Planning and coordination" },
     { value: "event_grounds", label: "Event Grounds", description: "Party venues" },
-    { value: "makeup_artistes", label: "Make-Up Artistes", description: "Party makeup & styling" },
+    { value: "beauty_personal_care", label: "Make-Up Artists", description: "Party makeup & styling" },
     { value: "decor_logistics", label: "Décor & Logistics Setup", description: "Party decorations" },
     { value: "photography_videography", label: "Photography & Videography", description: "Event coverage" },
     { value: "design_creatives", label: "Design & Creatives", description: "Invitations & graphics" },
@@ -44,7 +46,7 @@ const EVENT_CATEGORY_MAP = {
     { value: "caskets", label: "Caskets", description: "Burial caskets" },
     { value: "catering_drinks", label: "Catering & Drinks", description: "Reception catering" },
     { value: "decor_logistics", label: "Décor & Logistics Setup", description: "Memorial decorations" },
-    { value: "fashion_wreaths", label: "Fashion / Wreaths", description: "Attire & floral tributes" },
+    { value: "wreaths", label: "Wreaths", description: "Floral tributes" },
     { value: "car_rentals", label: "Car Rentals", description: "Funeral transportation" },
     { value: "others", label: "Others", description: "Additional services" },
   ],

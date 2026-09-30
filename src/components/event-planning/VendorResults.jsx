@@ -4,40 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, SlidersHorizontal } from "lucide-react";
 import VendorCard from "../marketplace/VendorCard";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getLocationCity } from "@/components/utils/formatLocation";
 import StepHeading from "./StepHeading";
 import { outlineBtn } from "./StepNav";
-
-function calculateDistance(lat1, lon1, lat2, lon2) {
-  const R = 3959; // Earth's radius in miles
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLon/2) * Math.sin(dLon/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  return R * c;
-}
-
-function parseLocation(locationStr) {
-  const locationMap = {
-    "San Francisco": { lat: 37.7749, lng: -122.4194 },
-    "Oakland": { lat: 37.8044, lng: -122.2712 },
-    "San Jose": { lat: 37.3382, lng: -121.8863 },
-    "Berkeley": { lat: 37.8716, lng: -122.2727 },
-    "Napa": { lat: 38.2975, lng: -122.2869 },
-    "Los Angeles": { lat: 34.0522, lng: -118.2437 },
-    "New York": { lat: 40.7128, lng: -74.0060 },
-  };
-  
-  for (const [city, coords] of Object.entries(locationMap)) {
-    if (locationStr?.includes(city)) {
-      return coords;
-    }
-  }
-  
-  return null;
-}
 
 export default function VendorResults({ eventType, location, budget, selectedCategories, onBack }) {
   const [prioritize, setPrioritize] = useState("budget");
@@ -50,64 +19,28 @@ export default function VendorResults({ eventType, location, budget, selectedCat
   const filteredAndSortedVendors = useMemo(() => {
     const relevantCategories = selectedCategories || [];
     const budgetValue = parseFloat(budget);
-    
-    const normalized = vendors
+    const selectedCity = getLocationCity(location?.name || location?.formatted_address);
+
+    const filtered = vendors
       .filter(Boolean)
-      .map((v) => (v.data ? { id: v.id, ...v.data } : v))
-      .filter((v) => v && v.id && (!v.status || v.status === "approved"));
+      .map((vendor) => (vendor.data ? { id: vendor.id, ...vendor.data } : vendor))
+      .filter((vendor) => vendor?.id && vendor.status === "approved")
+      .map((vendor) => ({ ...vendor, city: getLocationCity(vendor.location) }))
+      .filter((vendor) => {
+        const vendorEvents = Array.isArray(vendor.event_type) ? vendor.event_type : [vendor.event_type].filter(Boolean);
+        const vendorCategories = Array.isArray(vendor.category) ? vendor.category : [vendor.category].filter(Boolean);
 
-    let filtered = normalized.filter(vendor => {
-      const vendorEvents = vendor.event_type ? (Array.isArray(vendor.event_type) ? vendor.event_type : [vendor.event_type]) : [];
-      const vendorCategories = vendor.category ? (Array.isArray(vendor.category) ? vendor.category : [vendor.category]) : [];
-
-      // Filter by event type
-      if (eventType && vendorEvents.length && !vendorEvents.includes(eventType)) return false;
-
-      // Filter by category
-      if (relevantCategories.length && vendorCategories.length && !vendorCategories.some((c) => relevantCategories.includes(c))) return false;
-      
-      // Filter by budget using starting_price
-      if (vendor.starting_price && vendor.starting_price > budgetValue) {
-        return false;
-      }
-      
-      // Filter by location radius
-      if (location?.lat && location?.lng) {
-        const vendorCoords = parseLocation(vendor.location);
-        if (vendorCoords) {
-          const distance = calculateDistance(
-            location.lat, location.lng,
-            vendorCoords.lat, vendorCoords.lng
-          );
-          if (distance > (location.radius || 50)) return false;
-        }
-      }
-      
-      return true;
-    });
-
-    // Add distance to each vendor
-    filtered = filtered.map(vendor => {
-      const vendorCoords = parseLocation(vendor.location) || null;
-      const distance = vendorCoords && location?.lat && location?.lng
-        ? calculateDistance(location.lat, location.lng, vendorCoords.lat, vendorCoords.lng)
-        : 999;
-      return { ...vendor, distance };
-    });
-
-    // Sort by priority
-    if (prioritize === "proximity") {
-      filtered.sort((a, b) => a.distance - b.distance);
-    } else {
-      // Sort by starting price (budget-friendly first)
-      filtered.sort((a, b) => {
-        const priceA = a.starting_price || 0;
-        const priceB = b.starting_price || 0;
-        return priceA - priceB;
+        if (eventType && !vendorEvents.includes(eventType)) return false;
+        if (!relevantCategories.length || !vendorCategories.some((category) => relevantCategories.includes(category))) return false;
+        if (vendor.starting_price && vendor.starting_price > budgetValue) return false;
+        if (selectedCity && vendor.city !== selectedCity) return false;
+        return true;
       });
-    }
 
-    return filtered;
+    return filtered.sort((a, b) => {
+      if (prioritize === "proximity") return a.city.localeCompare(b.city);
+      return (a.starting_price || 0) - (b.starting_price || 0);
+    });
   }, [vendors, eventType, selectedCategories, location, budget, prioritize]);
 
   // Group vendors by category for better display
@@ -115,9 +48,9 @@ export default function VendorResults({ eventType, location, budget, selectedCat
     const relevant = selectedCategories || [];
     const grouped = {};
     filteredAndSortedVendors.forEach(vendor => {
-      const cats = vendor.category ? (Array.isArray(vendor.category) ? vendor.category : [vendor.category]) : ["others"];
-      const matching = cats.filter((c) => relevant.includes(c));
-      (matching.length ? matching : [cats[0] || "others"]).forEach((c) => {
+      const cats = vendor.category ? (Array.isArray(vendor.category) ? vendor.category : [vendor.category]) : [];
+      const matching = cats.filter((category) => relevant.includes(category));
+      matching.forEach((c) => {
         if (!grouped[c]) grouped[c] = [];
         grouped[c].push(vendor);
       });
@@ -126,8 +59,9 @@ export default function VendorResults({ eventType, location, budget, selectedCat
   }, [filteredAndSortedVendors, selectedCategories]);
 
   const categoryLabels = {
+    event_planner: "Event Planner",
     bridal_fashion: "Bridal Fashion & Accessories",
-    makeup_artistes: "Make-Up Artistes",
+    beauty_personal_care: "Make-Up Artists",
     decor_logistics: "Décor & Logistics Setup",
     event_grounds: "Event Grounds",
     photography_videography: "Photography & Videography",
@@ -145,7 +79,7 @@ export default function VendorResults({ eventType, location, budget, selectedCat
     rapporteur_services: "Rapporteur Services",
     caskets: "Caskets",
     catering_drinks: "Catering & Drinks",
-    fashion_wreaths: "Fashion / Wreaths",
+    wreaths: "Wreaths",
     others: "Other Services",
   };
 
@@ -215,9 +149,9 @@ export default function VendorResults({ eventType, location, budget, selectedCat
                           From GH₵ {vendor.starting_price.toLocaleString()}
                         </span>
                       )}
-                      {vendor.distance < 999 && (
+                      {vendor.city && (
                         <span className="px-2 py-1 bg-ink text-cream text-[10px] font-medium tracking-[0.12em] uppercase">
-                          {vendor.distance.toFixed(1)} mi
+                          {vendor.city}
                         </span>
                       )}
                     </div>

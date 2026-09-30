@@ -24,7 +24,6 @@ const CATEGORY_LABELS = {
   event_planner: "Event Planner",
   bridal_fashion: "Fashion & Accessories",
   beauty_personal_care: "Beauty & Personal Care",
-  makeup_artistes: "Beauty & Personal Care",
   decor_logistics: "Décor & Logistics Setup",
   event_grounds: "Event Grounds",
   photography_videography: "Photography & Videography",
@@ -42,7 +41,7 @@ const CATEGORY_LABELS = {
   rapporteur_services: "Rapporteur Services",
   caskets: "Caskets",
   catering_drinks: "Catering & Drinks",
-  fashion_wreaths: "Fashion / Wreaths",
+  wreaths: "Wreaths",
   others: "Others",
 };
 
