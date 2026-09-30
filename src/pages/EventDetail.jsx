@@ -163,8 +163,8 @@ export default function EventDetail() {
          </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-12">
-         <div className="grid lg:grid-cols-3 gap-12">
+      <div className="max-w-7xl mx-auto px-6 py-8">
+          <div className="grid lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-12">
                 <section>
@@ -238,6 +238,16 @@ export default function EventDetail() {
                         </div>
                     )}
                 </section>
+
+                {/* Nearby Events — kept close to the main event content */}
+                {nearbyEvents.length > 0 && (
+                    <section>
+                        <h2 className="text-2xl font-serif font-bold text-ink dark:text-[#F1E8E0] mb-4">Nearby Events</h2>
+                        <div className="grid sm:grid-cols-2 gap-6">
+                            {nearbyEvents.map(e => <EventCard key={e.id} event={e} />)}
+                        </div>
+                    </section>
+                )}
             </div>
 
             {/* Sidebar / Actions */}
@@ -321,18 +331,7 @@ export default function EventDetail() {
          </div>
 
          {/* Related Sections */}
-         <div className="mt-20 space-y-16">
-            {nearbyEvents.length > 0 && (
-                <section>
-                    <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-2xl font-serif font-bold text-ink dark:text-[#F1E8E0]">Nearby Events</h2>
-                    </div>
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {nearbyEvents.map(e => <EventCard key={e.id} event={e} />)}
-                    </div>
-                </section>
-            )}
-
+         <div className="mt-12 space-y-10">
             {similarEvents.length > 0 && (
                 <section>
                      <div className="flex items-center justify-between mb-6">
