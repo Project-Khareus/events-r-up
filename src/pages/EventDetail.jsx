@@ -72,6 +72,11 @@ export default function EventDetail() {
       .slice(0, 4);
   }, [event, events]);
 
+  // Scroll to top when a different event (e.g. a Nearby Event) is opened
+  useEffect(() => {
+    if (event) window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [event?.id]);
+
   if (isLoading) {
     return (
        <div className="min-h-screen bg-cream dark:bg-[#1B1714] p-6">
