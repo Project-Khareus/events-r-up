@@ -178,27 +178,39 @@ export default function EventDetail() {
                     </div>
                 </section>
 
+                {/* Nearby Events — kept close to the main event content */}
+                {nearbyEvents.length > 0 && (
+                    <section>
+                        <h2 className="text-2xl font-serif font-bold text-ink dark:text-[#F1E8E0] mb-4">Nearby Events</h2>
+                        <div className="grid sm:grid-cols-2 gap-6">
+                            {nearbyEvents.map(e => <EventCard key={e.id} event={e} />)}
+                        </div>
+                    </section>
+                )}
+
                 {/* Map Section */}
                 <section>
                     <h2 className="text-2xl font-serif font-bold text-ink dark:text-[#F1E8E0] mb-4">Location</h2>
                     
                     {!showMap ? (
-                        <div className="rounded-none border border-ink/10 dark:border-[#F1E8E0]/10 bg-linen dark:bg-[#221B15] p-8 flex flex-col items-center justify-center text-center">
-                            <div className="bg-gold/10 p-4 rounded-full mb-4 border border-gold/30">
-                                <MapPin className="h-8 w-8 text-gold-text dark:text-gold-dark" />
+                        <div className="rounded-none border border-ink/10 dark:border-[#F1E8E0]/10 bg-linen dark:bg-[#221B15] p-4 sm:p-5 flex items-center gap-4 flex-wrap">
+                            <div className="bg-gold/10 p-2.5 rounded-full border border-gold/30 shrink-0">
+                                <MapPin className="h-5 w-5 text-gold-text dark:text-gold-dark" />
                             </div>
-                            <a
-                                href={mapsUrl}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="text-lg font-semibold text-ink dark:text-[#F1E8E0] mb-2 hover:underline underline-offset-4"
-                            >
-                                {event.location_address}
-                            </a>
-                            <p className="text-sm text-ink/50 dark:text-[#F1E8E0]/50 mb-6">Tap to open in Google Maps and get directions</p>
-                            <div className="flex flex-wrap gap-3 justify-center">
+                            <div className="flex-1 min-w-[180px]">
+                                <a
+                                    href={mapsUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="font-semibold text-ink dark:text-[#F1E8E0] hover:underline underline-offset-4"
+                                >
+                                    {event.location_address}
+                                </a>
+                                <p className="text-sm text-ink/50 dark:text-[#F1E8E0]/50">Open in Google Maps for directions</p>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
                                 {(event.location_lat && event.location_lng) && (
-                                    <Button onClick={() => setShowMap(true)} variant="outline" className="rounded-none border-ink/20 dark:border-[#F1E8E0]/20">
+                                    <Button onClick={() => setShowMap(true)} variant="outline" size="sm" className="rounded-none border-ink/20 dark:border-[#F1E8E0]/20">
                                         View on Map
                                     </Button>
                                 )}
@@ -207,7 +219,7 @@ export default function EventDetail() {
                                     target="_blank" 
                                     rel="noreferrer"
                                 >
-                                    <Button className="rounded-none bg-gold-text hover:bg-gold-text/90 text-cream">Get Directions</Button>
+                                    <Button size="sm" className="rounded-none bg-gold-text hover:bg-gold-text/90 text-cream">Get Directions</Button>
                                 </a>
                             </div>
                         </div>
@@ -238,16 +250,6 @@ export default function EventDetail() {
                         </div>
                     )}
                 </section>
-
-                {/* Nearby Events — kept close to the main event content */}
-                {nearbyEvents.length > 0 && (
-                    <section>
-                        <h2 className="text-2xl font-serif font-bold text-ink dark:text-[#F1E8E0] mb-4">Nearby Events</h2>
-                        <div className="grid sm:grid-cols-2 gap-6">
-                            {nearbyEvents.map(e => <EventCard key={e.id} event={e} />)}
-                        </div>
-                    </section>
-                )}
             </div>
 
             {/* Sidebar / Actions */}
