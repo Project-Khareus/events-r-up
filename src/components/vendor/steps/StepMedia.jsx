@@ -253,7 +253,13 @@ export default function StepMedia({ formData, setFormData, onNext, onBack }) {
 
       <div className="flex justify-between mt-8">
         <button type="button" onClick={onBack} className={BTN_GHOST}><ArrowLeft className="h-4 w-4" /> Back</button>
-        <button type="button" onClick={onNext} className={BTN_PRIMARY}>Next <ArrowRight className="h-4 w-4" /></button>
+        <button type="button" onClick={() => {
+          if (!formData.image_url) {
+            toast.error("Please upload a main business image before continuing.");
+            return;
+          }
+          onNext();
+        }} className={BTN_PRIMARY}>Next <ArrowRight className="h-4 w-4" /></button>
       </div>
     </div>
   );
