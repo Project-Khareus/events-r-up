@@ -98,10 +98,10 @@ export default function AdminVendors() {
     vendorVerifications.map((verification) => [verification.vendor_id, verification])
   );
 
-  const allVendors = rawVendors.map((vendor) => ({
-    ...vendor,
-    ...(verificationsByVendorId[vendor.id] || {})
-  }));
+  const allVendors = rawVendors.map((vendor) => {
+    const { id: verificationId, ...verificationData } = verificationsByVendorId[vendor.id] || {};
+    return { ...vendor, ...verificationData };
+  });
 
   const isLoading = isLoadingVendors || isLoadingVerifications;
 
