@@ -1,120 +1,65 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
+import { secrets } from 'base44:runtime';
 
-const APP_CONTEXT = `
-You are a helpful support assistant for Khareus, an event vendor marketplace platform based in Ghana.
+const APP_CONTEXT = `You are a helpful support assistant for Khareus, an event vendor marketplace platform based in Ghana. Help only with using Khareus: finding vendors, vendor listings, bookings, messages, reviews, favorites, events, blog, notifications, settings, and vendor administration. Be concise, friendly, and helpful. If you cannot resolve an issue, say: "I'm unable to fully resolve this — would you like me to notify an admin to join this chat?" Do not make up features.`;
 
-ABOUT THE APP:
-- Khareus is a marketplace connecting event vendors with clients planning weddings, parties, conferences, and funerals.
-- Vendors can list their services, and clients can browse, favorite, book, and message vendors.
+const escapeHtml = (value) => String(value || '').replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
 
-KEY FEATURES YOU CAN HELP WITH:
-1. FINDING VENDORS: Users can search/filter vendors by event type (weddings, parties, conference, funeral), category, location, price, rating, and years in business.
-2. VENDOR CATEGORIES: Bridal Fashion, Makeup Artistes, Décor & Logistics, Event Grounds, Photography/Videography, Design & Creatives, Catering, Jewellery, Honeymoon Packages, Music/Karaoke/MCs, Car Rentals, Social Media Support, Ushers, Dance Tutorials, Rent-a-Team, Conference Facilities, Rapporteur Services, Caskets, Fashion/Wreaths, and Others.
-3. BECOMING A VENDOR: Go to "Become a Vendor" to sign up. Plans available: Trial (free, max 3 listings), Explorer ($1/mo), Monthly ($0.90/mo), Annual ($10/year). Ghana Card verification is required.
-4. BOOKING: Click "Book Now" on a vendor's profile. You can view and manage bookings in "My Bookings."
-5. MESSAGING: You can message vendors directly through the "Messages" section.
-6. REVIEWS: You can leave reviews and ratings (1–5 stars) on vendor profiles.
-7. FAVORITES: Save vendors or events by clicking the heart icon.
-8. EVENTS: Browse and post community events in the Events section.
-9. BLOG: Read planning tips, trend articles, and vendor spotlights in the Blog.
-10. NOTIFICATIONS: Get notified about booking updates, messages, and vendor approvals.
-11. SETTINGS: Manage your profile, dark mode, notifications, and account settings.
-12. ADMIN FEATURES: Admins can approve/reject vendor listings, manage blog posts, events, and legal pages.
-13. VENDOR DASHBOARD: Approved vendors can view analytics, manage availability, respond to bookings, and edit their listings.
-14. GHANA CARD: All vendors must submit a Ghana National ID Card for identity verification before their listing goes live.
-15. SUBSCRIPTION EXPIRY: Vendor listings expire with their subscription. Admins can manage subscription statuses.
-
-RESPONSE RULES:
-- ONLY answer questions related to Khareus and how to use the platform.
-- If a user asks about something completely unrelated (e.g., recipes, math, general knowledge), politely decline and redirect to platform help.
-- Be concise, friendly, and helpful.
-- If you truly cannot resolve the user's issue, say: "I'm unable to fully resolve this — would you like me to notify an admin to join this chat?"
-- Do NOT make up features that don't exist.
-`;
-
-Deno.serve(async (req) => {
+export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
-    let user = null;
-    try {
-      const isAuth = await base44.auth.isAuthenticated();
-      if (isAuth) user = await base44.auth.me();
-    } catch (_) {}
-
-    let body = {};
-    try { body = await req.json(); } catch (_) {}
+    const body = await req.json();
     const { message, history = [], notifyAdmin, sessionId } = body;
+    const isAuthenticated = await base44.auth.isAuthenticated();
+    const user = isAuthenticated ? await base44.auth.me() : null;
 
-    // Build user context string for personalized responses
-    let userContext = "The user is not logged in (guest).";
-    if (user) {
-      // Fetch vendor listing if user has one
-      let vendorInfo = "";
-      try {
-        const vendors = await base44.asServiceRole.entities.Vendor.filter({ user_id: user.id });
-        if (vendors.length > 0) {
-          const v = vendors[0];
-          vendorInfo = ` They are a vendor on the platform (business: "${v.business_name}", status: ${v.status}, subscription: ${v.subscription_type || "unknown"}).`;
-        }
-      } catch (_) {}
-      userContext = `The user is logged in. Name: ${user.full_name || "Unknown"}, Email: ${user.email}, Role: ${user.role || "user"}.${vendorInfo} Address them by their first name when appropriate.`;
-    }
-
-    // Handle admin escalation
     if (notifyAdmin) {
-      const allUsers = await base44.asServiceRole.entities.User.list();
-      const admins = allUsers.filter(u => u.role === 'admin');
-
+      const number = (secrets.get('SUPPORT_WHATSAPP_NUMBER') || '').replace(/\D/g, '');
       const userName = user ? (user.full_name || user.email) : 'Guest';
-      const chatSummary = (body.history || []).slice(-5).map(h => `${h.role}: ${h.content}`).join('\n');
+      const chatSummary = history.slice(-5).map((item) => `${item.role}: ${String(item.content || '').slice(0, 300)}`).join('\n').slice(0, 1200);
+      const whatsappText = `Hello Khareus Support, I need help with my support request.\n\nUser: ${userName}\nSession: ${sessionId || 'N/A'}\n\nRecent chat:\n${chatSummary || 'No chat history available'}`.slice(0, 1800);
+      const whatsappUrl = number ? `https://wa.me/${number}?text=${encodeURIComponent(whatsappText)}` : null;
+      const admins = (await base44.asServiceRole.entities.User.list()).filter((admin) => admin.role === 'admin');
 
-      for (const admin of admins) {
-        // In-app notification
+      await Promise.all(admins.map(async (admin) => {
         await base44.asServiceRole.entities.Notification.create({
           user_id: admin.id,
           type: 'system',
           title: 'Support Chat Escalation',
-          message: `A user${user ? ` (${userName})` : ' (guest)'} needs admin assistance in the support chat.${sessionId ? ` Session: ${sessionId}` : ''}`,
-          link: '/Messages',
+          message: `A user (${userName}) needs support assistance.${whatsappUrl ? ' Continue the conversation on WhatsApp.' : ''}`,
+          link: whatsappUrl || '/Messages',
           is_read: false,
           action_type: 'requested_changes'
         });
 
-        // Email notification
         if (admin.email) {
+          const whatsappButton = whatsappUrl
+            ? `<p><a href="${whatsappUrl}" style="display:inline-block;background:#3B322B;color:#F8F1EB;padding:12px 18px;text-decoration:none;border:1px solid #A97E2E">Continue on WhatsApp</a></p>`
+            : '<p>Please check the Messages section to assist this user.</p>';
           await base44.asServiceRole.integrations.Core.SendEmail({
             to: admin.email,
             from_name: 'Khareus Support',
             subject: `Support Escalation from ${userName}`,
-            body: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto">
-              <h2 style="color:#4f46e5">Support Chat Escalation</h2>
-              <p><strong>User:</strong> ${userName}${user ? ` (${user.email})` : ''}</p>
-              <p><strong>Session:</strong> ${sessionId || 'N/A'}</p>
-              <h3 style="margin-top:16px">Recent Chat History:</h3>
-              <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;font-size:14px;white-space:pre-wrap">${chatSummary || 'No history available'}</div>
-              <p style="margin-top:16px">Please check the <a href="/Messages" style="color:#4f46e5">Messages section</a> to assist this user.</p>
-            </div>`
+            html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#3B322B"><h2>Support Chat Escalation</h2><p><strong>User:</strong> ${escapeHtml(userName)}</p><p><strong>Session:</strong> ${escapeHtml(sessionId || 'N/A')}</p><h3>Recent chat</h3><div style="background:#F8F1EB;border:1px solid #A97E2E;padding:12px;font-size:14px;white-space:pre-wrap">${escapeHtml(chatSummary || 'No history available')}</div>${whatsappButton}</div>`
           });
         }
-      }
+      }));
 
-      return Response.json({ escalated: true, message: "An admin has been notified and will join shortly. You can also reach us via Messages." });
+      return Response.json({ escalated: true, whatsappUrl });
     }
 
-    // Build prompt with full session history + user context
-    const systemPrompt = `${APP_CONTEXT}\n\nUSER CONTEXT:\n${userContext}`;
-    const conversationLines = [
-      `system: ${systemPrompt}`,
-      ...history.map(h => `${h.role}: ${h.content}`),
-      `user: ${message}`
-    ].join('\n');
-
-    const response = await base44.asServiceRole.integrations.Core.InvokeLLM({
-      prompt: `${conversationLines}\n\nRespond as the support assistant. Follow all rules strictly. Use the user context to personalise your response where helpful.`,
+    const userContext = user
+      ? `The user is logged in. Name: ${user.full_name || 'Unknown'}, email: ${user.email}, role: ${user.role || 'user'}.`
+      : 'The user is not logged in.';
+    const conversation = [...history.slice(-10), { role: 'user', content: message }]
+      .map((item) => `${item.role}: ${item.content}`)
+      .join('\n');
+    const reply = await base44.asServiceRole.integrations.Core.InvokeLLM({
+      prompt: `${APP_CONTEXT}\n\nUSER CONTEXT:\n${userContext}\n\nCONVERSATION:\n${conversation}\n\nRespond as the Khareus support assistant.`
     });
 
-    return Response.json({ reply: response });
+    return Response.json({ reply });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
-});
+}

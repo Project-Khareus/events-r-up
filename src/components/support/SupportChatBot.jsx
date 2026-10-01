@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, X, Send, Loader2, Bot, User, AlertCircle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import SupportWhatsAppLink from "./SupportWhatsAppLink";
 
 export default function SupportChatBot() {
   const [open, setOpen] = useState(false);
@@ -13,6 +14,7 @@ export default function SupportChatBot() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [escalated, setEscalated] = useState(false);
+  const [whatsappUrl, setWhatsappUrl] = useState(null);
   const [showEscalate, setShowEscalate] = useState(false);
   const bottomRef = useRef(null);
   const sessionId = useRef(`session_${Date.now()}_${Math.random().toString(36).slice(2)}`);
@@ -65,11 +67,14 @@ export default function SupportChatBot() {
   const handleEscalate = async () => {
     setLoading(true);
     try {
-      await base44.functions.invoke("supportChat", { notifyAdmin: true, sessionId: sessionId.current, history: messages.slice(1).slice(-10) });
+      const { data } = await base44.functions.invoke("supportChat", { notifyAdmin: true, sessionId: sessionId.current, history: messages.slice(1).slice(-10) });
+      setWhatsappUrl(data?.whatsappUrl || null);
       setEscalated(true);
       setMessages(prev => [...prev, {
         role: "assistant",
-        content: "✅ An admin has been notified and will join this chat shortly. You can also reach out via the **Messages** section."
+        content: data?.whatsappUrl
+          ? "✅ An admin has been notified. You can continue this conversation on WhatsApp."
+          : "✅ An admin has been notified and will join this chat shortly. You can also reach out via the **Messages** section."
       }]);
     } catch (err) {
       setMessages(prev => [...prev, { role: "assistant", content: "Failed to notify admin. Please try the Messages section directly." }]);
@@ -181,6 +186,8 @@ export default function SupportChatBot() {
               </button>
             </div>
           )}
+
+          <SupportWhatsAppLink href={escalated ? whatsappUrl : null} />
 
           {/* Input */}
           <form onSubmit={sendMessage} className="p-3 border-t border-[rgba(59,50,43,0.18)] dark:border-[rgba(241,232,224,0.18)] bg-cream dark:bg-[#1B1714] flex gap-2">
