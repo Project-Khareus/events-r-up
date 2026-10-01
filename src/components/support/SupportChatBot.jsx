@@ -51,8 +51,16 @@ export default function SupportChatBot() {
       const reply = data.reply || "Sorry, I couldn't process that. Please try again.";
       setMessages(prev => [...prev, { role: "assistant", content: reply }]);
 
-      // Show escalation option only if AI suggests it or after 5+ user messages
-      const aiSuggestsEscalation = reply.toLowerCase().includes('notify an admin') || reply.toLowerCase().includes('escalate');
+      // Show the WhatsApp handoff whenever the assistant cannot resolve the request.
+      const normalizedReply = reply.toLowerCase();
+      const aiSuggestsEscalation = [
+        'notify an admin',
+        'unable to fully resolve',
+        'unable to resolve',
+        'cannot resolve',
+        "can't resolve",
+        'escalate'
+      ].some((phrase) => normalizedReply.includes(phrase));
       const userMessageCount = newMessages.filter(m => m.role === "user").length;
       if (aiSuggestsEscalation || userMessageCount >= 5) {
         setShowEscalate(true);
