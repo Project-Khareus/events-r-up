@@ -111,38 +111,38 @@ button:focus-visible {
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --background: 25 16% 20%;
+    --foreground: 24 44% 98%;
+    --card: 27 16% 25%;
+    --card-foreground: 24 44% 98%;
+    --popover: 27 16% 25%;
+    --popover-foreground: 24 44% 98%;
+    --primary: 40 48% 65%;
+    --primary-foreground: 30 20% 16%;
+    --secondary: 28 16% 28%;
+    --secondary-foreground: 24 44% 98%;
+    --muted: 28 16% 28%;
+    --muted-foreground: 27 20% 72%;
+    --accent: 28 16% 33%;
+    --accent-foreground: 24 44% 98%;
+    --destructive: 0 55% 44%;
+    --destructive-foreground: 24 44% 98%;
+    --border: 28 16% 35%;
+    --input: 28 16% 35%;
+    --ring: 40 48% 65%;
+    --chart-1: 40 48% 65%;
+    --chart-2: 28 32% 57%;
+    --chart-3: 18 24% 52%;
+    --chart-4: 43 43% 71%;
+    --chart-5: 10 35% 61%;
+    --sidebar-background: 25 16% 20%;
+    --sidebar-foreground: 24 44% 98%;
+    --sidebar-primary: 40 48% 65%;
+    --sidebar-primary-foreground: 30 20% 16%;
+    --sidebar-accent: 28 16% 28%;
+    --sidebar-accent-foreground: 24 44% 98%;
+    --sidebar-border: 28 16% 35%;
+    --sidebar-ring: 40 48% 65%;
   }
 }
 
@@ -156,3 +156,33 @@ button:focus-visible {
     @apply bg-background text-foreground;
   }
 }
+
+/* Espresso Soft app-wide dark surface mapping */
+.dark body { background: #3B322B; color: #FCF8F4; }
+.dark .bg-slate-50, .dark .bg-gray-50 { background-color: #3B322B !important; }
+.dark .bg-slate-100, .dark .bg-gray-100, .dark .bg-secondary { background-color: #53473C !important; }
+.dark .bg-slate-200, .dark .bg-gray-200 { background-color: #655649 !important; }
+.dark .bg-white, .dark .bg-card, .dark .bg-popover { background-color: #4A3F35 !important; }
+.dark .text-slate-950, .dark .text-slate-900, .dark .text-gray-900, .dark .text-stone-800 { color: #FCF8F4 !important; }
+.dark .text-slate-800, .dark .text-slate-700, .dark .text-gray-800, .dark .text-gray-700 { color: #E8DDD2 !important; }
+.dark .text-slate-600, .dark .text-slate-500, .dark .text-gray-600, .dark .text-gray-500 { color: #C5B9AC !important; }
+.dark .text-slate-400, .dark .text-gray-400 { color: #A99680 !important; }
+.dark .border-slate-100, .dark .border-gray-100 { border-color: #5E5043 !important; }
+.dark .border-slate-200, .dark .border-gray-200 { border-color: #655649 !important; }
+.dark .border-slate-300, .dark .border-gray-300 { border-color: #756452 !important; }
+.dark .divide-slate-100 > * + *, .dark .divide-gray-100 > * + * { border-color: #5E5043 !important; }
+.dark input, .dark textarea, .dark select { background-color: #3B322B !important; color: #FCF8F4 !important; border-color: #655649 !important; }
+.dark input::placeholder, .dark textarea::placeholder { color: #A99680 !important; }
+.dark [role="dialog"], .dark [role="listbox"], .dark [cmdk-root] { background-color: #4A3F35 !important; border-color: #655649 !important; }
+.dark [role="tablist"] { background-color: #53473C !important; }
+.dark [role="tab"][data-state="active"] { background-color: #4A3F35 !important; color: #FCF8F4 !important; }
+.dark .prose { color: #D3C8BC !important; }
+.dark .prose h1, .dark .prose h2, .dark .prose h3, .dark .prose h4 { color: #FCF8F4 !important; }
+.dark .prose a, .dark .text-indigo-700, .dark .text-indigo-600 { color: #C9A055 !important; }
+.dark .from-slate-50 { --tw-gradient-from: #3B322B !important; }
+.dark .via-white { --tw-gradient-via: #4A3F35 !important; }
+.dark .to-white { --tw-gradient-to: #4A3F35 !important; }
+.dark button.bg-primary, .dark .bg-primary { background-color: #C9A055 !important; color: #30271F !important; }
+.dark button.bg-primary:hover, .dark .bg-primary:hover { background-color: #D8B66E !important; }
+.dark .shadow-sm, .dark .shadow, .dark .shadow-lg, .dark .shadow-xl { box-shadow: 0 0 0 1px #5E5043 !important; }
+.dark .leaflet-container { background: #4A3F35; }

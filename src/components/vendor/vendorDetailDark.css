@@ -1,0 +1,56 @@
+/* Espresso Soft vendor detail presentation — dark mode only */
+.dark .vendor-espresso {
+  background: linear-gradient(145deg, #3B322B, #352D27 76%) !important;
+  color: #FCF8F4 !important;
+  position: relative;
+  isolation: isolate;
+}
+.dark .vendor-espresso::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(ellipse at 18% 4%, rgba(201,160,85,.12), transparent 35%);
+}
+.dark .vendor-espresso .vendor-crumb { animation: espresso-rise .65s ease-out both; }
+.dark .vendor-espresso .vendor-gallery { height: 440px; animation: espresso-rise .78s cubic-bezier(.2,.75,.25,1) both; }
+.dark .vendor-espresso .vendor-info { padding: 8px 2px 0; animation: espresso-rise .86s .08s ease-out both; }
+.dark .vendor-espresso .vendor-info h1 { font-family: Georgia, serif; font-size: 39px; line-height: 1.08; letter-spacing: -.8px; }
+.dark .vendor-espresso .vendor-slogan { color: #C5B9AC; font: italic 15px/1.5 Georgia, serif; }
+.dark .vendor-espresso .vendor-badge { background: #53473C; border-color: #685848; color: #E8D8BC; border-radius: 999px; padding: 6px 11px; font-size: 12px; font-weight: 600; }
+.dark .vendor-espresso .vendor-location, .dark .vendor-espresso .vendor-rating { color: #C5B9AC; }
+.dark .vendor-espresso .vendor-rating svg { color: #C9A055; }
+.dark .vendor-espresso .vendor-primary, .dark .vendor-espresso .vendor-action { min-height: 48px; border-radius: 11px; border: 1px solid #756452; background: #514538; color: #FCF8F4; font: 600 14px system-ui; cursor: pointer; transition: background .18s, border-color .18s, box-shadow .18s, transform .15s; }
+.dark .vendor-espresso .vendor-primary:hover, .dark .vendor-espresso .vendor-primary:focus-visible, .dark .vendor-espresso .vendor-action:hover, .dark .vendor-espresso .vendor-action:focus-visible { background: #665642; border-color: #C9A055; box-shadow: 0 0 0 3px #c9a0552d; outline: none; }
+.dark .vendor-espresso .vendor-primary:active, .dark .vendor-espresso .vendor-action:active { transform: scale(.98); }
+.dark .vendor-espresso .vendor-primary { background: #C9A055; border-color: #C9A055; color: #30271F; }
+.dark .vendor-espresso .vendor-primary:hover, .dark .vendor-espresso .vendor-primary:focus-visible { background: #D8B66E; color: #30271F; }
+.dark .vendor-espresso .vendor-trust { padding: 12px 13px; border-color: #5E5043; background: linear-gradient(140deg, #4A3F35, #453A31); border-radius: 12px; box-shadow: 0 5px 15px #231b1626; transition: background .2s, border-color .2s; }
+.dark .vendor-espresso .vendor-trust:hover { background: #514538; border-color: #806D54; }
+.dark .vendor-espresso .vendor-trust-icon { background: #3B322B; border-color: #655649; color: #C9A055; }
+.dark .vendor-espresso .vendor-social { border-color: #625346; }
+.dark .vendor-espresso .vendor-social a { border-color: #655649; background: #4A3F35; color: #C9A055; border-radius: 10px; transition: background .2s, border-color .2s, transform .2s; }
+.dark .vendor-espresso .vendor-social a:hover, .dark .vendor-espresso .vendor-social a:focus-visible { background: #5A4B3C; border-color: #C9A055; outline: none; }
+.dark .vendor-espresso .vendor-social a:active { transform: scale(.95); }
+.dark .vendor-espresso .vendor-lower { border-color: #76634C; }
+.dark .vendor-espresso .vendor-section { padding: 23px 24px; background: linear-gradient(145deg, #4A3F35, #443930); border: 1px solid #5F5043; border-radius: 17px; box-shadow: 0 13px 28px #20191428; animation: espresso-rise .8s .2s ease-out both; }
+.dark .vendor-espresso .vendor-section h2, .dark .vendor-espresso .vendor-section h3, .dark .vendor-espresso .vendor-aside h3 { color: #FCF8F4; }
+.dark .vendor-espresso .vendor-description { color: #D3C8BC !important; line-height: 1.75; font-size: 14px; }
+.dark .vendor-espresso .vendor-service { background: linear-gradient(145deg, #4A3F35, #443930); border-color: #5F5043; border-radius: 12px; box-shadow: 0 5px 15px #231b1626; }
+.dark .vendor-espresso .vendor-aside > div:first-child { padding: 23px; background: linear-gradient(145deg, #514538, #443930); border: 1px solid #675747; border-radius: 17px; box-shadow: 0 13px 28px #2019142b; animation: espresso-rise .8s .3s ease-out both; }
+.dark .vendor-espresso .vendor-related { padding: 23px; background: #453A31; border: 1px solid #5F5043; border-radius: 17px; }
+.dark .vendor-espresso .vendor-gallery [data-media-main] { border: 1px solid #756452; border-radius: 20px; background: #4A3F35; box-shadow: 0 20px 46px #211a1550; }
+.dark .vendor-espresso .vendor-gallery [data-media-main] > img { animation: espresso-softin 1s ease-out both; }
+.dark .vendor-espresso .vendor-gallery [data-media-thumb] { border: 1px solid #655649; background: #4A3F35; border-radius: 12px; cursor: pointer; transition: box-shadow .2s, border-color .2s, transform .2s; }
+.dark .vendor-espresso .vendor-gallery [data-media-thumb][data-active="true"] { border: 2px solid #C9A055; }
+.dark .vendor-espresso .vendor-gallery [data-media-thumb]:hover, .dark .vendor-espresso .vendor-gallery [data-media-thumb]:focus-visible { border-color: #C9A055; box-shadow: 0 0 0 3px #c9a05533; outline: none; }
+.dark .vendor-espresso .vendor-gallery [data-media-thumb]:active { transform: scale(.97); }
+.dark .vendor-espresso .vendor-info h1, .dark .vendor-espresso .vendor-info h2, .dark .vendor-espresso .vendor-info h3 { color: #FCF8F4 !important; }
+.dark .vendor-espresso .vendor-trust { background: linear-gradient(140deg, #4A3F35, #453A31) !important; border-color: #5E5043 !important; }
+.dark .vendor-espresso .vendor-trust-icon { background: #3B322B !important; border-color: #655649 !important; color: #C9A055 !important; }
+.dark .vendor-espresso .vendor-section { background: linear-gradient(145deg, #4A3F35, #443930) !important; border-color: #5F5043 !important; }
+.dark .vendor-espresso .vendor-service { background: linear-gradient(145deg, #4A3F35, #443930) !important; border-color: #5F5043 !important; }
+.dark .vendor-espresso .vendor-related { background: #453A31 !important; border-color: #5F5043 !important; }
+@keyframes espresso-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes espresso-softin { from { opacity: .65; transform: scale(1.025); } to { opacity: 1; transform: scale(1); } }
+@media (max-width: 1023px) { .dark .vendor-espresso .vendor-gallery { height: auto; } .dark .vendor-espresso .vendor-section { padding: 20px; } }

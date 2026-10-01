@@ -32,11 +32,13 @@ export default function MediaGallery({ images = [], videos = [], businessName })
             <button
               key={index}
               onClick={() => setSelectedIndex(index)}
-              className={`relative shrink-0 w-16 h-16 sm:w-[72px] sm:h-[72px] lg:w-[88px] lg:h-[88px] rounded-lg sm:rounded-xl overflow-hidden border-2 transition-all bg-slate-100 ${
-                selectedIndex === index 
-                  ? "border-slate-900 opacity-100 shadow-sm" 
-                  : "border-transparent opacity-70 hover:opacity-100 hover:border-slate-300"
-              }`}
+              data-media-thumb
+                            data-active={selectedIndex === index}
+                            className={`relative shrink-0 w-16 h-16 sm:w-[72px] sm:h-[72px] lg:w-[86px] lg:h-[82px] rounded-lg sm:rounded-xl overflow-hidden border-2 transition-all bg-slate-100 ${
+                               selectedIndex === index 
+                                 ? "border-slate-900 opacity-100 shadow-sm" 
+                                 : "border-transparent opacity-70 hover:opacity-100 hover:border-slate-300"
+                             }`}
             >
               {media.type === 'video' ? (
                 <>
@@ -72,6 +74,7 @@ export default function MediaGallery({ images = [], videos = [], businessName })
 
       {/* Main Media */}
       <div 
+        data-media-main
         className="order-1 lg:order-2 relative flex-1 h-64 sm:h-80 md:h-96 lg:h-full bg-slate-100 rounded-xl sm:rounded-2xl overflow-hidden group cursor-pointer"
         onClick={() => currentMedia.type === 'image' && setIsLightboxOpen(true)}
       >

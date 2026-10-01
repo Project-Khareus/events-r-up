@@ -39,6 +39,7 @@ import { capitalizeHtmlSentences } from "@/components/utils/capitalizeHtml";
 import { sanitizeHtml } from "@/lib/sanitizeHtml";
 import { useParams } from "react-router-dom";
 import { parseVendorSlug, getVendorUrl, getVendorNameFromSlug, normalizeVendorName } from "../utils/vendorUrl";
+import "@/components/vendor/vendorDetailDark.css";
 
 const CATEGORY_LABELS = {
   event_planner: "Event Planner",
@@ -261,7 +262,7 @@ export default function VendorDetail() {
   const isVendorOwner = currentUser && vendor.user_id === currentUser.id;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-sans">
+    <div className="vendor-espresso min-h-screen bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-sans">
       <MetaTags 
         title={vendor.business_name}
         description={vendor.description || `${vendor.business_name} - Professional ${CATEGORY_LABELS[vendor.category] || vendor.category} services for your special events.`}
@@ -272,7 +273,7 @@ export default function VendorDetail() {
       <MobileHeader title={vendor.business_name} />
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-3 sm:py-4">
         {/* Breadcrumbs */}
-        <nav className="hidden md:flex items-center gap-2 text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-4 sm:mb-5">
+        <nav className="vendor-crumb hidden md:flex items-center gap-2 text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-4 sm:mb-5">
           <Link to={createPageUrl("VendorMarketplace")} className="hover:text-slate-900 dark:hover:text-slate-100 transition-colors shrink-0">Home</Link>
           <ChevronRight className="h-3 w-3 shrink-0" />
           <Link to={createPageUrl("VendorMarketplace")} className="hover:text-slate-900 dark:hover:text-slate-100 transition-colors shrink-0">Vendors</Link>
@@ -286,24 +287,24 @@ export default function VendorDetail() {
 
         <div className="grid lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8">
           {/* Left Column: Image Gallery (7 cols) */}
-          <div className="lg:col-span-7">
+          <div className="vendor-gallery lg:col-span-7">
              <MediaGallery images={allImages} videos={allVideos} businessName={vendor.business_name} />
           </div>
 
           {/* Right Column: Product Info (5 cols) */}
-          <div className="lg:col-span-5">
-            <div className="space-y-2">
+          <div className="vendor-info lg:col-span-5">
+                       <div className="space-y-2">
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-slate-900 dark:text-slate-100 leading-tight break-words">
                 {vendor.business_name}
               </h1>
               
               {vendor.slogan && (
-                <p className="text-sm text-slate-600 dark:text-slate-400 italic">{vendor.slogan}</p>
+                <p className="vendor-slogan text-sm text-slate-600 dark:text-slate-400 italic">{vendor.slogan}</p>
               )}
               
               <div className="flex flex-wrap items-center gap-2">
                 {(Array.isArray(vendor.category) ? vendor.category : [vendor.category]).slice(0, showAllCategories ? undefined : 3).map((cat, idx) => (
-                  <Badge key={idx} variant="secondary" className="text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600">
+                  <Badge key={idx} variant="secondary" className="vendor-badge text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600">
                     {CATEGORY_LABELS[cat] || cat}
                   </Badge>
                 ))}
@@ -319,14 +320,14 @@ export default function VendorDetail() {
               </div>
               
               {vendor.location && (
-                <div className="flex items-center gap-2 text-slate-500 text-sm">
+                <div className="vendor-location flex items-center gap-2 text-slate-500 text-sm">
                   <MapPin className="h-4 w-4" />
                   <span>{formatVendorLocation(vendor.location)}</span>
                 </div>
               )}
             </div>
 
-            <div className="flex items-center gap-2 mt-2 mb-4">
+            <div className="vendor-rating flex items-center gap-2 mt-2 mb-4">
             <div className="flex text-slate-900">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className={`h-4 w-4 ${i < Math.round(averageRating) ? "fill-slate-900 dark:fill-slate-100 text-slate-900 dark:text-slate-100" : "text-slate-300 dark:text-slate-600"}`} />
@@ -358,13 +359,13 @@ export default function VendorDetail() {
                   <ContactBookingModal 
                     vendor={vendor} 
                     trigger={
-                      <Button className="w-full h-12 text-base font-medium bg-slate-900 hover:bg-slate-800 text-white rounded-lg shadow-none transition-all active:scale-95">
+                      <Button className="vendor-primary w-full h-12 text-base font-medium bg-slate-900 hover:bg-slate-800 text-white rounded-lg shadow-none transition-all active:scale-95">
                          Contact / Book Now
                       </Button>
                     }
                   />
                 </div>
-                <VendorFavoriteButton vendorId={vendor.id} size="icon" className="h-12 w-12 rounded-lg border-slate-300" />
+                <VendorFavoriteButton vendorId={vendor.id} size="icon" className="vendor-action h-12 w-12 rounded-lg border-slate-300" />
               </div>
               <div className="flex gap-2">
                 <ShareButton 
@@ -384,9 +385,9 @@ export default function VendorDetail() {
 
             {/* Info Cards */}
             <div className="space-y-2">
-              <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-100 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer group">
+              <div className="vendor-trust flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-100 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer group">
                <div className="flex items-center gap-3">
-                 <div className="w-9 h-9 rounded-full bg-white dark:bg-slate-700 flex items-center justify-center shadow-sm text-slate-700 dark:text-slate-300 border border-slate-100 dark:border-slate-600">
+                 <div className="vendor-trust-icon w-9 h-9 rounded-full bg-white dark:bg-slate-700 flex items-center justify-center shadow-sm text-slate-700 dark:text-slate-300 border border-slate-100 dark:border-slate-600">
                    <Shield className="h-4 w-4" />
                   </div>
                   <div>
@@ -397,9 +398,9 @@ export default function VendorDetail() {
                 <ChevronRight className="h-4 w-4 text-slate-400" />
               </div>
 
-              <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-100 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer group">
+              <div className="vendor-trust flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-100 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer group">
                <div className="flex items-center gap-3">
-                 <div className="w-9 h-9 rounded-full bg-white dark:bg-slate-700 flex items-center justify-center shadow-sm text-slate-700 dark:text-slate-300 border border-slate-100 dark:border-slate-600">
+                 <div className="vendor-trust-icon w-9 h-9 rounded-full bg-white dark:bg-slate-700 flex items-center justify-center shadow-sm text-slate-700 dark:text-slate-300 border border-slate-100 dark:border-slate-600">
                    <Lock className="h-4 w-4" />
                   </div>
                   <div>
@@ -411,9 +412,9 @@ export default function VendorDetail() {
               </div>
 
               {vendor.years_in_business && (
-                <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-100 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer group">
+                <div className="vendor-trust flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-100 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer group">
                  <div className="flex items-center gap-3">
-                   <div className="w-9 h-9 rounded-full bg-white dark:bg-slate-700 flex items-center justify-center shadow-sm text-slate-700 dark:text-slate-300 border border-slate-100 dark:border-slate-600">
+                   <div className="vendor-trust-icon w-9 h-9 rounded-full bg-white dark:bg-slate-700 flex items-center justify-center shadow-sm text-slate-700 dark:text-slate-300 border border-slate-100 dark:border-slate-600">
                      <Award className="h-4 w-4" />
                     </div>
                     <div>
@@ -428,7 +429,7 @@ export default function VendorDetail() {
 
             {/* Social Media Links */}
             {(vendor.instagram || vendor.facebook || vendor.twitter || vendor.tiktok || vendor.linkedin || vendor.website) && (
-              <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
+              <div className="vendor-social pt-4 border-t border-slate-200 dark:border-slate-700">
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">Connect with us</h3>
                 <div className="flex flex-wrap gap-2">
                   {vendor.website && (
@@ -481,12 +482,12 @@ export default function VendorDetail() {
         </div>
 
         {/* Bottom Section */}
-        <div className="mt-8 sm:mt-10 lg:mt-12 grid lg:grid-cols-12 gap-6 lg:gap-8 border-t border-slate-200 dark:border-slate-700 pt-6 sm:pt-8 lg:pt-10">
+        <div className="vendor-lower mt-8 sm:mt-10 lg:mt-12 grid lg:grid-cols-12 gap-6 lg:gap-8 border-t border-slate-200 dark:border-slate-700 pt-6 sm:pt-8 lg:pt-10">
           <div className="lg:col-span-7 space-y-8">
              
              {/* Description */}
-             <section>
-                <h2 className="text-2xl font-serif font-bold text-slate-900 dark:text-slate-100 mb-3">Description</h2>
+             <section className="vendor-section">
+                              <h2 className="text-2xl font-serif font-bold text-slate-900 dark:text-slate-100 mb-3">Description</h2>
                  <style>{`
                    .vendor-description,
                    .vendor-description * {
@@ -506,11 +507,11 @@ export default function VendorDetail() {
 
              {/* Services */}
              {vendor.services && vendor.services.length > 0 && (
-               <section>
-                  <h3 className="text-xl font-serif font-bold text-slate-900 dark:text-slate-100 mb-3">Services Included</h3>
+               <section className="vendor-section">
+                                  <h3 className="text-xl font-serif font-bold text-slate-900 dark:text-slate-100 mb-3">Services Included</h3>
                   <div className="grid sm:grid-cols-2 gap-3">
                     {vendor.services.map((service, index) => (
-                      <div key={index} className="flex items-center gap-3 p-3 border border-slate-100 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 shadow-sm">
+                      <div key={index} className="vendor-service flex items-center gap-3 p-3 border border-slate-100 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 shadow-sm">
                         <CheckCircle2 className="h-5 w-5 text-slate-900 dark:text-slate-300 shrink-0" />
                         <span className="text-slate-700 dark:text-slate-300 font-medium">{service}</span>
                       </div>
@@ -520,7 +521,7 @@ export default function VendorDetail() {
              )}
 
              {/* Reviews */}
-             <section id="reviews" className="pt-6 border-t border-slate-200 dark:border-slate-700">
+             <section id="reviews" className="vendor-section pt-6 border-t border-slate-200 dark:border-slate-700">
                 <div className="flex items-center justify-between mb-6">
                    <h2 className="text-2xl font-serif font-bold text-slate-900 dark:text-slate-100">Reviews ({reviews.length})</h2>
                 </div>
@@ -533,7 +534,7 @@ export default function VendorDetail() {
           </div>
 
           {/* Sidebar - Ratings & Similar */}
-          <div className="lg:col-span-5 space-y-6">
+          <div className="vendor-aside lg:col-span-5 space-y-6">
              <div className="sticky top-24">
                 <RatingStats reviews={reviews} />
                 
@@ -543,8 +544,8 @@ export default function VendorDetail() {
                   </div>
                 )}
                 
-                <div className="mt-8">
-                   <h3 className="font-serif font-bold text-slate-900 dark:text-slate-100 mb-4 text-xl">You might also like</h3>
+                <div className="vendor-related mt-8">
+                                    <h3 className="font-serif font-bold text-slate-900 dark:text-slate-100 mb-4 text-xl">You might also like</h3>
                    <RelatedVendors 
                       currentVendorId={vendor.id} 
                       category={vendor.category} 
