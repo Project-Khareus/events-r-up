@@ -20,14 +20,14 @@ export default function RelatedVendors({ currentVendorId, category, eventType, c
     const vendorCategories = (Array.isArray(vendor.category) ? vendor.category : [vendor.category]).filter(Boolean);
     const vendorEventTypes = (Array.isArray(vendor.event_type) ? vendor.event_type : [vendor.event_type]).filter(Boolean);
     return vendorCategories.some((item) => currentCategories.includes(item)) || vendorEventTypes.some((item) => currentEventTypes.includes(item));
-  }).slice(0, compact ? 2 : 4);
+  }).slice(0, 4);
 
   if (isLoading) {
     return (
       <div className={compact ? "mt-4" : "mt-16"}>
         {!compact && <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Similar Vendors</h2>}
-        <div className={compact ? "space-y-4" : "grid md:grid-cols-2 lg:grid-cols-4 gap-6"}>
-          {[1, 2].map((i) => (
+        <div className={compact ? "grid grid-cols-2 gap-3" : "grid md:grid-cols-2 lg:grid-cols-4 gap-6"}>
+          {[1, 2, 3, 4].map((i) => (
             <Skeleton key={i} className={compact ? "h-64 rounded-xl" : "h-80 rounded-2xl"} />
           ))}
         </div>
