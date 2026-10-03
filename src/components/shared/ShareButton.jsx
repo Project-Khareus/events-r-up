@@ -17,7 +17,8 @@ export default function ShareButton({
   socialUrl,
   variant = "outline",
   size = "default",
-  className = ""
+  className = "",
+  iconOnly = false
 }) {
   const [copied, setCopied] = useState(false);
   const shareUrl = url || window.location.href;
@@ -74,9 +75,9 @@ export default function ShareButton({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant={variant} size={size} className={className}>
-          <Share2 className="h-4 w-4 mr-2" />
-          Share
+        <Button variant={variant} size={size} className={className} aria-label="Share" title="Share">
+          <Share2 className={`h-4 w-4 ${iconOnly ? "" : "mr-2"}`} />
+          {!iconOnly && "Share"}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">

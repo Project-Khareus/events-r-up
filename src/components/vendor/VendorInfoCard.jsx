@@ -55,7 +55,7 @@ export default function VendorInfoCard({ vendor, averageRating, reviewCount, cat
     <div className="flex gap-2">
       <ContactBookingModal vendor={vendor} trigger={<Button className="h-10 flex-1 rounded-lg bg-gold text-sm font-semibold text-ink shadow-none hover:bg-[#be9138]">Contact / Book Now</Button>} />
       <VendorFavoriteButton vendorId={vendor.id} size="icon" className="h-10 w-10 rounded-lg border-[#d9cdbd]" />
-      <ShareButton url={`${window.location.origin}${getVendorUrl(vendor)}`} title={`${vendor.business_name} - Event Vendor`} description={vendor.description || `Check out ${vendor.business_name} on Khareus!`} variant="outline" className="h-10 w-10 px-0" />
+      <ShareButton url={`${window.location.origin}${getVendorUrl(vendor)}`} title={`${vendor.business_name} - Event Vendor`} description={vendor.description || `Check out ${vendor.business_name} on Khareus!`} variant="outline" iconOnly className="h-10 w-10 px-0" />
       <ReportDialog targetType="vendor" targetId={vendor.id} targetName={vendor.business_name} />
     </div>
   </div>;
