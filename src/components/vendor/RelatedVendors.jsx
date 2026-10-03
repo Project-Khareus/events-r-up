@@ -12,10 +12,15 @@ export default function RelatedVendors({ currentVendorId, category, eventType, c
     refetchOnWindowFocus: false,
   });
 
-  const relatedVendors = vendors.filter(v => 
-    v.id !== currentVendorId && 
-    (v.category === category || v.event_type === eventType)
-  ).slice(0, compact ? 2 : 4);
+  const currentCategories = (Array.isArray(category) ? category : [category]).filter(Boolean);
+  const currentEventTypes = (Array.isArray(eventType) ? eventType : [eventType]).filter(Boolean);
+
+  const relatedVendors = vendors.filter((vendor) => {
+    if (vendor.id === currentVendorId) return false;
+    const vendorCategories = (Array.isArray(vendor.category) ? vendor.category : [vendor.category]).filter(Boolean);
+    const vendorEventTypes = (Array.isArray(vendor.event_type) ? vendor.event_type : [vendor.event_type]).filter(Boolean);
+    return vendorCategories.some((item) => currentCategories.includes(item)) || vendorEventTypes.some((item) => currentEventTypes.includes(item));
+  }).slice(0, compact ? 2 : 4);
 
   if (isLoading) {
     return (
