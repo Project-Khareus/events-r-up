@@ -20,7 +20,6 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../utils";
-import RatingStats from "../components/reviews/RatingStats";
 import ReviewForm from "../components/reviews/ReviewForm";
 import ReviewsList from "../components/reviews/ReviewsList";
 import MediaGallery from "../components/vendor/MediaGallery";
@@ -336,9 +335,7 @@ export default function VendorDetail() {
           {/* Sidebar - Ratings & Similar */}
           <div className="vendor-aside lg:col-span-5 space-y-6">
              <div className="sticky top-24">
-                <RatingStats reviews={reviews} />
-                
-                <div className="vendor-related mt-8">
+                <div className="vendor-related">
                                     <h3 className="font-serif font-bold text-slate-900 dark:text-slate-100 mb-4 text-xl">You might also like</h3>
                    <RelatedVendors 
                       currentVendorId={vendor.id} 
