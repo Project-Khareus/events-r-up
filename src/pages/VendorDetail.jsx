@@ -29,7 +29,6 @@ import ContactBookingModal from "../components/vendor/ContactBookingModal";
 import ShareButton from "../components/shared/ShareButton";
 import MetaTags from "../components/shared/MetaTags";
 import VendorFavoriteButton from "../components/vendor/VendorFavoriteButton";
-import AvailabilityCalendar from "../components/vendor/AvailabilityCalendar";
 import MobileHeader from "../components/layout/MobileHeader";
 import ReportDialog from "../components/reports/ReportDialog";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
@@ -239,26 +238,6 @@ export default function VendorDetail() {
     
   const reviewCount = reviews.length;
   
-  // Categories that need availability calendar
-  const BOOKING_CATEGORIES = [
-    'beauty_personal_care',
-    'event_grounds',
-    'photography_videography',
-    'catering',
-    'music_karaoke_mc',
-    'conference_facilities',
-    'decor_logistics',
-    'car_rentals'
-  ];
-  
-  const needsCalendar = vendor.category && (
-    Array.isArray(vendor.category) 
-      ? vendor.category.some(cat => BOOKING_CATEGORIES.includes(cat))
-      : BOOKING_CATEGORIES.includes(vendor.category)
-  );
-  
-  const isVendorOwner = currentUser && vendor.user_id === currentUser.id;
-
   return (
     <div className="vendor-espresso min-h-screen bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-sans">
       <MetaTags 
@@ -358,12 +337,6 @@ export default function VendorDetail() {
           <div className="vendor-aside lg:col-span-5 space-y-6">
              <div className="sticky top-24">
                 <RatingStats reviews={reviews} />
-                
-                {needsCalendar && (
-                  <div className="mt-6">
-                    <AvailabilityCalendar vendorId={vendor.id} isOwner={isVendorOwner} />
-                  </div>
-                )}
                 
                 <div className="vendor-related mt-8">
                                     <h3 className="font-serif font-bold text-slate-900 dark:text-slate-100 mb-4 text-xl">You might also like</h3>
