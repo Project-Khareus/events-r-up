@@ -15,7 +15,18 @@ import HomeTrustStrip from "../components/marketplace/home/HomeTrustStrip";
 import FilterControls from "../components/marketplace/FilterControls";
 import MarketplaceContent from "../components/marketplace/MarketplaceContent";
 import { rankVendors } from "@/lib/semanticSearch";
+import { getLocationCity } from "@/components/utils/formatLocation";
 
+const matchesLocation = (vendorLocation, selectedLocation) => {
+  const query = String(selectedLocation || "").trim();
+  if (!query) return true;
+
+  const queryCity = getLocationCity(query);
+  const vendorCity = getLocationCity(vendorLocation);
+  if (queryCity && vendorCity) return queryCity === vendorCity;
+
+  return String(vendorLocation || "").toLowerCase().includes(query.toLowerCase());
+};
 
 const CATEGORY_LABELS = {
   event_planner: "Event Planner",
@@ -113,9 +124,7 @@ export default function VendorMarketplace() {
       const matchesCategory = category === "all" || vendorCategories.length === 0 || vendorCategories.includes(category);
       const matchesPrice = priceRange === "all" || !vendor.price_range || vendor.price_range === priceRange;
 
-      // Advanced filters — location from search bar only applies when searching
-      const matchesLocation = !location || !searchQuery ||
-      vendor.location?.toLowerCase().includes(location.toLowerCase());
+      const locationMatches = matchesLocation(vendor.location, location);
 
       const matchesRating = minRating === 0 ||
       vendor.rating && vendor.rating >= minRating;
@@ -124,7 +133,7 @@ export default function VendorMarketplace() {
       vendor.years_in_business && vendor.years_in_business >= minYears;
 
       return matchesEvent && matchesCategory && matchesPrice &&
-      matchesLocation && matchesRating && matchesYears;
+      locationMatches && matchesRating && matchesYears;
     });
 
     // Apply sorting
@@ -140,6 +149,10 @@ export default function VendorMarketplace() {
 
     return filtered;
   }, [vendors, searchQuery, eventType, category, priceRange, sortBy, location, minRating, minYears]);
+
+  const homepageVendors = useMemo(() => {
+    return vendors.filter((vendor) => matchesLocation(vendor.location, location));
+  }, [vendors, location]);
 
   const featuredVendors = useMemo(() => {
     return filteredVendors.filter((v) => v && v.rating >= 4).slice(0, 4);
@@ -171,7 +184,7 @@ export default function VendorMarketplace() {
       grouped[e] = { eventType: e, vendors: [] };
     });
 
-    vendors.forEach((vendor) => {
+    homepageVendors.forEach((vendor) => {
       // After normalization, event_type is directly on vendor
       const vendorEvents = vendor.event_type ? Array.isArray(vendor.event_type) ? vendor.event_type : [vendor.event_type] : [];
       if (vendorEvents.length === 0) return; // Skip vendors without event type
@@ -197,7 +210,7 @@ export default function VendorMarketplace() {
       // Show other sections only if they have vendors
       return group.vendors.length > 0;
     });
-  }, [vendors, isHomepage, vendorsPerSection]);
+  }, [homepageVendors, isHomepage, vendorsPerSection]);
 
   const handleClearFilters = () => {
     setEventType("all");
@@ -280,10 +293,10 @@ export default function VendorMarketplace() {
                   </div>
                 ) : (
                   <HomeNewlyApproved
-                    vendors={vendors}
+                    vendors={homepageVendors}
                     allReviews={allReviews}
                     location={location}
-                    totalCount={vendors.length}
+                    totalCount={homepageVendors.length}
                   />
                 )}
               </div>
