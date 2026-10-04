@@ -9,6 +9,17 @@ import { createPageUrl } from "../utils";
 import { format, subDays } from "date-fns";
 import MetricCard from "../components/analytics/MetricCard";
 import RecentBookingRow from "../components/analytics/RecentBookingRow";
+import CategoryViewBreakdown from "../components/analytics/CategoryViewBreakdown";
+
+const CATEGORY_LABELS = {
+  event_planner: "Event Planner", bridal_fashion: "Fashion & Accessories", beauty_personal_care: "Beauty & Personal Care",
+  decor_logistics: "Décor & Logistics", event_grounds: "Event Venues", photography_videography: "Photo & Video",
+  design_creatives: "Design", catering: "Catering", jewellery: "Jewellery", honeymoon_packages: "Honeymoon",
+  music_karaoke_mc: "Music & MC", car_rentals: "Car Rentals", social_media_support: "Social Media",
+  ushers: "Ushers", dance_tutorials: "Dance Tutorials", rent_a_team: "Rent-a-Team",
+  conference_facilities: "Conference Facilities", rapporteur_services: "Rapporteur", caskets: "Caskets",
+  catering_drinks: "Catering & Drinks", wreaths: "Wreaths", others: "Others"
+};
 
 const COLORS = ['#10b981', '#f59e0b', '#ef4444', '#3b82f6'];
 
@@ -84,6 +95,18 @@ export default function VendorAnalytics() {
     });
     return Object.entries(counts).filter(([, v]) => v > 0).map(([name, value]) => ({ name, value }));
   }, [bookings]);
+
+  const categoryViewData = useMemo(() => {
+    const totals = analytics.reduce((all, item) => {
+      Object.entries(item.category_profile_views || {}).forEach(([category, views]) => {
+        all[category] = (all[category] || 0) + (Number(views) || 0);
+      });
+      return all;
+    }, {});
+    return Object.entries(totals)
+      .map(([category, value]) => ({ label: CATEGORY_LABELS[category] || category, value }))
+      .sort((a, b) => b.value - a.value);
+  }, [analytics]);
 
   if (loading) {
     return (
@@ -253,6 +276,8 @@ export default function VendorAnalytics() {
           {/* Chart Body */}
           {activeChartConfig.content}
         </div>
+
+        <CategoryViewBreakdown items={categoryViewData} />
 
         {/* Recent Bookings */}
         <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6">

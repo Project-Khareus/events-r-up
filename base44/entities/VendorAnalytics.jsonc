@@ -16,6 +16,10 @@
       "default": 0,
       "description": "Number of profile views on this date"
     },
+    "category_profile_views": {
+      "type": "object",
+      "description": "Profile views grouped by the vendor's category values for this date"
+    },
     "total_bookings": {
       "type": "number",
       "default": 0,

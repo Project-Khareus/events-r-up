@@ -154,12 +154,12 @@ export default function VendorDetail() {
 
   // Track profile view after vendor loads (non-critical, delayed)
   React.useEffect(() => {
-    if (!vendor?.id) return;
+    if (!vendor?.id || vendor.status !== 'approved') return;
     const timer = setTimeout(() => {
       base44.functions.invoke('trackProfileView', { vendorId: vendor.id }).catch(() => {});
     }, 2000);
     return () => clearTimeout(timer);
-  }, [vendor?.id]);
+  }, [vendor?.id, vendor?.status]);
 
   if (isLoading) {
     return (
