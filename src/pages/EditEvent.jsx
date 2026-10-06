@@ -15,7 +15,6 @@ import { toast } from "sonner";
 import EventGalleryUpload from "@/components/events/EventGalleryUpload";
 import { Loader2, Image as ImageIcon, DollarSign, ArrowLeft } from "lucide-react";
 import LocationAutocomplete from "@/components/shared/LocationAutocomplete";
-import EventOccasionFields from "@/components/events/EventOccasionFields";
 
 const THEMES = ["Music", "Food & Drink", "Business", "Arts & Culture", "Sports", "Community", "Party", "Education", "Other"];
 
@@ -35,8 +34,6 @@ export default function EditEvent() {
     is_paid: false,
     price: "",
     theme: "Other",
-    occasion: "",
-    occasion_subcategory: "",
     event_date: ""
   });
   
@@ -77,8 +74,6 @@ export default function EditEvent() {
         is_paid: event.is_paid || false,
         price: event.price ? event.price.toString() : "",
         theme: event.theme || "Other",
-        occasion: event.occasion || "",
-        occasion_subcategory: event.occasion_subcategory || "",
         event_date: event.event_date || ""
       });
       
@@ -285,11 +280,6 @@ export default function EditEvent() {
               </div>
             </div>
 
-            <EventOccasionFields
-              occasion={formData.occasion}
-              subcategory={formData.occasion_subcategory}
-              onChange={(changes) => setFormData((prev) => ({ ...prev, ...changes }))}
-            />
 
             {/* Location */}
             <div className="space-y-2">

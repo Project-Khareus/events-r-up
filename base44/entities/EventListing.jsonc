@@ -48,22 +48,6 @@
       "maximum": 180,
       "description": "Longitude for map pin"
     },
-    "occasion": {
-      "type": "string",
-      "enum": [
-        "parties",
-        "weddings"
-      ],
-      "description": "Top-level celebration occasion"
-    },
-    "occasion_subcategory": {
-      "type": "string",
-      "enum": [
-        "babies_baby_showers",
-        "gifts"
-      ],
-      "description": "Nested celebration occasion"
-    },
     "organizer_name": {
       "type": "string",
       "description": "Name of the event organizer or organization"
