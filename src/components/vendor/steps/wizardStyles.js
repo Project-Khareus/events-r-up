@@ -1,6 +1,6 @@
 // Shared editorial (cream / ink / gold) styling tokens for the vendor wizard steps.
 export const PANEL =
-  "bg-linen dark:bg-[#2A231D] border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] rounded-none p-5 md:p-7";
+  "vendor-editor-panel bg-linen dark:bg-[#2A231D] border border-[rgba(59,50,43,0.18)] dark:border-[rgba(241,232,224,0.2)] rounded-none p-5 md:p-7";
 
 export const H2 = "font-serif text-[22px] md:text-[26px] text-ink dark:text-[#F1E8E0]";
 

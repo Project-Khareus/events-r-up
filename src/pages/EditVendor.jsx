@@ -204,7 +204,7 @@ export default function EditVendor() {
   }
 
   return (
-    <div className="min-h-screen bg-cream dark:bg-[#3B322B] py-12 px-6">
+    <div className="vendor-editor min-h-screen py-12 px-6">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-8">
             <Button 
@@ -228,11 +228,11 @@ export default function EditVendor() {
         </div>
 
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-700 mb-6">
-            <Store className="h-8 w-8 text-white" />
-          </div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Edit Vendor Listing</h1>
-          <p className="text-slate-600">Update business information, photos, and services</p>
+         <div className="inline-flex items-center justify-center w-16 h-16 rounded-none bg-ink dark:bg-[#F1E8E0] mb-6">
+           <Store className="h-8 w-8 text-cream dark:text-[#211B16]" />
+         </div>
+         <h1 className="font-serif text-4xl text-ink dark:text-[#F1E8E0] mb-2">Edit Vendor Listing</h1>
+         <p className="text-[15px] font-light text-[rgba(59,50,43,0.68)] dark:text-[rgba(241,232,224,0.7)]">Update business information, photos, and services</p>
           
           {vendor.status === 'pending' && (
               <div className="mt-4 p-3 bg-yellow-50 text-yellow-800 rounded-lg inline-block text-sm font-medium">

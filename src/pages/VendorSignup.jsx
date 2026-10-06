@@ -224,7 +224,7 @@ export default function VendorSignup() {
   }
 
   return (
-    <div className="min-h-screen bg-cream dark:bg-[#211B16] py-10 md:py-14 px-5 md:px-10 pb-[82px] md:pb-14">
+    <div className="vendor-editor min-h-screen py-10 md:py-14 px-5 md:px-10 pb-[82px] md:pb-14">
       <div className="max-w-[1000px] mx-auto">
         <div className="text-center mb-9 pb-8 border-b border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]">
           <Store className="h-7 w-7 mx-auto text-gold-text dark:text-gold-dark" />

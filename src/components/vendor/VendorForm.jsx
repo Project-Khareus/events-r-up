@@ -190,7 +190,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
   };
 
   return (
-    <div>
+    <div className="vendor-editor-form">
       <VendorWizardProgress currentStep={step} />
 
       {step === 0 && (

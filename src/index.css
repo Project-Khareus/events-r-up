@@ -186,3 +186,20 @@ button:focus-visible {
 .dark button.bg-primary:hover, .dark .bg-primary:hover { background-color: #D8B66E !important; }
 .dark .shadow-sm, .dark .shadow, .dark .shadow-lg, .dark .shadow-xl { box-shadow: 0 0 0 1px #5E5043 !important; }
 .dark .leaflet-container { background: #4A3F35; }
+
+/* Shared vendor listing editor surface */
+.vendor-editor { background-color: #F8F1EB; }
+.dark .vendor-editor { background-color: #3B322B; }
+.vendor-editor-panel { box-shadow: 0 1px 0 rgba(59, 50, 43, 0.06); }
+.vendor-editor .vendor-editor-form input:not([type="file"]),
+.vendor-editor .vendor-editor-form textarea,
+.vendor-editor .vendor-editor-form [role="combobox"],
+.vendor-editor .vendor-editor-form .ql-toolbar,
+.vendor-editor .vendor-editor-form .ql-container { background-color: #FFFCF8; }
+.vendor-editor .vendor-editor-form .ql-toolbar,
+.vendor-editor .vendor-editor-form .ql-container { border-color: rgba(59, 50, 43, 0.28); }
+.dark .vendor-editor .vendor-editor-form input:not([type="file"]),
+.dark .vendor-editor .vendor-editor-form textarea,
+.dark .vendor-editor .vendor-editor-form [role="combobox"],
+.dark .vendor-editor .vendor-editor-form .ql-toolbar,
+.dark .vendor-editor .vendor-editor-form .ql-container { background-color: #211B16; border-color: rgba(241, 232, 224, 0.2); }
