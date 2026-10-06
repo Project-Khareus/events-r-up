@@ -10,6 +10,11 @@ const EVENT_SECTIONS = [
   { key: "funeral", label: "Funerals" },
 ];
 
+const formatMilestone = (count) => {
+  if (count < 50) return String(count);
+  return `${Math.floor(count / 50) * 50}+`;
+};
+
 export default function HomeNewlyApproved({ vendors = [], allReviews = [], location, totalCount }) {
   if (!vendors.length) return null;
 
@@ -56,7 +61,7 @@ export default function HomeNewlyApproved({ vendors = [], allReviews = [], locat
               to={seeAllUrl(group.key)}
               className="text-[12.5px] text-gold-text dark:text-gold-dark hover:underline whitespace-nowrap"
             >
-              {`See all ${group.count}`}
+              {`See all ${formatMilestone(group.count)}`}
             </Link>
           </div>
 
