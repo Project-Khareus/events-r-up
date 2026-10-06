@@ -34,6 +34,7 @@ const EVENT_MENUS = [
       { name: "Ushers", id: "ushers" },
       { name: "Couple's First Dance Tutorials", id: "dance_tutorials" },
       { name: "Rent-a-Team", id: "rent_a_team" },
+      { name: "Gifts", id: "gifts", occasion: "weddings" },
     ]
   },
   {
@@ -49,6 +50,7 @@ const EVENT_MENUS = [
       { name: "Jewellery", id: "jewellery" },
       { name: "Music / Karaoke", id: "music_karaoke_mc" },
       { name: "Car Rentals", id: "car_rentals" },
+      { name: "Babies & Baby Showers", id: "babies_baby_showers", occasion: "parties" },
     ]
   },
   {
@@ -179,7 +181,7 @@ export default function Navbar() {
                       {menu.categories.map((cat) => (
                         <Link
                           key={cat.id}
-                          to={`${createPageUrl(menu.title)}?category=${cat.id}`}
+                          to={cat.occasion ? `${createPageUrl("PublicEvents")}?occasion=${cat.occasion}&subcategory=${cat.id}` : `${createPageUrl(menu.title)}?category=${cat.id}`}
                           className="block px-4 py-2 text-[13px] font-light rounded-none text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)] hover:text-ink dark:hover:text-[#F1E8E0] hover:bg-cream dark:hover:bg-[#211B16] transition-colors"
                         >
                           {cat.name}
@@ -400,6 +402,14 @@ export default function Navbar() {
                           <span className="text-[14.5px]">{item.label}</span>
                         </Link>
                       ))}
+                      <Link to={`${createPageUrl("PublicEvents")}?occasion=weddings&subcategory=gifts`} onClick={() => setMobileMenuOpen(false)} className={mobileLinkClass}>
+                        <Heart className="h-5 w-5" />
+                        <span className="text-[14.5px]">Wedding Gifts</span>
+                      </Link>
+                      <Link to={`${createPageUrl("PublicEvents")}?occasion=parties&subcategory=babies_baby_showers`} onClick={() => setMobileMenuOpen(false)} className={mobileLinkClass}>
+                        <PartyPopper className="h-5 w-5" />
+                        <span className="text-[14.5px]">Babies & Baby Showers</span>
+                      </Link>
 
                       <Link to={createPageUrl("Blog")} onClick={() => setMobileMenuOpen(false)} className={mobileLinkClass}>
                         <FileText className="h-5 w-5" />

@@ -46,8 +46,11 @@ export default function PublicEvents() {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTheme, setSelectedTheme] = useState("All");
-  const [selectedOccasion, setSelectedOccasion] = useState("all");
-  const [selectedSubcategory, setSelectedSubcategory] = useState("all");
+  const urlParams = new URLSearchParams(window.location.search);
+  const requestedOccasion = urlParams.get("occasion");
+  const requestedSubcategory = urlParams.get("subcategory");
+  const [selectedOccasion, setSelectedOccasion] = useState(() => OCCASIONS[requestedOccasion] ? requestedOccasion : "all");
+  const [selectedSubcategory, setSelectedSubcategory] = useState(() => OCCASIONS[requestedOccasion]?.subcategories.some((item) => item.value === requestedSubcategory) ? requestedSubcategory : "all");
   const [page, setPage] = useState(1);
   const eventsPerPage = 24;
   
