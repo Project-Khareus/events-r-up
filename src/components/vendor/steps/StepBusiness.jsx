@@ -44,6 +44,8 @@ const CATEGORIES_BY_EVENT = {
     { value: "jewellery", label: "Jewellery" },
     { value: "music_karaoke_mc", label: "Music / Karaoke" },
     { value: "car_rentals", label: "Car Rentals" },
+    { value: "babies_baby_showers", label: "Babies & Baby Showers" },
+    { value: "gifts", label: "Gifts" },
   ],
   conference: [
     { value: "event_planner", label: "Event Planner" },
@@ -87,13 +89,7 @@ export default function StepBusiness({ formData, setFormData, onNext, initialDat
     });
   };
 
-  const availableCategories = formData.event_type.reduce((acc, type) => {
-    const cats = CATEGORIES_BY_EVENT[type] || [];
-    cats.forEach((c) => {
-      if (!acc.some((existing) => existing.value === c.value)) acc.push(c);
-    });
-    return acc;
-  }, []);
+  const selectedEventTypes = EVENT_TYPES.filter((type) => formData.event_type.includes(type.value));
 
   const handleNext = () => {
     if (!formData.business_name || formData.event_type.length === 0 || formData.category.length === 0) {
@@ -168,26 +164,34 @@ export default function StepBusiness({ formData, setFormData, onNext, initialDat
         {formData.event_type.length > 0 && (
           <div>
             <p className={`${LABEL} mb-3`}>Categories * (select all that apply)</p>
-            {availableCategories.length === 0 ? (
-              <p className={SUB}>No specific categories found.</p>
-            ) : (
-              <div className="flex flex-wrap gap-2.5">
-                {availableCategories.map((cat) => {
-                  const isSelected = formData.category.includes(cat.value);
-                  return (
-                    <button
-                      key={cat.value}
-                      type="button"
-                      onClick={() => toggleCategory(cat.value)}
-                      className={isSelected ? CHIP_ON : CHIP}
-                    >
-                      {cat.label}
-                      {isSelected && <Check className="h-3 w-3" />}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
+            <div className="space-y-5">
+              {selectedEventTypes.map((type) => {
+                const categories = CATEGORIES_BY_EVENT[type.value] || [];
+                return (
+                  <div key={type.value}>
+                    <p className="mb-2 text-[12px] font-medium tracking-[0.1em] uppercase text-gold-text dark:text-gold-dark">
+                      {type.label}
+                    </p>
+                    <div className="flex flex-wrap gap-2.5">
+                      {categories.map((cat) => {
+                        const isSelected = formData.category.includes(cat.value);
+                        return (
+                          <button
+                            key={`${type.value}-${cat.value}`}
+                            type="button"
+                            onClick={() => toggleCategory(cat.value)}
+                            className={isSelected ? CHIP_ON : CHIP}
+                          >
+                            {cat.label}
+                            {isSelected && <Check className="h-3 w-3" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
       </div>
