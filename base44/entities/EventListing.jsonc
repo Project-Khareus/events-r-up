@@ -1,96 +1,112 @@
 {
   "name": "EventListing",
+  "type": "object",
   "properties": {
     "description": {
-      "description": "Full description of the event",
-      "type": "string"
+      "type": "string",
+      "description": "Full description of the event"
     },
     "event_date": {
-      "description": "Date and time of the event",
+      "type": "string",
       "format": "date-time",
-      "type": "string"
+      "description": "Date and time of the event"
     },
     "image_url": {
-      "description": "Cover image URL",
-      "type": "string"
+      "type": "string",
+      "description": "Cover image URL"
     },
     "gallery_images": {
+      "type": "array",
       "items": {
         "type": "string"
       },
-      "type": "array",
       "description": "Additional event photos"
     },
     "is_paid": {
+      "type": "boolean",
       "default": false,
-      "description": "Whether the event is free or paid",
-      "type": "boolean"
+      "description": "Whether the event is free or paid"
     },
     "is_recurring": {
+      "type": "boolean",
       "default": false,
-      "description": "Whether this is a recurring event",
-      "type": "boolean"
+      "description": "Whether this is a recurring event"
     },
     "location_address": {
-      "description": "Text address of the location",
-      "type": "string"
+      "type": "string",
+      "description": "Text address of the location"
     },
     "location_lat": {
-      "description": "Latitude for map pin",
-      "maximum": 90,
+      "type": "number",
       "minimum": -90,
-      "type": "number"
+      "maximum": 90,
+      "description": "Latitude for map pin"
     },
     "location_lng": {
-      "description": "Longitude for map pin",
-      "maximum": 180,
+      "type": "number",
       "minimum": -180,
-      "type": "number"
+      "maximum": 180,
+      "description": "Longitude for map pin"
+    },
+    "occasion": {
+      "type": "string",
+      "enum": [
+        "parties",
+        "weddings"
+      ],
+      "description": "Top-level celebration occasion"
+    },
+    "occasion_subcategory": {
+      "type": "string",
+      "enum": [
+        "babies_baby_showers",
+        "gifts"
+      ],
+      "description": "Nested celebration occasion"
     },
     "organizer_name": {
-      "description": "Name of the event organizer or organization",
-      "type": "string"
+      "type": "string",
+      "description": "Name of the event organizer or organization"
     },
     "price": {
-      "description": "Price if paid",
-      "type": "number"
+      "type": "number",
+      "description": "Price if paid"
     },
     "recurrence_end_date": {
-      "description": "When the recurring event series ends",
+      "type": "string",
       "format": "date-time",
-      "type": "string"
+      "description": "When the recurring event series ends"
     },
     "recurrence_frequency": {
-      "description": "Frequency of recurrence",
+      "type": "string",
       "enum": [
         "daily",
         "weekly",
         "monthly",
         "custom"
       ],
-      "type": "string"
+      "description": "Frequency of recurrence"
     },
     "recurrence_pattern": {
-      "description": "Custom recurrence pattern (e.g., 'Every Monday and Wednesday')",
-      "type": "string"
+      "type": "string",
+      "description": "Custom recurrence pattern"
     },
     "slug": {
-      "description": "URL-friendly unique identifier derived from the event title, used for shareable /event/{slug} links",
-      "type": "string"
+      "type": "string",
+      "description": "URL-friendly unique identifier derived from the event title, used for shareable /event/{slug} links"
     },
     "status": {
-      "default": "pending",
-      "description": "Approval status of the event",
+      "type": "string",
       "enum": [
         "pending",
         "approved",
         "rejected"
       ],
-      "type": "string"
+      "default": "pending",
+      "description": "Approval status of the event"
     },
     "theme": {
-      "default": "Other",
-      "description": "Event theme/category",
+      "type": "string",
       "enum": [
         "Music",
         "Food & Drink",
@@ -102,15 +118,16 @@
         "Education",
         "Other"
       ],
-      "type": "string"
+      "default": "Other",
+      "description": "Event theme/category"
     },
     "title": {
-      "description": "Title of the event",
-      "type": "string"
+      "type": "string",
+      "description": "Title of the event"
     },
     "user_id": {
-      "description": "ID of the user who posted the event",
-      "type": "string"
+      "type": "string",
+      "description": "ID of the user who posted the event"
     }
   },
   "required": [
@@ -122,18 +139,6 @@
   "rls": {
     "create": {
       "created_by": "{{user.email}}"
-    },
-    "delete": {
-      "$or": [
-        {
-          "created_by": "{{user.email}}"
-        },
-        {
-          "user_condition": {
-            "role": "admin"
-          }
-        }
-      ]
     },
     "read": true,
     "update": {
@@ -147,7 +152,18 @@
           }
         }
       ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
     }
-  },
-  "type": "object"
+  }
 }

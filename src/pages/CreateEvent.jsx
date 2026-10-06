@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { Loader2, Image as ImageIcon, Calendar, DollarSign } from "lucide-react";
 import EventGalleryUpload from "@/components/events/EventGalleryUpload";
 import LocationAutocomplete from "@/components/shared/LocationAutocomplete";
+import EventOccasionFields from "@/components/events/EventOccasionFields";
 
 const THEMES = ["Music", "Food & Drink", "Business", "Arts & Culture", "Sports", "Community", "Party", "Education", "Other"];
 
@@ -34,6 +35,8 @@ export default function CreateEvent() {
     is_paid: false,
     price: "",
     theme: "Other",
+    occasion: "",
+    occasion_subcategory: "",
     event_date: "",
     is_recurring: false,
     recurrence_frequency: "weekly",
@@ -226,6 +229,12 @@ export default function CreateEvent() {
                     </div>
                 </div>
             </div>
+
+            <EventOccasionFields
+              occasion={formData.occasion}
+              subcategory={formData.occasion_subcategory}
+              onChange={(changes) => setFormData((prev) => ({ ...prev, ...changes }))}
+            />
 
             {/* Location */}
             <div className="space-y-2">

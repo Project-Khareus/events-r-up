@@ -17,6 +17,7 @@ import FavoriteButton from "../components/events/FavoriteButton";
 import AddToCalendarButton from "../components/events/AddToCalendarButton";
 import MobileHeader from "../components/layout/MobileHeader";
 import ReportDialog from "../components/reports/ReportDialog";
+import { getOccasionLabel } from "@/lib/eventOccasions";
 
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   var R = 6371; // Radius of the earth in km
@@ -103,6 +104,7 @@ export default function EventDetail() {
   const isRejected = event.status === 'rejected';
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location_address || "")}`;
   const canEdit = currentUser && (currentUser.role === 'admin' || event.user_id === currentUser.id || event.created_by_id === currentUser.id);
+  const occasionLabel = getOccasionLabel(event.occasion, event.occasion_subcategory);
   // Pretty, name-based link for this event
   const eventUrl = event.slug ? `${window.location.origin}/event/${encodeURIComponent(event.slug)}` : window.location.href;
   // Server-side preview endpoint for social platforms (Facebook et al. don't run page scripts)
@@ -140,7 +142,7 @@ export default function EventDetail() {
              </Link>
              <div className="flex flex-wrap gap-3 mb-4">
                  <Badge className="bg-gold hover:bg-gold border-0 text-cream text-base px-4 py-1">
-                     {event.theme}
+                     {occasionLabel || event.theme}
                  </Badge>
                  <Badge variant="outline" className="bg-transparent border-ink/30 dark:border-[#F1E8E0]/30 text-ink dark:text-[#F1E8E0] text-base px-4 py-1">
                      {event.is_paid ? (event.price ? `GH₵${event.price}` : 'Paid') : 'Free Entry'}
@@ -204,7 +206,7 @@ export default function EventDetail() {
                             <Tag className="h-5 w-5 text-gold-text dark:text-gold-dark mt-0.5" />
                             <div>
                                 <p className="text-sm text-ink/50 dark:text-[#F1E8E0]/50">Category</p>
-                                <p className="font-medium text-ink dark:text-[#F1E8E0]">{event.theme}</p>
+                                <p className="font-medium text-ink dark:text-[#F1E8E0]">{occasionLabel || event.theme}</p>
                             </div>
                         </div>
                         <div className="flex items-start gap-3">

@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import FavoriteButton from "./FavoriteButton";
+import { getOccasionLabel } from "@/lib/eventOccasions";
 
 export default function EventCard({ event }) {
   const date = new Date(event.event_date);
@@ -56,7 +57,7 @@ export default function EventCard({ event }) {
             
             <div className="mt-3 flex items-center gap-2">
                 <Badge variant="outline" className="text-xs font-medium text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600 bg-slate-50/50 dark:bg-slate-700/50">
-                    {event.theme}
+                  {getOccasionLabel(event.occasion, event.occasion_subcategory) || event.theme}
                 </Badge>
             </div>
           </div>
