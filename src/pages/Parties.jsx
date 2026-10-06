@@ -12,6 +12,7 @@ const CATEGORIES = [
   { name: "Jewellery", id: "jewellery" },
   { name: "Music / Karaoke", id: "music_karaoke_mc" },
   { name: "Car Rentals", id: "car_rentals" },
+  { name: "Babies & Baby Showers", id: "babies_baby_showers" },
 ];
 
 export default function Parties() {

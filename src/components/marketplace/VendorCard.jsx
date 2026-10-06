@@ -27,6 +27,8 @@ const CATEGORY_LABELS = {
   caskets: "Caskets",
   catering_drinks: "Catering & Drinks",
   wreaths: "Wreaths",
+  gifts: "Gifts",
+  babies_baby_showers: "Babies & Baby Showers",
   others: "Others"
 };
 

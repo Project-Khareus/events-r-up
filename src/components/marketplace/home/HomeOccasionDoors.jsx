@@ -13,7 +13,7 @@ const OCCASIONS = [
       { name: "Catering", id: "catering" },
       { name: "Décor & Logistics", id: "decor_logistics" },
       { name: "Event Grounds", id: "event_grounds" },
-      { name: "Gifts", id: "gifts", occasion: "weddings" },
+      { name: "Gifts", id: "gifts" },
     ],
   },
   {
@@ -26,7 +26,7 @@ const OCCASIONS = [
       { name: "Music / Karaoke", id: "music_karaoke_mc" },
       { name: "Catering", id: "catering" },
       { name: "Design & Creatives", id: "design_creatives" },
-      { name: "Babies & Baby Showers", id: "babies_baby_showers", occasion: "parties" },
+      { name: "Babies & Baby Showers", id: "babies_baby_showers" },
     ],
   },
   {
@@ -96,7 +96,7 @@ export default function HomeOccasionDoors({ vendorsByEvent = [] }) {
                 {occasion.categories.map((cat) => (
                   <Link
                     key={cat.id}
-                    to={cat.occasion ? `${createPageUrl("PublicEvents")}?occasion=${cat.occasion}&subcategory=${cat.id}` : createPageUrl(`CategoryPage?category=${cat.id}&event=${occasion.eventType}`)}
+                    to={`${createPageUrl(occasion.page)}?category=${cat.id}`}
                     className="text-[11px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)] hover:underline"
                   >
                     {cat.name}

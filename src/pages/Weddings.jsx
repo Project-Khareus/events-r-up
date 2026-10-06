@@ -18,6 +18,7 @@ const CATEGORIES = [
   { name: "Ushers", id: "ushers" },
   { name: "Couple's First Dance Tutorials", id: "dance_tutorials" },
   { name: "Rent-a-Team", id: "rent_a_team" },
+  { name: "Gifts", id: "gifts" },
 ];
 
 export default function Weddings() {

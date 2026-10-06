@@ -39,6 +39,7 @@ const CATEGORIES_BY_EVENT = {
     { value: "ushers", label: "Ushers" },
     { value: "dance_tutorials", label: "Couple's First Dance Tutorials" },
     { value: "rent_a_team", label: "Rent-a-Team" },
+    { value: "gifts", label: "Gifts" },
   ],
   parties: [
     { value: "all", label: "All Categories" },
@@ -52,6 +53,7 @@ const CATEGORIES_BY_EVENT = {
     { value: "jewellery", label: "Jewellery" },
     { value: "music_karaoke_mc", label: "Music / Karaoke" },
     { value: "car_rentals", label: "Car Rentals" },
+    { value: "babies_baby_showers", label: "Babies & Baby Showers" },
   ],
   conference: [
     { value: "all", label: "All Categories" },

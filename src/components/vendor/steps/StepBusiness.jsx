@@ -31,6 +31,7 @@ const CATEGORIES_BY_EVENT = {
     { value: "ushers", label: "Ushers" },
     { value: "dance_tutorials", label: "Dance Tutorials" },
     { value: "rent_a_team", label: "Rent-a-Team" },
+    { value: "gifts", label: "Gifts" },
   ],
   parties: [
     { value: "event_planner", label: "Event Planner" },

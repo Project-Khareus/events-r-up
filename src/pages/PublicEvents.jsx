@@ -20,7 +20,6 @@ import {
 import EventCard from "../components/events/EventCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { OCCASIONS } from "@/lib/eventOccasions";
 
 const THEMES = ["All", "Music", "Food & Drink", "Business", "Arts & Culture", "Sports", "Community", "Party", "Other"];
 
@@ -46,11 +45,6 @@ export default function PublicEvents() {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTheme, setSelectedTheme] = useState("All");
-  const urlParams = new URLSearchParams(window.location.search);
-  const requestedOccasion = urlParams.get("occasion");
-  const requestedSubcategory = urlParams.get("subcategory");
-  const [selectedOccasion, setSelectedOccasion] = useState(() => OCCASIONS[requestedOccasion] ? requestedOccasion : "all");
-  const [selectedSubcategory, setSelectedSubcategory] = useState(() => OCCASIONS[requestedOccasion]?.subcategories.some((item) => item.value === requestedSubcategory) ? requestedSubcategory : "all");
   const [page, setPage] = useState(1);
   const eventsPerPage = 24;
   
@@ -159,10 +153,8 @@ export default function PublicEvents() {
         event.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
         event.location_address.toLowerCase().includes(searchQuery.toLowerCase());
       
-      // 2. Theme and occasion filters
+      // 2. Theme filter
       const matchesTheme = selectedTheme === "All" || event.theme === selectedTheme;
-      const matchesOccasion = selectedOccasion === "all" || event.occasion === selectedOccasion;
-      const matchesSubcategory = selectedSubcategory === "all" || event.occasion_subcategory === selectedSubcategory;
 
       // 3. Location Filter
       let matchesLocation = true;
@@ -190,7 +182,7 @@ export default function PublicEvents() {
         }
       }
       
-      return matchesSearch && matchesTheme && matchesOccasion && matchesSubcategory && matchesLocation;
+      return matchesSearch && matchesTheme && matchesLocation;
       });
     
     // Sort by event_date ascending (soonest first)
@@ -199,7 +191,7 @@ export default function PublicEvents() {
       const dateB = b.event_date ? new Date(b.event_date) : new Date('9999-12-31');
       return dateA - dateB;
     });
-  }, [approvedEvents, searchQuery, selectedTheme, selectedOccasion, selectedSubcategory, locationState]);
+  }, [approvedEvents, searchQuery, selectedTheme, locationState]);
 
   // Fallbacks: always show something
   const { displayEvents, usingFallback } = useMemo(() => {
@@ -364,12 +356,6 @@ export default function PublicEvents() {
                 {theme}
               </button>
             ))}
-          </div>
-          <div className="flex flex-wrap items-center gap-2 pt-1">
-            <span className="mr-1 text-[11px] uppercase tracking-[0.14em] text-ink/50 dark:text-[#F1E8E0]/50">Event occasions</span>
-            <button onClick={() => { setSelectedOccasion("all"); setSelectedSubcategory("all"); }} className={`px-4 py-2 min-h-[44px] rounded-none text-[11px] uppercase tracking-[0.14em] border ${selectedOccasion === "all" ? "bg-ink text-cream border-ink dark:bg-cream dark:text-ink dark:border-cream" : "border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]"}`}>All occasions</button>
-            {Object.entries(OCCASIONS).map(([value, item]) => <button key={value} onClick={() => { setSelectedOccasion(value); setSelectedSubcategory("all"); }} className={`px-4 py-2 min-h-[44px] rounded-none text-[11px] uppercase tracking-[0.14em] border ${selectedOccasion === value ? "bg-ink text-cream border-ink dark:bg-cream dark:text-ink dark:border-cream" : "border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]"}`}>{item.label}</button>)}
-            {selectedOccasion !== "all" && OCCASIONS[selectedOccasion].subcategories.map((item) => <button key={item.value} onClick={() => setSelectedSubcategory(item.value)} className={`px-4 py-2 min-h-[44px] rounded-none text-[11px] tracking-[0.08em] border ${selectedSubcategory === item.value ? "border-gold bg-[rgba(169,126,46,0.08)] text-gold-text dark:text-gold-dark" : "border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]"}`}>{item.label}</button>)}
           </div>
         </div>
       </div>
