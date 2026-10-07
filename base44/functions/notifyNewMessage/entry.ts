@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
+import { escapeHtml } from '../../shared/emailLayout.js';
 
 const BRAND = 'Khareus';
 const SITE_URL = 'https://khareus.com';
@@ -28,6 +29,8 @@ function button(text, url, color = '#4F46E5') {
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
+        const user = await base44.auth.me();
+        if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
         const { messageId } = await req.json();
 
         if (!messageId) {
@@ -37,6 +40,9 @@ Deno.serve(async (req) => {
         const message = await base44.asServiceRole.entities.Message.get(messageId);
         if (!message) {
             return Response.json({ error: 'Message not found' }, { status: 404 });
+        }
+        if (user.role !== 'admin' && message.sender_id !== user.id) {
+            return Response.json({ error: 'Forbidden' }, { status: 403 });
         }
 
         const conversation = await base44.asServiceRole.entities.Conversation.get(message.conversation_id);
@@ -57,17 +63,20 @@ Deno.serve(async (req) => {
         const messagePreview = message.content.length > 150 
             ? message.content.substring(0, 150) + '...' 
             : message.content;
+        const recipientName = escapeHtml(recipient.full_name);
+        const senderName = escapeHtml(message.sender_name);
+        const safeMessagePreview = escapeHtml(messagePreview);
 
         const content = `
             <p style="color: #334155; font-size: 15px; line-height: 1.6;">
-                Hi ${recipient.full_name},
+                Hi ${recipientName},
             </p>
             <p style="color: #334155; font-size: 15px; line-height: 1.6;">
-                You have a new message from <strong>${message.sender_name}</strong>.
+                You have a new message from <strong>${senderName}</strong>.
             </p>
             <div style="background: #F8FAFC; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #4F46E5;">
                 <p style="color: #94A3B8; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 8px 0;">Message</p>
-                <p style="margin: 0; color: #334155; font-size: 14px; line-height: 1.5;">${messagePreview}</p>
+                <p style="margin: 0; color: #334155; font-size: 14px; line-height: 1.5;">${safeMessagePreview}</p>
             </div>
             <p style="color: #334155; font-size: 15px; line-height: 1.6;">
                 Reply to continue the conversation.

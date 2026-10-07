@@ -35,6 +35,9 @@ function infoCard(items, borderColor = '#4F46E5') {
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
+        const user = await base44.auth.me();
+        if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+        if (user.role !== 'admin') return Response.json({ error: 'Forbidden' }, { status: 403 });
         
         const today = new Date();
         const sevenDaysFromNow = new Date(today);

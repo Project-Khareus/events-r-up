@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
+import { escapeHtml } from '../../shared/emailLayout.js';
 
 const BRAND = 'Khareus';
 const SITE_URL = 'https://khareus.com';
@@ -28,6 +29,8 @@ function button(text, url, color = '#4F46E5') {
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
+        const user = await base44.auth.me();
+        if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
         const { reviewId } = await req.json();
 
         if (!reviewId) {
@@ -37,6 +40,9 @@ Deno.serve(async (req) => {
         const review = await base44.asServiceRole.entities.Review.get(reviewId);
         if (!review) {
             return Response.json({ error: 'Review not found' }, { status: 404 });
+        }
+        if (user.role !== 'admin' && review.created_by_id !== user.id) {
+            return Response.json({ error: 'Forbidden' }, { status: 403 });
         }
 
         const vendor = await base44.asServiceRole.entities.Vendor.get(review.vendor_id);
@@ -51,18 +57,22 @@ Deno.serve(async (req) => {
         }
 
         const stars = '⭐'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+        const vendorName = escapeHtml(vendor.business_name);
+        const reviewerName = escapeHtml(review.reviewer_name || 'Anonymous');
+        const eventType = escapeHtml(review.event_type);
+        const reviewText = escapeHtml(review.review_text);
 
         if (vendorEmail) {
             const content = `
                 <p style="color: #334155; font-size: 15px; line-height: 1.6;">
-                    You've received a new review for <strong>${vendor.business_name}</strong>.
+                    You've received a new review for <strong>${vendorName}</strong>.
                 </p>
                 <div style="background: #F8FAFC; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #FBBF24;">
                     <div style="font-size: 24px; margin-bottom: 12px;">${stars}</div>
                     <p style="margin: 6px 0; color: #334155; font-size: 14px;"><strong>Rating:</strong> ${review.rating}/5 stars</p>
-                    <p style="margin: 6px 0; color: #334155; font-size: 14px;"><strong>From:</strong> ${review.reviewer_name || 'Anonymous'}</p>
-                    ${review.event_type ? `<p style="margin: 6px 0; color: #334155; font-size: 14px;"><strong>Event Type:</strong> ${review.event_type}</p>` : ''}
-                    <p style="margin-top: 16px; font-style: italic; color: #475569; font-size: 14px; line-height: 1.5;">"${review.review_text}"</p>
+                    <p style="margin: 6px 0; color: #334155; font-size: 14px;"><strong>From:</strong> ${reviewerName}</p>
+                    ${review.event_type ? `<p style="margin: 6px 0; color: #334155; font-size: 14px;"><strong>Event Type:</strong> ${eventType}</p>` : ''}
+                    <p style="margin-top: 16px; font-style: italic; color: #475569; font-size: 14px; line-height: 1.5;">"${reviewText}"</p>
                 </div>
                 <p style="color: #334155; font-size: 15px; line-height: 1.6;">
                     Thank you for providing excellent service! Reviews help build trust with potential customers.

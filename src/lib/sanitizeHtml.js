@@ -17,7 +17,8 @@ export function sanitizeHtml(html) {
         return;
       }
       if (!ALLOWED_TAGS.has(child.tagName)) {
-        // keep the readable text, drop the element
+        // Sanitize descendants before unwrapping so attributes cannot bypass the allow-list.
+        walk(child);
         child.replaceWith(...child.childNodes);
         return;
       }

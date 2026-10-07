@@ -4,9 +4,7 @@ const KHAREUS_DEFAULT_DESCRIPTION = "Khareus is Ghana's premier event vendor mar
 
 function stripHtml(html) {
   if (!html) return "";
-  const tmp = document.createElement("div");
-  tmp.innerHTML = html;
-  return tmp.textContent || tmp.innerText || "";
+  return new DOMParser().parseFromString(String(html), "text/html").body.textContent || "";
 }
 
 export default function MetaTags({ 

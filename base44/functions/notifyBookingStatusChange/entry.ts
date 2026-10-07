@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
+import { escapeHtml } from '../../shared/emailLayout.js';
 
 const BRAND = 'Khareus';
 const SITE_URL = 'https://khareus.com';
@@ -28,6 +29,8 @@ function button(text, url, color = '#4F46E5') {
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
+        const user = await base44.auth.me();
+        if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
         const { bookingId, newStatus } = await req.json();
 
         if (!bookingId || !newStatus) {
@@ -40,30 +43,39 @@ Deno.serve(async (req) => {
         }
 
         const vendor = await base44.asServiceRole.entities.Vendor.get(booking.vendor_id);
+        if (!vendor) return Response.json({ error: 'Vendor not found' }, { status: 404 });
+        if (user.role !== 'admin' && vendor.user_id !== user.id) {
+            return Response.json({ error: 'Forbidden' }, { status: 403 });
+        }
+
+        const vendorName = escapeHtml(vendor.business_name);
+        const customerName = escapeHtml(booking.user_name);
+        const eventDate = escapeHtml(booking.event_date);
+        const guestCount = escapeHtml(booking.guest_count);
 
         const statusConfig = {
             confirmed: {
-                subject: `✅ Booking Confirmed with ${vendor.business_name}`,
+                subject: `✅ Booking Confirmed with ${vendorName}`,
                 color: '#10B981',
                 title: '✅ Booking Confirmed',
-                message: `Great news! Your booking with <strong>${vendor.business_name}</strong> has been confirmed.`,
+                message: `Great news! Your booking with <strong>${vendorName}</strong> has been confirmed.`,
                 extra: `<p style="color: #334155; font-size: 15px; line-height: 1.6;">Your event is all set! If you have any questions, feel free to message the vendor directly through the platform.</p>`
             },
             declined: {
-                subject: `Booking Update from ${vendor.business_name}`,
+                subject: `Booking Update from ${vendorName}`,
                 color: '#DC2626',
                 title: 'Booking Update',
-                message: `Unfortunately, <strong>${vendor.business_name}</strong> is unable to accept your booking request.`,
+                message: `Unfortunately, <strong>${vendorName}</strong> is unable to accept your booking request.`,
                 extra: `
                     <p style="color: #334155; font-size: 15px; line-height: 1.6;">Don't worry! There are many other great vendors available.</p>
                     ${button('Browse Vendors', `${SITE_URL}/VendorMarketplace`)}
                 `
             },
             completed: {
-                subject: `Thanks for choosing ${vendor.business_name}!`,
+                subject: `Thanks for choosing ${vendorName}!`,
                 color: '#8B5CF6',
                 title: '🎉 Event Complete',
-                message: `Your event with <strong>${vendor.business_name}</strong> is complete. We hope everything went smoothly!`,
+                message: `Your event with <strong>${vendorName}</strong> is complete. We hope everything went smoothly!`,
                 extra: `
                     <p style="color: #334155; font-size: 15px; line-height: 1.6;">We'd love to hear about your experience! Please take a moment to leave a review.</p>
                     ${button('Leave a Review', `${SITE_URL}/VendorDetail?id=${vendor.id}#reviews`)}
@@ -78,12 +90,12 @@ Deno.serve(async (req) => {
 
         if (booking.user_email) {
             const content = `
-                <p style="color: #334155; font-size: 15px; line-height: 1.6;">Hi ${booking.user_name},</p>
+                <p style="color: #334155; font-size: 15px; line-height: 1.6;">Hi ${customerName},</p>
                 <p style="color: #334155; font-size: 15px; line-height: 1.6;">${config.message}</p>
                 <div style="background: #F8FAFC; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid ${config.color};">
-                    <p style="margin: 6px 0; color: #334155; font-size: 14px;"><strong>Vendor:</strong> ${vendor.business_name}</p>
-                    <p style="margin: 6px 0; color: #334155; font-size: 14px;"><strong>Event Date:</strong> ${booking.event_date}</p>
-                    <p style="margin: 6px 0; color: #334155; font-size: 14px;"><strong>Guest Count:</strong> ${booking.guest_count}</p>
+                    <p style="margin: 6px 0; color: #334155; font-size: 14px;"><strong>Vendor:</strong> ${vendorName}</p>
+                    <p style="margin: 6px 0; color: #334155; font-size: 14px;"><strong>Event Date:</strong> ${eventDate}</p>
+                    <p style="margin: 6px 0; color: #334155; font-size: 14px;"><strong>Guest Count:</strong> ${guestCount}</p>
                     <p style="margin: 6px 0; color: #334155; font-size: 14px;"><strong>Status:</strong> <span style="color: ${config.color}; font-weight: bold;">${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}</span></p>
                 </div>
                 ${config.extra}

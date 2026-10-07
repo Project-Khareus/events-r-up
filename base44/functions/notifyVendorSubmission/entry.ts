@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+import { escapeHtml } from '../../shared/emailLayout.js';
 
 const BRAND = 'Khareus';
 const SITE_URL = 'https://khareus.com';
@@ -34,6 +35,13 @@ Deno.serve(async (req) => {
             return Response.json({ error: "Unauthorized" }, { status: 401 });
         }
 
+        const vendor = await base44.asServiceRole.entities.Vendor.get(vendor_id);
+        if (!vendor) return Response.json({ error: 'Vendor not found' }, { status: 404 });
+        if (user.role !== 'admin' && vendor.user_id !== user.id) return Response.json({ error: 'Forbidden' }, { status: 403 });
+        const businessName = escapeHtml(vendor.business_name);
+        const contactEmail = escapeHtml(vendor.contact_email || contact_email);
+        const safeVendorId = escapeHtml(vendor.id);
+
         let admins = [];
         try {
              admins = await base44.asServiceRole.entities.User.filter({ role: 'admin' });
@@ -55,9 +63,9 @@ Deno.serve(async (req) => {
                 A new vendor has submitted a listing for approval.
             </p>
             <div style="background: #F8FAFC; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #E2E8F0;">
-                <p style="margin: 4px 0; color: #334155;"><strong>Business Name:</strong> ${business_name}</p>
-                <p style="margin: 4px 0; color: #334155;"><strong>Contact Email:</strong> ${contact_email}</p>
-                <p style="margin: 4px 0; color: #334155;"><strong>Vendor ID:</strong> ${vendor_id}</p>
+                <p style="margin: 4px 0; color: #334155;"><strong>Business Name:</strong> ${businessName}</p>
+                <p style="margin: 4px 0; color: #334155;"><strong>Contact Email:</strong> ${contactEmail}</p>
+                <p style="margin: 4px 0; color: #334155;"><strong>Vendor ID:</strong> ${safeVendorId}</p>
             </div>
             <p style="color: #334155; font-size: 15px; line-height: 1.6;">
                 Please log in to the admin dashboard to review and approve this listing.
@@ -67,7 +75,7 @@ Deno.serve(async (req) => {
 
         await base44.asServiceRole.integrations.Core.SendEmail({
             to: adminEmail,
-            subject: `New Vendor Registration: ${business_name}`,
+            subject: `New Vendor Registration: ${businessName}`,
             body: emailTemplate('New Vendor Registration', '#4F46E5', content)
         });
 

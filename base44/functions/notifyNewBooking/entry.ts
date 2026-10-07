@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
+import { escapeHtml } from '../../shared/emailLayout.js';
 
 const BRAND = 'Khareus';
 const SITE_URL = 'https://khareus.com';
@@ -35,6 +36,8 @@ function infoCard(items) {
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
+        const user = await base44.auth.me();
+        if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
         const { bookingId } = await req.json();
 
         if (!bookingId) {
@@ -47,6 +50,17 @@ Deno.serve(async (req) => {
         }
 
         const vendor = await base44.asServiceRole.entities.Vendor.get(booking.vendor_id);
+        if (!vendor) return Response.json({ error: 'Vendor not found' }, { status: 404 });
+        if (user.role !== 'admin' && booking.user_id !== user.id && vendor.user_id !== user.id) {
+            return Response.json({ error: 'Forbidden' }, { status: 403 });
+        }
+
+        const vendorName = escapeHtml(vendor.business_name);
+        const customerName = escapeHtml(booking.user_name);
+        const customerEmail = escapeHtml(booking.user_email);
+        const eventDate = escapeHtml(booking.event_date);
+        const guestCount = escapeHtml(booking.guest_count);
+        const bookingMessage = escapeHtml(booking.message);
 
         let vendorEmail = vendor.contact_email;
         if (!vendorEmail && vendor.user_id) {
@@ -58,14 +72,14 @@ Deno.serve(async (req) => {
         if (vendorEmail) {
             const vendorContent = `
                 <p style="color: #334155; font-size: 15px; line-height: 1.6;">
-                    You have received a new booking request for <strong>${vendor.business_name}</strong>.
+                    You have received a new booking request for <strong>${vendorName}</strong>.
                 </p>
                 ${infoCard([
-                    ['Customer', booking.user_name],
-                    ['Email', booking.user_email],
-                    ['Event Date', booking.event_date],
-                    ['Guest Count', booking.guest_count],
-                    ['Message', booking.message]
+                    ['Customer', customerName],
+                    ['Email', customerEmail],
+                    ['Event Date', eventDate],
+                    ['Guest Count', guestCount],
+                    ['Message', bookingMessage]
                 ])}
                 <p style="color: #334155; font-size: 15px; line-height: 1.6;">
                     Please review and respond to this booking request promptly.
@@ -84,14 +98,14 @@ Deno.serve(async (req) => {
         if (booking.user_email) {
             const customerContent = `
                 <p style="color: #334155; font-size: 15px; line-height: 1.6;">
-                    Hi ${booking.user_name},
+                    Hi ${customerName},
                 </p>
                 <p style="color: #334155; font-size: 15px; line-height: 1.6;">
-                    Your booking request has been sent to <strong>${vendor.business_name}</strong>.
+                    Your booking request has been sent to <strong>${vendorName}</strong>.
                 </p>
                 ${infoCard([
-                    ['Event Date', booking.event_date],
-                    ['Guest Count', booking.guest_count],
+                    ['Event Date', eventDate],
+                    ['Guest Count', guestCount],
                     ['Status', 'Pending vendor confirmation']
                 ])}
                 <p style="color: #334155; font-size: 15px; line-height: 1.6;">

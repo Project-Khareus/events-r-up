@@ -1,5 +1,16 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
 
+const STORAGE_HOSTS = new Set(['qtrypzzcjebvfcihiynt.supabase.co']);
+
+function isTrustedStorageUrl(value) {
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' && STORAGE_HOSTS.has(url.hostname) && url.pathname.startsWith('/storage/v1/object/');
+  } catch {
+    return false;
+  }
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -32,11 +43,15 @@ Deno.serve(async (req) => {
       }, { status: 400 });
     }
 
-    // Fetch all three images
+    if (![frontUrl, backUrl, selfieUrl].every(isTrustedStorageUrl)) {
+      return Response.json({ error: 'Verification images must be uploaded through Khareus storage' }, { status: 400 });
+    }
+
+    // Fetch only app-hosted uploads, with bounded request time.
     const [frontRes, backRes, selfieRes] = await Promise.all([
-      fetch(frontUrl),
-      fetch(backUrl),
-      fetch(selfieUrl)
+      fetch(frontUrl, { signal: AbortSignal.timeout(10000) }),
+      fetch(backUrl, { signal: AbortSignal.timeout(10000) }),
+      fetch(selfieUrl, { signal: AbortSignal.timeout(10000) })
     ]);
 
     if (!frontRes.ok || !backRes.ok || !selfieRes.ok) {
