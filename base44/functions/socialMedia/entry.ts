@@ -123,7 +123,7 @@ export default async function(req) {
 
     if (payload.action === 'generate_draft') {
       const images = getVendorImages(vendor);
-      const prompt = `Write one concise social announcement for Khareus introducing this approved event vendor. The voice should feel lively, warm, upbeat, and conversational, with a little tasteful flair. Make it sound like a real person excited to recommend a great find, not a corporate advert. Open with an engaging hook, weave in one or two specific details from the listing, and end with a natural invitation to discover the vendor. A light turn of phrase is welcome when it fits, but avoid forced jokes, slang, clichés, and generic hype. Use only supplied facts. Highlight a distinctive value proposition only when directly supported by the listing. Do not invent awards, availability, pricing, claims, or services. Use no more than 70 words, no hashtags, no title, and no quotation marks.\n\nBusiness: ${vendor.business_name}\nSlogan: ${vendor.slogan || 'Not provided'}\nEvent types: ${(vendor.event_type || []).join(', ') || 'Not provided'}\nCategories: ${(vendor.category || []).join(', ') || 'Not provided'}\nLocation: ${vendor.location || 'Not provided'}\nServices: ${(vendor.services || []).join(', ') || 'Not provided'}\nDescription: ${(vendor.description || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() || 'Not provided'}`;
+      const prompt = `Write one concise social announcement for Khareus introducing this approved event vendor. The voice should feel lively, warm, upbeat, and conversational, with a little tasteful flair. Make it sound like a real person excited to recommend a great find, not a corporate advert. Open with an engaging hook, weave in one or two specific details from the listing, and naturally invite people planning the listed event types to consider contacting this vendor for their event. Briefly mention that Khareus also brings together many other types of event vendors. A light turn of phrase is welcome when it fits, but avoid forced jokes, slang, clichés, and generic hype. Use only supplied facts. Do not imply confirmed availability, and do not invent awards, pricing, claims, or services. Use no more than 70 words, no hashtags, no title, and no quotation marks.\n\nBusiness: ${vendor.business_name}\nSlogan: ${vendor.slogan || 'Not provided'}\nEvent types: ${(vendor.event_type || []).join(', ') || 'Not provided'}\nCategories: ${(vendor.category || []).join(', ') || 'Not provided'}\nLocation: ${vendor.location || 'Not provided'}\nServices: ${(vendor.services || []).join(', ') || 'Not provided'}\nDescription: ${(vendor.description || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() || 'Not provided'}`;
       const copy = await base44.asServiceRole.integrations.Core.InvokeLLM({ prompt });
       const announcement = await base44.asServiceRole.entities.SocialAnnouncement.create({
         vendor_id: vendor.id,
@@ -142,34 +142,43 @@ export default async function(req) {
       if (!announcement || announcement.vendor_id !== vendor.id || announcement.status !== 'draft') return Response.json({ error: 'This draft is no longer available to publish' }, { status: 400 });
       const copy = String(payload.copy || '').trim();
       const imageUrls = Array.isArray(payload.imageUrls) ? payload.imageUrls.filter((url) => announcement.image_urls.includes(url)) : [];
-      if (!copy || !imageUrls.length || !payload.facebookPageId) return Response.json({ error: 'Copy, at least one picture, and a Facebook Page are required' }, { status: 400 });
-      const pages = await getFacebookPages(base44);
-      const page = pages.find((item) => item.id === payload.facebookPageId);
-      if (!page) return Response.json({ error: 'Choose one of your connected Facebook Pages' }, { status: 400 });
+      const publishToFacebook = payload.destinations?.facebook === true;
+      const publishToInstagram = payload.destinations?.instagram === true;
+      if (!publishToFacebook && !publishToInstagram) return Response.json({ error: 'Choose at least one publishing destination' }, { status: 400 });
+      if (!copy) return Response.json({ error: 'Announcement copy is required' }, { status: 400 });
+      if (publishToInstagram && !imageUrls.length) return Response.json({ error: 'Instagram requires at least one selected image' }, { status: 400 });
 
-      const [facebook, instagram] = await Promise.allSettled([publishFacebook(page, copy, imageUrls), publishInstagram(base44, copy, imageUrls)]);
-      const facebookPublished = facebook.status === 'fulfilled';
-      const instagramPublished = instagram.status === 'fulfilled';
-      const status = facebookPublished && instagramPublished ? 'published' : facebookPublished || instagramPublished ? 'partially_published' : 'failed';
+      let page = null;
+      if (publishToFacebook) {
+        if (!payload.facebookPageId) return Response.json({ error: 'Choose a Facebook Page' }, { status: 400 });
+        const pages = await getFacebookPages(base44);
+        page = pages.find((item) => item.id === payload.facebookPageId);
+        if (!page) return Response.json({ error: 'Choose one of your connected Facebook Pages' }, { status: 400 });
+      }
+
+      const [facebook, instagram] = await Promise.all([
+        publishToFacebook
+          ? publishFacebook(page, copy, imageUrls).then((value) => ({ selected: true, published: true, value, error: null })).catch((error) => ({ selected: true, published: false, value: null, error: error.message || 'Facebook publishing failed' }))
+          : Promise.resolve({ selected: false, published: false, value: null, error: null }),
+        publishToInstagram
+          ? publishInstagram(base44, copy, imageUrls).then((value) => ({ selected: true, published: true, value, error: null })).catch((error) => ({ selected: true, published: false, value: null, error: error.message || 'Instagram publishing failed' }))
+          : Promise.resolve({ selected: false, published: false, value: null, error: null })
+      ]);
+      const selectedResults = [facebook, instagram].filter((result) => result.selected);
+      const successfulCount = selectedResults.filter((result) => result.published).length;
+      const status = successfulCount === selectedResults.length ? 'published' : successfulCount ? 'partially_published' : 'failed';
       await base44.asServiceRole.entities.SocialAnnouncement.update(announcement.id, {
         copy,
         image_urls: imageUrls,
-        facebook_page_id: page.id,
-        facebook_status: facebookPublished ? 'published' : 'failed',
-        instagram_status: instagramPublished ? 'published' : 'failed',
-        facebook_post_id: facebookPublished ? facebook.value : null,
-        instagram_media_id: instagramPublished ? instagram.value : null,
+        facebook_page_id: page?.id || null,
+        facebook_status: publishToFacebook ? (facebook.published ? 'published' : 'failed') : announcement.facebook_status,
+        instagram_status: publishToInstagram ? (instagram.published ? 'published' : 'failed') : announcement.instagram_status,
+        facebook_post_id: facebook.value,
+        instagram_media_id: instagram.value,
         status,
-        error_details: {
-          facebook: facebookPublished ? null : facebook.reason?.message || 'Facebook publishing failed',
-          instagram: instagramPublished ? null : instagram.reason?.message || 'Instagram publishing failed'
-        }
+        error_details: { facebook: facebook.error, instagram: instagram.error }
       });
-      return Response.json({
-        facebook: { published: facebookPublished, error: facebookPublished ? null : facebook.reason?.message || 'Facebook publishing failed' },
-        instagram: { published: instagramPublished, error: instagramPublished ? null : instagram.reason?.message || 'Instagram publishing failed' },
-        status
-      });
+      return Response.json({ facebook, instagram, status });
     }
 
     return Response.json({ error: 'Invalid action' }, { status: 400 });
