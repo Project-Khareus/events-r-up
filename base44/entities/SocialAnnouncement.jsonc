@@ -1,0 +1,84 @@
+{
+  "name": "SocialAnnouncement",
+  "type": "object",
+  "properties": {
+    "vendor_id": {
+      "type": "string"
+    },
+    "copy": {
+      "type": "string"
+    },
+    "image_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "facebook_page_id": {
+      "type": "string"
+    },
+    "facebook_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "published",
+        "failed"
+      ]
+    },
+    "instagram_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "published",
+        "failed"
+      ]
+    },
+    "facebook_post_id": {
+      "type": "string"
+    },
+    "instagram_media_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "published",
+        "partially_published",
+        "failed"
+      ],
+      "default": "draft"
+    },
+    "error_details": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "vendor_id",
+    "copy",
+    "image_urls",
+    "status"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

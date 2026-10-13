@@ -11,13 +11,14 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, ArrowLeft, CreditCard, Eye, Pencil } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, ExternalLink, AlertCircle, ArrowLeft, CreditCard, Eye, Pencil, Send } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 import { capitalizeHtmlSentences } from "@/components/utils/capitalizeHtml";
 import { sanitizeHtml } from "@/lib/sanitizeHtml";
 import { getVendorUrl } from "../utils/vendorUrl";
 import ProposedChanges from "../components/admin/ProposedChanges";
+import SocialAnnouncementDialog from "../components/admin/SocialAnnouncementDialog";
 
 export default function AdminVendorDetail() {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ export default function AdminVendorDetail() {
   const [rejectionReason, setRejectionReason] = useState("");
   const [vendorRejectDialogOpen, setVendorRejectDialogOpen] = useState(false);
   const [vendorRejectionReason, setVendorRejectionReason] = useState("");
+  const [socialAnnouncementOpen, setSocialAnnouncementOpen] = useState(false);
 
   const { data: vendor, isLoading } = useQuery({
     queryKey: ['admin_vendor_detail', vendorId],
@@ -428,8 +430,15 @@ export default function AdminVendorDetail() {
                 </Button>
               </>
             )}
+            {vendor.status === 'approved' && (
+              <Button onClick={() => setSocialAnnouncementOpen(true)} className="bg-gold hover:bg-gold-text text-white gap-2">
+                <Send className="h-4 w-4" /> Create social draft
+              </Button>
+            )}
           </div>
         </Card>
+
+        <SocialAnnouncementDialog vendor={vendor} open={socialAnnouncementOpen} onOpenChange={setSocialAnnouncementOpen} />
 
         {/* Vendor Listing Rejection Dialog */}
         <Dialog open={vendorRejectDialogOpen} onOpenChange={setVendorRejectDialogOpen}>
