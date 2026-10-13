@@ -4,14 +4,19 @@ import { secrets } from 'base44:runtime';
 const FACEBOOK_API = 'https://graph.facebook.com/v25.0';
 const INSTAGRAM_API = 'https://graph.instagram.com/v25.0';
 
+async function readResponse(response, fallback) {
+  const data = await response.json();
+  if (!response.ok || data.error) throw new Error(data.error?.message || fallback);
+  return data;
+}
+
 async function getFacebookPages(base44) {
   const { accessToken } = await base44.asServiceRole.connectors.getConnection('facebook_pages');
   const response = await fetch(`${FACEBOOK_API}/me/accounts?fields=id,name,access_token`, {
     headers: { Authorization: `Bearer ${accessToken}` },
     signal: AbortSignal.timeout(10000)
   });
-  const data = await response.json();
-  if (!response.ok || data.error) throw new Error(data.error?.message || 'Unable to load Facebook Pages');
+  const data = await readResponse(response, 'Unable to load Facebook Pages');
   return data.data || [];
 }
 
@@ -25,69 +30,79 @@ function limitWords(value, maxWords) {
 }
 
 async function publishFacebook(page, copy, imageUrls) {
-  const postBody = new URLSearchParams({ message: copy, access_token: page.access_token });
-  if (imageUrls.length) {
-    const uploads = await Promise.all(imageUrls.map(async (url) => {
-      const response = await fetch(`${FACEBOOK_API}/${page.id}/photos`, {
-        method: 'POST',
-        body: new URLSearchParams({ url, published: 'false', access_token: page.access_token }),
-        signal: AbortSignal.timeout(20000)
-      });
-      const data = await response.json();
-      if (!response.ok || data.error) throw new Error(data.error?.message || 'Facebook image upload failed');
-      return { media_fbid: data.id };
-    }));
-    postBody.set('attached_media', JSON.stringify(uploads));
+  if (imageUrls.length === 1) {
+    const response = await fetch(`${FACEBOOK_API}/${page.id}/photos`, {
+      method: 'POST',
+      body: new URLSearchParams({ url: imageUrls[0], caption: copy, access_token: page.access_token }),
+      signal: AbortSignal.timeout(20000)
+    });
+    return (await readResponse(response, 'Facebook photo publishing failed')).post_id;
   }
-  const response = await fetch(`${FACEBOOK_API}/${page.id}/feed`, { method: 'POST', body: postBody, signal: AbortSignal.timeout(20000) });
-  const data = await response.json();
-  if (!response.ok || data.error) throw new Error(data.error?.message || 'Facebook publishing failed');
-  return data.id;
+
+  const uploads = await Promise.all(imageUrls.map(async (url) => {
+    const response = await fetch(`${FACEBOOK_API}/${page.id}/photos`, {
+      method: 'POST',
+      body: new URLSearchParams({ url, published: 'false', access_token: page.access_token }),
+      signal: AbortSignal.timeout(20000)
+    });
+    const data = await readResponse(response, 'Facebook image upload failed');
+    return data.id;
+  }));
+
+  const body = new URLSearchParams({ message: copy, access_token: page.access_token });
+  uploads.forEach((id, index) => body.set(`attached_media[${index}]`, JSON.stringify({ media_fbid: id })));
+  const response = await fetch(`${FACEBOOK_API}/${page.id}/feed`, { method: 'POST', body, signal: AbortSignal.timeout(20000) });
+  return (await readResponse(response, 'Facebook publishing failed')).id;
+}
+
+async function waitForInstagramContainer(containerId, accessToken) {
+  for (let attempt = 0; attempt < 12; attempt += 1) {
+    const response = await fetch(`${INSTAGRAM_API}/${containerId}?fields=status_code,status&access_token=${encodeURIComponent(accessToken)}`, { signal: AbortSignal.timeout(10000) });
+    const data = await readResponse(response, 'Instagram media processing status could not be checked');
+    const status = data.status_code || data.status;
+    if (status === 'FINISHED' || status === 'PUBLISHED') return;
+    if (status === 'ERROR' || status === 'EXPIRED') throw new Error('Instagram could not process the selected media');
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+  }
+  throw new Error('Instagram is still processing this media. Please try publishing again shortly.');
 }
 
 async function publishInstagram(base44, copy, imageUrls) {
   if (!imageUrls.length) throw new Error('Instagram requires at least one selected image');
   const { accessToken } = await base44.asServiceRole.connectors.getConnection('instagram');
   const profileResponse = await fetch(`${INSTAGRAM_API}/me?fields=id,username&access_token=${encodeURIComponent(accessToken)}`, { signal: AbortSignal.timeout(10000) });
-  const profile = await profileResponse.json();
-  if (!profileResponse.ok || profile.error) throw new Error(profile.error?.message || 'Unable to load Instagram Business account');
+  const profile = await readResponse(profileResponse, 'Unable to load Instagram Business account');
 
   const createContainer = async (url, carouselItem = false) => {
     const params = new URLSearchParams({ image_url: url, access_token: accessToken });
     if (carouselItem) params.set('is_carousel_item', 'true');
     const response = await fetch(`${INSTAGRAM_API}/${profile.id}/media`, { method: 'POST', body: params, signal: AbortSignal.timeout(20000) });
-    const data = await response.json();
-    if (!response.ok || data.error) throw new Error(data.error?.message || 'Instagram media upload failed');
-    return data.id;
+    return (await readResponse(response, 'Instagram media upload failed')).id;
   };
 
   let containerId;
   if (imageUrls.length === 1) {
     const params = new URLSearchParams({ image_url: imageUrls[0], caption: copy, access_token: accessToken });
     const response = await fetch(`${INSTAGRAM_API}/${profile.id}/media`, { method: 'POST', body: params, signal: AbortSignal.timeout(20000) });
-    const data = await response.json();
-    if (!response.ok || data.error) throw new Error(data.error?.message || 'Instagram media upload failed');
-    containerId = data.id;
+    containerId = (await readResponse(response, 'Instagram media upload failed')).id;
   } else {
     const children = await Promise.all(imageUrls.map((url) => createContainer(url, true)));
+    await Promise.all(children.map((id) => waitForInstagramContainer(id, accessToken)));
     const response = await fetch(`${INSTAGRAM_API}/${profile.id}/media`, {
       method: 'POST',
       body: new URLSearchParams({ media_type: 'CAROUSEL', children: children.join(','), caption: copy, access_token: accessToken }),
       signal: AbortSignal.timeout(20000)
     });
-    const data = await response.json();
-    if (!response.ok || data.error) throw new Error(data.error?.message || 'Instagram carousel creation failed');
-    containerId = data.id;
+    containerId = (await readResponse(response, 'Instagram carousel creation failed')).id;
   }
 
+  await waitForInstagramContainer(containerId, accessToken);
   const publishResponse = await fetch(`${INSTAGRAM_API}/${profile.id}/media_publish`, {
     method: 'POST',
     body: new URLSearchParams({ creation_id: containerId, access_token: accessToken }),
     signal: AbortSignal.timeout(20000)
   });
-  const published = await publishResponse.json();
-  if (!publishResponse.ok || published.error) throw new Error(published.error?.message || 'Instagram publishing failed');
-  return published.id;
+  return (await readResponse(publishResponse, 'Instagram publishing failed')).id;
 }
 
 export default async function(req) {
@@ -100,19 +115,16 @@ export default async function(req) {
     if (payload.action === 'get_auth_url') {
       const clientId = secrets.get('FACEBOOK_CLIENT_ID');
       if (!clientId || !payload.redirectUri) return Response.json({ error: 'Facebook setup is incomplete' }, { status: 400 });
-      const url = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${clientId}&redirect_uri=${encodeURIComponent(payload.redirectUri)}&scope=user_photos&response_type=code`;
-      return Response.json({ url });
+      return Response.json({ url: `https://www.facebook.com/v18.0/dialog/oauth?client_id=${clientId}&redirect_uri=${encodeURIComponent(payload.redirectUri)}&scope=user_photos&response_type=code` });
     }
 
     if (payload.action === 'fetch_photos') {
       const clientId = secrets.get('FACEBOOK_CLIENT_ID');
       const clientSecret = secrets.get('FACEBOOK_CLIENT_SECRET');
       const tokenResponse = await fetch(`https://graph.facebook.com/v18.0/oauth/access_token?client_id=${clientId}&redirect_uri=${encodeURIComponent(payload.redirectUri)}&client_secret=${clientSecret}&code=${payload.code}`, { signal: AbortSignal.timeout(10000) });
-      const token = await tokenResponse.json();
-      if (!tokenResponse.ok || token.error) return Response.json({ error: token.error?.message || 'Facebook authentication failed' }, { status: 400 });
+      const token = await readResponse(tokenResponse, 'Facebook authentication failed');
       const photosResponse = await fetch(`https://graph.facebook.com/v18.0/me/photos?type=uploaded&fields=images,source&access_token=${encodeURIComponent(token.access_token)}&limit=18`, { signal: AbortSignal.timeout(10000) });
-      const photos = await photosResponse.json();
-      if (!photosResponse.ok || photos.error) return Response.json({ error: photos.error?.message || 'Unable to load photos' }, { status: 400 });
+      const photos = await readResponse(photosResponse, 'Unable to load photos');
       return Response.json({ images: (photos.data || []).map((photo) => photo.images?.[0]?.source || photo.source).filter(Boolean) });
     }
 
@@ -125,14 +137,7 @@ export default async function(req) {
       const images = getVendorImages(vendor);
       const prompt = `Write one concise social announcement for Khareus introducing this approved event vendor. The voice should feel lively, warm, upbeat, and conversational, with a little tasteful flair. Make it sound like a real person excited to recommend a great find, not a corporate advert. Open with an engaging hook, weave in one or two specific details from the listing, and naturally invite people planning the listed event types to consider contacting this vendor for their event. Briefly mention that Khareus also brings together many other types of event vendors. A light turn of phrase is welcome when it fits, but avoid forced jokes, slang, clichés, and generic hype. Use only supplied facts. Do not imply confirmed availability, and do not invent awards, pricing, claims, or services. Use no more than 70 words, no hashtags, no title, and no quotation marks.\n\nBusiness: ${vendor.business_name}\nSlogan: ${vendor.slogan || 'Not provided'}\nEvent types: ${(vendor.event_type || []).join(', ') || 'Not provided'}\nCategories: ${(vendor.category || []).join(', ') || 'Not provided'}\nLocation: ${vendor.location || 'Not provided'}\nServices: ${(vendor.services || []).join(', ') || 'Not provided'}\nDescription: ${(vendor.description || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() || 'Not provided'}`;
       const copy = await base44.asServiceRole.integrations.Core.InvokeLLM({ prompt });
-      const announcement = await base44.asServiceRole.entities.SocialAnnouncement.create({
-        vendor_id: vendor.id,
-        copy: limitWords(copy, 70),
-        image_urls: images,
-        facebook_status: 'pending',
-        instagram_status: 'pending',
-        status: 'draft'
-      });
+      const announcement = await base44.asServiceRole.entities.SocialAnnouncement.create({ vendor_id: vendor.id, copy: limitWords(copy, 70), image_urls: images, facebook_status: 'pending', instagram_status: 'pending', status: 'draft' });
       const pages = await getFacebookPages(base44);
       return Response.json({ announcementId: announcement.id, copy: announcement.copy, imageUrls: images, facebookPages: pages.map((page) => ({ id: page.id, name: page.name })) });
     }
@@ -157,27 +162,13 @@ export default async function(req) {
       }
 
       const [facebook, instagram] = await Promise.all([
-        publishToFacebook
-          ? publishFacebook(page, copy, imageUrls).then((value) => ({ selected: true, published: true, value, error: null })).catch((error) => ({ selected: true, published: false, value: null, error: error.message || 'Facebook publishing failed' }))
-          : Promise.resolve({ selected: false, published: false, value: null, error: null }),
-        publishToInstagram
-          ? publishInstagram(base44, copy, imageUrls).then((value) => ({ selected: true, published: true, value, error: null })).catch((error) => ({ selected: true, published: false, value: null, error: error.message || 'Instagram publishing failed' }))
-          : Promise.resolve({ selected: false, published: false, value: null, error: null })
+        publishToFacebook ? publishFacebook(page, copy, imageUrls).then((value) => ({ selected: true, published: true, value, error: null })).catch((error) => ({ selected: true, published: false, value: null, error: error.message || 'Facebook publishing failed' })) : Promise.resolve({ selected: false, published: false, value: null, error: null }),
+        publishToInstagram ? publishInstagram(base44, copy, imageUrls).then((value) => ({ selected: true, published: true, value, error: null })).catch((error) => ({ selected: true, published: false, value: null, error: error.message || 'Instagram publishing failed' })) : Promise.resolve({ selected: false, published: false, value: null, error: null })
       ]);
       const selectedResults = [facebook, instagram].filter((result) => result.selected);
       const successfulCount = selectedResults.filter((result) => result.published).length;
       const status = successfulCount === selectedResults.length ? 'published' : successfulCount ? 'partially_published' : 'failed';
-      await base44.asServiceRole.entities.SocialAnnouncement.update(announcement.id, {
-        copy,
-        image_urls: imageUrls,
-        facebook_page_id: page?.id || null,
-        facebook_status: publishToFacebook ? (facebook.published ? 'published' : 'failed') : announcement.facebook_status,
-        instagram_status: publishToInstagram ? (instagram.published ? 'published' : 'failed') : announcement.instagram_status,
-        facebook_post_id: facebook.value,
-        instagram_media_id: instagram.value,
-        status,
-        error_details: { facebook: facebook.error, instagram: instagram.error }
-      });
+      await base44.asServiceRole.entities.SocialAnnouncement.update(announcement.id, { copy, image_urls: imageUrls, facebook_page_id: page?.id || null, facebook_status: publishToFacebook ? (facebook.published ? 'published' : 'failed') : announcement.facebook_status, instagram_status: publishToInstagram ? (instagram.published ? 'published' : 'failed') : announcement.instagram_status, facebook_post_id: facebook.value, instagram_media_id: instagram.value, status, error_details: { facebook: facebook.error, instagram: instagram.error } });
       return Response.json({ facebook, instagram, status });
     }
 
