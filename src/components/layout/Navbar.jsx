@@ -402,15 +402,6 @@ export default function Navbar() {
                           <span className="text-[14.5px]">{item.label}</span>
                         </Link>
                       ))}
-                      <Link to={`${createPageUrl("Weddings")}?category=gifts`} onClick={() => setMobileMenuOpen(false)} className={mobileLinkClass}>
-                        <Heart className="h-5 w-5" />
-                        <span className="text-[14.5px]">Wedding Gifts</span>
-                      </Link>
-                      <Link to={`${createPageUrl("Parties")}?category=babies_baby_showers`} onClick={() => setMobileMenuOpen(false)} className={mobileLinkClass}>
-                        <PartyPopper className="h-5 w-5" />
-                        <span className="text-[14.5px]">Babies & Baby Showers</span>
-                      </Link>
-
                       <Link to={createPageUrl("Blog")} onClick={() => setMobileMenuOpen(false)} className={mobileLinkClass}>
                         <FileText className="h-5 w-5" />
                         <span className="text-[14.5px]">Blog</span>
