@@ -118,7 +118,7 @@ export default function VendorAnalytics() {
 
   if (!vendor) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
+      <div className="min-h-screen bg-cream flex items-center justify-center p-6">
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 max-w-md w-full text-center p-10">
           <BarChart3 className="h-12 w-12 text-slate-300 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-slate-900 mb-2">No Vendor Profile</h2>
@@ -198,7 +198,7 @@ export default function VendorAnalytics() {
   const activeChartConfig = charts[activeChart];
 
   return (
-    <div className="min-h-screen bg-slate-50 py-6 sm:py-10 px-4">
+    <div className="min-h-screen bg-cream py-6 sm:py-10 px-4">
       <div className="max-w-5xl mx-auto">
 
         {/* Header */}

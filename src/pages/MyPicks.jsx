@@ -4,7 +4,7 @@ import { Heart } from "lucide-react";
 
 export default function MyPicks() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
+    <div className="min-h-screen bg-cream">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <h1 className="text-3xl font-bold text-slate-900 mb-2">My Picks</h1>
         <p className="text-slate-600 mb-8">Your saved and favorite vendors</p>

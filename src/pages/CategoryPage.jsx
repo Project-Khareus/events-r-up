@@ -78,7 +78,7 @@ export default function CategoryPage() {
   const eventTitle = EVENT_LABELS[eventType] || "";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
+    <div className="min-h-screen bg-cream">
       {/* Header */}
       <div className="bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900 text-white">
         <div className="max-w-7xl mx-auto px-6 py-12 lg:py-16">

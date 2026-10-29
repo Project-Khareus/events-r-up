@@ -22,9 +22,8 @@ export default function Bookings() {
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ['bookings'],
     queryFn: async () => {
-      const allBookings = await base44.entities.Booking.list('-created_date', 100);
-      console.log('All bookings fetched:', allBookings.length, allBookings);
-      return allBookings;
+      const page = await base44.entities.Booking.list({ sort: '-created_date', limit: 100 });
+      return page.items;
     },
     refetchInterval: 10000,
   });
@@ -32,9 +31,8 @@ export default function Bookings() {
   const { data: vendors = [] } = useQuery({
     queryKey: ['vendors'],
     queryFn: async () => {
-      const allVendors = await base44.entities.Vendor.list();
-      console.log('All vendors fetched:', allVendors.length, allVendors);
-      return allVendors;
+      const page = await base44.entities.Vendor.list({ limit: 100 });
+      return page.items;
     },
   });
 
@@ -64,7 +62,7 @@ export default function Bookings() {
   };
 
   return (
-    <PullToRefresh onRefresh={handleRefresh}><div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/20">
+    <PullToRefresh onRefresh={handleRefresh}><div className="min-h-screen bg-cream">
       <div className="max-w-6xl mx-auto px-6 py-12">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">

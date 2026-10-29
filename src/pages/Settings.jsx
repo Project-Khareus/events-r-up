@@ -101,7 +101,7 @@ export default function Settings() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 py-12 px-4 sm:px-6">
+    <div className="min-h-screen bg-cream dark:bg-ink py-12 px-4 sm:px-6">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
           <div className="h-12 w-12 bg-gradient-to-br from-indigo-600 to-indigo-700 rounded-2xl flex items-center justify-center shadow-lg">
