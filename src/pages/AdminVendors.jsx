@@ -444,7 +444,7 @@ export default function AdminVendors() {
       setVerifyingCardVendorId(null);
     },
     onError: (error) => {
-      toast.error("Verification error: " + error.message);
+      toast.error("Verification error: " + (error?.response?.data?.error || error.message));
       queryClient.invalidateQueries(['admin_vendor_verifications']);
       setVerifyingCardVendorId(null);
     }

@@ -65,9 +65,8 @@ export default async function(req) {
     formData.append('front_image', frontImage, 'ghana-card-front.jpg');
     formData.append('back_image', backImage, 'ghana-card-back.jpg');
     formData.append('perform_document_liveness', 'true');
-    formData.append('save_api_request', 'false');
+    formData.append('save_api_request', 'true');
     formData.append('vendor_data', vendorId);
-    formData.append('metadata', JSON.stringify({ flow: 'khareus_vendor_review' }));
 
     const diditResponse = await fetch('https://verification.didit.me/v3/id-verification/', {
       method: 'POST',
@@ -78,7 +77,9 @@ export default async function(req) {
     const diditResult = await diditResponse.json().catch(() => null);
 
     if (!diditResponse.ok) {
-      return Response.json({ error: 'Didit could not complete the verification request' }, { status: 502 });
+      const providerMessage = diditResult?.detail || diditResult?.message || diditResult?.error;
+      const error = providerMessage ? `Didit rejected the verification request: ${providerMessage}` : 'Didit could not complete the verification request';
+      return Response.json({ error }, { status: diditResponse.status >= 400 && diditResponse.status < 500 ? 422 : 502 });
     }
 
     const verified = isVerified(diditResult);
