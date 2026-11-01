@@ -1,12 +1,14 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.57';
 import { secrets } from 'base44:runtime';
 
-const STORAGE_HOSTS = new Set(['qtrypzzcjebvfcihiynt.supabase.co']);
+const STORAGE_HOSTS = new Set(['qtrypzzcjebvfcihiynt.supabase.co', 'base44.app']);
 
 function isTrustedStorageUrl(value) {
   try {
     const url = new URL(value);
-    return url.protocol === 'https:' && STORAGE_HOSTS.has(url.hostname) && url.pathname.startsWith('/storage/v1/object/');
+    const isSupabaseObject = url.hostname === 'qtrypzzcjebvfcihiynt.supabase.co' && url.pathname.startsWith('/storage/v1/object/');
+    const isBase44PublicFile = url.hostname === 'base44.app' && /^\/api\/apps\/[^/]+\/files\/mp\/public\//.test(url.pathname);
+    return url.protocol === 'https:' && STORAGE_HOSTS.has(url.hostname) && (isSupabaseObject || isBase44PublicFile);
   } catch {
     return false;
   }
