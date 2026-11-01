@@ -1,4 +1,5 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.57';
+import { secrets } from 'base44:runtime';
 
 const STORAGE_HOSTS = new Set(['qtrypzzcjebvfcihiynt.supabase.co']);
 
@@ -11,202 +12,92 @@ function isTrustedStorageUrl(value) {
   }
 }
 
-Deno.serve(async (req) => {
+function isVerified(result) {
+  const verification = result?.id_verification || result?.verification || result;
+  const status = String(verification?.status || verification?.result || '').toLowerCase();
+  return verification?.verified === true || ['verified', 'approved', 'passed', 'success'].includes(status);
+}
+
+function isFailed(result) {
+  const verification = result?.id_verification || result?.verification || result;
+  const status = String(verification?.status || verification?.result || '').toLowerCase();
+  return verification?.verified === false || ['failed', 'rejected', 'declined', 'invalid'].includes(status);
+}
+
+export default async function(req) {
   try {
     const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me().catch((error) => (error.status === 401 ? null : Promise.reject(error)));
+    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    if (user.role !== 'admin') return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
 
-    const user = await base44.auth.me();
-    if (user?.role !== 'admin') {
-      return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
-    }
+    const { vendor_id: vendorId } = await req.json().catch(() => ({}));
+    if (!vendorId) return Response.json({ error: 'vendor_id is required' }, { status: 400 });
 
-    const { vendor_id } = await req.json();
-    if (!vendor_id) {
-      return Response.json({ error: 'vendor_id is required' }, { status: 400 });
-    }
+    const verificationRecords = await base44.asServiceRole.entities.VendorVerification.filter({ vendor_id: vendorId }, { limit: 1 });
+    const verification = verificationRecords.items?.[0] || verificationRecords[0];
+    if (!verification) return Response.json({ error: 'No Ghana Card verification record found for this vendor' }, { status: 404 });
 
-    // Fetch verification data from the separate entity
-    const verifications = await base44.asServiceRole.entities.VendorVerification.filter({ vendor_id });
-    if (!verifications || verifications.length === 0) {
-      return Response.json({ error: 'No verification data found for this vendor' }, { status: 404 });
-    }
-
-    const verification = verifications[0];
     const frontUrl = verification.ghana_card_image_url;
     const backUrl = verification.ghana_card_back_image_url;
-    const selfieUrl = verification.ghana_card_selfie_url;
-
-    if (!frontUrl || !backUrl || !selfieUrl) {
-      return Response.json({ 
-        error: 'Vendor must submit card front, card back, and selfie images',
-        missing: { front: !frontUrl, back: !backUrl, selfie: !selfieUrl }
-      }, { status: 400 });
+    if (!frontUrl || !backUrl) {
+      return Response.json({ error: 'Vendor must submit both Ghana Card front and back images before verification' }, { status: 400 });
     }
-
-    if (![frontUrl, backUrl, selfieUrl].every(isTrustedStorageUrl)) {
+    if (![frontUrl, backUrl].every(isTrustedStorageUrl)) {
       return Response.json({ error: 'Verification images must be uploaded through Khareus storage' }, { status: 400 });
     }
 
-    // Fetch only app-hosted uploads, with bounded request time.
-    const [frontRes, backRes, selfieRes] = await Promise.all([
+    const diditApiKey = secrets.get('DIDIT_API_KEY');
+    if (!diditApiKey) return Response.json({ error: 'Didit is not configured' }, { status: 503 });
+
+    const [frontResponse, backResponse] = await Promise.all([
       fetch(frontUrl, { signal: AbortSignal.timeout(10000) }),
-      fetch(backUrl, { signal: AbortSignal.timeout(10000) }),
-      fetch(selfieUrl, { signal: AbortSignal.timeout(10000) })
+      fetch(backUrl, { signal: AbortSignal.timeout(10000) })
     ]);
-
-    if (!frontRes.ok || !backRes.ok || !selfieRes.ok) {
-      return Response.json({ error: 'Failed to fetch one or more images' }, { status: 500 });
+    if (!frontResponse.ok || !backResponse.ok) {
+      return Response.json({ error: 'Unable to retrieve the submitted Ghana Card images' }, { status: 502 });
     }
 
-    const [frontBuf, backBuf, selfieBuf] = await Promise.all([
-      frontRes.arrayBuffer(),
-      backRes.arrayBuffer(),
-      selfieRes.arrayBuffer()
-    ]);
-
-    console.log("Image sizes (bytes) - Front:", frontBuf.byteLength, "Back:", backBuf.byteLength, "Selfie:", selfieBuf.byteLength);
-
-    // Convert to base64
-    const toBase64 = (buffer) => {
-      const bytes = new Uint8Array(buffer);
-      let binary = '';
-      for (let i = 0; i < bytes.length; i++) {
-        binary += String.fromCharCode(bytes[i]);
-      }
-      return btoa(binary);
-    };
-
-    const docFront = toBase64(frontBuf);
-    const docBack = toBase64(backBuf);
-    const selfie = toBase64(selfieBuf);
-
-    const apiKey = Deno.env.get("GHANA_CARD_API_KEY");
-    const apiSecret = Deno.env.get("GHANA_CARD_API_SECRET");
-
-    // Try multipart/form-data first
-    console.log("Attempting multipart/form-data upload...");
+    const [frontImage, backImage] = await Promise.all([frontResponse.blob(), backResponse.blob()]);
     const formData = new FormData();
-    formData.append("doc_front", new Blob([frontBuf], { type: "image/jpeg" }), "front.jpg");
-    formData.append("doc_back", new Blob([backBuf], { type: "image/jpeg" }), "back.jpg");
-    formData.append("selfie", new Blob([selfieBuf], { type: "image/jpeg" }), "selfie.jpg");
+    formData.append('front_image', frontImage, 'ghana-card-front.jpg');
+    formData.append('back_image', backImage, 'ghana-card-back.jpg');
+    formData.append('perform_document_liveness', 'true');
+    formData.append('save_api_request', 'false');
+    formData.append('vendor_data', vendorId);
+    formData.append('metadata', JSON.stringify({ flow: 'khareus_vendor_review' }));
 
-    let apiResponse = await fetch("https://api.agregartech.com/identity/document/facial/GH", {
-      method: "POST",
-      headers: {
-        "X-API-KEY": apiKey,
-        "X-API-SECRET": apiSecret
-      },
-      body: formData
+    const diditResponse = await fetch('https://verification.didit.me/v3/id-verification/', {
+      method: 'POST',
+      headers: { 'x-api-key': diditApiKey },
+      body: formData,
+      signal: AbortSignal.timeout(30000)
     });
+    const diditResult = await diditResponse.json().catch(() => null);
 
-    console.log("Multipart attempt status:", apiResponse.status);
-
-    // If multipart fails with 413, try JSON with base64
-    if (apiResponse.status === 413) {
-      console.log("Multipart failed (413). Trying JSON base64...");
-      apiResponse = await fetch("https://api.agregartech.com/identity/document/facial/GH", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-API-KEY": apiKey,
-          "X-API-SECRET": apiSecret
-        },
-        body: JSON.stringify({
-          doc_front: docFront,
-          doc_back: docBack,
-          selfie: selfie
-        })
-      });
-      console.log("JSON attempt status:", apiResponse.status);
+    if (!diditResponse.ok) {
+      return Response.json({ error: 'Didit could not complete the verification request' }, { status: 502 });
     }
 
-    // If still 413, try x-www-form-urlencoded
-    if (apiResponse.status === 413) {
-      console.log("JSON also failed (413). Trying URL-encoded...");
-      const params = new URLSearchParams();
-      params.append("doc_front", docFront);
-      params.append("doc_back", docBack);
-      params.append("selfie", selfie);
-
-      apiResponse = await fetch("https://api.agregartech.com/identity/document/facial/GH", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "X-API-KEY": apiKey,
-          "X-API-SECRET": apiSecret
-        },
-        body: params.toString()
-      });
-      console.log("URL-encoded attempt status:", apiResponse.status);
+    const verified = isVerified(diditResult);
+    const failed = isFailed(diditResult);
+    if (!verified && !failed) {
+      return Response.json({ error: 'Didit returned an inconclusive verification result. Review the uploaded card and try again.' }, { status: 422 });
     }
 
-    if (apiResponse.status === 413) {
-      // Mark as failed on both entities
-      const failMsg = 'Images are too large for the verification API. Please ask the vendor to re-upload their Ghana Card images and selfie — they will be automatically compressed on upload.';
-      await Promise.all([
-        base44.asServiceRole.entities.VendorVerification.update(verification.id, {
-          ghana_card_status: 'failed',
-          ghana_card_verification_message: failMsg
-        }),
-        base44.asServiceRole.entities.Vendor.update(vendor_id, {
-          ghana_card_status: 'failed'
-        })
-      ]);
-
-      return Response.json({
-        error: failMsg,
-        image_sizes: {
-          front: `${(frontBuf.byteLength / 1024).toFixed(0)} KB`,
-          back: `${(backBuf.byteLength / 1024).toFixed(0)} KB`,
-          selfie: `${(selfieBuf.byteLength / 1024).toFixed(0)} KB`,
-          total: `${((frontBuf.byteLength + backBuf.byteLength + selfieBuf.byteLength) / 1024).toFixed(0)} KB`
-        }
-      }, { status: 413 });
-    }
-
-    const rawText = await apiResponse.text();
-    console.log("API final status:", apiResponse.status);
-    console.log("API response (first 500 chars):", rawText.substring(0, 500));
-
-    let apiResult;
-    try {
-      apiResult = JSON.parse(rawText);
-    } catch {
-      console.error("Non-JSON response:", rawText.substring(0, 1000));
-      return Response.json({
-        error: "Ghana Card API returned an unexpected response.",
-        api_status: apiResponse.status,
-        api_response_preview: rawText.substring(0, 200)
-      }, { status: 502 });
-    }
-    
-    console.log("Parsed response:", JSON.stringify(apiResult));
-
-    const isVerified = apiResponse.ok && (apiResult.verified === true || apiResult.status === "verified" || apiResult.success === true);
-    const message = apiResult.message || apiResult.detail || (isVerified ? "Ghana Card verified successfully" : "Ghana Card verification failed");
-
-    // Update both the verification entity and the vendor's status field
+    const status = verified ? 'verified' : 'failed';
+    const message = verified ? 'Ghana Card verified by Didit.' : 'Didit could not verify this Ghana Card.';
     await Promise.all([
       base44.asServiceRole.entities.VendorVerification.update(verification.id, {
-        ghana_card_status: isVerified ? 'verified' : 'failed',
+        ghana_card_status: status,
         ghana_card_verification_message: message,
         ghana_card_verified_at: new Date().toISOString()
       }),
-      base44.asServiceRole.entities.Vendor.update(vendor_id, {
-        ghana_card_status: isVerified ? 'verified' : 'failed'
-      })
+      base44.asServiceRole.entities.Vendor.update(vendorId, { ghana_card_status: status })
     ]);
 
-    return Response.json({
-      success: true,
-      verified: isVerified,
-      status: isVerified ? 'verified' : 'failed',
-      message,
-      api_response: apiResult
-    });
-
+    return Response.json({ success: true, verified, status, message });
   } catch (error) {
-    console.error("Verification error:", error.message);
-    return Response.json({ error: error.message }, { status: 500 });
+    return Response.json({ error: error.message || 'Verification could not be completed' }, { status: 500 });
   }
-});
+}
