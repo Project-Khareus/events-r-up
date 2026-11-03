@@ -75,7 +75,7 @@ export default function MediaGallery({ images = [], videos = [], businessName })
       {/* Main Media */}
       <div 
         data-media-main
-        className="order-1 lg:order-2 relative flex-1 h-64 sm:h-80 md:h-96 lg:h-full bg-slate-100 rounded-xl sm:rounded-2xl overflow-hidden group cursor-pointer"
+        className="order-1 lg:order-2 relative flex-1 h-64 sm:h-80 md:h-96 lg:h-full bg-ink-deep rounded-xl sm:rounded-2xl overflow-hidden group cursor-pointer"
         onClick={() => currentMedia.type === 'image' && setIsLightboxOpen(true)}
       >
         {currentMedia.type === 'video' ? (
@@ -86,13 +86,22 @@ export default function MediaGallery({ images = [], videos = [], businessName })
             controlsList="nodownload"
           />
         ) : (
-          <img
-            src={currentMedia.url}
-            alt={`${businessName} - Media ${selectedIndex + 1}`}
-            className="w-full h-full object-contain"
-            width="800"
-            height="600"
-          />
+          <>
+            {/* Blurred copy fills the space around photos that don't match the frame */}
+            <img
+              src={currentMedia.url}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-60"
+            />
+            <img
+              src={currentMedia.url}
+              alt={`${businessName} - Media ${selectedIndex + 1}`}
+              className="relative w-full h-full object-contain"
+              width="800"
+              height="600"
+            />
+          </>
         )}
         
         {currentMedia.type === 'image' && (

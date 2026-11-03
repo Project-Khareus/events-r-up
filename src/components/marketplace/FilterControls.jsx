@@ -263,7 +263,7 @@ export default function FilterControls({
   return (
     <div className="space-y-3">
       {/* Main Filters Row - horizontally scrollable on mobile */}
-      <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto pb-1 -mb-1 sm:flex-wrap sm:overflow-visible sm:pb-0 sm:mb-0" style={{scrollbarWidth:'none',WebkitOverflowScrolling:'touch'}}>
+      <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto pb-1 -mb-1 pr-8 sm:pr-0 [mask-image:linear-gradient(to_right,black_82%,transparent)] sm:[mask-image:none] sm:flex-wrap sm:overflow-visible sm:pb-0 sm:mb-0" style={{scrollbarWidth:'none',WebkitOverflowScrolling:'touch'}}>
         <Select value={eventType} onValueChange={handleEventChange}>
           <SelectTrigger className="w-[120px] sm:w-40 h-9 sm:h-10 text-xs sm:text-sm rounded-none shrink-0">
             <SelectValue placeholder="Event Type" />
@@ -322,7 +322,7 @@ export default function FilterControls({
           variant="outline"
           size="sm"
           onClick={() => setShowAdvanced(!showAdvanced)}
-          className={`rounded-none gap-1.5 h-9 sm:h-10 text-xs sm:text-sm shrink-0 ${hasAdvancedFilters ? 'border-indigo-500 text-indigo-600' : ''}`}
+          className={`rounded-none gap-1.5 h-9 sm:h-10 text-xs sm:text-sm shrink-0 ${hasAdvancedFilters ? 'border-gold text-gold-text' : ''}`}
         >
           <SlidersHorizontal className="h-3.5 w-3.5" />
           <span className="hidden sm:inline">Advanced</span>

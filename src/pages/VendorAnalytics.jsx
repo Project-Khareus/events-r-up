@@ -111,7 +111,7 @@ export default function VendorAnalytics() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-gold-text" />
       </div>
     );
   }
@@ -124,7 +124,7 @@ export default function VendorAnalytics() {
           <h2 className="text-xl font-bold text-slate-900 mb-2">No Vendor Profile</h2>
           <p className="text-slate-500 mb-6">Create a vendor profile to start tracking your performance.</p>
           <Link to={createPageUrl("VendorSignup")}>
-            <Button className="bg-indigo-600 hover:bg-indigo-700">Create Vendor Profile</Button>
+            <Button className="bg-gold hover:bg-gold-text">Create Vendor Profile</Button>
           </Link>
         </div>
       </div>
@@ -225,7 +225,7 @@ export default function VendorAnalytics() {
                 onClick={() => setDateRange(days)}
                 className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
                   dateRange === days
-                    ? "bg-indigo-600 text-white shadow-sm"
+                    ? "bg-gold text-white shadow-sm"
                     : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
                 }`}
               >
@@ -237,8 +237,8 @@ export default function VendorAnalytics() {
 
         {/* Metric Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
-          <MetricCard icon={Eye} iconColor="bg-indigo-500" label="Profile Views" value={metrics.totalViews.toLocaleString()} subtitle={`Last ${dateRange} days`} />
-          <MetricCard icon={Calendar} iconColor="bg-blue-500" label="Bookings" value={metrics.totalBookings} subtitle={`${metrics.pendingBookings} pending`} />
+          <MetricCard icon={Eye} iconColor="bg-gold" label="Profile Views" value={metrics.totalViews.toLocaleString()} subtitle={`Last ${dateRange} days`} />
+          <MetricCard icon={Calendar} iconColor="bg-gold" label="Bookings" value={metrics.totalBookings} subtitle={`${metrics.pendingBookings} pending`} />
           <MetricCard icon={CheckCircle} iconColor="bg-emerald-500" label="Response Rate" value={`${metrics.responseRate}%`} subtitle={`${metrics.confirmedBookings} confirmed`} />
           <MetricCard icon={Star} iconColor="bg-amber-500" label="Avg Rating" value={metrics.avgRating} subtitle={`${metrics.reviewCount} review${metrics.reviewCount !== 1 ? 's' : ''}`} />
         </div>
@@ -296,7 +296,7 @@ export default function VendorAnalytics() {
                 <RecentBookingRow key={b.id} booking={b} />
               ))}
               {bookings.length > 5 && (
-                <p className="text-center text-sm text-indigo-600 font-medium mt-4 cursor-pointer hover:underline">
+                <p className="text-center text-sm text-gold-text font-medium mt-4 cursor-pointer hover:underline">
                   View all {bookings.length} bookings
                 </p>
               )}

@@ -74,7 +74,7 @@ export default function MyFeed() {
   });
 
   if (!user || followingLoading || feedLoading) {
-      return <div className="min-h-screen flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-indigo-600" /></div>;
+      return <div className="min-h-screen flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-gold-text" /></div>;
   }
 
   return (
@@ -102,8 +102,8 @@ export default function MyFeed() {
 
             {following.length === 0 ? (
                 <div className="text-center py-20 bg-white rounded-2xl border border-slate-200 border-dashed">
-                    <div className="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Sparkles className="h-8 w-8 text-indigo-500" />
+                    <div className="w-16 h-16 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Sparkles className="h-8 w-8 text-gold" />
                     </div>
                     <h2 className="text-xl font-bold text-slate-900 mb-2">Your feed is empty</h2>
                     <p className="text-slate-500 mb-6">Follow authors and event creators to see their latest updates here.</p>
@@ -117,7 +117,7 @@ export default function MyFeed() {
                         <div key={`${item.type}-${item.id}`} className="flex gap-4">
                              <div className="flex flex-col items-center gap-2 pt-2 min-w-[3rem]">
                                  <Link to={createPageUrl(`UserProfile`) + `?userId=${item.user_id}`}>
-                                    <Avatar className="w-10 h-10 border border-slate-200 hover:border-indigo-300 transition-colors">
+                                    <Avatar className="w-10 h-10 border border-slate-200 hover:border-gold/40 transition-colors">
                                         <AvatarImage src={item.author?.avatar_url} />
                                         <AvatarFallback>{item.author?.display_name?.[0] || "?"}</AvatarFallback>
                                     </Avatar>
@@ -125,7 +125,7 @@ export default function MyFeed() {
                              </div>
                              <div className="flex-1">
                                  <div className="flex items-center gap-2 mb-3 text-sm">
-                                     <Link to={createPageUrl(`UserProfile`) + `?userId=${item.user_id}`} className="font-bold text-slate-900 hover:text-indigo-600">
+                                     <Link to={createPageUrl(`UserProfile`) + `?userId=${item.user_id}`} className="font-bold text-slate-900 hover:text-gold-text">
                                          {item.author?.display_name || "Unknown User"}
                                      </Link>
                                      <span className="text-slate-400">posted a new {item.type}</span>
@@ -144,7 +144,7 @@ export default function MyFeed() {
                                                  <img src={item.cover_image_url} alt="" className="w-full h-full object-cover" />
                                              </div>
                                              <div className="p-4">
-                                                 <h3 className="font-bold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">{item.title}</h3>
+                                                 <h3 className="font-bold text-slate-900 mb-2 group-hover:text-gold-text transition-colors">{item.title}</h3>
                                                  <p className="text-sm text-slate-600 line-clamp-2">{item.excerpt}</p>
                                              </div>
                                          </Link>

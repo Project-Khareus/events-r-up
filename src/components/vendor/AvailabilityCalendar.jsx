@@ -140,7 +140,7 @@ export default function AvailabilityCalendar({ vendorId, isOwner = false }) {
                 ${status === 'available' && !isPast ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50 border border-green-200 dark:border-green-800' : ''}
                 ${status === 'blocked' ? 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 border border-red-200 dark:border-red-800' : ''}
                 ${status === 'booked' ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800' : ''}
-                ${isSelected ? 'ring-2 ring-indigo-500' : ''}
+                ${isSelected ? 'ring-2 ring-gold' : ''}
                 ${isOwner && !isPast ? 'cursor-pointer' : ''}
               `}
             >
@@ -170,8 +170,8 @@ export default function AvailabilityCalendar({ vendorId, isOwner = false }) {
       </div>
 
       {isOwner && (
-        <div className="mt-4 p-3 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg border border-indigo-200 dark:border-indigo-800">
-          <p className="text-xs text-indigo-700 dark:text-indigo-300">
+        <div className="mt-4 p-3 bg-gold/10 dark:bg-ink-deep/30 rounded-lg border border-gold/30 dark:border-ink">
+          <p className="text-xs text-gold-text dark:text-gold-dark">
             💡 Tip: Click on future dates to toggle between available and blocked
           </p>
         </div>

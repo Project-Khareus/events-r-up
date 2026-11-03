@@ -4,9 +4,9 @@ import LocationAutocomplete from "@/components/shared/LocationAutocomplete";
 
 export default function SearchBar({ value, onChange, onSearch, location, onLocationChange }) {
   return (
-    <div className="flex w-full items-center gap-2">
+    <div className="flex w-full flex-wrap sm:flex-nowrap items-center gap-2">
       {/* Location Autocomplete */}
-      <div className="w-44 shrink-0 sm:w-64">
+      <div className="order-2 flex-1 min-w-0 sm:order-1 sm:flex-none sm:w-64 sm:shrink-0">
         <LocationAutocomplete
           value={location || ""}
           onChange={(nextLocation) => onLocationChange(nextLocation)}
@@ -16,7 +16,7 @@ export default function SearchBar({ value, onChange, onSearch, location, onLocat
       </div>
 
       {/* Search Input */}
-      <div className="relative flex-1 min-w-0">
+      <div className="relative order-1 w-full sm:order-2 sm:w-auto sm:flex-1 min-w-0">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[rgba(59,50,43,0.45)] pointer-events-none" />
         <input
           type="text"
@@ -38,7 +38,7 @@ export default function SearchBar({ value, onChange, onSearch, location, onLocat
         onClick={() => onSearch && onSearch(value || "")}
         title="Search vendors"
         aria-label="Search vendors"
-        className="shrink-0 h-11 w-11 flex items-center justify-center rounded-none bg-[#8A6522] hover:bg-[#75551C] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#A97E2E]"
+        className="order-3 shrink-0 h-11 w-11 flex items-center justify-center rounded-none bg-[#8A6522] hover:bg-[#75551C] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#A97E2E]"
       >
         <Search className="h-4 w-4 text-cream pointer-events-none" />
       </button>
@@ -46,10 +46,11 @@ export default function SearchBar({ value, onChange, onSearch, location, onLocat
       {/* Plan an Event */}
       <Link
         to="/EventPlanning"
-        className="shrink-0 h-11 px-4 flex items-center gap-2 rounded-full border border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.28)] text-[13.5px] text-ink dark:text-[#F1E8E0] hover:border-[#A97E2E] hover:text-[#8A6522] transition-colors whitespace-nowrap"
+        className="order-4 shrink-0 h-11 px-4 flex items-center gap-2 rounded-full border border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.28)] text-[13.5px] text-ink dark:text-[#F1E8E0] hover:border-[#A97E2E] hover:text-[#8A6522] transition-colors whitespace-nowrap"
       >
         <Sparkles className="h-4 w-4" />
         <span className="hidden sm:inline">Plan an Event</span>
+        <span className="sr-only sm:hidden">Plan an Event</span>
       </Link>
     </div>
   );

@@ -154,7 +154,7 @@ export default function EditEvent() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-gold-text" />
       </div>
     );
   }
@@ -337,7 +337,7 @@ export default function EditEvent() {
             <div className="pt-6">
               <Button 
                 type="submit" 
-                className="w-full bg-indigo-600 hover:bg-indigo-700"
+                className="w-full bg-gold hover:bg-gold-text"
                 disabled={updateEventMutation.isPending}
               >
                 {updateEventMutation.isPending ? (

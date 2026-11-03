@@ -68,7 +68,7 @@ export default function PullToRefresh({ onRefresh, children }) {
         >
           <div className="flex flex-col items-center gap-2">
             <Loader2
-              className={`h-6 w-6 text-indigo-600 ${
+              className={`h-6 w-6 text-gold-text ${
                 isRefreshing || pullDistance >= threshold ? "animate-spin" : ""
               }`}
             />

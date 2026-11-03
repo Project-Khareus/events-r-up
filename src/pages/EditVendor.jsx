@@ -198,7 +198,7 @@ export default function EditVendor() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-gold-text" />
       </div>
     );
   }
@@ -240,12 +240,12 @@ export default function EditVendor() {
               </div>
           )}
           {vendor.status === 'approved' && !vendor.has_pending_changes && !isAdminEdit && (
-              <div className="mt-4 p-3 bg-blue-50 text-blue-800 rounded-lg inline-block text-sm font-medium">
+              <div className="mt-4 p-3 bg-gold/10 text-ink rounded-lg inline-block text-sm font-medium">
                   Any changes will be submitted for admin review before going live.
               </div>
           )}
           {isAdminEdit && (
-              <div className="mt-4 p-3 bg-indigo-50 text-indigo-800 rounded-lg inline-block text-sm font-medium">
+              <div className="mt-4 p-3 bg-gold/10 text-ink rounded-lg inline-block text-sm font-medium">
                   Admin edits will be saved directly to this listing.
               </div>
           )}

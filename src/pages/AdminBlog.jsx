@@ -150,7 +150,7 @@ export default function AdminBlog() {
   if (checkingAuth) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-gold-text" />
       </div>
     );
   }
@@ -188,7 +188,7 @@ export default function AdminBlog() {
                 <p className="text-slate-500">{isAdmin ? "Manage and approve content" : "Manage your contributions"}</p>
             </div>
           </div>
-          <Button onClick={() => { setCurrentPost(null); setIsEditing(true); }} className="bg-indigo-600 hover:bg-indigo-700">
+          <Button onClick={() => { setCurrentPost(null); setIsEditing(true); }} className="bg-gold hover:bg-gold-text">
             <Plus className="mr-2 h-4 w-4" />
             New Post
           </Button>
@@ -241,7 +241,7 @@ export default function AdminBlog() {
                         } className="capitalize text-xs h-5">
                             {post.status || 'published'}
                         </Badge>
-                        {post.is_featured && <span className="text-indigo-600 font-medium bg-indigo-50 px-2 py-0.5 rounded text-xs border border-indigo-100">Featured</span>}
+                        {post.is_featured && <span className="text-gold-text font-medium bg-gold/10 px-2 py-0.5 rounded text-xs border border-gold/20">Featured</span>}
                     </div>
                     <div className="flex items-center gap-2 text-sm text-slate-500 mt-1">
                         <span className="flex items-center gap-1"><FileText className="h-3 w-3" /> {post.category}</span>

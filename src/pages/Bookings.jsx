@@ -5,6 +5,8 @@ import PullToRefresh from "../components/shared/PullToRefresh";
 import { Calendar, Filter, List, CalendarDays } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "../utils";
 import BookingCard from "../components/bookings/BookingCard";
 import CalendarView from "../components/bookings/CalendarView";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -65,18 +67,14 @@ export default function Bookings() {
     <PullToRefresh onRefresh={handleRefresh}><div className="min-h-screen bg-cream dark:bg-ink">
       <div className="max-w-6xl mx-auto px-6 py-12">
         <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-100 to-indigo-50">
-              <Calendar className="h-6 w-6 text-indigo-600" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-slate-900">
-                {isVendor ? "Booking Requests" : "My Bookings"}
-              </h1>
-              <p className="text-slate-600">
-                {isVendor ? "Manage incoming booking requests" : "View and track your booking requests"}
-              </p>
-            </div>
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.28em] text-gold-text dark:text-gold-dark mb-3">{isVendor ? "Requests" : "Bookings"}</p>
+            <h1 className="font-serif text-4xl md:text-5xl text-ink dark:text-[#F1E8E0]">
+              {isVendor ? "Booking Requests" : "My Bookings"}
+            </h1>
+            <p className="mt-2 text-[rgba(59,50,43,0.7)] dark:text-[rgba(241,232,224,0.65)]">
+              {isVendor ? "Manage incoming booking requests" : "View and track your booking requests"}
+            </p>
           </div>
           
           {isVendor && (
@@ -85,7 +83,7 @@ export default function Bookings() {
                 variant={viewMode === "list" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setViewMode("list")}
-                className={viewMode === "list" ? "bg-indigo-600" : ""}
+                className={viewMode === "list" ? "bg-gold" : ""}
               >
                 <List className="h-4 w-4 mr-2" />
                 List
@@ -94,7 +92,7 @@ export default function Bookings() {
                 variant={viewMode === "calendar" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setViewMode("calendar")}
-                className={viewMode === "calendar" ? "bg-indigo-600" : ""}
+                className={viewMode === "calendar" ? "bg-gold" : ""}
               >
                 <CalendarDays className="h-4 w-4 mr-2" />
                 Calendar
@@ -108,23 +106,20 @@ export default function Bookings() {
         ) : (
           <>
             {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              <div className="bg-white rounded-xl border border-slate-200 p-4">
-                <p className="text-sm text-slate-600 mb-1">Pending</p>
-                <p className="text-2xl font-bold text-yellow-600">{stats.pending}</p>
-              </div>
-              <div className="bg-white rounded-xl border border-slate-200 p-4">
-                <p className="text-sm text-slate-600 mb-1">Confirmed</p>
-                <p className="text-2xl font-bold text-green-600">{stats.confirmed}</p>
-              </div>
-              <div className="bg-white rounded-xl border border-slate-200 p-4">
-                <p className="text-sm text-slate-600 mb-1">Declined</p>
-                <p className="text-2xl font-bold text-red-600">{stats.declined}</p>
-              </div>
-              <div className="bg-white rounded-xl border border-slate-200 p-4">
-                <p className="text-sm text-slate-600 mb-1">Completed</p>
-                <p className="text-2xl font-bold text-slate-600">{stats.completed}</p>
-              </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[rgba(59,50,43,0.14)] border border-[rgba(59,50,43,0.14)] dark:bg-[rgba(241,232,224,0.12)] dark:border-[rgba(241,232,224,0.12)] mb-8">
+              {[
+                { label: "Pending", value: stats.pending, dot: "bg-amber-500" },
+                { label: "Confirmed", value: stats.confirmed, dot: "bg-emerald-600" },
+                { label: "Declined", value: stats.declined, dot: "bg-red-600" },
+                { label: "Completed", value: stats.completed, dot: "bg-ink/40" },
+              ].map(({ label, value, dot }) => (
+                <div key={label} className="bg-linen dark:bg-[#221D19] p-4">
+                  <p className="flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-[rgba(59,50,43,0.7)] dark:text-[rgba(241,232,224,0.65)] mb-1.5">
+                    <span className={`w-1.5 h-1.5 rounded-full ${dot}`} aria-hidden="true" />{label}
+                  </p>
+                  <p className="font-serif text-3xl text-ink dark:text-[#F1E8E0] tabular-nums lining-nums">{value}</p>
+                </div>
+              ))}
             </div>
 
             {/* Filter */}
@@ -152,16 +147,25 @@ export default function Bookings() {
                 ))}
               </div>
             ) : filteredBookings.length === 0 ? (
-              <div className="text-center py-20">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 mb-4">
-                  <Calendar className="h-8 w-8 text-slate-400" />
+              <div className="text-center py-16 px-6 bg-linen dark:bg-[#221D19] border border-[rgba(59,50,43,0.16)] dark:border-[rgba(241,232,224,0.14)]">
+                <div className="inline-flex items-center justify-center w-14 h-14 rounded-full border border-gold/40 mb-4">
+                  <Calendar className="h-6 w-6 text-gold" />
                 </div>
-                <h3 className="text-xl font-semibold text-slate-900 mb-2">No bookings found</h3>
-                <p className="text-slate-600">
-                  {statusFilter === "all" 
-                    ? "You don't have any bookings yet" 
-                    : `No ${statusFilter} bookings`}
+                <h3 className="font-serif text-2xl text-ink dark:text-[#F1E8E0] mb-2">
+                  {statusFilter !== "all" ? `No ${statusFilter} bookings` : isVendor ? "No requests yet" : "No bookings yet"}
+                </h3>
+                <p className="text-[rgba(59,50,43,0.7)] dark:text-[rgba(241,232,224,0.65)] max-w-md mx-auto">
+                  {statusFilter !== "all"
+                    ? "Try another filter to see the rest of your bookings."
+                    : isVendor
+                      ? "When clients request your services, their bookings will appear here."
+                      : "Find a vendor you love and send a booking request. You can track every request here."}
                 </p>
+                {statusFilter === "all" && !isVendor && (
+                  <Link to={createPageUrl("VendorMarketplace")} className="mt-6 inline-flex items-center h-11 px-6 bg-gold hover:bg-gold-text text-cream text-xs uppercase tracking-[0.12em] transition-colors">
+                    Find a vendor
+                  </Link>
+                )}
               </div>
             ) : (
               <div className="grid md:grid-cols-2 gap-6">

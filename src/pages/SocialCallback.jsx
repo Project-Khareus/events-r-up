@@ -25,7 +25,7 @@ export default function SocialCallback() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50">
       <div className="text-center">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-600 mx-auto mb-4" />
+        <Loader2 className="h-8 w-8 animate-spin text-gold-text mx-auto mb-4" />
         <p className="text-slate-600">Connecting to Facebook...</p>
         <p className="text-xs text-slate-400 mt-2">You can close this window if it doesn't close automatically.</p>
       </div>

@@ -24,7 +24,7 @@ export default function HelpCenter() {
       <div className="bg-slate-900 text-white py-16 md:py-24 px-6">
         <div className="max-w-4xl mx-auto text-center space-y-6">
           <div className="inline-flex items-center justify-center p-3 bg-white/10 rounded-2xl mb-4">
-            <HelpCircle className="h-8 w-8 text-indigo-400" />
+            <HelpCircle className="h-8 w-8 text-gold-dark" />
           </div>
           <h1 className="text-4xl md:text-5xl font-serif font-bold tracking-tight">
             EventsRup Help Center
@@ -50,7 +50,7 @@ export default function HelpCenter() {
         {/* Intro Card */}
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-12 border border-slate-100">
           <h2 className="text-2xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-            <span className="bg-indigo-100 p-2 rounded-lg text-indigo-600"><Users className="h-5 w-5" /></span>
+            <span className="bg-gold/15 p-2 rounded-lg text-gold-text"><Users className="h-5 w-5" /></span>
             What Is EventsRup?
           </h2>
           <p className="text-slate-600 leading-relaxed mb-6">
@@ -64,7 +64,7 @@ export default function HelpCenter() {
               "Manage event budgets and bookings in one place"
             ].map((item, i) => (
               <li key={i} className="flex items-center gap-2 text-slate-700">
-                <div className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+                <div className="h-1.5 w-1.5 rounded-full bg-gold" />
                 {item}
               </li>
             ))}
@@ -103,7 +103,7 @@ export default function HelpCenter() {
           {/* Discover Events */}
           <section id="discover" className="scroll-mt-24">
             <h3 className="text-xl font-bold text-slate-900 mb-4 px-2 flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-indigo-500" />
+              <Calendar className="h-5 w-5 text-gold" />
               Discover Events
             </h3>
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
@@ -138,7 +138,7 @@ export default function HelpCenter() {
           {/* Organize Events */}
           <section id="organize" className="scroll-mt-24">
             <h3 className="text-xl font-bold text-slate-900 mb-4 px-2 flex items-center gap-2">
-              <Settings className="h-5 w-5 text-indigo-500" />
+              <Settings className="h-5 w-5 text-gold" />
               Organize an Event
             </h3>
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
@@ -182,7 +182,7 @@ export default function HelpCenter() {
           {/* Vendors */}
           <section id="vendors" className="scroll-mt-24">
             <h3 className="text-xl font-bold text-slate-900 mb-4 px-2 flex items-center gap-2">
-              <MapPin className="h-5 w-5 text-indigo-500" />
+              <MapPin className="h-5 w-5 text-gold" />
               Finding Event Vendors
             </h3>
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
@@ -225,7 +225,7 @@ export default function HelpCenter() {
           {/* Payments & Account */}
           <section id="payments" className="scroll-mt-24">
             <h3 className="text-xl font-bold text-slate-900 mb-4 px-2 flex items-center gap-2">
-              <CreditCard className="h-5 w-5 text-indigo-500" />
+              <CreditCard className="h-5 w-5 text-gold" />
               Payments & Account
             </h3>
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
@@ -269,16 +269,16 @@ export default function HelpCenter() {
         </div>
 
         {/* Support CTA */}
-        <div id="support" className="mt-16 bg-gradient-to-br from-indigo-50 to-white rounded-2xl p-8 border border-indigo-100 shadow-sm text-center">
-          <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100 mb-4">
-            <Mail className="h-6 w-6 text-indigo-600" />
+        <div id="support" className="mt-16 bg-gradient-to-br from-gold/10 to-white rounded-2xl p-8 border border-gold/20 shadow-sm text-center">
+          <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-gold/15 mb-4">
+            <Mail className="h-6 w-6 text-gold-text" />
           </div>
           <h2 className="text-2xl font-bold text-slate-900 mb-2">Still need help?</h2>
           <p className="text-slate-600 mb-6 max-w-lg mx-auto">
             Our support team is available Monday–Friday, 9am–5pm to assist you with any questions or issues.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button className="bg-indigo-600 hover:bg-indigo-700" asChild>
+            <Button className="bg-gold hover:bg-gold-text" asChild>
               <a href="mailto:support@eventsrup.com">
                 Contact Support
               </a>
@@ -290,7 +290,7 @@ export default function HelpCenter() {
                </Link>
             </Button>
           </div>
-          <div className="mt-6 pt-6 border-t border-indigo-100 text-sm text-slate-500">
+          <div className="mt-6 pt-6 border-t border-gold/20 text-sm text-slate-500">
             <p>Typical response time: 24–48 hours</p>
           </div>
         </div>

@@ -30,8 +30,8 @@ export default function TestBackend() {
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
       <Card className="max-w-md w-full p-6 space-y-6">
         <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-          <div className="p-2 bg-indigo-100 rounded-lg">
-            <Server className="h-6 w-6 text-indigo-600" />
+          <div className="p-2 bg-gold/15 rounded-lg">
+            <Server className="h-6 w-6 text-gold-text" />
           </div>
           <div>
             <h1 className="text-xl font-bold text-slate-900">Backend Test</h1>
@@ -47,7 +47,7 @@ export default function TestBackend() {
           
           <div className="font-mono text-sm">
             {loading ? (
-              <div className="flex items-center gap-2 text-indigo-400 py-8 justify-center">
+              <div className="flex items-center gap-2 text-gold-dark py-8 justify-center">
                 <Loader2 className="animate-spin h-5 w-5" />
                 <span>Connecting to backend...</span>
               </div>
@@ -66,7 +66,7 @@ export default function TestBackend() {
         <Button 
           onClick={callBackend} 
           disabled={loading} 
-          className="w-full bg-indigo-600 hover:bg-indigo-700"
+          className="w-full bg-gold hover:bg-gold-text"
         >
           {loading ? (
             <Loader2 className="h-4 w-4 animate-spin mr-2" />

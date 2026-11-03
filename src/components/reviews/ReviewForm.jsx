@@ -150,7 +150,7 @@ export default function ReviewForm({ vendorId, vendorName }) {
           </p>
           <Button 
             onClick={() => base44.auth.redirectToLogin(window.location.href)}
-            className="bg-indigo-600 hover:bg-indigo-700"
+            className="bg-gold hover:bg-gold-text"
           >
             Sign In
           </Button>
@@ -278,7 +278,7 @@ export default function ReviewForm({ vendorId, vendorName }) {
         <Button
           type="submit"
           disabled={createReviewMutation.isPending}
-          className="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 rounded-xl h-12 text-base font-medium shadow-lg shadow-indigo-200"
+          className="w-full bg-gradient-to-r from-gold to-gold-text hover:from-gold-text hover:to-ink-deep rounded-xl h-12 text-base font-medium shadow-lg shadow-gold/20"
         >
           {createReviewMutation.isPending ? "Submitting..." : "Submit Review"}
         </Button>

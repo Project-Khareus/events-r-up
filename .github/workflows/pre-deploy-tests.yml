@@ -1,0 +1,44 @@
+name: Pre-Deployment Tests
+
+on:
+  push:
+    branches: [main, staging]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+    env:
+      # The deployed app to test, e.g. https://your-app.base44.app
+      # Add it under Settings > Secrets and variables > Actions as STAGING_URL.
+      BASE_URL: ${{ secrets.STAGING_URL }}
+      TEST_VENDOR_ID: ${{ secrets.TEST_VENDOR_ID }}
+    steps:
+      - name: Check test target
+        id: target
+        run: |
+          if [ -z "$BASE_URL" ]; then
+            echo "::notice::STAGING_URL secret is not set, so browser tests were skipped."
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v4
+        if: steps.target.outputs.run == 'true'
+      - uses: actions/setup-node@v4
+        if: steps.target.outputs.run == 'true'
+        with: { node-version: '20', cache: 'npm' }
+      - run: npm ci
+        if: steps.target.outputs.run == 'true'
+      - run: npx playwright install --with-deps chromium
+        if: steps.target.outputs.run == 'true'
+      - run: npx playwright test --project=chromium
+        if: steps.target.outputs.run == 'true'
+      - uses: actions/upload-artifact@v4
+        if: failure() && steps.target.outputs.run == 'true'
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

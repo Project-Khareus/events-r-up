@@ -67,12 +67,13 @@ export default function MyFavorites() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-slate-900 mb-2">Please Log In</h2>
-          <p className="text-slate-600 mb-6">You need to be logged in to view your favorites.</p>
+      <div className="min-h-screen flex items-center justify-center bg-cream dark:bg-[#1B1714] px-6">
+        <div className="text-center max-w-sm">
+          <Heart className="h-8 w-8 text-gold mx-auto mb-4" />
+          <h2 className="font-serif text-3xl text-ink dark:text-[#F1E8E0] mb-2">Log in to see your picks</h2>
+          <p className="text-[rgba(59,50,43,0.7)] dark:text-[rgba(241,232,224,0.65)] mb-6">Save vendors and events while you browse, then compare them here.</p>
           <Link to={createPageUrl("Join")}>
-            <Button>Log In</Button>
+            <Button className="rounded-none bg-gold hover:bg-gold-text text-cream uppercase tracking-[0.12em] text-xs h-11 px-6">Log in</Button>
           </Link>
         </div>
       </div>
@@ -90,16 +91,13 @@ export default function MyFavorites() {
   };
 
   return (
-    <PullToRefresh onRefresh={handleRefresh}><div className="min-h-screen bg-slate-50 py-12 px-6">
+    <PullToRefresh onRefresh={handleRefresh}><div className="min-h-screen bg-cream dark:bg-[#1B1714] py-12 px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="h-12 w-12 bg-red-100 rounded-2xl flex items-center justify-center">
-            <Heart className="h-6 w-6 text-red-600 fill-current" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900">My Favorites</h1>
-            <p className="text-slate-600">Events you've saved for later</p>
-          </div>
+        <div className="mb-10">
+          <p className="text-[11px] uppercase tracking-[0.28em] text-gold-text dark:text-gold-dark mb-3">Saved</p>
+          <h1 className="font-serif text-4xl md:text-5xl text-ink dark:text-[#F1E8E0]">My Picks</h1>
+          <p className="mt-2 text-[rgba(59,50,43,0.7)] dark:text-[rgba(241,232,224,0.65)]">Vendors and events you've saved to compare.</p>
+          <div className="mt-6 h-px w-16 bg-gold" />
         </div>
 
         {isLoading ? (
@@ -113,17 +111,17 @@ export default function MyFavorites() {
              ))}
            </div>
         ) : favorites.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-3xl border border-slate-200 shadow-sm">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 mb-4">
-              <Heart className="h-8 w-8 text-slate-400" />
+          <div className="text-center py-16 px-6 bg-linen dark:bg-[#221D19] border border-[rgba(59,50,43,0.16)] dark:border-[rgba(241,232,224,0.14)]">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full border border-gold/40 mb-4">
+              <Heart className="h-6 w-6 text-gold" />
             </div>
-            <h3 className="text-xl font-semibold text-slate-900 mb-2">No favorites yet</h3>
-            <p className="text-slate-600 mb-6 max-w-md mx-auto">
-              Start exploring vendors and events, then tap the heart icon to save them here for easy access.
+            <h3 className="font-serif text-2xl text-ink dark:text-[#F1E8E0] mb-2">Nothing saved yet</h3>
+            <p className="text-[rgba(59,50,43,0.7)] dark:text-[rgba(241,232,224,0.65)] mb-6 max-w-md mx-auto">
+              Tap the heart on any vendor or event to save it here, then compare your favourites side by side.
             </p>
             <div className="flex gap-3 justify-center">
               <Link to={createPageUrl("VendorMarketplace")}>
-                <Button className="bg-indigo-600 hover:bg-indigo-700">
+                <Button className="bg-gold hover:bg-gold-text">
                   <Store className="mr-2 h-4 w-4" />
                   Browse Vendors
                 </Button>

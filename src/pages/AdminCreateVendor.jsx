@@ -63,7 +63,7 @@ export default function AdminCreateVendor() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-gold-text" />
       </div>
     );
   }
@@ -80,7 +80,7 @@ export default function AdminCreateVendor() {
         </Button>
 
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-600 to-indigo-700 mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-gold to-gold-text mb-4">
             <UserPlus className="h-8 w-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-slate-900 mb-2">

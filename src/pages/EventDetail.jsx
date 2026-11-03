@@ -330,7 +330,7 @@ export default function EventDetail() {
                 <section>
                      <div className="flex items-center justify-between mb-6">
                         <h2 className="text-2xl font-serif font-bold text-ink dark:text-[#F1E8E0]">Similar Themes</h2>
-                        <Link to={createPageUrl("PublicEvents")} className="text-indigo-600 hover:text-indigo-700 font-medium">View all</Link>
+                        <Link to={createPageUrl("PublicEvents")} className="text-gold-text hover:text-gold-text font-medium">View all</Link>
                     </div>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         {similarEvents.map(e => <EventCard key={e.id} event={e} />)}

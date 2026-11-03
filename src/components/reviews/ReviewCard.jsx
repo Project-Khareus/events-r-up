@@ -63,8 +63,8 @@ export default function ReviewCard({ review }) {
     <Card className="p-6 rounded-2xl border-slate-200 dark:border-slate-700 hover:shadow-md transition-shadow dark:bg-slate-800">
       <div className="flex items-start justify-between gap-4 mb-4">
         <div className="flex items-start gap-3">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-50 dark:from-indigo-900 dark:to-indigo-800 flex items-center justify-center shrink-0">
-            <User className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gold/15 to-linen dark:from-ink-deep dark:to-ink-deep flex items-center justify-center shrink-0">
+            <User className="h-6 w-6 text-gold-text dark:text-gold-dark" />
           </div>
           <div>
             <h4 className="font-semibold text-slate-900 dark:text-slate-100">
@@ -83,7 +83,7 @@ export default function ReviewCard({ review }) {
       </div>
 
       {review.event_type && (
-        <Badge variant="outline" className="mb-3 border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900/30">
+        <Badge variant="outline" className="mb-3 border-gold/30 dark:border-ink text-gold-text dark:text-gold-dark bg-gold/10 dark:bg-ink-deep/30">
           {review.event_type}
         </Badge>
       )}
@@ -92,10 +92,10 @@ export default function ReviewCard({ review }) {
 
       {/* Vendor Response */}
       {review.vendor_response && (
-        <div className="mt-4 pl-4 border-l-2 border-indigo-200 dark:border-indigo-700 bg-indigo-50/50 dark:bg-indigo-900/20 p-4 rounded-r-lg">
+        <div className="mt-4 pl-4 border-l-2 border-gold/30 dark:border-gold-text bg-gold/10 dark:bg-ink-deep/20 p-4 rounded-r-lg">
           <div className="flex items-center gap-2 mb-2">
-            <MessageSquare className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-            <span className="font-semibold text-sm text-indigo-900 dark:text-indigo-300">Vendor Response</span>
+            <MessageSquare className="h-4 w-4 text-gold-text dark:text-gold-dark" />
+            <span className="font-semibold text-sm text-ink-deep dark:text-gold-dark">Vendor Response</span>
             <span className="text-xs text-slate-500 dark:text-slate-400">
               • {format(new Date(review.vendor_response_date), "MMM d, yyyy 'at' h:mm a")}
             </span>

@@ -73,7 +73,7 @@ export default function FollowButton({ targetUserId, className = "" }) {
       variant={followStatus ? "outline" : "default"} 
       onClick={handleToggleFollow}
       disabled={isPending}
-      className={`${className} ${followStatus ? 'bg-transparent border-slate-300 text-slate-700 hover:bg-slate-50' : 'bg-indigo-600 hover:bg-indigo-700 text-white'}`}
+      className={`${className} ${followStatus ? 'bg-transparent border-slate-300 text-slate-700 hover:bg-slate-50' : 'bg-gold hover:bg-gold-text text-white'}`}
     >
       {isPending ? (
         <Loader2 className="h-4 w-4 animate-spin" />

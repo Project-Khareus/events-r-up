@@ -78,7 +78,7 @@ export default function PendingVendorCard({
   return (
     <Card className="bg-white overflow-hidden border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
       {/* Top bar accent */}
-      <div className="h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
+      <div className="h-1 bg-gradient-to-r from-gold via-gold to-pink-500" />
 
       <div className="p-5">
         {/* Header: Image + Info + Actions */}
@@ -108,7 +108,7 @@ export default function PendingVendorCard({
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <a href={`${getVendorUrl(vendor)}?id=${vendor.id}&preview=admin`} target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8 text-indigo-600 border-indigo-200 hover:bg-indigo-50 rounded-lg">
+                  <Button variant="outline" size="sm" className="gap-1.5 text-xs h-8 text-gold-text border-gold/30 hover:bg-gold/10 rounded-lg">
                     <Eye className="h-3.5 w-3.5" /> Preview
                   </Button>
                 </a>
@@ -135,7 +135,7 @@ export default function PendingVendorCard({
             {/* Tags */}
             <div className="flex gap-1.5 mt-2.5 flex-wrap">
               {eventTypes.filter(Boolean).map(et => (
-                <span key={et} className="px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100">
+                <span key={et} className="px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider rounded-full bg-gold/10 text-gold-text border border-gold/20">
                   {EVENT_TYPE_LABELS[et] || et}
                 </span>
               ))}

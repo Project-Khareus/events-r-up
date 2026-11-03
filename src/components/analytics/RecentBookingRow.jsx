@@ -5,7 +5,7 @@ import { Users } from "lucide-react";
 const STATUS_STYLES = {
   confirmed: { bg: "bg-green-50 border-green-200", text: "text-green-700", dot: "bg-green-500" },
   pending: { bg: "bg-amber-50 border-amber-200", text: "text-amber-700", dot: "bg-amber-500" },
-  completed: { bg: "bg-blue-50 border-blue-200", text: "text-blue-700", dot: "bg-blue-500" },
+  completed: { bg: "bg-gold/10 border-gold/30", text: "text-gold-text", dot: "bg-gold" },
   declined: { bg: "bg-red-50 border-red-200", text: "text-red-700", dot: "bg-red-500" },
 };
 

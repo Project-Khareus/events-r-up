@@ -8,6 +8,15 @@ import SupportWhatsAppLink from "./SupportWhatsAppLink";
 export default function SupportChatBot() {
   const [open, setOpen] = useState(false);
   const [showPromo, setShowPromo] = useState(false);
+  // Hide the chat button while the cookie banner is on screen so they don't overlap
+  const [consentDecided, setConsentDecided] = useState(() => {
+    try { return !!localStorage.getItem('cookie_consent'); } catch { return true; }
+  });
+  useEffect(() => {
+    const onChange = () => setConsentDecided(true);
+    window.addEventListener('cookie-consent-change', onChange);
+    return () => window.removeEventListener('cookie-consent-change', onChange);
+  }, []);
   const [messages, setMessages] = useState([
     { role: "assistant", content: "👋 Hi! I'm Kharis, your Khareus support assistant. How can I help you today?" }
   ]);
@@ -23,11 +32,26 @@ export default function SupportChatBot() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
+  // The "How can we help?" bubble only appears on larger screens, after the
+  // cookie choice is made, and once per visit, so it never stacks with the
+  // cookie banner or covers content on phones.
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!open) setShowPromo(true);
-    }, 3000);
-    return () => clearTimeout(timer);
+    let timer;
+    const maybeShow = () => {
+      try {
+        if (window.innerWidth < 768) return;
+        if (!localStorage.getItem('cookie_consent')) return;
+        if (sessionStorage.getItem('chat_promo_seen')) return;
+      } catch { return; }
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        setShowPromo(true);
+        try { sessionStorage.setItem('chat_promo_seen', '1'); } catch { /* ignore */ }
+      }, 3000);
+    };
+    maybeShow();
+    window.addEventListener('cookie-consent-change', maybeShow);
+    return () => { clearTimeout(timer); window.removeEventListener('cookie-consent-change', maybeShow); };
   }, []);
 
   const sendMessage = async (e) => {
@@ -99,7 +123,7 @@ export default function SupportChatBot() {
           <div className="relative bg-linen dark:bg-[#221D19] rounded-none border border-[rgba(59,50,43,0.16)] dark:border-[rgba(241,232,224,0.18)] px-4 py-3 max-w-[220px] mb-2">
             <button
               onClick={() => setShowPromo(false)}
-              className="absolute top-2 right-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+              className="absolute top-2 right-2 text-ink/50 hover:text-ink dark:text-[#C5B9AC] dark:hover:text-[#F1E8E0]"
               aria-label="Dismiss"
             >
               <X className="h-4 w-4" />
@@ -114,13 +138,13 @@ export default function SupportChatBot() {
       )}
 
       {/* Floating Button */}
-      <button
+      {(consentDecided || open) && <button
         onClick={() => { setOpen(o => !o); setShowPromo(false); }}
         className="fixed bottom-24 md:bottom-6 right-4 z-50 w-14 h-14 rounded-full bg-ink hover:bg-ink-deep text-cream border border-[rgba(169,126,46,0.5)] flex items-center justify-center transition-colors"
         aria-label="Open Support Chat"
       >
         {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
-      </button>
+      </button>}
 
       {/* Chat Window */}
       {open && (

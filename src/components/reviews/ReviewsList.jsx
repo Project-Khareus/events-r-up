@@ -34,7 +34,7 @@ export default function ReviewsList({ vendorId }) {
   return (
     <Card className="p-8 rounded-2xl border-slate-200 dark:border-slate-700 shadow-sm dark:bg-slate-800">
       <div className="flex items-center gap-2 mb-6">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Customer Reviews</h2>
+        <h2 className="font-serif text-3xl text-ink dark:text-[#F1E8E0]">Customer Reviews</h2>
         <span className="text-slate-500 dark:text-slate-400">({reviews.length})</span>
       </div>
 
