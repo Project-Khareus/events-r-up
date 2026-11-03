@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import formatVendorLocation from "@/components/utils/formatLocation";
-import { buildApprovedChanges } from "@/lib/vendorPendingChanges";
+import { buildApprovedChanges, summarizePendingChanges } from "@/lib/vendorPendingChanges";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -19,6 +18,8 @@ import TransferVendorDialog from "@/components/admin/TransferVendorDialog";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 import { capitalizeHtmlSentences } from "@/components/utils/capitalizeHtml";
 import { getVendorUrl } from "../utils/vendorUrl";
+import { getVendorLocations, formatVendorLocationsShort } from "@/components/utils/vendorLocations";
+import PendingChangesReview from "@/components/admin/PendingChangesReview";
 
 const CATEGORY_LABELS = {
   event_planner: "Event Planner",
@@ -111,7 +112,7 @@ export default function AdminVendors() {
     return vendors.filter(v => 
       v.business_name?.toLowerCase().includes(query) ||
       v.contact_email?.toLowerCase().includes(query) ||
-      v.location?.toLowerCase().includes(query) ||
+      getVendorLocations(v).join(' ').toLowerCase().includes(query) ||
       (Array.isArray(v.category) && v.category.some(cat => cat.toLowerCase().includes(query)))
     );
   };
@@ -235,8 +236,7 @@ export default function AdminVendors() {
       const viewLink = `https://khareus.com${getVendorUrl(vendor)}`;
 
       // Get the list of changed fields
-      const changes = Object.keys(vendor.pending_changes || {})
-        .filter(key => JSON.stringify(vendor[key]) !== JSON.stringify(vendor.pending_changes[key]));
+      const changes = summarizePendingChanges(vendor);
 
       // Send email notification to vendor
       try {
@@ -277,8 +277,7 @@ export default function AdminVendors() {
       const messageLink = `https://khareus.com/messages?admin=true`;
 
       // Get the list of changed fields
-      const changes = Object.keys(vendor.pending_changes || {})
-        .filter(key => JSON.stringify(vendor[key]) !== JSON.stringify(vendor.pending_changes[key]));
+      const changes = summarizePendingChanges(vendor);
 
       // Send email notification to vendor
       try {
@@ -475,12 +474,12 @@ export default function AdminVendors() {
   return (
     <div className="min-h-screen bg-slate-50 p-8">
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <div>
             <h1 className="text-3xl font-bold text-slate-900">Vendor Management</h1>
             <p className="text-slate-600">Review new listings and changes</p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
            <Link to="/AdminCreateVendor">
              <Button className="bg-gold hover:bg-gold-text gap-2">
                <Store className="h-4 w-4" /> Create Listing
@@ -513,7 +512,7 @@ export default function AdminVendors() {
         </div>
 
         <Tabs defaultValue="new" className="w-full">
-          <TabsList className="mb-6">
+          <TabsList className="mb-6 max-w-full overflow-x-auto justify-start">
             <TabsTrigger value="new" className="gap-2">
               New Listings ({pendingVendors.length})
             </TabsTrigger>
@@ -578,10 +577,10 @@ export default function AdminVendors() {
             ) : (
               <div className="grid gap-4">
                 {vendorsWithChanges.map((vendor) => (
-                  <Card key={vendor.id} className="p-6 bg-white">
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <div className="flex items-center gap-2 mb-2">
+                  <Card key={vendor.id} className="p-4 sm:p-6 bg-white min-w-0">
+                    <div className="flex flex-wrap items-start justify-between gap-2 mb-4">
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2 mb-2">
                           <h3 className="text-xl font-bold text-slate-900">{vendor.business_name}</h3>
                           <Badge className="bg-orange-100 text-orange-800">
                             <AlertCircle className="h-3 w-3 mr-1" />
@@ -606,89 +605,9 @@ export default function AdminVendors() {
                       </a>
                     </div>
 
-                    {vendor.pending_changes && (
-                      <div className="bg-slate-50 rounded-lg p-4 mb-4 max-w-full overflow-hidden">
-                        <h4 className="font-semibold text-slate-900 mb-3">Proposed Changes:</h4>
-                        <div className="space-y-3">
-                          {Object.keys(vendor.pending_changes)
-                            .filter(key => JSON.stringify(vendor[key]) !== JSON.stringify(vendor.pending_changes[key]))
-                            .map(key => {
-                              const oldVal = vendor[key];
-                              const newVal = vendor.pending_changes[key];
-                              
-                              // Check if this is an image field
-                              const isImageField = key === 'image_url' || key === 'logo_url' || key === 'profile_picture_url';
-                              const isGalleryImages = key === 'gallery_images';
-                              
-                              // Format display values
-                              const formatValue = (val) => {
-                                if (val === null || val === undefined || val === '') return 'Not set';
-                                if (Array.isArray(val)) {
-                                  if (key === 'gallery_images' || key === 'gallery_videos') {
-                                    return `${val.length} file(s)`;
-                                  }
-                                  return val.length > 0 ? val.join(', ') : 'None';
-                                }
-                                if (typeof val === 'boolean') return val ? 'Yes' : 'No';
-                                if (typeof val === 'number') return val.toLocaleString();
-                                if (typeof val === 'object') return 'Complex data';
-                                // Truncate long text
-                                const str = String(val);
-                                return str.length > 150 ? str.substring(0, 150) + '...' : str;
-                              };
-                              
-                              const fieldLabel = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-                              
-                              return (
-                                <div key={key} className="bg-white rounded-md border border-orange-200 p-3">
-                                  <div className="flex items-center gap-2 mb-2">
-                                    <div className="w-2 h-2 rounded-full bg-orange-500"></div>
-                                    <span className="font-semibold text-slate-900">{fieldLabel}</span>
-                                  </div>
-                                  <div className="ml-4 space-y-2">
-                                    {isImageField ? (
-                                      <div>
-                                        <span className="text-xs text-green-600 font-medium uppercase tracking-wide block mb-1">New Image:</span>
-                                        {newVal ? (
-                                          <img src={newVal} alt="New image" className="w-48 h-48 object-cover rounded border border-green-300" />
-                                        ) : (
-                                          <div className="w-48 h-48 bg-slate-100 rounded flex items-center justify-center text-slate-400 text-xs">Image removed</div>
-                                        )}
-                                      </div>
-                                    ) : isGalleryImages ? (
-                                      <div>
-                                        <span className="text-xs text-green-600 font-medium uppercase tracking-wide block mb-1">New Gallery ({Array.isArray(newVal) ? newVal.length : 0} images):</span>
-                                        <div className="flex gap-2 flex-wrap">
-                                          {Array.isArray(newVal) && newVal.slice(0, 6).map((url, idx) => (
-                                            <img key={idx} src={url} alt={`Gallery ${idx + 1}`} className="w-20 h-20 object-cover rounded border" />
-                                          ))}
-                                          {Array.isArray(newVal) && newVal.length > 6 && (
-                                            <div className="w-20 h-20 bg-slate-100 rounded flex items-center justify-center text-slate-600 text-xs font-medium">
-                                              +{newVal.length - 6} more
-                                            </div>
-                                          )}
-                                        </div>
-                                      </div>
-                                    ) : (
-                                      <>
-                                        <div className="flex items-start gap-2">
-                                          <span className="text-xs text-slate-500 font-medium uppercase tracking-wide min-w-[60px]">Before:</span>
-                                          <span className="text-sm text-slate-600">{formatValue(oldVal)}</span>
-                                        </div>
-                                        <div className="flex items-start gap-2">
-                                          <span className="text-xs text-green-600 font-medium uppercase tracking-wide min-w-[60px]">After:</span>
-                                          <span className="text-sm text-slate-900 font-medium">{formatValue(newVal)}</span>
-                                        </div>
-                                      </>
-                                    )}
-                                  </div>
-                                </div>
-                              );
-                            })
-                          }
-                        </div>
-                      </div>
-                    )}
+                    <div className="mb-4">
+                      <PendingChangesReview vendor={vendor} compact />
+                    </div>
 
                     <div className="flex gap-3 pt-4 border-t border-slate-100">
                       <Button 
@@ -769,7 +688,7 @@ export default function AdminVendors() {
                               {CATEGORY_LABELS[primaryCategory] || primaryCategory || '-'}
                             </td>
                             <td className="px-4 py-4 text-sm text-slate-600">
-                              {vendor.location ? formatVendorLocation(vendor.location) : '-'}
+                              {formatVendorLocationsShort(vendor) || '-'}
                             </td>
                             <td className="px-4 py-4">
                               <div className="flex items-center gap-0.5">
@@ -882,7 +801,7 @@ export default function AdminVendors() {
                               {CATEGORY_LABELS[primaryCategory] || primaryCategory || '-'}
                             </td>
                             <td className="px-4 py-4 text-sm text-slate-600">
-                              {vendor.location ? formatVendorLocation(vendor.location) : '-'}
+                              {formatVendorLocationsShort(vendor) || '-'}
                             </td>
                             <td className="px-4 py-4 text-sm text-red-600 max-w-[250px]">
                               {vendor.suspension_reason || 'No reason provided'}

@@ -1,3 +1,4 @@
+import { getVendorLocations } from "@/components/utils/vendorLocations";
 const STOP_WORDS = new Set([
   "a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "in", "into",
   "near", "of", "on", "or", "the", "to", "with", "up", "vendor", "vendors", "service", "services"
@@ -143,7 +144,7 @@ export function rankVendors(vendors, query, categoryLabels = {}) {
         (total, field) => total + bestFieldScore(token, field.value) * field.weight,
         0
       );
-      const locationMatch = bestFieldScore(token, vendor.location);
+      const locationMatch = bestFieldScore(token, getVendorLocations(vendor).join(", "));
       return { subject, locationMatch };
     });
     return { vendor, index, perToken, phraseMatch, hintMatch };

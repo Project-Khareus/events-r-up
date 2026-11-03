@@ -22,7 +22,7 @@ function emailTemplate(title, titleColor, content) {
     </div>`;
 }
 
-function button(text, url, color = '#4F46E5') {
+function button(text, url, color = '#A97E2E') {
     return `<a href="${url}" style="display: inline-block; padding: 12px 28px; background-color: ${color}; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; margin: 16px 0;">${text}</a>`;
 }
 
@@ -44,8 +44,39 @@ Deno.serve(async (req) => {
 
         const vendor = await base44.asServiceRole.entities.Vendor.get(booking.vendor_id);
         if (!vendor) return Response.json({ error: 'Vendor not found' }, { status: 404 });
-        if (user.role !== 'admin' && vendor.user_id !== user.id) {
+        const isVendorUser = vendor.user_id === user.id;
+        const isCustomerQuoteReply = booking.user_id === user.id
+            && booking.request_type === 'quote'
+            && ['confirmed', 'declined'].includes(newStatus);
+        if (user.role !== 'admin' && !isVendorUser && !isCustomerQuoteReply) {
             return Response.json({ error: 'Forbidden' }, { status: 403 });
+        }
+
+        // Customer accepted or declined a quote: tell the vendor
+        if (isCustomerQuoteReply && !isVendorUser) {
+            let vendorEmail = vendor.contact_email;
+            if (!vendorEmail && vendor.user_id) {
+                const vendorUser = await base44.asServiceRole.entities.User.get(vendor.user_id);
+                vendorEmail = vendorUser?.email;
+            }
+            if (vendorEmail) {
+                const accepted = newStatus === 'confirmed';
+                const who = escapeHtml(booking.user_name);
+                const content = `
+                    <p style="color: #334155; font-size: 15px; line-height: 1.6;">
+                        ${accepted
+                            ? `Good news: <strong>${who}</strong> accepted your quote of <strong>${escapeHtml(booking.quote_currency || 'GHS')} ${escapeHtml(booking.quote_amount)}</strong> for ${escapeHtml(booking.event_date)}. Message them to agree the next steps.`
+                            : `<strong>${who}</strong> has decided not to go ahead with your quote this time.`}
+                    </p>
+                    ${button('Open Booking Requests', `${SITE_URL}/Bookings`)}
+                `;
+                await base44.asServiceRole.integrations.Core.SendEmail({
+                    to: vendorEmail,
+                    subject: accepted ? `${booking.user_name} accepted your quote` : `Quote update from ${booking.user_name}`,
+                    body: emailTemplate(accepted ? 'Quote Accepted' : 'Quote Declined', accepted ? '#A97E2E' : '#64748B', content)
+                });
+            }
+            return Response.json({ success: true });
         }
 
         const vendorName = escapeHtml(vendor.business_name);
@@ -54,6 +85,17 @@ Deno.serve(async (req) => {
         const guestCount = escapeHtml(booking.guest_count);
 
         const statusConfig = {
+            quoted: {
+                subject: `${vendorName} sent you a quote`,
+                color: '#A97E2E',
+                title: 'You have a quote',
+                message: `<strong>${vendorName}</strong> has replied to your request with a price of <strong>${escapeHtml(booking.quote_currency || 'GHS')} ${escapeHtml(booking.quote_amount)}</strong>.`,
+                extra: `
+                    ${booking.vendor_note ? `<p style="color: #334155; font-size: 15px; line-height: 1.6;"><em>"${escapeHtml(booking.vendor_note)}"</em></p>` : ''}
+                    <p style="color: #334155; font-size: 15px; line-height: 1.6;">Compare it with any other quotes, then accept or decline in My Bookings.</p>
+                    ${button('Review the quote', `${SITE_URL}/Bookings`)}
+                `
+            },
             confirmed: {
                 subject: `✅ Booking Confirmed with ${vendorName}`,
                 color: '#10B981',

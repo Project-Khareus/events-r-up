@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Loader2, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-function conciseLabel(item) {
+export function conciseLabel(item) {
   const parts = String(item.display_name || "")
     .split(",")
     .map((s) => s.trim())

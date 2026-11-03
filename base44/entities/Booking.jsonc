@@ -39,12 +39,70 @@
       "type": "string",
       "enum": [
         "pending",
+        "quoted",
         "confirmed",
         "declined",
         "completed"
       ],
       "default": "pending",
-      "description": "Booking request status"
+      "description": "Booking request status. \"quoted\" means the vendor has sent a price for a quote request."
+    },
+    "request_type": {
+      "type": "string",
+      "enum": [
+        "booking",
+        "quote"
+      ],
+      "default": "booking",
+      "description": "A direct booking request or a request for a price quote"
+    },
+    "vendor_user_id": {
+      "type": "string",
+      "description": "User ID of the vendor account, so the vendor can see and answer this request"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "weddings",
+        "parties",
+        "conference",
+        "funeral",
+        "other"
+      ],
+      "description": "Type of event (quote requests)"
+    },
+    "location": {
+      "type": "string",
+      "description": "Where the event will take place (quote requests)"
+    },
+    "budget_min": {
+      "type": "number",
+      "description": "Lowest budget the customer has in mind"
+    },
+    "budget_max": {
+      "type": "number",
+      "description": "Highest budget the customer has in mind"
+    },
+    "budget_currency": {
+      "type": "string",
+      "default": "GHS",
+      "description": "Currency for the budget, e.g. GHS"
+    },
+    "contact_phone": {
+      "type": "string",
+      "description": "Phone or WhatsApp number the customer can be reached on"
+    },
+    "quote_amount": {
+      "type": "number",
+      "description": "Price the vendor quoted"
+    },
+    "quote_currency": {
+      "type": "string",
+      "description": "Currency of the quoted price"
+    },
+    "vendor_note": {
+      "type": "string",
+      "description": "Vendor message sent with the quote"
     }
   },
   "required": [
@@ -63,6 +121,9 @@
           "data.user_id": "{{user.id}}"
         },
         {
+          "data.vendor_user_id": "{{user.id}}"
+        },
+        {
           "user_condition": {
             "role": "admin"
           }
@@ -73,6 +134,9 @@
       "$or": [
         {
           "data.user_id": "{{user.id}}"
+        },
+        {
+          "data.vendor_user_id": "{{user.id}}"
         },
         {
           "user_condition": {

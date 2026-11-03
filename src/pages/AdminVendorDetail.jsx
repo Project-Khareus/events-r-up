@@ -3,8 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "../utils";
-import formatVendorLocation from "@/components/utils/formatLocation";
-import { buildApprovedChanges } from "@/lib/vendorPendingChanges";
+import { buildApprovedChanges, summarizePendingChanges } from "@/lib/vendorPendingChanges";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +18,7 @@ import { sanitizeHtml } from "@/lib/sanitizeHtml";
 import { getVendorUrl } from "../utils/vendorUrl";
 import ProposedChanges from "../components/admin/ProposedChanges";
 import SocialAnnouncementDialog from "../components/admin/SocialAnnouncementDialog";
+import { formatVendorLocationsFull } from "@/components/utils/vendorLocations";
 
 export default function AdminVendorDetail() {
   const navigate = useNavigate();
@@ -144,8 +144,7 @@ export default function AdminVendorDetail() {
       const manageLink = `https://khareus.com/managelisting`;
       const viewLink = `https://khareus.com${getVendorUrl(vendor)}`;
 
-      const changes = Object.keys(vendor.pending_changes || {})
-        .filter(key => JSON.stringify(vendor[key]) !== JSON.stringify(vendor.pending_changes[key]));
+      const changes = summarizePendingChanges(vendor);
 
       try {
         await base44.functions.invoke("notifyVendorAction", { vendorId: vendor.id, action: 'changes_approved' });
@@ -184,8 +183,7 @@ export default function AdminVendorDetail() {
       const manageLink = `https://khareus.com/managelisting`;
       const messageLink = `https://khareus.com/messages?admin=true`;
 
-      const changes = Object.keys(vendor.pending_changes || {})
-        .filter(key => JSON.stringify(vendor[key]) !== JSON.stringify(vendor.pending_changes[key]));
+      const changes = summarizePendingChanges(vendor);
 
       try {
         await base44.functions.invoke("notifyVendorAction", { vendorId: vendor.id, action: 'changes_rejected', reason: rejectionReason });
@@ -318,7 +316,7 @@ export default function AdminVendorDetail() {
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Location</h3>
-              <p className="text-slate-600">{vendor.location ? formatVendorLocation(vendor.location) : 'N/A'}</p>
+              <p className="text-slate-600">{formatVendorLocationsFull(vendor).join(' · ') || 'N/A'}</p>
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 mb-1">Starting Price</h3>

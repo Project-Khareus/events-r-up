@@ -13,6 +13,7 @@ import StepBusiness from "./steps/StepBusiness";
 import StepMedia from "./steps/StepMedia";
 import StepContact from "./steps/StepContact";
 import StepVerification from "./steps/StepVerification";
+import { getVendorLocations } from "@/components/utils/vendorLocations";
 
 const DRAFT_STORAGE_KEY = 'vendor_form_draft';
 const DRAFT_STEP_KEY = 'vendor_form_step';
@@ -24,6 +25,7 @@ const DEFAULT_FORM_DATA = {
   category: [],
   description: "",
   location: "",
+  locations: [],
   starting_price: "",
   contact_email: "",
   contact_phone: "",
@@ -133,6 +135,8 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
         }
         return {
           ...merged,
+          // Older listings only have a single location
+          locations: Array.isArray(merged.locations) && merged.locations.length ? merged.locations : (merged.location ? [merged.location] : []),
           gallery_images: merged.gallery_images || [],
           gallery_videos: merged.gallery_videos || [],
           event_type: Array.isArray(merged.event_type) ? merged.event_type : merged.event_type ? [merged.event_type] : [],
@@ -248,7 +252,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
             <p><strong>Business:</strong> {formData.business_name}</p>
             {formData.event_type.length > 0 && <p><strong>Event Types:</strong> {formData.event_type.join(", ")}</p>}
             {formData.category.length > 0 && <p><strong>Categories:</strong> {formData.category.length} selected</p>}
-            {formData.location && <p><strong>Location:</strong> {formData.location}</p>}
+            {getVendorLocations(formData).length > 0 && <p><strong>{getVendorLocations(formData).length > 1 ? "Locations" : "Location"}:</strong> {getVendorLocations(formData).join(" · ")}</p>}
             <p><strong>Plan:</strong> {formData.subscription_type?.charAt(0).toUpperCase() + formData.subscription_type?.slice(1)}</p>
           </div>
           {!hasGhanaCard && (

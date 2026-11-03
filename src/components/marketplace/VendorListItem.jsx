@@ -3,8 +3,8 @@ import { MapPin, Star, ImageIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getVendorUrl } from "../../utils/vendorUrl";
 import VendorFavoriteButton from "../vendor/VendorFavoriteButton";
-import formatVendorLocation from "@/components/utils/formatLocation";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
+import { getVendorLocations, formatVendorLocationsShort } from "@/components/utils/vendorLocations";
 
 const CATEGORY_LABELS = {
   bridal_fashion: "Bridal Fashion",
@@ -73,10 +73,10 @@ export default function VendorListItem({ vendor, reviews = [], variant = "row" }
               )}
               <h3 className="font-bold text-[15px] text-white leading-tight line-clamp-1">{vendor.business_name}</h3>
               <div className="flex items-center gap-3 mt-1">
-                {vendor.location && (
+                {getVendorLocations(vendor).length > 0 && (
                   <div className="flex items-center gap-1">
                     <MapPin className="h-3 w-3 text-white/70 shrink-0" />
-                    <span className="text-[11px] text-white/80 truncate">{formatVendorLocation(vendor.location)}</span>
+                    <span className="text-[11px] text-white/80 truncate">{formatVendorLocationsShort(vendor)}</span>
                   </div>
                 )}
                 {avgRating > 0 && (
@@ -199,10 +199,10 @@ export default function VendorListItem({ vendor, reviews = [], variant = "row" }
             <h3 className="font-bold text-[13px] text-slate-900 dark:text-slate-100 leading-tight line-clamp-1">
               {vendor.business_name}
             </h3>
-            {vendor.location && (
+            {getVendorLocations(vendor).length > 0 && (
               <div className="flex items-center gap-1 mt-0.5">
                 <MapPin className="h-2.5 w-2.5 text-slate-400 shrink-0" />
-                <span className="text-[11px] text-slate-500 dark:text-slate-400 truncate">{formatVendorLocation(vendor.location)}</span>
+                <span className="text-[11px] text-slate-500 dark:text-slate-400 truncate">{formatVendorLocationsShort(vendor)}</span>
               </div>
             )}
           </div>

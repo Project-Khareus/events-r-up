@@ -22,7 +22,7 @@ function emailTemplate(title, titleColor, content) {
     </div>`;
 }
 
-function button(text, url, color = '#4F46E5') {
+function button(text, url, color = '#A97E2E') {
     return `<a href="${url}" style="display: inline-block; padding: 12px 28px; background-color: ${color}; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; margin: 16px 0;">${text}</a>`;
 }
 
@@ -38,7 +38,7 @@ Deno.serve(async (req) => {
         const base44 = createClientFromRequest(req);
         const user = await base44.auth.me();
         if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
-        const { bookingId } = await req.json();
+        const { bookingId, skipCustomerEmail = false, quoteVendorCount = 1 } = await req.json();
 
         if (!bookingId) {
             return Response.json({ error: 'Booking ID required' }, { status: 400 });
@@ -61,6 +61,12 @@ Deno.serve(async (req) => {
         const eventDate = escapeHtml(booking.event_date);
         const guestCount = escapeHtml(booking.guest_count);
         const bookingMessage = escapeHtml(booking.message);
+        const isQuote = booking.request_type === 'quote';
+        const eventLabels: Record<string, string> = { weddings: 'Wedding', parties: 'Party', conference: 'Conference', funeral: 'Funeral', other: 'Other' };
+        const cur = booking.budget_currency || 'GHS';
+        const budget = booking.budget_min && booking.budget_max
+            ? `${cur} ${booking.budget_min} – ${booking.budget_max}`
+            : booking.budget_max ? `Up to ${cur} ${booking.budget_max}` : booking.budget_min ? `From ${cur} ${booking.budget_min}` : '';
 
         let vendorEmail = vendor.contact_email;
         if (!vendorEmail && vendor.user_id) {
@@ -70,7 +76,23 @@ Deno.serve(async (req) => {
 
         // Email to vendor
         if (vendorEmail) {
-            const vendorContent = `
+            const vendorContent = isQuote ? `
+                <p style="color: #334155; font-size: 15px; line-height: 1.6;">
+                    <strong>${customerName}</strong> would like a price from <strong>${vendorName}</strong>.
+                </p>
+                ${infoCard([
+                    ['Event', escapeHtml(eventLabels[booking.event_type] || booking.event_type || '')],
+                    ['Event Date', eventDate],
+                    ['Location', escapeHtml(booking.location || '')],
+                    ['Guests', guestCount],
+                    ['Budget', escapeHtml(budget)],
+                    ['Details', bookingMessage]
+                ])}
+                <p style="color: #334155; font-size: 15px; line-height: 1.6;">
+                    Customers often ask a few vendors at once, so replying quickly gives you the best chance. Send your price from your Booking Requests page.
+                </p>
+                ${button('Send your quote', `${SITE_URL}/Bookings`)}
+            ` : `
                 <p style="color: #334155; font-size: 15px; line-height: 1.6;">
                     You have received a new booking request for <strong>${vendorName}</strong>.
                 </p>
@@ -89,13 +111,36 @@ Deno.serve(async (req) => {
 
             await base44.asServiceRole.integrations.Core.SendEmail({
                 to: vendorEmail,
-                subject: `🎉 New Booking Request from ${booking.user_name}`,
-                body: emailTemplate('New Booking Request!', '#4F46E5', vendorContent)
+                subject: isQuote ? `New quote request from ${booking.user_name}` : `New Booking Request from ${booking.user_name}`,
+                body: emailTemplate(isQuote ? 'New Quote Request' : 'New Booking Request', '#A97E2E', vendorContent)
             });
         }
 
-        // Email to customer
-        if (booking.user_email) {
+        // Email to customer (sent once for a multi-vendor quote request)
+        if (booking.user_email && isQuote && !skipCustomerEmail) {
+            const n = Number(quoteVendorCount) || 1;
+            const quoteContent = `
+                <p style="color: #334155; font-size: 15px; line-height: 1.6;">Hi ${customerName},</p>
+                <p style="color: #334155; font-size: 15px; line-height: 1.6;">
+                    Your quote request has been sent to ${n > 1 ? `<strong>${n} vendors</strong>` : `<strong>${vendorName}</strong>`}.
+                    We'll email you as soon as a price comes back, and you can compare quotes in My Bookings.
+                </p>
+                ${infoCard([
+                    ['Event Date', eventDate],
+                    ['Guests', guestCount],
+                    ['Budget', escapeHtml(budget)]
+                ])}
+                ${button('View my requests', `${SITE_URL}/Bookings`)}
+            `;
+            await base44.asServiceRole.integrations.Core.SendEmail({
+                to: booking.user_email,
+                subject: n > 1 ? `Your quote request was sent to ${n} vendors` : `Your quote request was sent to ${vendor.business_name}`,
+                body: emailTemplate('Quote Request Sent', '#A97E2E', quoteContent)
+            });
+        }
+
+        // Email to customer (direct booking)
+        if (booking.user_email && !isQuote) {
             const customerContent = `
                 <p style="color: #334155; font-size: 15px; line-height: 1.6;">
                     Hi ${customerName},
@@ -117,7 +162,7 @@ Deno.serve(async (req) => {
             await base44.asServiceRole.integrations.Core.SendEmail({
                 to: booking.user_email,
                 subject: `Booking Request Sent to ${vendor.business_name}`,
-                body: emailTemplate('Booking Request Received', '#4F46E5', customerContent)
+                body: emailTemplate('Booking Request Received', '#A97E2E', customerContent)
             });
         }
 

@@ -9,7 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Calendar as CalendarIcon, Users } from "lucide-react";
 import { toast } from "sonner";
 
-export default function BookingForm({ vendorId, vendorName, compact = false }) {
+export default function BookingForm({ vendorId, vendorName, vendorUserId, compact = false }) {
   const [eventDate, setEventDate] = useState("");
   const [guestCount, setGuestCount] = useState("");
   const [message, setMessage] = useState("");
@@ -29,6 +29,8 @@ export default function BookingForm({ vendorId, vendorName, compact = false }) {
         ...bookingData,
         vendor_id: vendorId,
         vendor_name: vendorName,
+        ...(vendorUserId ? { vendor_user_id: vendorUserId } : {}),
+        request_type: "booking",
         user_id: user.id,
         user_name: user.full_name || user.email,
         user_email: user.email,

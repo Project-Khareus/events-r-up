@@ -132,6 +132,7 @@ export default function Bookings() {
                 <SelectContent>
                   <SelectItem value="all">All Bookings</SelectItem>
                   <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="quoted">Quotes received</SelectItem>
                   <SelectItem value="confirmed">Confirmed</SelectItem>
                   <SelectItem value="declined">Declined</SelectItem>
                   <SelectItem value="completed">Completed</SelectItem>

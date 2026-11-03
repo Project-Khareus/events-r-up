@@ -19,7 +19,8 @@ export default function StepContact({ formData, setFormData, onNext, onBack }) {
           </div>
           <div>
             <p className={`${LABEL} flex items-center gap-2`}><Phone className={ICON} /> Phone</p>
-            <Input value={formData.contact_phone} onChange={(e) => setFormData({ ...formData, contact_phone: e.target.value })} placeholder="(555) 123-4567" className={INPUT} />
+            <Input value={formData.contact_phone} onChange={(e) => setFormData({ ...formData, contact_phone: e.target.value })} placeholder="024 123 4567" className={INPUT} />
+            <p className="mt-1.5 text-xs text-[rgba(59,50,43,0.6)] dark:text-[rgba(241,232,224,0.6)]">More than one number? Separate them with a comma. Customers can WhatsApp any mobile number you add.</p>
           </div>
         </div>
 
