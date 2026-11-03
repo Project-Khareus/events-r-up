@@ -137,7 +137,7 @@ export default function ContactBookingModal({ vendor, trigger }) {
           </TabsContent>
           
           <TabsContent value="booking" className="mt-4">
-            <BookingForm vendorId={vendor.id} vendorName={vendor.business_name} compact />
+            <BookingForm vendorId={vendor.id} vendorName={vendor.business_name} vendorUserId={vendor.user_id} compact />
           </TabsContent>
         </Tabs>
       </DialogContent>
