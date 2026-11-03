@@ -85,6 +85,7 @@ export default function QuoteRequestDialog({ vendor, trigger }) {
     setError("");
     if (!user) return;
     if (!form.event_date) { setError("Choose your event date."); return; }
+    if (!form.guest_count || Number(form.guest_count) < 1) { setError("Add roughly how many guests you expect."); return; }
     if (form.budget_min && form.budget_max && Number(form.budget_min) > Number(form.budget_max)) {
       setError("The lowest budget can't be more than the highest.");
       return;
@@ -106,7 +107,7 @@ export default function QuoteRequestDialog({ vendor, trigger }) {
           event_type: form.event_type,
           event_date: form.event_date,
           location: form.location.trim(),
-          guest_count: form.guest_count ? Number(form.guest_count) : undefined,
+          guest_count: Number(form.guest_count),
           budget_min: form.budget_min ? Number(form.budget_min) : undefined,
           budget_max: form.budget_max ? Number(form.budget_max) : undefined,
           budget_currency: "GHS",
@@ -185,7 +186,7 @@ export default function QuoteRequestDialog({ vendor, trigger }) {
                   </div>
                   <div>
                     <label htmlFor="q-guests" className={label}>Guests</label>
-                    <input id="q-guests" type="number" min="1" inputMode="numeric" placeholder="150" value={form.guest_count} onChange={set("guest_count")} className={field} />
+                    <input id="q-guests" type="number" min="1" inputMode="numeric" placeholder="150" value={form.guest_count} onChange={set("guest_count")} required className={field} />
                   </div>
                 </div>
 
