@@ -54,7 +54,7 @@ export default function StartConversationButton({ vendorId, vendorName }) {
     <Button
       onClick={handleStartChat}
       disabled={isLoading}
-      className="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 rounded-xl h-12 text-base font-medium shadow-lg shadow-indigo-200"
+      className="w-full bg-gradient-to-r from-gold to-gold-text hover:from-gold-text hover:to-ink-deep rounded-xl h-12 text-base font-medium shadow-lg shadow-gold/20"
     >
       <MessageSquare className="h-5 w-5 mr-2" />
       {isLoading ? "Loading..." : "Send Message"}

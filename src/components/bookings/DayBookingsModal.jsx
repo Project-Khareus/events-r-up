@@ -15,7 +15,7 @@ const STATUS_CONFIG = {
   pending: { label: "Pending", className: "bg-yellow-100 text-yellow-800 border-yellow-300" },
   confirmed: { label: "Confirmed", className: "bg-green-100 text-green-800 border-green-300" },
   declined: { label: "Declined", className: "bg-red-100 text-red-800 border-red-300" },
-  completed: { label: "Completed", className: "bg-indigo-100 text-indigo-800 border-indigo-300" }
+  completed: { label: "Completed", className: "bg-gold/15 text-ink border-gold/40" }
 };
 
 export default function DayBookingsModal({ date, bookings, isVendor, open, onClose }) {
@@ -78,7 +78,7 @@ export default function DayBookingsModal({ date, bookings, isVendor, open, onClo
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold flex items-center gap-2">
-            <Calendar className="h-6 w-6 text-indigo-600" />
+            <Calendar className="h-6 w-6 text-gold-text" />
             Bookings for {format(date, 'MMMM d, yyyy')}
           </DialogTitle>
         </DialogHeader>
@@ -94,7 +94,7 @@ export default function DayBookingsModal({ date, bookings, isVendor, open, onClo
                   <div className="flex-1">
                     <Link
                       to={createPageUrl("UserProfile") + `?userId=${isVendor ? booking.user_id : booking.vendor_id}`}
-                      className="font-semibold text-slate-900 hover:text-indigo-600 transition-colors underline decoration-transparent hover:decoration-indigo-600 block"
+                      className="font-semibold text-slate-900 hover:text-gold-text transition-colors underline decoration-transparent hover:decoration-gold block"
                     >
                       {isVendor ? booking.user_name : booking.vendor_name}
                     </Link>
@@ -110,7 +110,7 @@ export default function DayBookingsModal({ date, bookings, isVendor, open, onClo
 
                 <div className="flex items-center gap-4 text-sm text-slate-700 mb-3">
                   <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4 text-indigo-600" />
+                    <Users className="h-4 w-4 text-gold-text" />
                     <span>{booking.guest_count} guests</span>
                   </div>
                 </div>

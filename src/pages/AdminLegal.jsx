@@ -103,7 +103,7 @@ export default function AdminLegal() {
   if (isAuthChecking || isPagesLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-gold-text" />
       </div>
     );
   }
@@ -119,7 +119,7 @@ export default function AdminLegal() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="bg-white border border-slate-200 p-1">
             {LEGAL_PAGES.map(page => (
-              <TabsTrigger key={page.id} value={page.id} className="data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700">
+              <TabsTrigger key={page.id} value={page.id} className="data-[state=active]:bg-gold/10 data-[state=active]:text-gold-text">
                 {page.label}
               </TabsTrigger>
             ))}
@@ -142,7 +142,7 @@ export default function AdminLegal() {
                     href="https://www.markdownguide.org/cheat-sheet/" 
                     target="_blank" 
                     rel="noreferrer"
-                    className="text-xs text-indigo-600 hover:underline flex items-center gap-1"
+                    className="text-xs text-gold-text hover:underline flex items-center gap-1"
                   >
                     <AlertCircle className="h-3 w-3" /> Markdown Help
                   </a>
@@ -159,7 +159,7 @@ export default function AdminLegal() {
                 <Button 
                   onClick={handleSave} 
                   disabled={saveMutation.isPending}
-                  className="bg-indigo-600 hover:bg-indigo-700"
+                  className="bg-gold hover:bg-gold-text"
                 >
                   {saveMutation.isPending ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

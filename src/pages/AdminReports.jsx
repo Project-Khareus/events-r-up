@@ -18,15 +18,15 @@ const REPORT_OUTCOMES = [
   { value: "listing_suspended", label: "Listing Suspended", description: "The vendor listing has been temporarily suspended pending review.", color: "bg-orange-100 text-orange-800" },
   { value: "listing_removed", label: "Listing Removed", description: "The vendor listing has been permanently removed from the platform.", color: "bg-red-100 text-red-800" },
   { value: "no_violation", label: "No Violation Found", description: "After investigation, no policy violation was found.", color: "bg-green-100 text-green-800" },
-  { value: "content_updated", label: "Content Updated", description: "The vendor has been asked to update their listing content.", color: "bg-blue-100 text-blue-800" },
+  { value: "content_updated", label: "Content Updated", description: "The vendor has been asked to update their listing content.", color: "bg-gold/15 text-ink" },
   { value: "account_banned", label: "Account Banned", description: "The vendor's account has been permanently banned.", color: "bg-red-100 text-red-800" },
-  { value: "under_investigation", label: "Under Investigation", description: "This report is currently being investigated.", color: "bg-purple-100 text-purple-800" },
+  { value: "under_investigation", label: "Under Investigation", description: "This report is currently being investigated.", color: "bg-gold/15 text-ink" },
   { value: "duplicate_report", label: "Duplicate Report", description: "This report has already been addressed in a previous report.", color: "bg-slate-100 text-slate-800" },
 ];
 
 const STATUS_MAP = {
   pending: { label: "Pending", color: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300", icon: Clock },
-  reviewed: { label: "Reviewed", color: "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300", icon: Eye },
+  reviewed: { label: "Reviewed", color: "bg-gold/15 text-ink dark:bg-ink-deep/40 dark:text-gold-dark", icon: Eye },
   resolved: { label: "Resolved", color: "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300", icon: CheckCircle },
   dismissed: { label: "Dismissed", color: "bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300", icon: XCircle },
 };
@@ -170,7 +170,7 @@ export default function AdminReports() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-gold-text" />
       </div>
     );
   }
@@ -181,7 +181,7 @@ export default function AdminReports() {
     const isHighlighted = highlightId === report.id;
 
     return (
-      <Card key={report.id} className={`p-6 bg-white dark:bg-slate-800/80 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow ${isHighlighted ? 'ring-2 ring-indigo-500' : ''}`}>
+      <Card key={report.id} className={`p-6 bg-white dark:bg-slate-800/80 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow ${isHighlighted ? 'ring-2 ring-gold' : ''}`}>
         <div className="flex flex-col gap-4">
           {/* Header */}
           <div className="flex items-start justify-between">
@@ -260,7 +260,7 @@ export default function AdminReports() {
                 <MessageSquare className="h-3.5 w-3.5" /> Message Vendor
               </Button>
             )}
-            <Button size="sm" className="gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white ml-auto" onClick={() => handleOpenAction(report)}>
+            <Button size="sm" className="gap-1.5 bg-gold hover:bg-gold-text text-white ml-auto" onClick={() => handleOpenAction(report)}>
               <Shield className="h-3.5 w-3.5" /> Take Action
             </Button>
           </div>
@@ -390,7 +390,7 @@ export default function AdminReports() {
               <Button
                 onClick={handleConfirmAction}
                 disabled={!selectedOutcome || actionMutation.isPending}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                className="bg-gold hover:bg-gold-text text-white"
               >
                 {actionMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Shield className="h-4 w-4 mr-2" />}
                 Confirm Action

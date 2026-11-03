@@ -282,7 +282,7 @@ export default function CreateEvent() {
                 </div>
                 
                 {formData.is_recurring && (
-                    <div className="space-y-4 pl-4 border-l-2 border-indigo-200">
+                    <div className="space-y-4 pl-4 border-l-2 border-gold/30">
                         <div className="space-y-2">
                             <Label>Frequency</Label>
                             <Select 
@@ -340,7 +340,7 @@ export default function CreateEvent() {
             <div className="pt-6">
                 <Button 
                     type="submit" 
-                    className="w-full bg-indigo-600 hover:bg-indigo-700"
+                    className="w-full bg-gold hover:bg-gold-text"
                     disabled={createEventMutation.isPending || isLoading}
                 >
                     {createEventMutation.isPending || isLoading ? (

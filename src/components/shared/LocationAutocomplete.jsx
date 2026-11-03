@@ -158,7 +158,7 @@ export default function LocationAutocomplete({
                   }}
                   className={cn(
                     "flex w-full items-start gap-2 px-4 py-2.5 text-left text-sm transition-colors",
-                    index === activeIndex ? "bg-indigo-50 text-indigo-700" : "text-slate-700 hover:bg-slate-50"
+                    index === activeIndex ? "bg-gold/10 text-gold-text" : "text-slate-700 hover:bg-slate-50"
                   )}
                 >
                   <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />

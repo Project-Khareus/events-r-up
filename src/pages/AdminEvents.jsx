@@ -196,7 +196,7 @@ export default function AdminEvents() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-gold-text" />
       </div>
     );
   }
@@ -233,7 +233,7 @@ export default function AdminEvents() {
               className="pl-10 h-11"
             />
           </div>
-          <Button onClick={handleAiSearch} disabled={isAiSearching} className="bg-indigo-600 hover:bg-indigo-700 gap-2 h-11">
+          <Button onClick={handleAiSearch} disabled={isAiSearching} className="bg-gold hover:bg-gold-text gap-2 h-11">
             {isAiSearching ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
             AI Search
           </Button>
@@ -285,12 +285,12 @@ export default function AdminEvents() {
 
         {/* Bulk Action Bar */}
         {selectedIds.size > 0 && (
-          <div className="flex items-center gap-3 mb-4 p-3 bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800 rounded-xl">
+          <div className="flex items-center gap-3 mb-4 p-3 bg-gold/10 dark:bg-ink-deep/30 border border-gold/30 dark:border-ink rounded-xl">
             <Checkbox
               checked={selectedIds.size === filteredEvents.length}
               onCheckedChange={toggleSelectAll}
             />
-            <span className="text-sm font-medium text-indigo-900 dark:text-indigo-200">
+            <span className="text-sm font-medium text-ink-deep dark:text-cream/80">
               {selectedIds.size} of {filteredEvents.length} selected
             </span>
             <div className="ml-auto flex gap-2">
@@ -328,7 +328,7 @@ export default function AdminEvents() {
           )}
           <div className="grid gap-4">
             {filteredEvents.map((event) => (
-              <Card key={event.id} className={`p-6 bg-white dark:bg-slate-800/80 dark:border-slate-700 overflow-hidden transition-all ${selectedIds.has(event.id) ? 'ring-2 ring-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/20' : ''}`}>
+              <Card key={event.id} className={`p-6 bg-white dark:bg-slate-800/80 dark:border-slate-700 overflow-hidden transition-all ${selectedIds.has(event.id) ? 'ring-2 ring-gold-dark bg-gold/10 dark:bg-ink-deep/20' : ''}`}>
                 <div className="flex flex-col md:flex-row gap-6">
                   {/* Checkbox */}
                   <div className="flex items-start pt-1">
@@ -353,7 +353,7 @@ export default function AdminEvents() {
                         <h3 className="text-xl font-bold text-slate-900">{event.title}</h3>
                         <div className="flex gap-2 mt-1 mb-2">
                           <Badge variant="secondary">{event.theme}</Badge>
-                          <Badge variant={event.is_paid ? "default" : "outline"} className={event.is_paid ? "bg-indigo-600" : "text-green-600 border-green-200"}>
+                          <Badge variant={event.is_paid ? "default" : "outline"} className={event.is_paid ? "bg-gold" : "text-green-600 border-green-200"}>
                              {event.is_paid ? (event.price ? `GH₵${event.price}` : 'Paid') : 'Free'}
                           </Badge>
                         </div>

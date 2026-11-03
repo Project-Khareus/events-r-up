@@ -20,7 +20,7 @@ export default function ContactBookingModal({ vendor, trigger }) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button className="fixed bottom-6 right-6 h-14 px-6 bg-indigo-600 hover:bg-indigo-700 rounded-full shadow-xl shadow-indigo-200 z-40 flex items-center gap-2">
+          <Button className="fixed bottom-6 right-6 h-14 px-6 bg-gold hover:bg-gold-text rounded-full shadow-xl shadow-gold/20 z-40 flex items-center gap-2">
             <MessageCircle className="h-5 w-5" />
             <span className="hidden sm:inline">Contact / Book</span>
           </Button>
@@ -51,8 +51,8 @@ export default function ContactBookingModal({ vendor, trigger }) {
                   href={`mailto:${vendor.contact_email}`}
                   className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
-                    <Mail className="h-5 w-5 text-indigo-600" />
+                  <div className="w-10 h-10 rounded-xl bg-gold/15 flex items-center justify-center">
+                    <Mail className="h-5 w-5 text-gold-text" />
                   </div>
                   <div>
                     <p className="text-xs text-slate-500 dark:text-slate-400">Email</p>
@@ -66,8 +66,8 @@ export default function ContactBookingModal({ vendor, trigger }) {
                   href={`tel:${formatPhone(vendor.contact_phone)}`}
                   className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
-                    <Phone className="h-5 w-5 text-indigo-600" />
+                  <div className="w-10 h-10 rounded-xl bg-gold/15 flex items-center justify-center">
+                    <Phone className="h-5 w-5 text-gold-text" />
                   </div>
                   <div>
                     <p className="text-xs text-slate-500 dark:text-slate-400">Phone</p>
@@ -83,8 +83,8 @@ export default function ContactBookingModal({ vendor, trigger }) {
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
-                    <Globe className="h-5 w-5 text-indigo-600" />
+                  <div className="w-10 h-10 rounded-xl bg-gold/15 flex items-center justify-center">
+                    <Globe className="h-5 w-5 text-gold-text" />
                   </div>
                   <div>
                     <p className="text-xs text-slate-500 dark:text-slate-400">Website</p>
@@ -100,22 +100,22 @@ export default function ContactBookingModal({ vendor, trigger }) {
                 <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Social Media</p>
                 <div className="flex gap-2 flex-wrap">
                   {vendor.instagram && (
-                    <a href={`https://instagram.com/${vendor.instagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white hover:opacity-80 transition-opacity">
+                    <a href={`https://instagram.com/${vendor.instagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-gradient-to-br from-gold to-pink-500 flex items-center justify-center text-white hover:opacity-80 transition-opacity">
                       <Instagram className="h-5 w-5" />
                     </a>
                   )}
                   {vendor.facebook && (
-                    <a href={vendor.facebook.startsWith('http') ? vendor.facebook : `https://facebook.com/${vendor.facebook}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white hover:opacity-80 transition-opacity">
+                    <a href={vendor.facebook.startsWith('http') ? vendor.facebook : `https://facebook.com/${vendor.facebook}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-gold flex items-center justify-center text-white hover:opacity-80 transition-opacity">
                       <Facebook className="h-5 w-5" />
                     </a>
                   )}
                   {vendor.twitter && (
-                    <a href={`https://twitter.com/${vendor.twitter.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-sky-500 flex items-center justify-center text-white hover:opacity-80 transition-opacity">
+                    <a href={`https://twitter.com/${vendor.twitter.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-gold flex items-center justify-center text-white hover:opacity-80 transition-opacity">
                       <Twitter className="h-5 w-5" />
                     </a>
                   )}
                   {vendor.linkedin && (
-                    <a href={vendor.linkedin.startsWith('http') ? vendor.linkedin : `https://linkedin.com/in/${vendor.linkedin}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-blue-700 flex items-center justify-center text-white hover:opacity-80 transition-opacity">
+                    <a href={vendor.linkedin.startsWith('http') ? vendor.linkedin : `https://linkedin.com/in/${vendor.linkedin}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-gold-text flex items-center justify-center text-white hover:opacity-80 transition-opacity">
                       <Linkedin className="h-5 w-5" />
                     </a>
                   )}

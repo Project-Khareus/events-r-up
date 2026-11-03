@@ -219,7 +219,7 @@ export default function AdminVendorDetail() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-gold-text" />
       </div>
     );
   }
@@ -292,7 +292,7 @@ export default function AdminVendorDetail() {
                 </Button>
               </Link>
               <Link to={`${getVendorUrl(vendor)}?id=${vendor.id}&preview=admin`} target="_blank">
-                <Button variant="outline" size="sm" className="text-indigo-600 border-indigo-200 hover:bg-indigo-50 gap-2">
+                <Button variant="outline" size="sm" className="text-gold-text border-gold/30 hover:bg-gold/10 gap-2">
                   <Eye className="h-4 w-4" /> Preview as Public
                 </Button>
               </Link>

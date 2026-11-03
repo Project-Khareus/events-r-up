@@ -1,5 +1,5 @@
 import React from "react";
-import { Award, Facebook, Globe, Instagram, Linkedin, MapPin, Music2, Shield, Star, Twitter } from "lucide-react";
+import { Award, Facebook, Globe, Instagram, Linkedin, MapPin, Music2, Shield, Star, Twitter, Flag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
@@ -38,7 +38,7 @@ export default function VendorInfoCard({ vendor, averageRating, reviewCount, cat
       <div className="mt-2 flex items-center gap-1.5 text-xs">
         <span className="flex text-gold">{[...Array(5)].map((_, index) => <Star key={index} className={`h-3.5 w-3.5 ${index < Math.round(averageRating) ? "fill-current" : "text-[#decfae] dark:text-[#756452]"}`} />)}</span>
         <span className="font-bold text-ink dark:text-[#FCF8F4]">{averageRating.toFixed(1)}/5</span>
-        <a href="#reviews" className="text-slate-500 underline underline-offset-2 dark:text-[#C5B9AC]">({reviewCount} reviews)</a>
+        <a href="#reviews" className="text-slate-500 underline underline-offset-2 dark:text-[#C5B9AC]">({reviewCount} {reviewCount === 1 ? 'review' : 'reviews'})</a>
       </div>
 
       <div className="my-3 border-t border-[#e8dfd4] dark:border-[#655649]" />
@@ -56,7 +56,14 @@ export default function VendorInfoCard({ vendor, averageRating, reviewCount, cat
       <ContactBookingModal vendor={vendor} trigger={<Button className="h-10 flex-1 rounded-lg bg-gold text-sm font-semibold text-ink shadow-none hover:bg-[#be9138]">Contact / Book Now</Button>} />
       <VendorFavoriteButton vendorId={vendor.id} size="icon" className="h-10 w-10 rounded-lg border-[#d9cdbd]" />
       <ShareButton url={`${window.location.origin}${getVendorUrl(vendor)}`} title={`${vendor.business_name} - Event Vendor`} description={vendor.description || `Check out ${vendor.business_name} on Khareus!`} variant="outline" iconOnly className="h-10 w-10 px-0" />
-      <ReportDialog targetType="vendor" targetId={vendor.id} targetName={vendor.business_name} />
+    </div>
+    <div className="text-right">
+      <ReportDialog
+        targetType="vendor"
+        targetId={vendor.id}
+        targetName={vendor.business_name}
+        trigger={<button type="button" className="inline-flex items-center gap-1 text-[11px] text-slate-500 underline-offset-2 hover:text-red-700 hover:underline dark:text-[#C5B9AC]"><Flag className="h-3 w-3" />Report this vendor</button>}
+      />
     </div>
   </div>;
 }

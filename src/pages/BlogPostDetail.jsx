@@ -67,13 +67,13 @@ export default function BlogPostDetail() {
         type="article"
       />
       <div className="max-w-4xl mx-auto px-6 py-12">
-        <Link to={createPageUrl("Blog")} className="inline-flex items-center text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 mb-8 transition-colors">
+        <Link to={createPageUrl("Blog")} className="inline-flex items-center text-slate-500 dark:text-slate-400 hover:text-gold-text dark:hover:text-gold-dark mb-8 transition-colors">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Blog
         </Link>
 
         <div className="space-y-6 text-center max-w-3xl mx-auto mb-12">
-          <span className="text-indigo-600 dark:text-indigo-400 font-semibold tracking-wide text-sm uppercase">{post.category}</span>
+          <span className="text-gold-text dark:text-gold-dark font-semibold tracking-wide text-sm uppercase">{post.category}</span>
           <h1 className="text-3xl md:text-5xl font-serif font-bold text-slate-900 dark:text-white leading-tight">
             {post.title}
           </h1>
@@ -88,7 +88,7 @@ export default function BlogPostDetail() {
                 <AvatarFallback>{post.author_name?.[0]}</AvatarFallback>
               </Avatar>
               <div className="text-left">
-                <Link to={createPageUrl(`UserProfile`) + `?userId=${post.user_id}`} className="hover:underline decoration-indigo-500">
+                <Link to={createPageUrl(`UserProfile`) + `?userId=${post.user_id}`} className="hover:underline decoration-gold">
                   <p className="font-medium text-slate-900 dark:text-white text-sm">{post.author_name}</p>
                 </Link>
                 <p className="text-xs text-slate-500 dark:text-slate-400">Editor</p>
@@ -116,7 +116,7 @@ export default function BlogPostDetail() {
           />
         </div>
 
-        <div className="prose prose-lg prose-slate dark:prose-invert mx-auto prose-headings:font-serif prose-a:text-indigo-600 hover:prose-a:text-indigo-700 dark:prose-a:text-indigo-400 dark:hover:prose-a:text-indigo-300 prose-img:rounded-xl">
+        <div className="prose prose-lg prose-slate dark:prose-invert mx-auto prose-headings:font-serif prose-a:text-gold-text hover:prose-a:text-gold-text dark:prose-a:text-gold-dark dark:hover:prose-a:text-gold-dark prose-img:rounded-xl">
           <ReactMarkdown>{post.content}</ReactMarkdown>
         </div>
 

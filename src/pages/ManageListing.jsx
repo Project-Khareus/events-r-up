@@ -40,7 +40,7 @@ export default function ManageListing() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-gold-text" />
       </div>);
 
   }
@@ -50,7 +50,7 @@ export default function ManageListing() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 py-4 sm:py-8 px-4 sm:px-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-linen/30 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 py-4 sm:py-8 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <div>
@@ -60,7 +60,7 @@ export default function ManageListing() {
           <div className="flex gap-2 sm:gap-3">
             {vendors.length > 0 &&
             <Link to={createPageUrl("VendorAnalytics")}>
-                <Button variant="outline" size="sm" className="border-indigo-200 text-indigo-700 hover:bg-indigo-50 dark:border-indigo-800 dark:text-indigo-400 dark:hover:bg-indigo-950">
+                <Button variant="outline" size="sm" className="border-gold/30 text-gold-text hover:bg-gold/10 dark:border-ink dark:text-gold-dark dark:hover:bg-ink-deep">
                   <BarChart3 className="h-4 w-4 mr-1.5" />
                   Analytics
                 </Button>
@@ -71,7 +71,7 @@ export default function ManageListing() {
               const canAddTrial = trialCount < 3;
               return (
                 <Link to={createPageUrl("VendorSignup")}>
-                  <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700">
+                  <Button size="sm" className="bg-gold hover:bg-gold-text">
                     <Plus className="h-4 w-4 mr-1.5" />
                     <span className="hidden sm:inline">Add New Listing {canAddTrial && `(${3 - trialCount} trial${3 - trialCount !== 1 ? 's' : ''} left)`}</span>
                     <span className="sm:hidden">Add New</span>
@@ -90,7 +90,7 @@ export default function ManageListing() {
             <h3 className="text-slate-950 dark:text-slate-100 mb-2 text-xl font-semibold">No vendor listings yet</h3>
             <p className="text-gray-900 dark:text-slate-300 mb-6">Create your first vendor listing to start getting bookings.</p>
             <Link to={createPageUrl("VendorSignup")}>
-              <Button className="bg-indigo-600 hover:bg-indigo-700">
+              <Button className="bg-gold hover:bg-gold-text">
                 <Plus className="h-4 w-4 mr-2" />
                 Create Your First Listing
               </Button>
@@ -114,7 +114,7 @@ export default function ManageListing() {
               }
                   <div className="absolute top-3 right-3">
                     {vendor.is_trial &&
-                <Badge className="bg-blue-500 text-white mr-1">
+                <Badge className="bg-gold text-white mr-1">
                         Trial
                       </Badge>
                 }
@@ -162,7 +162,7 @@ export default function ManageListing() {
                       <div className={`mb-3 px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5 ${
                         expired ? 'bg-red-50 text-red-700 border border-red-200' :
                         daysLeft <= 3 ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-                        'bg-blue-50 text-blue-700 border border-blue-200'
+                        'bg-gold/10 text-gold-text border border-gold/30'
                       }`}>
                         {expired ? <AlertTriangle className="h-3.5 w-3.5" /> : <Clock className="h-3.5 w-3.5" />}
                         {expired 
@@ -188,7 +188,7 @@ export default function ManageListing() {
                       </Button>
                     </Link>
                     <Link to={createPageUrl("VendorAnalytics")}>
-                      <Button variant="ghost" size="icon" className="text-indigo-600 dark:text-indigo-400 dark:hover:bg-slate-700">
+                      <Button variant="ghost" size="icon" className="text-gold-text dark:text-gold-dark dark:hover:bg-slate-700">
                         <BarChart3 className="h-4 w-4" />
                       </Button>
                     </Link>

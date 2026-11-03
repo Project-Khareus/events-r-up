@@ -112,7 +112,7 @@ export default function BookingCard({ booking, isVendor, currentUserId }) {
         <div className="flex-1">
           <Link
             to={createPageUrl("UserProfile") + `?userId=${isVendor ? booking.user_id : booking.vendor_id}`}
-            className="font-semibold text-lg text-slate-900 mb-1 hover:text-indigo-600 transition-colors underline decoration-transparent hover:decoration-indigo-600 block"
+            className="font-semibold text-lg text-slate-900 mb-1 hover:text-gold-text transition-colors underline decoration-transparent hover:decoration-gold block"
           >
             {isVendor ? booking.user_name : booking.vendor_name}
           </Link>
@@ -128,13 +128,13 @@ export default function BookingCard({ booking, isVendor, currentUserId }) {
 
       <div className="space-y-3 mb-4">
         <div className="flex items-center gap-2 text-slate-700">
-          <Calendar className="h-4 w-4 text-indigo-600" />
+          <Calendar className="h-4 w-4 text-gold-text" />
           <span className="font-medium">Event Date:</span>
           <span>{format(new Date(booking.event_date), "MMMM d, yyyy")}</span>
         </div>
 
         <div className="flex items-center gap-2 text-slate-700">
-          <Users className="h-4 w-4 text-indigo-600" />
+          <Users className="h-4 w-4 text-gold-text" />
           <span className="font-medium">Guests:</span>
           <span>{booking.guest_count}</span>
         </div>
@@ -173,7 +173,7 @@ export default function BookingCard({ booking, isVendor, currentUserId }) {
           <Button
             onClick={() => updateStatusMutation.mutate("completed")}
             disabled={updateStatusMutation.isPending}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 rounded-xl"
+            className="w-full bg-gold hover:bg-gold-text rounded-xl"
           >
             <CheckCircle className="h-4 w-4 mr-2" />
             Mark as Completed
@@ -190,7 +190,7 @@ export default function BookingCard({ booking, isVendor, currentUserId }) {
           disabled={isStartingChat}
           variant="ghost"
           size="sm"
-          className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg"
+          className="text-gold-text hover:text-gold-text hover:bg-gold/10 rounded-lg"
         >
           <MessageSquare className="h-4 w-4 mr-2" />
           Chat

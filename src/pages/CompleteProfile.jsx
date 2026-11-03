@@ -94,7 +94,7 @@ export default function CompleteProfile() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-gold-text" />
       </div>
     );
   }
@@ -103,8 +103,8 @@ export default function CompleteProfile() {
     <div className="min-h-screen bg-slate-50 py-12 px-4 flex items-center justify-center">
       <Card className="max-w-md w-full p-8 bg-white shadow-lg rounded-2xl">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-indigo-50 mb-4">
-            <User className="h-8 w-8 text-indigo-600" />
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gold/10 mb-4">
+            <User className="h-8 w-8 text-gold-text" />
           </div>
           <h1 className="text-2xl font-bold text-slate-900">Complete Your Profile</h1>
           <p className="text-slate-600 mt-2">
@@ -171,7 +171,7 @@ export default function CompleteProfile() {
 
             <Button 
                 type="submit" 
-                className="w-full bg-indigo-600 hover:bg-indigo-700 h-11"
+                className="w-full bg-gold hover:bg-gold-text h-11"
                 disabled={isSaving}
             >
                 {isSaving ? (

@@ -341,7 +341,7 @@ export default function BlogEditor({ post, onSave, onCancel, isAdmin }) {
               </Button>
           )}
 
-          <Button type="submit" disabled={isLoading} className="bg-indigo-600 hover:bg-indigo-700">
+          <Button type="submit" disabled={isLoading} className="bg-gold hover:bg-gold-text">
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             <Save className="mr-2 h-4 w-4" />
             {isAdmin ? "Save Post" : "Save Draft"}

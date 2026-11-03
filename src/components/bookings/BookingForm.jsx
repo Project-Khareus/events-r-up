@@ -162,7 +162,7 @@ export default function BookingForm({ vendorId, vendorName, compact = false }) {
         <Button
           type="submit"
           disabled={createBookingMutation.isPending}
-          className="w-full bg-indigo-600 hover:bg-indigo-700 rounded-xl h-11"
+          className="w-full bg-gold hover:bg-gold-text rounded-xl h-11"
         >
           {createBookingMutation.isPending ? "Submitting..." : "Submit Request"}
         </Button>
@@ -226,7 +226,7 @@ export default function BookingForm({ vendorId, vendorName, compact = false }) {
         <Button
           type="submit"
           disabled={createBookingMutation.isPending}
-          className="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 rounded-xl h-12 text-base font-medium shadow-lg shadow-indigo-200"
+          className="w-full bg-gradient-to-r from-gold to-gold-text hover:from-gold-text hover:to-ink-deep rounded-xl h-12 text-base font-medium shadow-lg shadow-gold/20"
         >
           {createBookingMutation.isPending ? "Submitting..." : "Submit Booking Request"}
         </Button>

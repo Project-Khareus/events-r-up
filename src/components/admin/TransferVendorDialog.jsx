@@ -40,7 +40,7 @@ export default function TransferVendorDialog({ open, onOpenChange, vendor, onSuc
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <ArrowRightLeft className="h-5 w-5 text-indigo-600" />
+            <ArrowRightLeft className="h-5 w-5 text-gold-text" />
             Transfer Vendor Listing
           </DialogTitle>
           <DialogDescription>
@@ -63,7 +63,7 @@ export default function TransferVendorDialog({ open, onOpenChange, vendor, onSuc
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
             Cancel
           </Button>
-          <Button onClick={handleTransfer} disabled={loading} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+          <Button onClick={handleTransfer} disabled={loading} className="bg-gold hover:bg-gold-text text-white">
             {loading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Transferring...</> : "Transfer"}
           </Button>
         </DialogFooter>

@@ -81,7 +81,7 @@ export default function CookiePolicy() {
             <AccordionItem value="item-1">
               <AccordionTrigger className="px-6 py-5 hover:bg-slate-50">
                 <div className="flex items-center gap-3">
-                  <Shield className="h-5 w-5 text-indigo-500" />
+                  <Shield className="h-5 w-5 text-gold" />
                   <span className="text-lg font-medium text-slate-900">1. Why We Use Cookies</span>
                 </div>
               </AccordionTrigger>
@@ -95,7 +95,7 @@ export default function CookiePolicy() {
             <AccordionItem value="item-2">
               <AccordionTrigger className="px-6 py-5 hover:bg-slate-50">
                 <div className="flex items-center gap-3">
-                  <Settings className="h-5 w-5 text-indigo-500" />
+                  <Settings className="h-5 w-5 text-gold" />
                   <span className="text-lg font-medium text-slate-900">2. Types of Cookies We Use</span>
                 </div>
               </AccordionTrigger>
@@ -120,7 +120,7 @@ export default function CookiePolicy() {
             <AccordionItem value="item-3">
               <AccordionTrigger className="px-6 py-5 hover:bg-slate-50">
                 <div className="flex items-center gap-3">
-                  <Cookie className="h-5 w-5 text-indigo-500" />
+                  <Cookie className="h-5 w-5 text-gold" />
                   <span className="text-lg font-medium text-slate-900">3. How to Control Cookies</span>
                 </div>
               </AccordionTrigger>
@@ -137,7 +137,7 @@ export default function CookiePolicy() {
             <AccordionItem value="item-4">
               <AccordionTrigger className="px-6 py-5 hover:bg-slate-50">
                 <div className="flex items-center gap-3">
-                  <Calendar className="h-5 w-5 text-indigo-500" />
+                  <Calendar className="h-5 w-5 text-gold" />
                   <span className="text-lg font-medium text-slate-900">4. Updates to This Policy</span>
                 </div>
               </AccordionTrigger>

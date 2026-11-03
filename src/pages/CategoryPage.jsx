@@ -80,7 +80,7 @@ export default function CategoryPage() {
   return (
     <div className="min-h-screen bg-cream">
       {/* Header */}
-      <div className="bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900 text-white">
+      <div className="bg-gradient-to-br from-slate-900 via-ink-deep to-slate-900 text-white">
         <div className="max-w-7xl mx-auto px-6 py-12 lg:py-16">
           <Link 
             to={createPageUrl("VendorMarketplace")}

@@ -5,9 +5,10 @@ export default defineConfig({
   fullyParallel: true,
   retries: 2,
   workers: 1,
-  reporter: 'html',
+  reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'html',
   use: {
-    baseURL: 'http://localhost:5173', // Your local dev URL
+    // CI tests the deployed app (STAGING_URL secret); locally, the dev server
+    baseURL: process.env.BASE_URL || 'http://localhost:5173',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },

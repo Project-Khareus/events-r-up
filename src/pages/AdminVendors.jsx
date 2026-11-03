@@ -467,7 +467,7 @@ export default function AdminVendors() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-gold-text" />
       </div>
     );
   }
@@ -482,12 +482,12 @@ export default function AdminVendors() {
           </div>
           <div className="flex gap-3">
            <Link to="/AdminCreateVendor">
-             <Button className="bg-indigo-600 hover:bg-indigo-700 gap-2">
+             <Button className="bg-gold hover:bg-gold-text gap-2">
                <Store className="h-4 w-4" /> Create Listing
              </Button>
            </Link>
            <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200">
-             <span className="font-semibold text-indigo-600">{pendingVendors.length}</span> New
+             <span className="font-semibold text-gold-text">{pendingVendors.length}</span> New
            </div>
            <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-orange-200">
              <span className="font-semibold text-orange-600">{vendorsWithChanges.length}</span> Updates
@@ -810,11 +810,11 @@ export default function AdminVendors() {
                                 <Button
                                   variant="outline"
                                   size="icon"
-                                  className="h-9 w-9 border-indigo-200 hover:bg-indigo-50"
+                                  className="h-9 w-9 border-gold/30 hover:bg-gold/10"
                                   title="Transfer Listing"
                                   onClick={() => setTransferVendor(vendor)}
                                 >
-                                  <ArrowRightLeft className="h-4 w-4 text-indigo-500" />
+                                  <ArrowRightLeft className="h-4 w-4 text-gold" />
                                 </Button>
                                 <Button
                                   variant="outline"

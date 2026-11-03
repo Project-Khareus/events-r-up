@@ -93,7 +93,7 @@ export default function Settings() {
   if (loadingUser) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-gold-text" />
       </div>
     );
   }
@@ -104,7 +104,7 @@ export default function Settings() {
     <div className="min-h-screen bg-cream dark:bg-ink py-12 px-4 sm:px-6">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
-          <div className="h-12 w-12 bg-gradient-to-br from-indigo-600 to-indigo-700 rounded-2xl flex items-center justify-center shadow-lg">
+          <div className="h-12 w-12 bg-gradient-to-br from-gold to-gold-text rounded-2xl flex items-center justify-center shadow-lg">
             <SettingsIcon className="h-6 w-6 text-white" />
           </div>
           <div>
@@ -149,7 +149,7 @@ export default function Settings() {
                     <div className="flex items-center gap-4 mt-2">
                       <Avatar className="w-20 h-20">
                         <AvatarImage src={userProfile?.avatar_url || user?.profile_picture_url} />
-                        <AvatarFallback className="text-2xl bg-indigo-100 text-indigo-700">
+                        <AvatarFallback className="text-2xl bg-gold/15 text-gold-text">
                           {(userProfile?.display_name || user?.full_name)?.[0] || 'U'}
                         </AvatarFallback>
                       </Avatar>

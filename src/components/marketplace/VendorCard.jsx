@@ -117,8 +117,8 @@ export default function VendorCard({ vendor, reviews = [], size = "auto", showCa
                 )}
               </div>
               {vendor.starting_price && currency && (
-                <span className="font-serif text-[13px] text-ink dark:text-[#F1E8E0]">
-                  {formatPrice(vendor.starting_price, currency)}
+                <span className="text-[14px] font-medium tabular-nums text-ink dark:text-[#F1E8E0]">
+                  <span className="text-[11px] font-normal text-[rgba(59,50,43,0.6)] dark:text-[rgba(241,232,224,0.6)] mr-1">From</span>{formatPrice(vendor.starting_price, currency)}
                 </span>
               )}
             </div>

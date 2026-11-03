@@ -85,7 +85,7 @@ export default function CalendarView({ bookings, isVendor }) {
             <span className="text-slate-600">Confirmed</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-3 w-3 rounded-full bg-indigo-500"></div>
+            <div className="h-3 w-3 rounded-full bg-gold"></div>
             <span className="text-slate-600">Completed</span>
           </div>
         </div>
@@ -116,7 +116,7 @@ export default function CalendarView({ bookings, isVendor }) {
                 className={`
                   min-h-24 p-2 rounded-xl border transition-all relative
                   ${isCurrentMonth ? 'bg-white hover:bg-slate-50' : 'bg-slate-50 text-slate-400'}
-                  ${isToday ? 'border-indigo-500 border-2' : 'border-slate-200'}
+                  ${isToday ? 'border-gold border-2' : 'border-slate-200'}
                   ${dayBookings.length > 0 ? 'cursor-pointer hover:shadow-md' : 'cursor-default'}
                 `}
               >
@@ -128,7 +128,7 @@ export default function CalendarView({ bookings, isVendor }) {
                     <div className="flex items-center justify-center gap-1 flex-wrap">
                       {hasPending && <div className="h-2 w-2 rounded-full bg-yellow-400"></div>}
                       {hasConfirmed && <div className="h-2 w-2 rounded-full bg-green-500"></div>}
-                      {hasCompleted && <div className="h-2 w-2 rounded-full bg-indigo-500"></div>}
+                      {hasCompleted && <div className="h-2 w-2 rounded-full bg-gold"></div>}
                     </div>
                     <Badge variant="secondary" className="text-xs px-1 py-0 h-5">
                       {dayBookings.length}

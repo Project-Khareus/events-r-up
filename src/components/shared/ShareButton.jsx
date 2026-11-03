@@ -108,17 +108,17 @@ export default function ShareButton({
         <DropdownMenuSeparator />
         
         <DropdownMenuItem onClick={() => shareToSocial("facebook")}>
-          <Facebook className="mr-2 h-4 w-4 text-blue-600" />
+          <Facebook className="mr-2 h-4 w-4 text-gold-text" />
           <span>Share on Facebook</span>
         </DropdownMenuItem>
         
         <DropdownMenuItem onClick={() => shareToSocial("twitter")}>
-          <Twitter className="mr-2 h-4 w-4 text-sky-500" />
+          <Twitter className="mr-2 h-4 w-4 text-gold" />
           <span>Share on Twitter</span>
         </DropdownMenuItem>
         
         <DropdownMenuItem onClick={() => shareToSocial("linkedin")}>
-          <Linkedin className="mr-2 h-4 w-4 text-blue-700" />
+          <Linkedin className="mr-2 h-4 w-4 text-gold-text" />
           <span>Share on LinkedIn</span>
         </DropdownMenuItem>
         
