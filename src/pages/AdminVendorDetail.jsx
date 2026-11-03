@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "../utils";
-import { buildApprovedChanges } from "@/lib/vendorPendingChanges";
+import { buildApprovedChanges, summarizePendingChanges } from "@/lib/vendorPendingChanges";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -144,8 +144,7 @@ export default function AdminVendorDetail() {
       const manageLink = `https://khareus.com/managelisting`;
       const viewLink = `https://khareus.com${getVendorUrl(vendor)}`;
 
-      const changes = Object.keys(vendor.pending_changes || {})
-        .filter(key => JSON.stringify(vendor[key]) !== JSON.stringify(vendor.pending_changes[key]));
+      const changes = summarizePendingChanges(vendor);
 
       try {
         await base44.functions.invoke("notifyVendorAction", { vendorId: vendor.id, action: 'changes_approved' });
@@ -184,8 +183,7 @@ export default function AdminVendorDetail() {
       const manageLink = `https://khareus.com/managelisting`;
       const messageLink = `https://khareus.com/messages?admin=true`;
 
-      const changes = Object.keys(vendor.pending_changes || {})
-        .filter(key => JSON.stringify(vendor[key]) !== JSON.stringify(vendor.pending_changes[key]));
+      const changes = summarizePendingChanges(vendor);
 
       try {
         await base44.functions.invoke("notifyVendorAction", { vendorId: vendor.id, action: 'changes_rejected', reason: rejectionReason });
