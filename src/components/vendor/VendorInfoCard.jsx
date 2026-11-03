@@ -2,7 +2,8 @@ import React from "react";
 import { Award, Facebook, Globe, Instagram, Linkedin, MapPin, Music2, Shield, Star, Twitter, Flag, FileText } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import QuoteRequestDialog from "@/components/quotes/QuoteRequestDialog";
-import { whatsappLink, vendorWhatsAppMessage } from "@/components/utils/whatsapp";
+import { whatsappLinks, vendorWhatsAppMessage } from "@/components/utils/whatsapp";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
@@ -31,7 +32,9 @@ function WhatsAppIcon({ className }) {
 }
 
 export default function VendorInfoCard({ vendor, averageRating, reviewCount, categoryLabels, showAllCategories, setShowAllCategories }) {
-  const waLink = whatsappLink(vendor.contact_phone, vendorWhatsAppMessage(vendor, typeof window !== "undefined" ? window.location.href : ""));
+  const waNumbers = whatsappLinks(vendor.contact_phone, vendorWhatsAppMessage(vendor, typeof window !== "undefined" ? window.location.href : ""));
+  const trackWhatsApp = () => { try { base44.analytics?.track?.({ eventName: "vendor_whatsapp_click", properties: { vendor_id: vendor.id } }); } catch { /* analytics is best-effort */ } };
+  const waButtonClass = "h-10 w-full inline-flex items-center justify-center gap-2 rounded-lg bg-[#1F7A4D] hover:bg-[#19663F] text-sm font-semibold text-white transition-colors";
   const categories = Array.isArray(vendor.category) ? vendor.category : [vendor.category];
   const socials = networkLinks(vendor);
   const visibleCategories = categories.slice(0, showAllCategories ? undefined : 2);
@@ -70,17 +73,31 @@ export default function VendorInfoCard({ vendor, averageRating, reviewCount, cat
       <ShareButton url={`${window.location.origin}${getVendorUrl(vendor)}`} title={`${vendor.business_name} - Event Vendor`} description={vendor.description || `Check out ${vendor.business_name} on Khareus!`} variant="outline" iconOnly className="h-10 w-10 px-0" />
     </div>
     {(
-      <div className={`grid gap-2 ${waLink ? "grid-cols-2" : "grid-cols-1"}`}>
-        {waLink && (
-          <a
-            href={waLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => { try { base44.analytics?.track?.({ eventName: "vendor_whatsapp_click", properties: { vendor_id: vendor.id } }); } catch { /* analytics is best-effort */ } }}
-            className="h-10 inline-flex items-center justify-center gap-2 rounded-lg bg-[#1F7A4D] hover:bg-[#19663F] text-sm font-semibold text-white transition-colors"
-          >
+      <div className={`grid gap-2 ${waNumbers.length ? "grid-cols-2" : "grid-cols-1"}`}>
+        {waNumbers.length === 1 && (
+          <a href={waNumbers[0].href} target="_blank" rel="noopener noreferrer" onClick={trackWhatsApp} className={waButtonClass}>
             <WhatsAppIcon className="h-4 w-4" />WhatsApp
           </a>
+        )}
+        {waNumbers.length > 1 && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button type="button" className={waButtonClass}>
+                <WhatsAppIcon className="h-4 w-4" />WhatsApp
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="min-w-[220px] rounded-lg">
+              <DropdownMenuLabel className="text-xs font-normal text-slate-500">Choose a number</DropdownMenuLabel>
+              {waNumbers.map((n) => (
+                <DropdownMenuItem key={n.intl} asChild>
+                  <a href={n.href} target="_blank" rel="noopener noreferrer" onClick={trackWhatsApp} className="flex items-center gap-2 cursor-pointer">
+                    <WhatsAppIcon className="h-4 w-4 text-[#1F7A4D]" />
+                    <span className="tabular-nums">{n.display}</span>
+                  </a>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
         <QuoteRequestDialog
           vendor={vendor}

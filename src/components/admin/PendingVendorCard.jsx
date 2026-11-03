@@ -1,4 +1,5 @@
 import React from "react";
+import { whatsappLink, parsePhoneNumbers } from "@/components/utils/whatsapp";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -46,19 +47,9 @@ function GhanaCardStatusBadge({ status }) {
   return <Badge className="bg-amber-50 text-amber-700 border border-amber-200 gap-1 font-medium"><ShieldAlert className="h-3 w-3" />Pending</Badge>;
 }
 
-function formatPhone(phone) {
-  if (!phone) return 'N/A';
-  if (phone.startsWith('+')) return phone;
-  if (phone.startsWith('0')) return '+233' + phone.substring(1);
-  return '+233' + phone;
-}
-
 function getWhatsAppLink(phone) {
-  if (!phone) return null;
-  const digits = formatPhone(phone).replace(/\D/g, '');
   const editLink = `${window.location.origin}/ManageListing`;
-  const text = encodeURIComponent(`Hello! This is the Khareus team regarding your vendor listing. You can view and edit your listing here: ${editLink}`);
-  return `https://wa.me/${digits}?text=${text}`;
+  return whatsappLink(phone, `Hello! This is the Khareus team regarding your vendor listing. You can view and edit your listing here: ${editLink}`);
 }
 
 export default function PendingVendorCard({
@@ -151,7 +142,7 @@ export default function PendingVendorCard({
         {/* Contact Info Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
           <InfoCell icon={<Mail className="h-3.5 w-3.5" />} label="Email" value={vendor.contact_email || 'N/A'} truncate />
-          <InfoCell icon={<Phone className="h-3.5 w-3.5" />} label="Phone" value={formatPhone(vendor.contact_phone)} />
+          <InfoCell icon={<Phone className="h-3.5 w-3.5" />} label="Phone" value={parsePhoneNumbers(vendor.contact_phone).map(n => n.display).join(" · ") || "N/A"} />
           <InfoCell icon={<DollarSign className="h-3.5 w-3.5" />} label="Starting Price" value={vendor.starting_price ? formatPrice(vendor.starting_price, currency) + '+' : 'N/A'} />
           <InfoCell icon={<Calendar className="h-3.5 w-3.5" />} label="Submitted" value={new Date(vendor.created_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} />
         </div>
