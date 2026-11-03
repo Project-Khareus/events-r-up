@@ -15,7 +15,8 @@ const STATUS_CONFIG = {
   pending: { label: "Pending", className: "bg-yellow-100 text-yellow-800 border-yellow-300" },
   confirmed: { label: "Confirmed", className: "bg-green-100 text-green-800 border-green-300" },
   declined: { label: "Declined", className: "bg-red-100 text-red-800 border-red-300" },
-  completed: { label: "Completed", className: "bg-gold/15 text-ink border-gold/40" }
+  completed: { label: "Completed", className: "bg-gold/15 text-ink border-gold/40" },
+  quoted: { label: "Quote sent", className: "bg-gold/10 text-gold-text border-gold/30" }
 };
 
 export default function DayBookingsModal({ date, bookings, isVendor, open, onClose }) {
@@ -85,8 +86,8 @@ export default function DayBookingsModal({ date, bookings, isVendor, open, onClo
 
         <div className="space-y-4 mt-4">
           {bookings.map((booking) => {
-            const statusConfig = STATUS_CONFIG[booking.status];
-            const canManage = isVendor && booking.status === "pending";
+            const statusConfig = STATUS_CONFIG[booking.status] || STATUS_CONFIG.pending;
+            const canManage = isVendor && booking.status === "pending" && booking.request_type !== "quote";
 
             return (
               <Card key={booking.id} className="p-4 border-slate-200">
