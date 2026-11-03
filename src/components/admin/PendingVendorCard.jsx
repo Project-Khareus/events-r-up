@@ -7,7 +7,7 @@ import { Loader2, CheckCircle, XCircle, ExternalLink, Eye, CreditCard, ShieldChe
 import { Link } from "react-router-dom";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 import { getVendorUrl } from "../../utils/vendorUrl";
-import formatVendorLocation from "@/components/utils/formatLocation";
+import { getVendorLocations, formatVendorLocationsShort } from "@/components/utils/vendorLocations";
 
 const EVENT_TYPE_LABELS = {
   weddings: "Weddings",
@@ -90,10 +90,10 @@ export default function PendingVendorCard({
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <h3 className="text-lg font-bold text-slate-900 truncate">{vendor.business_name}</h3>
-                {vendor.location && (
+                {getVendorLocations(vendor).length > 0 && (
                   <div className="flex items-center gap-1 text-sm text-slate-500 mt-0.5">
                     <MapPin className="h-3.5 w-3.5 shrink-0" />
-                    <span className="truncate">{formatVendorLocation(vendor.location)}</span>
+                    <span className="truncate">{formatVendorLocationsShort(vendor)}</span>
                   </div>
                 )}
               </div>

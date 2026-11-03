@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getLocationCity } from "@/components/utils/formatLocation";
 import StepHeading from "./StepHeading";
 import { outlineBtn } from "./StepNav";
+import { getVendorLocations } from "@/components/utils/vendorLocations";
 
 export default function VendorResults({ eventType, location, budget, selectedCategories, onBack }) {
   const [prioritize, setPrioritize] = useState("budget");
@@ -25,7 +26,12 @@ export default function VendorResults({ eventType, location, budget, selectedCat
       .filter(Boolean)
       .map((vendor) => (vendor.data ? { id: vendor.id, ...vendor.data } : vendor))
       .filter((vendor) => vendor?.id && vendor.status === "approved")
-      .map((vendor) => ({ ...vendor, city: getLocationCity(vendor.location) }))
+      .map((vendor) => {
+        // Use the vendor location in the chosen city if they serve several
+        const cities = getVendorLocations(vendor).map((l) => getLocationCity(l)).filter(Boolean);
+        const city = (selectedCity && cities.includes(selectedCity)) ? selectedCity : (cities[0] || getLocationCity(vendor.location) || "");
+        return { ...vendor, city };
+      })
       .filter((vendor) => {
         const vendorEvents = Array.isArray(vendor.event_type) ? vendor.event_type : [vendor.event_type].filter(Boolean);
         const vendorCategories = Array.isArray(vendor.category) ? vendor.category : [vendor.category].filter(Boolean);

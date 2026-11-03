@@ -1,10 +1,11 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
-import LocationAutocomplete from "@/components/shared/LocationAutocomplete";
 import { AlertCircle, Check, ArrowRight } from "lucide-react";
 import { PANEL, H2, SUB, LABEL, INPUT, BTN_PRIMARY, CHIP, CHIP_ON } from "./wizardStyles";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import MultiLocationInput from "@/components/vendor/MultiLocationInput";
+import { getVendorLocations, locationFields } from "@/components/utils/vendorLocations";
 
 const EVENT_TYPES = [
   { value: "weddings", label: "Weddings" },
@@ -132,11 +133,10 @@ export default function StepBusiness({ formData, setFormData, onNext, initialDat
         </div>
 
         <div>
-          <p className={LABEL}>Location</p>
-          <LocationAutocomplete
-            value={formData.location}
-            onChange={(location) => setFormData({ ...formData, location })}
-            placeholder="e.g., Osu, Accra, Ghana"
+          <p className={LABEL}>Locations you serve</p>
+          <MultiLocationInput
+            value={getVendorLocations(formData)}
+            onChange={(list) => setFormData({ ...formData, ...locationFields(list) })}
             className="mt-2"
           />
         </div>

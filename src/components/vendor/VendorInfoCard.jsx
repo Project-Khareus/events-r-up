@@ -7,12 +7,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
-import formatVendorLocation from "@/components/utils/formatLocation";
 import ContactBookingModal from "@/components/vendor/ContactBookingModal";
 import VendorFavoriteButton from "@/components/vendor/VendorFavoriteButton";
 import ShareButton from "@/components/shared/ShareButton";
 import ReportDialog from "@/components/reports/ReportDialog";
 import { getVendorUrl } from "@/utils/vendorUrl";
+import { formatVendorLocationsFull } from "@/components/utils/vendorLocations";
 
 const networkLinks = (vendor) => [
   vendor.website && [Globe, vendor.website.startsWith("http") ? vendor.website : `https://${vendor.website}`, "Website"],
@@ -47,7 +47,7 @@ export default function VendorInfoCard({ vendor, averageRating, reviewCount, cat
       <div className="mt-3 flex flex-wrap items-center gap-2">
         {visibleCategories.map((category) => <Badge key={category} className="rounded-full border border-[#e7d4af] bg-[#f7edd9] px-2.5 py-0.5 text-[11px] font-semibold text-[#8A6522] hover:bg-[#f7edd9]">{categoryLabels[category] || category}</Badge>)}
         {categories.length > 2 && !showAllCategories && <button type="button" onClick={() => setShowAllCategories(true)} className="text-xs font-medium text-gold-text">+{categories.length - 2} more</button>}
-        {vendor.location && <span className="flex items-center gap-1 text-xs text-slate-500 dark:text-[#C5B9AC]"><MapPin className="h-3.5 w-3.5 text-gold" />{formatVendorLocation(vendor.location)}</span>}
+        {formatVendorLocationsFull(vendor).length > 0 && <span className="flex items-start gap-1 text-xs text-slate-500 dark:text-[#C5B9AC]"><MapPin className="h-3.5 w-3.5 text-gold shrink-0 mt-px" /><span>{formatVendorLocationsFull(vendor).join(" · ")}</span></span>}
       </div>
 
       <div className="mt-2 flex items-center gap-1.5 text-xs">

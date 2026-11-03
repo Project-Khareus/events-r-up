@@ -7,6 +7,7 @@ import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "../../utils";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
+import { formatVendorLocationsShort } from "@/components/utils/vendorLocations";
 
 const EVENT_TYPES = [
   { value: "weddings", label: "Wedding" },
@@ -219,7 +220,7 @@ export default function QuoteRequestDialog({ vendor, trigger }) {
                             <Checkbox id={`q-extra-${v.id}`} checked={checked} disabled={disabled} onCheckedChange={() => toggleExtra(v.id)} />
                             <span className="flex-1 min-w-0">
                               <span className="block text-sm text-ink dark:text-[#F1E8E0] truncate">{v.business_name}</span>
-                              <span className="block text-xs text-[rgba(59,50,43,0.6)] dark:text-[rgba(241,232,224,0.6)] truncate">{v.location}{v.rating ? ` · ★ ${Number(v.rating).toFixed(1)}` : ""}</span>
+                              <span className="block text-xs text-[rgba(59,50,43,0.6)] dark:text-[rgba(241,232,224,0.6)] truncate">{formatVendorLocationsShort(v)}{v.rating ? ` · ★ ${Number(v.rating).toFixed(1)}` : ""}</span>
                             </span>
                           </label>
                         );

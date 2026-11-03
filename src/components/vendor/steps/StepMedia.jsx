@@ -12,6 +12,8 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Upload, Loader2, X, Plus, Facebook, Check, ArrowRight, ArrowLeft } from "lucide-react";
 import { CURRENCY_OPTIONS } from "@/components/utils/currency";
+import MultiLocationInput from "@/components/vendor/MultiLocationInput";
+import { getVendorLocations, locationFields } from "@/components/utils/vendorLocations";
 
 const COMMON_SERVICES = [
   "Photography", "Videography", "Catering", "DJ Services", "Live Band",
@@ -227,11 +229,15 @@ export default function StepMedia({ formData, setFormData, onNext, onBack }) {
         </div>
 
         {/* Location + Price */}
-        <div className="grid md:grid-cols-3 gap-4">
-          <div>
-            <p className={LABEL}>Location</p>
-            <Input value={formData.location} onChange={(e) => setFormData({ ...formData, location: e.target.value })} placeholder="City, State" className={INPUT} />
-          </div>
+        <div>
+          <p className={LABEL}>Locations you serve</p>
+          <MultiLocationInput
+            value={getVendorLocations(formData)}
+            onChange={(list) => setFormData({ ...formData, ...locationFields(list) })}
+            className="mt-2"
+          />
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
           <div>
             <p className={LABEL}>Years in business</p>
             <Input type="number" value={formData.years_in_business} onChange={(e) => setFormData({ ...formData, years_in_business: e.target.value })} placeholder="e.g., 5" className={INPUT} />

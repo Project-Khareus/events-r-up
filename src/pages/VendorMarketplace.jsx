@@ -16,6 +16,7 @@ import FilterControls from "../components/marketplace/FilterControls";
 import MarketplaceContent from "../components/marketplace/MarketplaceContent";
 import { rankVendors } from "@/lib/semanticSearch";
 import { getLocationCity } from "@/components/utils/formatLocation";
+import { getVendorLocations } from "@/components/utils/vendorLocations";
 
 const matchesLocation = (vendorLocation, selectedLocation) => {
   const query = String(selectedLocation || "").trim();
@@ -26,6 +27,13 @@ const matchesLocation = (vendorLocation, selectedLocation) => {
   if (queryCity && vendorCity) return queryCity === vendorCity;
 
   return String(vendorLocation || "").toLowerCase().includes(query.toLowerCase());
+};
+
+// A vendor matches if any of the places they serve matches
+const matchesVendorLocations = (vendor, selectedLocation) => {
+  const list = getVendorLocations(vendor);
+  if (!list.length) return matchesLocation("", selectedLocation);
+  return list.some((loc) => matchesLocation(loc, selectedLocation));
 };
 
 const CATEGORY_LABELS = {
@@ -124,7 +132,7 @@ export default function VendorMarketplace() {
       const matchesCategory = category === "all" || vendorCategories.length === 0 || vendorCategories.includes(category);
       const matchesPrice = priceRange === "all" || !vendor.price_range || vendor.price_range === priceRange;
 
-      const locationMatches = matchesLocation(vendor.location, location);
+      const locationMatches = matchesVendorLocations(vendor, location);
 
       const matchesRating = minRating === 0 ||
       vendor.rating && vendor.rating >= minRating;
@@ -151,7 +159,7 @@ export default function VendorMarketplace() {
   }, [vendors, searchQuery, eventType, category, priceRange, sortBy, location, minRating, minYears]);
 
   const homepageVendors = useMemo(() => {
-    return vendors.filter((vendor) => matchesLocation(vendor.location, location));
+    return vendors.filter((vendor) => matchesVendorLocations(vendor, location));
   }, [vendors, location]);
 
   const featuredVendors = useMemo(() => {

@@ -2,9 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { MapPin, Star } from "lucide-react";
 import { getVendorUrl } from "../../../utils/vendorUrl";
-import formatVendorLocation from "@/components/utils/formatLocation";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 import VendorFavoriteButton from "../../vendor/VendorFavoriteButton";
+import { getVendorLocations, formatVendorLocationsShort } from "@/components/utils/vendorLocations";
 
 export default function HomeVendorOfTheWeek({ vendor }) {
   if (!vendor) return null;
@@ -38,9 +38,9 @@ export default function HomeVendorOfTheWeek({ vendor }) {
           </h2>
 
           <div className="mt-3 flex items-center gap-4 text-[12px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">
-            {vendor.location && (
+            {getVendorLocations(vendor).length > 0 && (
               <span className="flex items-center gap-1">
-                <MapPin className="h-3.5 w-3.5" /> {formatVendorLocation(vendor.location)}
+                <MapPin className="h-3.5 w-3.5" /> {formatVendorLocationsShort(vendor)}
               </span>
             )}
             {vendor.rating && (

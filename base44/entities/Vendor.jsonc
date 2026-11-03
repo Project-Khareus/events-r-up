@@ -92,7 +92,14 @@
     },
     "location": {
       "type": "string",
-      "description": "City or region where vendor operates"
+      "description": "Main city or region where vendor operates (the first of locations)"
+    },
+    "locations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "All towns and cities the vendor serves; the first is the main location"
     },
     "starting_price": {
       "type": "number",

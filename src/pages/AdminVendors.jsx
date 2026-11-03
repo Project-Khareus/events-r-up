@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import formatVendorLocation from "@/components/utils/formatLocation";
 import { buildApprovedChanges } from "@/lib/vendorPendingChanges";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -19,6 +18,7 @@ import TransferVendorDialog from "@/components/admin/TransferVendorDialog";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 import { capitalizeHtmlSentences } from "@/components/utils/capitalizeHtml";
 import { getVendorUrl } from "../utils/vendorUrl";
+import { getVendorLocations, formatVendorLocationsShort } from "@/components/utils/vendorLocations";
 
 const CATEGORY_LABELS = {
   event_planner: "Event Planner",
@@ -111,7 +111,7 @@ export default function AdminVendors() {
     return vendors.filter(v => 
       v.business_name?.toLowerCase().includes(query) ||
       v.contact_email?.toLowerCase().includes(query) ||
-      v.location?.toLowerCase().includes(query) ||
+      getVendorLocations(v).join(' ').toLowerCase().includes(query) ||
       (Array.isArray(v.category) && v.category.some(cat => cat.toLowerCase().includes(query)))
     );
   };
@@ -769,7 +769,7 @@ export default function AdminVendors() {
                               {CATEGORY_LABELS[primaryCategory] || primaryCategory || '-'}
                             </td>
                             <td className="px-4 py-4 text-sm text-slate-600">
-                              {vendor.location ? formatVendorLocation(vendor.location) : '-'}
+                              {formatVendorLocationsShort(vendor) || '-'}
                             </td>
                             <td className="px-4 py-4">
                               <div className="flex items-center gap-0.5">
@@ -882,7 +882,7 @@ export default function AdminVendors() {
                               {CATEGORY_LABELS[primaryCategory] || primaryCategory || '-'}
                             </td>
                             <td className="px-4 py-4 text-sm text-slate-600">
-                              {vendor.location ? formatVendorLocation(vendor.location) : '-'}
+                              {formatVendorLocationsShort(vendor) || '-'}
                             </td>
                             <td className="px-4 py-4 text-sm text-red-600 max-w-[250px]">
                               {vendor.suspension_reason || 'No reason provided'}
