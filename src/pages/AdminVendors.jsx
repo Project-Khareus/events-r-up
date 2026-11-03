@@ -450,6 +450,14 @@ export default function AdminVendors() {
     }
   });
 
+  const trackVerificationClick = () => {
+    Promise.resolve().then(() => {
+      if (localStorage.getItem("cookie_consent") === "accepted") {
+        return base44.analytics.track({ eventName: "vendor_profile_verification_click" });
+      }
+    }).catch(() => {});
+  };
+
   const ghanaCardStatusBadge = (status) => {
     if (status === 'verified') return <Badge className="bg-green-100 text-green-800 gap-1"><ShieldCheck className="h-3 w-3" />Verified</Badge>;
     if (status === 'failed') return <Badge className="bg-red-100 text-red-800 gap-1"><ShieldX className="h-3 w-3" />Failed</Badge>;
@@ -544,7 +552,10 @@ export default function AdminVendors() {
                     vendor={vendor}
                     onApprove={(v) => approveMutation.mutate(v)}
                     onReject={(vendor) => handleVendorRejectClick(vendor)}
-                    onVerifyCard={(id) => verifyGhanaCardMutation.mutate(id)}
+                    onVerifyCard={(id) => {
+                      trackVerificationClick();
+                      verifyGhanaCardMutation.mutate(id);
+                    }}
                     onViewCard={(v) => setGhanaCardDialogVendor(v)}
                     isApproving={approveMutation.isPending && approveMutation.variables?.id === vendor.id}
                     isRejecting={rejectMutation.isPending}
@@ -1055,6 +1066,7 @@ export default function AdminVendors() {
               <Button variant="outline" onClick={() => setGhanaCardDialogVendor(null)}>Close</Button>
               <Button
                 onClick={() => {
+                  trackVerificationClick();
                   verifyGhanaCardMutation.mutate(ghanaCardDialogVendor.id);
                   setGhanaCardDialogVendor(null);
                 }}
