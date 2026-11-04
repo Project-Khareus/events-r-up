@@ -1,7 +1,7 @@
 import React from "react";
 import { base44 } from "@/api/base44Client";
 import formatVendorLocation from "@/components/utils/formatLocation";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import VendorInfoCard from "@/components/vendor/VendorInfoCard";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -33,7 +33,7 @@ import ReportDialog from "../components/reports/ReportDialog";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 import { capitalizeHtmlSentences } from "@/components/utils/capitalizeHtml";
 import { sanitizeHtml } from "@/lib/sanitizeHtml";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { parseVendorSlug, getVendorUrl, getVendorNameFromSlug, normalizeVendorName } from "../utils/vendorUrl";
 import "@/components/vendor/vendorDetailDark.css";
 
@@ -76,6 +76,8 @@ const CATEGORY_LABELS = {
 
 export default function VendorDetail() {
   const { slug } = useParams();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const urlParams = new URLSearchParams(window.location.search);
   // Support both /vendor/:slug and legacy ?id= URLs
   const vendorIdFromQuery = urlParams.get("id");
@@ -119,13 +121,20 @@ export default function VendorDetail() {
     staleTime: 300000,
   });
 
-  // Redirect legacy ?id= URLs to clean slug URLs
+  // Redirect legacy ?id= URLs (used in emails and promo banners) to clean slug URLs.
+  // This must go through the router: changing the address behind its back left
+  // the page with neither an id nor a slug, so it showed "Vendor not found".
   React.useEffect(() => {
     if (vendor && vendorIdFromQuery && !slug) {
       const cleanUrl = getVendorUrl(vendor);
-      window.history.replaceState(null, '', cleanUrl);
+      // Hand the loaded vendor to the slug page so it doesn't load again
+      queryClient.setQueryData(['vendor', parseVendorSlug(cleanUrl.split('/').pop())], vendor);
+      const rest = new URLSearchParams(window.location.search);
+      rest.delete('id');
+      const query = rest.toString();
+      navigate(`${cleanUrl}${query ? `?${query}` : ''}${window.location.hash}`, { replace: true });
     }
-  }, [vendor, vendorIdFromQuery, slug]);
+  }, [vendor, vendorIdFromQuery, slug, navigate, queryClient]);
 
   const { data: currentUser, isLoading: isLoadingUser } = useQuery({
     queryKey: ['currentUser'],
