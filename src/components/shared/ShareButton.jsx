@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Share2, Copy, Check, Facebook, Twitter, Linkedin, Mail } from "lucide-react";
+import { Share2, Copy, Check, Facebook, Twitter, Linkedin, Mail, MessageCircle } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,16 +15,20 @@ export default function ShareButton({
   title, 
   description,
   socialUrl,
+  // When true, every option (copy, phone share sheet, WhatsApp) shares socialUrl,
+  // so a pasted link still shows the item's own preview in chat apps.
+  previewEverywhere = false,
   variant = "outline",
   size = "default",
   className = "",
   iconOnly = false
 }) {
   const [copied, setCopied] = useState(false);
-  const shareUrl = url || window.location.href;
+  const pageUrl = url || window.location.href;
   // URL used for platforms that render link previews (Facebook, Twitter, LinkedIn) —
   // point it at an endpoint that serves the item's own og:image/og:title server-side.
-  const previewUrl = socialUrl || shareUrl;
+  const previewUrl = socialUrl || pageUrl;
+  const shareUrl = previewEverywhere && socialUrl ? socialUrl : pageUrl;
 
   const handleCopyLink = async () => {
     try {
@@ -61,6 +65,7 @@ export default function ShareButton({
     const encodedDescription = encodeURIComponent(description || "");
 
     const urls = {
+      whatsapp: `https://wa.me/?text=${encodeURIComponent(`${title ? `${title}\n` : ""}${previewUrl}`)}`,
       facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
       twitter: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`,
       linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
@@ -107,6 +112,11 @@ export default function ShareButton({
 
         <DropdownMenuSeparator />
         
+        <DropdownMenuItem onClick={() => shareToSocial("whatsapp")}>
+          <MessageCircle className="mr-2 h-4 w-4 text-[#1F7A4D]" />
+          <span>Share on WhatsApp</span>
+        </DropdownMenuItem>
+
         <DropdownMenuItem onClick={() => shareToSocial("facebook")}>
           <Facebook className="mr-2 h-4 w-4 text-gold-text" />
           <span>Share on Facebook</span>
