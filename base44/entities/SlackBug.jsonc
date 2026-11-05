@@ -31,6 +31,15 @@
         "green"
       ],
       "default": "open"
+    },
+    "review_conversation_id": {
+      "type": "string",
+      "description": "Conversation created for the automatic review"
+    },
+    "review_started": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the automatic review was requested"
     }
   },
   "required": [

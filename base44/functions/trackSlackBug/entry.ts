@@ -12,9 +12,9 @@ export default async function(req) {
     if (typeof event.text !== 'string' || !event.text.trim()) return Response.json({ skipped: true, reason: 'No message text' });
     if (event.text.length > 40000) return Response.json({ error: 'Message too long' }, { status: 400 });
     const existing = await base44.asServiceRole.entities.SlackBug.filter({ slack_channel: event.channel, slack_timestamp: event.ts }, { limit: 1 });
-    if (existing.items.length) return Response.json({ skipped: true, reason: 'Already recorded' });
-    await base44.asServiceRole.entities.SlackBug.create({ message: event.text, slack_user: event.user || '', slack_timestamp: event.ts, slack_channel: event.channel, slack_team: data.team_id || '', status: 'open' });
-    return Response.json({ recorded: true });
+    if (existing.items.length) return Response.json({ recorded: true, bug_id: existing.items[0].id });
+    const bug = await base44.asServiceRole.entities.SlackBug.create({ message: event.text, slack_user: event.user || '', slack_timestamp: event.ts, slack_channel: event.channel, slack_team: data.team_id || '', status: 'open' });
+    return Response.json({ recorded: true, bug_id: bug.id });
   } catch (error) {
     return Response.json({ error: error.message || 'Unable to record Slack message' }, { status: 500 });
   }

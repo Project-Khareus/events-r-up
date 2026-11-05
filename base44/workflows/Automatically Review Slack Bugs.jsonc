@@ -1,0 +1,72 @@
+{
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "automatically_review_slack_bugs",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "record_bug": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "trackSlackBug",
+            "args": {
+              "data": "${ .trigger.data }"
+            }
+          },
+          "then": "check_record",
+          "x-base44": {
+            "title": "Record bug report"
+          }
+        }
+      },
+      {
+        "check_record": {
+          "switch": [
+            {
+              "when": "${ .record_bug.recorded == true }",
+              "then": "start_review"
+            },
+            {
+              "when": "${ true }",
+              "then": "end"
+            }
+          ],
+          "x-base44": {
+            "title": "Check report"
+          }
+        }
+      },
+      {
+        "start_review": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "startSlackBugReview",
+            "args": {
+              "bug_id": "${ .record_bug.bug_id }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Start bug review"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": "${ .trigger.data.event.channel == \"C0CEV8QBEQ7\" and .trigger.data.event.type == \"message\" and .trigger.data.event.subtype == null and .trigger.data.event.bot_id == null and (.trigger.data.event.text // \"\") != \"\" }",
+    "config": {
+      "trigger_type": "connector",
+      "events": [
+        "message"
+      ],
+      "integration_type": "slack",
+      "resource_id": null
+    }
+  },
+  "description": "Records new messages in the bugs channel and asks the bug reviewer to assess them.",
+  "name": "Automatically Review Slack Bugs"
+}
