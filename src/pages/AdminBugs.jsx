@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 import SlackBugItem from '@/components/admin/SlackBugItem';
 
 export default function AdminBugs() {
@@ -18,6 +19,7 @@ export default function AdminBugs() {
   const entries = bugs.data?.pages.flatMap(page => page.items) || [];
   return <div className="min-h-screen bg-cream dark:bg-ink px-5 py-12"><div className="mx-auto max-w-3xl space-y-7">
     <header><h1 className="font-serif text-4xl text-foreground">Bug list</h1><p className="mt-2 text-muted-foreground">Review messages from Slack #bugs and update their status as work progresses.</p></header>
+    <Button asChild variant="outline"><Link to="/AdminBugReviewer">Open bug review agent</Link></Button>
     {error && <p role="alert" className="text-destructive text-sm">{error}</p>}
     {bugs.isLoading ? <p>Loading bugs…</p> : bugs.isError ? <p role="alert" className="text-destructive">Could not load the bug list.</p> : entries.length === 0 ? <p className="text-muted-foreground">No bug messages yet.</p> : <div className="space-y-3">
       {entries.map(bug => <SlackBugItem key={bug.id} bug={bug} onStatusChange={(id, status) => change.mutate({ id, status })} busy={change.isPending} />)}
