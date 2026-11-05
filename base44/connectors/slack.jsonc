@@ -2,6 +2,7 @@
   "type": "slack",
   "scopes": [
     "channels:read",
+    "chat:write",
     "users:read.email",
     "users:read"
   ]
