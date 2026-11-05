@@ -1,0 +1,39 @@
+{
+  "name": "Notify Slack of Feature Releases",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "app_publish",
+      "events": [
+        "published"
+      ]
+    }
+  },
+  "description": "Posts admin-curated feature release notes to #features when the app is published.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "notify_slack_feature_releases",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "notify_features": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "notifyFeatureRelease",
+            "args": {
+              "published_at": "${ .trigger.occurred_at }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Post feature notes",
+            "description": "Send queued notes to Slack"
+          }
+        }
+      }
+    ]
+  }
+}

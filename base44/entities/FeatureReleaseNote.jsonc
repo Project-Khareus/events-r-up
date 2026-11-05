@@ -1,0 +1,53 @@
+{
+  "name": "FeatureReleaseNote",
+  "type": "object",
+  "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 500,
+      "description": "Admin-curated feature or improvement, not a bug fix"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "sent"
+      ],
+      "enumColors": [
+        "yellow",
+        "green"
+      ],
+      "default": "pending"
+    },
+    "published_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "description",
+    "status"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
