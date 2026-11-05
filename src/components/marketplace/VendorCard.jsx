@@ -7,6 +7,7 @@ import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 import { getVendorLocations, formatVendorLocationsShort } from "@/components/utils/vendorLocations";
 
 const CATEGORY_LABELS = {
+  event_planner: "Event Planner",
   bridal_fashion: "Bridal Fashion",
   beauty_personal_care: "Beauty",
   decor_logistics: "Décor & Logistics",

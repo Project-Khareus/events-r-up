@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import PullToRefresh from "../components/shared/PullToRefresh";
@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import EventCard from "../components/events/EventCard";
 import VendorCard from "../components/marketplace/VendorCard";
 import { Skeleton } from "@/components/ui/skeleton";
+import { removeFavorites } from "@/lib/favorites";
 
 
 
@@ -34,8 +35,8 @@ export default function MyFavorites() {
   const vendorFavorites = favorites.filter(f => f.item_type === 'vendor');
 
   // 2. Fetch the actual events for event favorites
-  const eventIds = eventFavorites.map(f => f.event_id).filter(Boolean);
-  const { data: events = [], isLoading: isLoadingEvents } = useQuery({
+  const eventIds = [...new Set(eventFavorites.map(f => f.event_id).filter(Boolean))];
+  const { data: fetchedEvents = [], isLoading: isLoadingEvents } = useQuery({
     queryKey: ['favoritedEvents', eventIds],
     queryFn: async () => {
       const results = await Promise.all(
@@ -48,8 +49,8 @@ export default function MyFavorites() {
   });
 
   // 3. Fetch the actual vendors for vendor favorites
-  const vendorIds = vendorFavorites.map(f => f.vendor_id).filter(Boolean);
-  const { data: vendors = [], isLoading: isLoadingVendors } = useQuery({
+  const vendorIds = [...new Set(vendorFavorites.map(f => f.vendor_id).filter(Boolean))];
+  const { data: fetchedVendors = [], isLoading: isLoadingVendors } = useQuery({
     queryKey: ['favoritedVendors', vendorIds],
     queryFn: async () => {
       const results = await Promise.all(
@@ -60,6 +61,44 @@ export default function MyFavorites() {
     enabled: vendorIds.length > 0,
     staleTime: 300000,
   });
+
+  // Only show listings people can actually open; suspended, rejected or deleted ones are hidden
+  const vendors = fetchedVendors.filter(v => v.status === 'approved');
+  const events = fetchedEvents.filter(e => !e.status || e.status === 'approved');
+
+  // Saved records that can go: copies of the same item, and items no longer available
+  const [tidying, setTidying] = useState(false);
+  const availableIds = new Set([...vendors.map(v => v.id), ...events.map(e => e.id)]);
+  const seen = new Set();
+  const leftoverIds = [];
+  let unavailableCount = 0;
+  const unavailableTargets = new Set();
+  for (const f of favorites) {
+    const target = f.item_type === 'vendor' ? f.vendor_id : f.event_id;
+    const loaded = f.item_type === 'vendor' ? !isLoadingVendors : !isLoadingEvents;
+    if (!target || !loaded) continue;
+    if (!availableIds.has(target)) {
+      leftoverIds.push(f.id);
+      if (!unavailableTargets.has(target)) { unavailableTargets.add(target); unavailableCount += 1; }
+    } else if (seen.has(target)) {
+      leftoverIds.push(f.id);
+    } else {
+      seen.add(target);
+    }
+  }
+  async function handleRefreshFavorites() {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['myFavorites'] }),
+      queryClient.invalidateQueries({ queryKey: ['allVendorFavorites'] }),
+      queryClient.invalidateQueries({ queryKey: ['allEventFavorites'] }),
+    ]);
+  }
+  const tidyUp = async () => {
+    setTidying(true);
+    await removeFavorites(leftoverIds);
+    await handleRefreshFavorites();
+    setTidying(false);
+  };
 
   const isLoading = isLoadingFavorites || 
     (eventFavorites.length > 0 && isLoadingEvents) || 
@@ -135,6 +174,19 @@ export default function MyFavorites() {
             </div>
           </div>
         ) : (
+          <>
+          {leftoverIds.length > 0 && !isLoading && (
+            <div role="status" className="mb-6 flex flex-wrap items-center justify-between gap-3 border border-[rgba(59,50,43,0.16)] dark:border-[rgba(241,232,224,0.14)] bg-linen dark:bg-[#221D19] px-4 py-3 text-sm">
+              <p className="text-[rgba(59,50,43,0.75)] dark:text-[rgba(241,232,224,0.7)]">
+                {unavailableCount > 0
+                  ? `${unavailableCount} saved ${unavailableCount === 1 ? "listing is" : "listings are"} no longer available and ${unavailableCount === 1 ? "has" : "have"} been hidden.`
+                  : "Some items were saved more than once."}
+              </p>
+              <button type="button" onClick={tidyUp} disabled={tidying} className="h-9 px-4 border border-gold text-gold-text dark:text-gold-dark text-xs uppercase tracking-[0.12em] hover:bg-gold/10 disabled:opacity-50">
+                {tidying ? "Tidying..." : "Tidy up"}
+              </button>
+            </div>
+          )}
           <Tabs defaultValue="vendors" className="space-y-6">
             <TabsList className="grid w-full max-w-md grid-cols-2">
               <TabsTrigger value="vendors">
@@ -175,6 +227,7 @@ export default function MyFavorites() {
               )}
             </TabsContent>
           </Tabs>
+          </>
         )}
       </div>
     </div></PullToRefresh>

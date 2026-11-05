@@ -5,6 +5,7 @@ import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { setFavorite } from "@/lib/favorites";
 
 export default function FavoriteButton({ eventId, className, variant = "outline", size = "icon" }) {
   const queryClient = useQueryClient();
@@ -31,17 +32,8 @@ export default function FavoriteButton({ eventId, className, variant = "outline"
       if (!user) {
         throw new Error("login");
       }
-      if (isFavorited) {
-        await base44.entities.Favorite.delete(myFavorite.id);
-        return { action: 'removed', id: myFavorite.id };
-      } else {
-        const result = await base44.entities.Favorite.create({
-          user_id: user.id,
-          event_id: eventId,
-          item_type: 'event'
-        });
-        return { action: 'added', record: result };
-      }
+      // Checks the server first and removes every copy when unsaving
+      return setFavorite({ type: 'event', itemId: eventId, user, favorite: !isFavorited });
     },
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ['allEventFavorites', user?.id] });
