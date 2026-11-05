@@ -1,0 +1,62 @@
+{
+  "name": "BugAssessment",
+  "type": "object",
+  "properties": {
+    "report": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "The reported issue being reviewed"
+    },
+    "verdict": {
+      "type": "string",
+      "enum": [
+        "confirmed",
+        "not_reproduced",
+        "inconclusive"
+      ],
+      "enumColors": [
+        "red",
+        "green",
+        "yellow"
+      ]
+    },
+    "evidence": {
+      "type": "string",
+      "maxLength": 2000,
+      "description": "Evidence and limitations of the review"
+    },
+    "next_steps": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Suggested verification steps"
+    }
+  },
+  "required": [
+    "report",
+    "verdict",
+    "evidence",
+    "next_steps"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

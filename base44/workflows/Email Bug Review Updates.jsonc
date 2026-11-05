@@ -1,0 +1,46 @@
+{
+  "description": "Emails the app owner when the bug review agent records an assessment.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "email_bug_review_updates",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "send_update": {
+          "call": "send_email",
+          "with": {
+            "template_name": "BugReviewUpdate",
+            "to": "annerquaye@gmail.com",
+            "category": "transactional",
+            "description": "Sends a bug assessment and suggested next steps",
+            "variables": {
+              "report": "${ .trigger.data.report }",
+              "verdict": "${ .trigger.data.verdict }",
+              "evidence": "${ .trigger.data.evidence }",
+              "next_steps": "${ .trigger.data.next_steps }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Email bug review",
+            "description": "Assessment and next steps"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Email Bug Review Updates",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "create"
+      ],
+      "entity_name": "BugAssessment"
+    }
+  }
+}
