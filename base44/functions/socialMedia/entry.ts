@@ -25,8 +25,106 @@ function getVendorImages(vendor) {
     .filter((url) => typeof url === 'string' && /^https?:\/\//.test(url)))].slice(0, 10);
 }
 
-function limitWords(value, maxWords) {
-  return String(value).trim().split(/\s+/).slice(0, maxWords).join(' ');
+const CATEGORY_LABELS = {
+  event_planner: 'event planning', bridal_fashion: 'bridal fashion & accessories',
+  beauty_personal_care: 'beauty & personal care', decor_logistics: 'décor & event setup',
+  event_grounds: 'event venues', photography_videography: 'photography & videography',
+  design_creatives: 'design & creatives', catering: 'catering', jewellery: 'jewellery',
+  honeymoon_packages: 'honeymoon packages', music_karaoke_mc: 'music, DJ & MC services',
+  car_rentals: 'car rentals', social_media_support: 'social media coverage', ushers: 'ushering',
+  dance_tutorials: 'dance lessons', rent_a_team: 'event staffing', gifts: 'gifts',
+  babies_baby_showers: 'baby showers', conference_facilities: 'conference facilities',
+  rapporteur_services: 'rapporteur services', caskets: 'caskets', catering_drinks: 'catering & drinks',
+  wreaths: 'wreaths', others: 'event services',
+};
+const EVENT_LABELS = { weddings: 'weddings', parties: 'parties', conference: 'conferences', funeral: 'funerals' };
+
+// A different creative angle each time keeps drafts from sounding the same.
+const ANGLES = [
+  'Open with a short, vivid scene from the kind of event this vendor serves, then reveal the vendor.',
+  'Open with a playful question that people planning these events will recognise.',
+  'Open with one bold, confident statement about what makes this vendor worth knowing.',
+  'Open with a quick "picture this" moment that puts the reader at their own event.',
+  'Open with a warm welcome that celebrates the vendor joining the Khareus family.',
+  'Open with a short list-style hook, e.g. two or three things guests will remember, then reveal who makes it happen.',
+];
+
+// First-person singular slips ("I", "I'm", "me", "my"...) that the Khareus voice must never use.
+const FIRST_PERSON_SINGULAR = /\b(I|I'm|I’m|I've|I’ve|I'd|I’d|I'll|I’ll|me|my|mine|myself)\b/i;
+
+function vendorFacts(vendor) {
+  const locations = Array.isArray(vendor.locations) && vendor.locations.length ? vendor.locations : (vendor.location ? [vendor.location] : []);
+  return [
+    `Business: ${vendor.business_name}`,
+    `Slogan: ${vendor.slogan || 'Not provided'}`,
+    `Event types: ${(vendor.event_type || []).map((t) => EVENT_LABELS[t] || t).join(', ') || 'Not provided'}`,
+    `What they do: ${[].concat(vendor.category || []).map((c) => CATEGORY_LABELS[c] || c).join(', ') || 'Not provided'}`,
+    `Locations: ${locations.join(', ') || 'Not provided'}`,
+    `Services: ${(vendor.services || []).join(', ') || 'Not provided'}`,
+    `Years in business: ${vendor.years_in_business || 'Not provided'}`,
+    `Description: ${String(vendor.description || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() || 'Not provided'}`,
+  ].join('\n');
+}
+
+function buildDraftPrompt(vendor) {
+  const angle = ANGLES[Math.floor(Math.random() * ANGLES.length)];
+  return `You write Facebook and Instagram captions for Khareus, Ghana's marketplace for event vendors (weddings, parties, conferences and funerals).
+
+Write ONE caption introducing this approved vendor.
+
+VOICE
+- Write as the Khareus team: always "we", "us", "our". Never use "I", "I'm", "me", "my" or "mine".
+- Confident, warm and punchy, like a brand people love following. Celebrate the vendor; don't sound like an advert.
+- Respectful and gentle in tone if the vendor serves funerals.
+
+SHAPE
+- Line 1: a scroll-stopping hook of no more than 10 words. ${angle}
+- Then 2 or 3 short lines (one idea per line, blank line between them) that bring in one or two specific details from the facts below.
+- Then one clear call to action, such as inviting people planning ${(vendor.event_type || []).map((t) => EVENT_LABELS[t] || t).join(' or ') || 'their next event'} to check out ${vendor.business_name} on Khareus, and a nod that Khareus has many more trusted vendors.
+- Last line: 3 or 4 relevant hashtags, mixing the vendor's speciality, the event type and Ghana or the city, ending with #Khareus.
+- 45 to 80 words before the hashtags. At most 2 emojis, only where they add something.
+
+RULES
+- Use only the facts below. Do not invent awards, prices, availability, experience or services.
+- Plain text only: no title, no quotation marks, no markdown, no links.
+- Avoid clichés such as "look no further", "elevate", "game-changer", "unforgettable experience" and "say goodbye to".
+
+FACTS
+${vendorFacts(vendor)}`;
+}
+
+function cleanCopy(text) {
+  return String(text || '')
+    .replace(/^["“”']+|["“”']+$/g, '')
+    .replace(/\*\*/g, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+// Keeps captions a sensible length without cutting a sentence or the hashtags in half.
+function trimCaption(text, maxWords = 110) {
+  const words = text.split(/\s+/);
+  if (words.length <= maxWords) return text;
+  const lines = text.split('\n');
+  const tags = /^#/.test(lines[lines.length - 1].trim()) ? lines.pop() : '';
+  let body = lines.join('\n');
+  while (body.split(/\s+/).length > maxWords - 8 && /[.!?]/.test(body)) {
+    const cut = body.slice(0, -1).search(/[.!?][^.!?]*$/);
+    if (cut <= 0) break;
+    body = body.slice(0, cut + 1);
+  }
+  return tags ? `${body.trim()}\n\n${tags.trim()}` : body.trim();
+}
+
+async function writeDraft(base44, vendor) {
+  let copy = cleanCopy(await base44.asServiceRole.integrations.Core.InvokeLLM({ prompt: buildDraftPrompt(vendor) }));
+  if (FIRST_PERSON_SINGULAR.test(copy)) {
+    // One rewrite pass if the model slipped into the singular voice
+    copy = cleanCopy(await base44.asServiceRole.integrations.Core.InvokeLLM({
+      prompt: `Rewrite this social caption so it speaks as the Khareus team using "we", "us" and "our". Remove every "I", "I'm", "me", "my" and "mine". Keep the meaning, line breaks, emojis and hashtags. Return only the caption.\n\n${copy}`,
+    }));
+  }
+  return trimCaption(copy);
 }
 
 async function publishFacebook(page, copy, imageUrls) {
@@ -135,9 +233,8 @@ export default async function(req) {
 
     if (payload.action === 'generate_draft') {
       const images = getVendorImages(vendor);
-      const prompt = `Write one concise social announcement for Khareus introducing this approved event vendor. The voice should feel lively, warm, upbeat, and conversational, with a little tasteful flair. Make it sound like a real person excited to recommend a great find, not a corporate advert. Open with an engaging hook, weave in one or two specific details from the listing, and naturally invite people planning the listed event types to consider contacting this vendor for their event. Briefly mention that Khareus also brings together many other types of event vendors. A light turn of phrase is welcome when it fits, but avoid forced jokes, slang, clichés, and generic hype. Use only supplied facts. Do not imply confirmed availability, and do not invent awards, pricing, claims, or services. Use no more than 70 words, no hashtags, no title, and no quotation marks.\n\nBusiness: ${vendor.business_name}\nSlogan: ${vendor.slogan || 'Not provided'}\nEvent types: ${(vendor.event_type || []).join(', ') || 'Not provided'}\nCategories: ${(vendor.category || []).join(', ') || 'Not provided'}\nLocation: ${vendor.location || 'Not provided'}\nServices: ${(vendor.services || []).join(', ') || 'Not provided'}\nDescription: ${(vendor.description || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() || 'Not provided'}`;
-      const copy = await base44.asServiceRole.integrations.Core.InvokeLLM({ prompt });
-      const announcement = await base44.asServiceRole.entities.SocialAnnouncement.create({ vendor_id: vendor.id, copy: limitWords(copy, 70), image_urls: images, facebook_status: 'pending', instagram_status: 'pending', status: 'draft' });
+      const copy = await writeDraft(base44, vendor);
+      const announcement = await base44.asServiceRole.entities.SocialAnnouncement.create({ vendor_id: vendor.id, copy, image_urls: images, facebook_status: 'pending', instagram_status: 'pending', status: 'draft' });
       const pages = await getFacebookPages(base44);
       return Response.json({ announcementId: announcement.id, copy: announcement.copy, imageUrls: images, facebookPages: pages.map((page) => ({ id: page.id, name: page.name })) });
     }
