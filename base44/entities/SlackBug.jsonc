@@ -1,0 +1,64 @@
+{
+  "name": "SlackBug",
+  "type": "object",
+  "properties": {
+    "message": {
+      "type": "string",
+      "description": "Original Slack message"
+    },
+    "slack_user": {
+      "type": "string"
+    },
+    "slack_timestamp": {
+      "type": "string"
+    },
+    "slack_channel": {
+      "type": "string"
+    },
+    "slack_team": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "in_progress",
+        "resolved"
+      ],
+      "enumColors": [
+        "red",
+        "yellow",
+        "green"
+      ],
+      "default": "open"
+    }
+  },
+  "required": [
+    "message",
+    "slack_timestamp",
+    "slack_channel",
+    "status"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

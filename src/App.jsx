@@ -13,6 +13,7 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import VendorDetailPage from './pages/VendorDetail';
 import OAuthConsent from './pages/OAuthConsent';
 import AdminReleaseNotes from './pages/AdminReleaseNotes';
+import AdminBugs from './pages/AdminBugs';
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
 const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
@@ -61,6 +62,7 @@ const AuthenticatedApp = () => {
     <Routes>
       <Route path="/oauth/consent/*" element={<OAuthConsent />} />
       <Route path="/AdminReleaseNotes" element={<LayoutWrapper currentPageName="AdminReleaseNotes"><AdminReleaseNotes /></LayoutWrapper>} />
+      <Route path="/AdminBugs" element={<LayoutWrapper currentPageName="AdminBugs"><AdminBugs /></LayoutWrapper>} />
       <Route path="/" element={
         <LayoutWrapper currentPageName={mainPageKey}>
           <MainPage />

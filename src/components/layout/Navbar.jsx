@@ -334,6 +334,12 @@ export default function Navbar() {
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem asChild>
+                            <Link to="/AdminBugs">
+                              <FileText className="mr-2 h-4 w-4" />
+                              <span>Bug List</span>
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem asChild>
                             <Link to="/AdminReleaseNotes">
                               <FileText className="mr-2 h-4 w-4" />
                               <span>Feature Release Notes</span>
@@ -454,6 +460,10 @@ export default function Navbar() {
                               <Link to={createPageUrl("AdminVendors")} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 min-h-[44px] text-gold-text dark:text-gold-dark hover:bg-[rgba(169,126,46,0.1)] transition-colors">
                                 <ShieldCheck className="h-5 w-5" />
                                 <span className="text-[14.5px]">Admin Panel</span>
+                              </Link>
+                              <Link to="/AdminBugs" onClick={() => setMobileMenuOpen(false)} className={mobileLinkClass}>
+                                <FileText className="h-5 w-5" />
+                                <span className="text-[14.5px]">Bug List</span>
                               </Link>
                               <Link to="/AdminReleaseNotes" onClick={() => setMobileMenuOpen(false)} className={mobileLinkClass}>
                                 <FileText className="h-5 w-5" />
