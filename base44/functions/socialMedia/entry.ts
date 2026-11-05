@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 import { secrets } from 'base44:runtime';
+import { postSocialPublicationToSlack } from '../../shared/socialSlack.js';
 
 const FACEBOOK_API = 'https://graph.facebook.com/v25.0';
 const INSTAGRAM_API = 'https://graph.instagram.com/v25.0';
@@ -241,17 +242,21 @@ export default async function(req) {
 
     if (payload.action === 'publish') {
       const announcement = await base44.asServiceRole.entities.SocialAnnouncement.get(payload.announcementId);
-      if (!announcement || announcement.vendor_id !== vendor.id || announcement.status !== 'draft') return Response.json({ error: 'This draft is no longer available to publish' }, { status: 400 });
+      if (!announcement || announcement.vendor_id !== vendor.id || !['draft', 'failed', 'partially_published'].includes(announcement.status)) return Response.json({ error: 'This post has already been published' }, { status: 400 });
       const copy = String(payload.copy || '').trim();
       const imageUrls = Array.isArray(payload.imageUrls) ? payload.imageUrls.filter((url) => announcement.image_urls.includes(url)) : [];
       const publishToFacebook = payload.destinations?.facebook === true;
       const publishToInstagram = payload.destinations?.instagram === true;
+      // On a retry, channels that already went out are kept as they are, so nothing posts twice
+      const facebookDone = announcement.facebook_status === 'published';
+      const instagramDone = announcement.instagram_status === 'published';
+      const keep = (value) => Promise.resolve({ selected: true, published: true, value, error: null });
       if (!publishToFacebook && !publishToInstagram) return Response.json({ error: 'Choose at least one publishing destination' }, { status: 400 });
       if (!copy) return Response.json({ error: 'Announcement copy is required' }, { status: 400 });
       if (publishToInstagram && !imageUrls.length) return Response.json({ error: 'Instagram requires at least one selected image' }, { status: 400 });
 
       let page = null;
-      if (publishToFacebook) {
+      if (publishToFacebook && !facebookDone) {
         if (!payload.facebookPageId) return Response.json({ error: 'Choose a Facebook Page' }, { status: 400 });
         const pages = await getFacebookPages(base44);
         page = pages.find((item) => item.id === payload.facebookPageId);
@@ -259,14 +264,20 @@ export default async function(req) {
       }
 
       const [facebook, instagram] = await Promise.all([
-        publishToFacebook ? publishFacebook(page, copy, imageUrls).then((value) => ({ selected: true, published: true, value, error: null })).catch((error) => ({ selected: true, published: false, value: null, error: error.message || 'Facebook publishing failed' })) : Promise.resolve({ selected: false, published: false, value: null, error: null }),
-        publishToInstagram ? publishInstagram(base44, copy, imageUrls).then((value) => ({ selected: true, published: true, value, error: null })).catch((error) => ({ selected: true, published: false, value: null, error: error.message || 'Instagram publishing failed' })) : Promise.resolve({ selected: false, published: false, value: null, error: null })
+        publishToFacebook && facebookDone ? keep(announcement.facebook_post_id) : publishToFacebook ? publishFacebook(page, copy, imageUrls).then((value) => ({ selected: true, published: true, value, error: null })).catch((error) => ({ selected: true, published: false, value: null, error: error.message || 'Facebook publishing failed' })) : Promise.resolve({ selected: false, published: false, value: null, error: null }),
+        publishToInstagram && instagramDone ? keep(announcement.instagram_media_id) : publishToInstagram ? publishInstagram(base44, copy, imageUrls).then((value) => ({ selected: true, published: true, value, error: null })).catch((error) => ({ selected: true, published: false, value: null, error: error.message || 'Instagram publishing failed' })) : Promise.resolve({ selected: false, published: false, value: null, error: null })
       ]);
       const selectedResults = [facebook, instagram].filter((result) => result.selected);
       const successfulCount = selectedResults.filter((result) => result.published).length;
       const status = successfulCount === selectedResults.length ? 'published' : successfulCount ? 'partially_published' : 'failed';
-      await base44.asServiceRole.entities.SocialAnnouncement.update(announcement.id, { copy, image_urls: imageUrls, facebook_page_id: page?.id || null, facebook_status: publishToFacebook ? (facebook.published ? 'published' : 'failed') : announcement.facebook_status, instagram_status: publishToInstagram ? (instagram.published ? 'published' : 'failed') : announcement.instagram_status, facebook_post_id: facebook.value, instagram_media_id: instagram.value, status, error_details: { facebook: facebook.error, instagram: instagram.error } });
-      return Response.json({ facebook, instagram, status });
+      await base44.asServiceRole.entities.SocialAnnouncement.update(announcement.id, { copy, image_urls: imageUrls, facebook_page_id: page?.id || announcement.facebook_page_id || null, facebook_status: publishToFacebook ? (facebook.published ? 'published' : 'failed') : announcement.facebook_status, instagram_status: publishToInstagram ? (instagram.published ? 'published' : 'failed') : announcement.instagram_status, facebook_post_id: facebook.value || announcement.facebook_post_id || null, instagram_media_id: instagram.value || announcement.instagram_media_id || null, status, error_details: { facebook: facebook.error, instagram: instagram.error } });
+      let slackNotified = false;
+      if (status !== announcement.status && ['published', 'partially_published'].includes(status)) {
+        // A failed Slack post must not undo a successful publish
+        try { await postSocialPublicationToSlack(base44, announcement.id); slackNotified = true; }
+        catch (error) { console.error('Slack notification failed:', error.message); }
+      }
+      return Response.json({ facebook, instagram, status, slackNotified });
     }
 
     return Response.json({ error: 'Invalid action' }, { status: 400 });
