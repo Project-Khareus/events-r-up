@@ -2,7 +2,7 @@
   "name": "Create Events from Slack Flyers",
   "description": "Turns event flyers uploaded to #publicevents into draft events for admin approval and replies in the thread with the event link.",
   "trigger": {
-    "condition": "${ .trigger.data.event.type == \"message\" and .trigger.data.event.subtype == \"file_share\" and .trigger.data.event.bot_id == null and (.trigger.data.event.files // [] | length) > 0 }",
+    "condition": "${ .trigger.data.event.type == \"message\" and .trigger.data.event.bot_id == null and ((.trigger.data.event.files // []) | length) > 0 }",
     "config": {
       "trigger_type": "connector",
       "events": [

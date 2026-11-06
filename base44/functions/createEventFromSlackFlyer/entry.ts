@@ -162,6 +162,7 @@ export default async function(req) {
 
     const { accessToken } = await base44.asServiceRole.connectors.getConnection('slack');
     const { channel } = await slackApi(accessToken, 'conversations.info', { channel: event.channel });
+    console.log('Slack upload in channel', channel?.name, 'files:', event.files.length);
     if (channel?.name !== CHANNEL_NAME) return Response.json({ skipped: true, reason: 'Not the public events channel' });
 
     const lines = [];
