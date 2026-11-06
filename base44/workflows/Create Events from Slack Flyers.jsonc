@@ -2,7 +2,7 @@
   "name": "Create Events from Slack Flyers",
   "description": "Turns event flyers uploaded to #publicevents into draft events for admin approval and replies in the thread with the event link.",
   "trigger": {
-    "condition": "${ .trigger.data.event.type == \"message\" and .trigger.data.event.bot_id == null and .trigger.data.event.files != null }",
+    "condition": "${ .trigger.data.event.channel == \"C0CFP0B1TCZ\" and .trigger.data.event.type == \"message\" and .trigger.data.event.bot_id == null and .trigger.data.event.files != null }",
     "config": {
       "trigger_type": "connector",
       "events": [
@@ -13,29 +13,29 @@
     }
   },
   "definition": {
-    "document": {
-      "dsl": "1.0.0",
-      "name": "create_events_from_slack_flyers",
-      "version": "1.0",
-      "namespace": "base44"
-    },
     "do": [
       {
         "create_event": {
           "call": "invoke_backend_function",
+          "then": "end",
           "with": {
-            "function_name": "createEventFromSlackFlyer",
             "args": {
               "data": "${ .trigger.data }"
-            }
+            },
+            "function_name": "createEventFromSlackFlyer"
           },
-          "then": "end",
           "x-base44": {
-            "title": "Create event from flyer",
-            "description": "Read the flyer and publish the event"
+            "description": "Read the flyer and publish the event",
+            "title": "Create event from flyer"
           }
         }
       }
-    ]
+    ],
+    "document": {
+      "dsl": "1.0.0",
+      "name": "create_events_from_slack_flyers",
+      "namespace": "base44",
+      "version": "1.0"
+    }
   }
 }
