@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 
-// Turns an event flyer uploaded to the #publicevents Slack channel into a public EventListing.
+// Turns an event flyer uploaded to the #publicevents Slack channel into a draft EventListing
+// (status pending: hidden from the public until an admin approves it in Admin → Events).
 const CHANNEL_NAME = 'publicevents';
 const SITE_URL = 'https://khareus.com';
 const MAX_FILES = 4;
@@ -127,7 +128,7 @@ async function processFlyer(base44, token, user, file, ts) {
     description: String(info.description || '').trim(),
     image_url: file_url,
     slug: await uniqueSlug(base44, title),
-    status: 'approved',
+    status: 'pending',
     user_id: user.id,
     source_ref: sourceRef,
     ...(await geocode(venue)),
@@ -138,12 +139,12 @@ async function processFlyer(base44, token, user, file, ts) {
 function summary({ event, duplicate, timeShown }) {
   const when = new Date(event.event_date).toLocaleString('en-GB', { timeZone: 'Africa/Accra', weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
   return [
-    `${duplicate ? ':information_source: Already on Khareus' : ':white_check_mark: Event created'}: *<${SITE_URL}/event/${event.slug}|${event.title}>*`,
+    `${duplicate ? ':information_source: Already on Khareus' : ':memo: Draft event created'}: *<${SITE_URL}/event/${event.slug}|${event.title}>*`,
     `• When: ${when}${timeShown === false ? ' (time not on flyer, set to 6pm)' : ''}`,
     `• Where: ${event.location_address}`,
     `• Price: ${event.is_paid ? (event.price ? `GH₵${event.price}` : 'Paid (price not read)') : 'Free'}`,
     `• Organiser: ${event.organizer_name || 'Not shown'}`,
-    duplicate ? '' : '_Check the details on the event page and edit anything I misread._',
+    duplicate ? '' : `_It's a draft, so only admins can see it. Check the details, fix anything I misread, then approve it in <${SITE_URL}/AdminEvents|Admin → Events> to make it public._`,
   ].filter(Boolean).join('\n');
 }
 
