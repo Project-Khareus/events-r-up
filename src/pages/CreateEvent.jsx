@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Loader2, Image as ImageIcon, Calendar, DollarSign } from "lucide-react";
+import { Loader2, Image as ImageIcon, Calendar } from "lucide-react";
 import EventGalleryUpload from "@/components/events/EventGalleryUpload";
 import LocationAutocomplete from "@/components/shared/LocationAutocomplete";
 
@@ -255,14 +255,14 @@ export default function CreateEvent() {
                     <div className="w-full md:w-1/3">
                         <Label>Price</Label>
                         <div className="relative mt-1">
-                            <DollarSign className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+                            <span className="absolute left-3 top-2 text-sm text-slate-400">GH₵</span>
                             <Input 
                                 type="number"
                                 min="0"
                                 step="0.01"
                                 value={formData.price}
                                 onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
-                                className="pl-9"
+                                className="pl-12"
                                 placeholder="0.00"
                             />
                         </div>

@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import EventPhotoGallery from "@/components/events/EventPhotoGallery";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { ArrowLeft, Calendar, MapPin, DollarSign, Tag, User, Flag, Pencil } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, Ticket, Tag, User, Flag, Pencil } from "lucide-react";
 import ShareButton from "../components/shared/ShareButton";
 import MetaTags from "../components/shared/MetaTags";
 import { format } from "date-fns";
@@ -208,7 +208,7 @@ export default function EventDetail() {
                             </div>
                         </div>
                         <div className="flex items-start gap-3">
-                            <DollarSign className="h-5 w-5 text-gold-text dark:text-gold-dark mt-0.5" />
+                            <Ticket className="h-5 w-5 text-gold-text dark:text-gold-dark mt-0.5" />
                             <div>
                                 <p className="text-sm text-ink/50 dark:text-[#F1E8E0]/50">Cost</p>
                                 <p className="font-medium text-ink dark:text-[#F1E8E0]">
