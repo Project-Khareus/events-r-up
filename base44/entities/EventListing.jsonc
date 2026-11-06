@@ -112,6 +112,10 @@
     "user_id": {
       "type": "string",
       "description": "ID of the user who posted the event"
+    },
+    "source_ref": {
+      "type": "string",
+      "description": "Where an imported event came from, e.g. slack:<file id> for flyers posted in #publicevents"
     }
   },
   "required": [

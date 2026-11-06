@@ -1,0 +1,41 @@
+{
+  "name": "Create Events from Slack Flyers",
+  "description": "Turns event flyers uploaded to #publicevents into public events and replies in the thread with the event link.",
+  "trigger": {
+    "condition": "${ .trigger.data.event.type == \"message\" and .trigger.data.event.subtype == \"file_share\" and .trigger.data.event.bot_id == null and (.trigger.data.event.files // [] | length) > 0 }",
+    "config": {
+      "trigger_type": "connector",
+      "events": [
+        "message"
+      ],
+      "integration_type": "slack",
+      "resource_id": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "create_events_from_slack_flyers",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "create_event": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "createEventFromSlackFlyer",
+            "args": {
+              "data": "${ .trigger.data }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Create event from flyer",
+            "description": "Read the flyer and publish the event"
+          }
+        }
+      }
+    ]
+  }
+}
