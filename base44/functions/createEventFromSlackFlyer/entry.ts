@@ -13,7 +13,7 @@ const FLYER_SCHEMA = {
   properties: {
     is_event_flyer: { type: 'boolean', description: 'True only if the image advertises a specific event' },
     title: { type: 'string' },
-    event_date: { type: 'string', description: 'Start date and time as YYYY-MM-DDTHH:MM in Ghana time, or empty if no date is shown' },
+    event_date: { type: 'string', description: 'Start date and time as YYYY-MM-DDTHH:MM exactly as printed on the flyer (no time zone conversion), or empty if no date is shown' },
     time_shown: { type: 'boolean', description: 'Whether a start time is printed on the flyer' },
     venue: { type: 'string', description: 'Venue name and area/city exactly as printed, e.g. "Accra International Conference Centre, Accra"' },
     organizer: { type: 'string', description: 'Organiser, host or presenting brand, or empty' },
@@ -72,7 +72,7 @@ function buildPrompt(today) {
 
 Read only what is printed on the flyer. Do not invent anything.
 - title: the event name as printed, in normal title case (not all caps).
-- event_date: the start date and time as YYYY-MM-DDTHH:MM. If the year is missing, use the next date on or after today. If only a date is shown, use 18:00 and set time_shown to false. Leave empty if no date is shown.
+- event_date: the start date and time as YYYY-MM-DDTHH:MM, exactly as printed on the flyer. Never convert time zones. If the year is missing, use the next date on or after today. If only a date is shown, use 18:00 and set time_shown to false. Leave empty if no date is shown.
 - venue: the venue and city/area. If no city is printed but the venue is clearly in Ghana, add the city if you are certain; otherwise leave it as printed.
 - price: the lowest ticket price in Ghana cedis as a number. Free events: is_paid false and price 0. If prices are shown in another currency, put the details in ticket_details and use 0.
 - theme: the closest of ${THEMES.join(', ')}.
@@ -80,10 +80,15 @@ Read only what is printed on the flyer. Do not invent anything.
 - is_event_flyer: false if the image is not an event flyer (e.g. a screenshot, a photo or a logo).`;
 }
 
-function toIso(localDateTime) {
-  if (!/^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$/.test(localDateTime || '')) return null;
-  const date = new Date(`${localDateTime.length === 10 ? `${localDateTime}T18:00` : localDateTime}:00Z`); // Ghana is GMT+0 all year
-  return Number.isFinite(date.getTime()) ? date.toISOString() : null;
+// Event times are stored as the wall-clock time printed on the flyer, with no time zone
+// (e.g. 2026-11-07T19:00), the same way the Create Event form stores them, so every
+// viewer sees the flyer's time instead of a converted one.
+function toLocalDateTime(value) {
+  const match = /^(\d{4}-\d{2}-\d{2})(?:T(\d{2}:\d{2}))?$/.exec(value || '');
+  if (!match) return null;
+  const localDateTime = `${match[1]}T${match[2] || '18:00'}`;
+  const check = new Date(`${localDateTime}:00Z`);
+  return Number.isFinite(check.getTime()) && check.toISOString().slice(0, 16) === localDateTime ? localDateTime : null;
 }
 
 async function processFlyer(base44, token, user, file, ts) {
@@ -107,7 +112,7 @@ async function processFlyer(base44, token, user, file, ts) {
 
   if (!info?.is_event_flyer) return { skipped: `${file.name || 'The image'} doesn't look like an event flyer` };
   const title = String(info.title || '').trim().slice(0, 150);
-  const eventDate = toIso(info.event_date);
+  const eventDate = toLocalDateTime(info.event_date);
   const venue = String(info.venue || '').trim();
   const missing = [!title && 'event name', !eventDate && 'date', !venue && 'venue'].filter(Boolean);
   if (missing.length) return { skipped: `I couldn't read the ${missing.join(', ')} on ${file.name || 'the flyer'}` };
@@ -137,7 +142,7 @@ async function processFlyer(base44, token, user, file, ts) {
 }
 
 function summary({ event, duplicate, timeShown }) {
-  const when = new Date(event.event_date).toLocaleString('en-GB', { timeZone: 'Africa/Accra', weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  const when = new Date(`${String(event.event_date).slice(0, 16)}:00Z`).toLocaleString('en-GB', { timeZone: 'UTC', weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
   return [
     `${duplicate ? ':information_source: Already on Khareus' : ':memo: Draft event created'}: *<${SITE_URL}/event/${event.slug}|${event.title}>*`,
     `• When: ${when}${timeShown === false ? ' (time not on flyer, set to 6pm)' : ''}`,
