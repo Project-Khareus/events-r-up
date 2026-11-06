@@ -3,11 +3,11 @@
   "scopes": [
     "channels:read",
     "channels:history",
-    "groups:read",
-    "groups:history",
     "chat:write",
-    "files:read",
     "users:read.email",
-    "users:read"
+    "users:read",
+    "files:read",
+    "groups:read",
+    "groups:history"
   ]
 }
