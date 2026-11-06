@@ -50,7 +50,7 @@ export default function EventCard({ event }) {
 
             {(event.is_paid && event.price) && (
               <div className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">
-                ${event.price}
+                GH₵{event.price}
               </div>
             )}
             
