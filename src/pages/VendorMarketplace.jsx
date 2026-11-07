@@ -36,6 +36,9 @@ const matchesVendorLocations = (vendor, selectedLocation) => {
   return list.some((loc) => matchesLocation(loc, selectedLocation));
 };
 
+// Hide Vendor of the Week until this many approved vendors are listed.
+const VENDOR_OF_THE_WEEK_MIN_VENDORS = 200;
+
 const CATEGORY_LABELS = {
   event_planner: "Event Planner",
   bridal_fashion: "Fashion & Accessories",
@@ -171,8 +174,11 @@ export default function VendorMarketplace() {
     return filteredVendors.filter((v) => v && !featuredIds.has(v.id));
   }, [filteredVendors, featuredVendors]);
 
-  // Pick a random vendor for promo (vendors with high ratings)
+  // Pick a random vendor for promo (vendors with high ratings).
+  // Vendor of the Week is set aside until the marketplace has enough approved vendors
+  // for the pick to mean something.
   const promoVendor = useMemo(() => {
+    if (vendors.length < VENDOR_OF_THE_WEEK_MIN_VENDORS) return null;
     const eligibleVendors = vendors.filter((v) => v.rating >= 4 && v.image_url);
     if (eligibleVendors.length === 0) return null;
     const randomIndex = Math.floor(Date.now() / 86400000) % eligibleVendors.length; // Changes daily
