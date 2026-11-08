@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import PullToRefresh from "../components/shared/PullToRefresh";
@@ -7,8 +7,9 @@ import { createPageUrl } from "../utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { 
-  Plus, Search, Calendar as CalendarIcon, MapPin, 
-  ChevronDown, Crosshair, MonitorPlay, Navigation, Loader2 
+  Plus, Search, MapPin, 
+  ChevronDown, Crosshair, MonitorPlay, Navigation, Loader2,
+  LayoutGrid, Grid3x3, List
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -22,6 +23,32 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 
 const THEMES = ["All", "Music", "Food & Drink", "Business", "Arts & Culture", "Sports", "Community", "Party", "Other"];
+
+// Full-bleed container: uses the whole screen width on large monitors
+const CONTAINER = "w-full max-w-[2200px] mx-auto px-3 sm:px-4 lg:px-8";
+
+const VIEW_OPTIONS = [
+  { id: "compact", label: "Compact", Icon: Grid3x3 },
+  { id: "grid", label: "Grid", Icon: LayoutGrid },
+  { id: "list", label: "List", Icon: List },
+];
+
+const VIEW_GRID = {
+  compact: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-x-3 md:gap-x-4 gap-y-6",
+  grid: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-x-5 gap-y-8",
+  list: "grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-3",
+};
+
+const VIEW_STORAGE_KEY = "publicEvents.viewMode";
+
+const readStoredView = () => {
+  try {
+    const v = window.localStorage.getItem(VIEW_STORAGE_KEY);
+    return VIEW_GRID[v] ? v : "compact";
+  } catch {
+    return "compact";
+  }
+};
 
 // Haversine formula to calculate distance between two points in km
 const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
@@ -46,7 +73,12 @@ export default function PublicEvents() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTheme, setSelectedTheme] = useState("All");
   const [page, setPage] = useState(1);
-  const eventsPerPage = 24;
+  const eventsPerPage = 48;
+  const [viewMode, setViewModeState] = useState(readStoredView);
+  const setViewMode = (mode) => {
+    setViewModeState(mode);
+    try { window.localStorage.setItem(VIEW_STORAGE_KEY, mode); } catch { /* ignore */ }
+  };
   
   // Location state: type can be 'all', 'online', 'coords', 'named'
   const [locationState, setLocationState] = useState({ 
@@ -150,8 +182,8 @@ export default function PublicEvents() {
     const filtered = approvedEvents.filter(event => {
       // 1. Search Filter
       const matchesSearch = !searchQuery || 
-        event.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        event.location_address.toLowerCase().includes(searchQuery.toLowerCase());
+        event.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        event.location_address?.toLowerCase().includes(searchQuery.toLowerCase());
       
       // 2. Theme filter
       const matchesTheme = selectedTheme === "All" || event.theme === selectedTheme;
@@ -232,122 +264,145 @@ export default function PublicEvents() {
     await queryClient.invalidateQueries(['events']);
   };
 
+  const locationLabel = locationState.label === 'Choose a location' ? 'All Locations' : locationState.label;
+  const gridClass = VIEW_GRID[viewMode] || VIEW_GRID.compact;
+  const cardVariant = viewMode === 'grid' ? 'default' : viewMode;
+  const hasMore = events.length >= eventsPerPage * page;
+
   return (
     <PullToRefresh onRefresh={handleRefresh}>
       <div className="min-h-screen bg-cream dark:bg-[#1B1714] text-ink dark:text-[#F1E8E0]">
-      {/* Search Header - Sticky */}
+      {/* Search Header - Sticky, kept compact so more of the screen is events */}
       <div className="sticky top-0 z-30 bg-cream/95 dark:bg-[#1B1714]/95 backdrop-blur-md border-b border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]">
-        <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-4">
-          
-          {/* Location Picker Header Row */}
-          <div className="flex items-center gap-2 mb-4">
-            <span className="text-[11px] uppercase tracking-[0.18em] text-ink/50 dark:text-[#F1E8E0]/50">Browsing events in</span>
-            <DropdownMenu open={locationDropdownOpen} onOpenChange={setLocationDropdownOpen}>
-              <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-2 font-serif text-xl text-gold-text dark:text-gold-dark px-2 py-1.5 rounded-none transition-colors outline-none hover:text-ink dark:hover:text-cream">
-                  {locationState.label}
-                  <ChevronDown className="h-4 w-4" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-72 p-2 rounded-none bg-linen dark:bg-[#221D19] border-[rgba(59,50,43,0.14)]">
-                {/* Custom location input */}
-                <div className="p-2">
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                    <Input
-                      placeholder="Type a city or region..."
-                      value={locationInput}
-                      onChange={(e) => setLocationInput(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' && locationInput.trim()) {
+        <div className={`${CONTAINER} py-3`}>
+          <div className="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-4">
+            {/* Location Picker */}
+            <div className="flex items-center gap-1 shrink-0">
+              <span className="text-[11px] uppercase tracking-[0.18em] text-ink/50 dark:text-[#F1E8E0]/50 whitespace-nowrap">Events in</span>
+              <DropdownMenu open={locationDropdownOpen} onOpenChange={setLocationDropdownOpen}>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center gap-1.5 font-serif text-lg text-gold-text dark:text-gold-dark px-2 py-1 rounded-none transition-colors outline-none hover:text-ink dark:hover:text-cream max-w-[60vw] lg:max-w-[240px]">
+                    <span className="truncate">{locationState.label}</span>
+                    <ChevronDown className="h-4 w-4 shrink-0" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-72 p-2 rounded-none bg-linen dark:bg-[#221D19] border-[rgba(59,50,43,0.14)]">
+                  {/* Custom location input */}
+                  <div className="p-2">
+                    <div className="relative">
+                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                      <Input
+                        placeholder="Type a city or region..."
+                        value={locationInput}
+                        onChange={(e) => setLocationInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && locationInput.trim()) {
+                            setLocationState({ type: 'named', label: locationInput.trim(), lat: null, lng: null });
+                            setLocationInput("");
+                            setLocationDropdownOpen(false);
+                          }
+                        }}
+                        className="pl-9 h-10 text-sm rounded-none bg-transparent"
+                      />
+                    </div>
+                    {locationInput.trim() && (
+                      <button
+                        onClick={() => {
                           setLocationState({ type: 'named', label: locationInput.trim(), lat: null, lng: null });
                           setLocationInput("");
                           setLocationDropdownOpen(false);
-                        }
-                      }}
-                      className="pl-9 h-10 text-sm rounded-none bg-transparent"
-                    />
+                        }}
+                        className="w-full mt-2 flex items-center gap-2 p-2 text-sm text-gold-text dark:text-gold-dark rounded-none transition-colors hover:text-ink dark:hover:text-cream"
+                      >
+                        <Search className="h-4 w-4" />
+                        Search "{locationInput.trim()}"
+                      </button>
+                    )}
                   </div>
-                  {locationInput.trim() && (
-                    <button
-                      onClick={() => {
-                        setLocationState({ type: 'named', label: locationInput.trim(), lat: null, lng: null });
-                        setLocationInput("");
-                        setLocationDropdownOpen(false);
-                      }}
-                      className="w-full mt-2 flex items-center gap-2 p-2 text-sm text-gold-text dark:text-gold-dark rounded-none transition-colors hover:text-ink dark:hover:text-cream"
-                    >
-                      <Search className="h-4 w-4" />
-                      Search "{locationInput.trim()}"
-                    </button>
-                  )}
-                </div>
 
-                <DropdownMenuSeparator />
+                  <DropdownMenuSeparator />
 
-                <DropdownMenuItem 
-                  className="flex items-center gap-3 p-3 cursor-pointer rounded-none text-gold-text dark:text-gold-dark"
-                  onClick={handleUseCurrentLocation}
-                >
-                  <Crosshair className="h-4 w-4" />
-                  <div className="flex flex-col">
+                  <DropdownMenuItem 
+                    className="flex items-center gap-3 p-3 cursor-pointer rounded-none text-gold-text dark:text-gold-dark"
+                    onClick={handleUseCurrentLocation}
+                  >
+                    <Crosshair className="h-4 w-4" />
                     <span>Use my current location</span>
-                  </div>
-                </DropdownMenuItem>
-                
-                <DropdownMenuSeparator />
-                
-                <DropdownMenuItem 
-                  className="flex items-center gap-3 p-3 cursor-pointer"
-                  onClick={() => setLocationState({ type: 'online', label: 'Online Events', lat: null, lng: null })}
-                >
-                  <MonitorPlay className="h-4 w-4 text-gold" />
-                  <span>Browse online events</span>
-                </DropdownMenuItem>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuSeparator />
+                  
+                  <DropdownMenuItem 
+                    className="flex items-center gap-3 p-3 cursor-pointer"
+                    onClick={() => setLocationState({ type: 'online', label: 'Online Events', lat: null, lng: null })}
+                  >
+                    <MonitorPlay className="h-4 w-4 text-gold" />
+                    <span>Browse online events</span>
+                  </DropdownMenuItem>
 
-                <DropdownMenuSeparator />
+                  <DropdownMenuSeparator />
 
-                <DropdownMenuItem 
-                  className="flex items-center gap-3 p-3 cursor-pointer"
-                  onClick={() => setLocationState({ type: 'all', label: 'All Locations', lat: null, lng: null })}
-                >
-                  <Navigation className="h-4 w-4 text-gold" />
-                  <span>All Locations</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+                  <DropdownMenuItem 
+                    className="flex items-center gap-3 p-3 cursor-pointer"
+                    onClick={() => setLocationState({ type: 'all', label: 'All Locations', lat: null, lng: null })}
+                  >
+                    <Navigation className="h-4 w-4 text-gold" />
+                    <span>All Locations</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
 
-          <div className="flex flex-col md:flex-row gap-4 items-center">
-             {/* Search */}
-             <div className="relative flex-1 w-full max-w-2xl">
-               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gold" />
-               <Input 
-                 placeholder={`Search events in ${locationState.label === 'Choose a location' ? 'all locations' : locationState.label}`}
-                 className="pl-11 h-12 bg-transparent border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] focus-visible:ring-0 focus-visible:border-gold rounded-none text-base"
-                 value={searchQuery}
-                 onChange={(e) => setSearchQuery(e.target.value)}
-               />
-             </div>
-             
-             {/* Right Side Actions */}
-             <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
-                <Link to={createPageUrl("CreateEvent")}>
-                   <Button className="rounded-none h-12 px-6 bg-ink hover:bg-ink-deep text-cream text-[11px] uppercase tracking-[0.16em]">
-                     <Plus className="h-4 w-4 mr-2" />
-                     Create Event
-                   </Button>
-                </Link>
-             </div>
+            {/* Search + actions */}
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <div className="relative flex-1 min-w-0">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gold" />
+                <Input 
+                  placeholder={`Search events in ${locationLabel.toLowerCase() === 'all locations' ? 'all locations' : locationLabel}`}
+                  className="pl-10 h-11 bg-transparent border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] focus-visible:ring-0 focus-visible:border-gold rounded-none text-base"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+
+              {/* View switcher */}
+              <div className="hidden sm:flex items-center border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] h-11 shrink-0" role="group" aria-label="Layout">
+                {VIEW_OPTIONS.map(({ id, label, Icon }) => (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => setViewMode(id)}
+                    aria-pressed={viewMode === id}
+                    title={`${label} view`}
+                    className={`h-full w-11 flex items-center justify-center transition-colors ${
+                      viewMode === id
+                        ? 'bg-ink text-cream dark:bg-cream dark:text-ink'
+                        : 'text-ink/60 dark:text-[#F1E8E0]/60 hover:text-gold-text dark:hover:text-gold-dark'
+                    }`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span className="sr-only">{label} view</span>
+                  </button>
+                ))}
+              </div>
+
+              <Link to={createPageUrl("CreateEvent")} className="shrink-0">
+                <Button className="rounded-none h-11 px-3 sm:px-5 bg-ink hover:bg-ink-deep text-cream text-[11px] uppercase tracking-[0.16em]">
+                  <Plus className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Create Event</span>
+                  <span className="sr-only sm:hidden">Create Event</span>
+                </Button>
+              </Link>
+            </div>
           </div>
           
           {/* Categories / Filters */}
-          <div className="flex gap-2 overflow-x-auto py-2 mt-4 no-scrollbar items-center">
+          <div className="flex gap-2 overflow-x-auto pt-3 no-scrollbar items-center">
             {THEMES.map(theme => (
               <button
                 key={theme}
                 onClick={() => setSelectedTheme(theme)}
-                className={`px-4 py-2 min-h-[44px] rounded-none text-[11px] uppercase tracking-[0.14em] whitespace-nowrap transition-colors border ${
+                className={`px-3.5 py-1.5 min-h-[36px] rounded-none text-[11px] uppercase tracking-[0.14em] whitespace-nowrap transition-colors border ${
                   selectedTheme === theme 
                     ? 'bg-ink text-cream border-ink dark:bg-cream dark:text-ink dark:border-cream' 
                     : 'bg-transparent text-ink/70 dark:text-[#F1E8E0]/70 border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] hover:text-gold-text dark:hover:text-gold-dark'
@@ -360,43 +415,57 @@ export default function PublicEvents() {
         </div>
       </div>
 
-      <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-8">
-        {/* Title Section */}
-        <div className="mb-8">
-            <h6 className={`${locationState.label === 'Choose a location' ? 'text-3xl md:text-4xl' : 'text-4xl md:text-5xl'} font-serif leading-tight`}>
-              {selectedTheme === "All" ? "Events in " : `${selectedTheme} events in `}
-              <span className="text-gold-text dark:text-gold-dark">
-                {locationState.label === 'Choose a location' ? 'All Locations' : locationState.label}
-              </span>
-            </h6>
+      <div className={`${CONTAINER} py-5 md:py-6`}>
+        {/* Title row */}
+        <div className="flex items-end justify-between gap-4 mb-5">
+          <h1 className="text-2xl md:text-3xl font-serif leading-tight min-w-0">
+            {selectedTheme === "All" ? "Events in " : `${selectedTheme} events in `}
+            <span className="text-gold-text dark:text-gold-dark">{locationLabel}</span>
+          </h1>
+          {!isLoading && (
+            <span className="shrink-0 text-[11px] uppercase tracking-[0.16em] text-ink/50 dark:text-[#F1E8E0]/50 pb-1">
+              {displayEvents.length} {displayEvents.length === 1 ? 'event' : 'events'}
+            </span>
+          )}
         </div>
 
         {/* Grid */}
         {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-              <div key={i} className="space-y-4">
-                <Skeleton className="aspect-[3/2] w-full rounded-none" />
-                <Skeleton className="h-6 w-3/4 rounded-none" />
-                <Skeleton className="h-4 w-1/2 rounded-none" />
-                <Skeleton className="h-4 w-1/4 rounded-none" />
-              </div>
+          <div className={gridClass}>
+            {Array.from({ length: viewMode === 'list' ? 8 : 16 }).map((_, i) => (
+              viewMode === 'list' ? (
+                <div key={i} className="flex gap-3 p-2.5">
+                  <Skeleton className="w-28 sm:w-36 aspect-[3/2] rounded-none" />
+                  <div className="flex-1 space-y-2 py-2">
+                    <Skeleton className="h-3 w-1/3 rounded-none" />
+                    <Skeleton className="h-4 w-3/4 rounded-none" />
+                    <Skeleton className="h-3 w-1/2 rounded-none" />
+                  </div>
+                </div>
+              ) : (
+                <div key={i} className="space-y-2">
+                  <Skeleton className="aspect-[3/2] w-full rounded-none" />
+                  <Skeleton className="h-3 w-1/2 rounded-none" />
+                  <Skeleton className="h-4 w-3/4 rounded-none" />
+                  <Skeleton className="h-3 w-1/3 rounded-none" />
+                </div>
+              )
             ))}
           </div>
         ) : (
           <>
             {usingFallback && (
-              <div className="mb-6 rounded-none border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] bg-linen dark:bg-[#221D19] px-4 py-3 text-sm text-ink/70 dark:text-[#F1E8E0]/70">
+              <div className="mb-5 rounded-none border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] bg-linen dark:bg-[#221D19] px-4 py-3 text-sm text-ink/70 dark:text-[#F1E8E0]/70">
                 No events near {locationState.label === 'Choose a location' ? 'your area' : locationState.label}. Showing upcoming events instead.
               </div>
             )}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
+            <div className={gridClass}>
               {displayEvents.map(event => (
-                <EventCard key={event.id} event={event} />
+                <EventCard key={event.id} event={event} variant={cardVariant} />
               ))}
             </div>
 
-            {displayEvents.length >= eventsPerPage * page && (
+            {hasMore && (
               <div className="flex justify-center mt-10">
                 <Button 
                   onClick={() => setPage(p => p + 1)} 
