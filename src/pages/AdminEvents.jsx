@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback } from "react";
+import { isLiveCountry, getCountryName, countryFlag } from "@/lib/countries";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -353,6 +354,11 @@ export default function AdminEvents() {
                         <h3 className="text-xl font-bold text-slate-900">{event.title}</h3>
                         <div className="flex gap-2 mt-1 mb-2">
                           <Badge variant="secondary">{event.theme}</Badge>
+                          {!isLiveCountry(event.country) && (
+                            <Badge variant="outline" className="bg-amber-100 text-amber-800 border-amber-300" title="Khareus isn't live in this country yet. Keep pending until launch.">
+                              {countryFlag(event.country)} Waitlist · {getCountryName(event.country)}
+                            </Badge>
+                          )}
                           <Badge variant={event.is_paid ? "default" : "outline"} className={event.is_paid ? "bg-gold" : "text-green-600 border-green-200"}>
                              {event.is_paid ? (event.price ? `GH₵${event.price}` : 'Paid') : 'Free'}
                           </Badge>

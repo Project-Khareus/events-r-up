@@ -6,7 +6,7 @@ import { MAX_VENDOR_LOCATIONS } from "@/components/utils/vendorLocations";
 
 // Lets a vendor list every town or city they serve. The first one is shown
 // first on their listing.
-export default function MultiLocationInput({ value = [], onChange, className }) {
+export default function MultiLocationInput({ value = [], onChange, className, countryCode = "GH" }) {
   const [draft, setDraft] = useState("");
   const locations = Array.isArray(value) ? value : [];
   const full = locations.length >= MAX_VENDOR_LOCATIONS;
@@ -59,7 +59,8 @@ export default function MultiLocationInput({ value = [], onChange, className }) 
               value={draft}
               onChange={setDraft}
               onSelect={(s) => add(typeof s === "string" ? s : conciseLabel(s))}
-              placeholder={locations.length ? "Add another town or city" : "e.g., Osu, Accra"}
+              countryCode={countryCode}
+              placeholder={locations.length ? "Add another town or city" : countryCode === "GH" ? "e.g., Osu, Accra" : "Start typing a town or city"}
             />
           </div>
           <button

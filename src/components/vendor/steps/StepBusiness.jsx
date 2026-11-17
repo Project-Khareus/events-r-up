@@ -5,6 +5,7 @@ import { PANEL, H2, SUB, LABEL, INPUT, BTN_PRIMARY, CHIP, CHIP_ON } from "./wiza
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import MultiLocationInput from "@/components/vendor/MultiLocationInput";
+import CountrySelect from "@/components/shared/CountrySelect";
 import { getVendorLocations, locationFields } from "@/components/utils/vendorLocations";
 
 const EVENT_TYPES = [
@@ -133,10 +134,28 @@ export default function StepBusiness({ formData, setFormData, onNext, initialDat
         </div>
 
         <div>
+          <p className={LABEL}>Country *</p>
+          <CountrySelect
+            value={formData.country}
+            onChange={(country) =>
+              setFormData((prev) => ({
+                ...prev,
+                country,
+                // Towns picked for another country no longer apply
+                ...(country !== (prev.country || "GH") ? locationFields([]) : {}),
+              }))
+            }
+            className="mt-2 md:max-w-[340px]"
+            triggerClassName="rounded-none bg-cream dark:bg-[#211B16] border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] text-ink dark:text-[#F1E8E0]"
+          />
+        </div>
+
+        <div>
           <p className={LABEL}>Locations you serve</p>
           <MultiLocationInput
             value={getVendorLocations(formData)}
             onChange={(list) => setFormData({ ...formData, ...locationFields(list) })}
+            countryCode={formData.country || "GH"}
             className="mt-2"
           />
         </div>

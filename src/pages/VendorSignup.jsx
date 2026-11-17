@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Store, Loader2, CheckCircle, Send } from "lucide-react";
 import VendorForm from "../components/vendor/VendorForm";
 import { normalizeVendorName } from "@/utils/vendorUrl";
+import { isLiveCountry } from "@/lib/countries";
 
 export default function VendorSignup() {
   const navigate = useNavigate();
@@ -61,6 +62,25 @@ export default function VendorSignup() {
       };
 
       const allVendors = await base44.entities.Vendor.filter({ user_id: user.id });
+
+      // Not live in this country yet: save the listing as a waitlist entry.
+      // No payment, no Ghana Card, stays pending until we launch there.
+      if (!isLiveCountry(vendorData.country)) {
+        const waitlistData = { ...vendorData, subscription_type: 'trial', status: 'pending' };
+        const existing = allVendors.find(
+          (vendor) => normalizeVendorName(vendor.business_name) === normalizeVendorName(vendorData.business_name)
+        );
+        let saved;
+        try {
+          saved = existing
+            ? await base44.entities.Vendor.update(existing.id, waitlistData)
+            : await base44.entities.Vendor.create({ ...waitlistData, user_id: user.id });
+        } catch (err) {
+          console.error('Waitlist vendor save failed:', err);
+          throw new Error("We couldn't save your listing. Please check that all required fields are filled in correctly and try again.");
+        }
+        return { waitlist: true, vendorId: saved.id, businessName: vendorData.business_name, country: vendorData.country };
+      }
       const existingVendor = allVendors.find(
         (vendor) => normalizeVendorName(vendor.business_name) === normalizeVendorName(vendorData.business_name)
       );
@@ -136,6 +156,20 @@ export default function VendorSignup() {
       return response.data;
     },
     onSuccess: async (data) => {
+      if (data.waitlist) {
+        try {
+          await base44.functions.invoke('notifyVendorSubmission', {
+            business_name: `${data.businessName || 'New Vendor'} [waitlist: ${data.country}]`,
+            vendor_id: data.vendorId,
+            contact_email: user.email,
+            country: data.country
+          });
+        } catch (e) {
+          console.error('Failed to notify admin:', e);
+        }
+        return;
+      }
+
       if (data.reused) {
         toast.success("Your existing listing has been updated.");
         navigate(createPageUrl("ManageListing"));

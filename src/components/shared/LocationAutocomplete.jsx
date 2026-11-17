@@ -23,6 +23,7 @@ export default function LocationAutocomplete({
   onChange,
   onSelect,
   placeholder = "Start typing a Ghana location...",
+  countryCode = "GH",
   className,
   inputClassName,
   required = false,
@@ -56,10 +57,11 @@ export default function LocationAutocomplete({
         q: query,
         format: "jsonv2",
         addressdetails: "1",
-        countrycodes: "gh",
+        countrycodes: String(countryCode || "GH").toLowerCase(),
         limit: "6",
-        viewbox: "-3.4,11.2,1.3,4.5",
       });
+      // Bias results towards Ghana's bounding box when searching Ghana
+      if (String(countryCode || "GH").toUpperCase() === "GH") params.set("viewbox", "-3.4,11.2,1.3,4.5");
 
       try {
         const response = await fetch(`https://nominatim.openstreetmap.org/search?${params.toString()}`, {
@@ -86,7 +88,7 @@ export default function LocationAutocomplete({
       clearTimeout(timer);
       controller.abort();
     };
-  }, [query, open]);
+  }, [query, open, countryCode]);
 
   const selectSuggestion = (suggestion) => {
     onChange(conciseLabel(suggestion));

@@ -15,6 +15,9 @@ import { toast } from "sonner";
 import { Loader2, Image as ImageIcon, Calendar } from "lucide-react";
 import EventGalleryUpload from "@/components/events/EventGalleryUpload";
 import LocationAutocomplete from "@/components/shared/LocationAutocomplete";
+import CountrySelect from "@/components/shared/CountrySelect";
+import ComingSoonCountryDialog from "@/components/shared/ComingSoonCountryDialog";
+import { isLiveCountry } from "@/lib/countries";
 
 const THEMES = ["Music", "Food & Drink", "Business", "Arts & Culture", "Sports", "Community", "Party", "Education", "Other"];
 
@@ -26,6 +29,7 @@ export default function CreateEvent() {
   
   const [formData, setFormData] = useState({
     title: "",
+    country: "GH",
     organizer_name: "",
     description: "",
     image_url: "",
@@ -43,6 +47,8 @@ export default function CreateEvent() {
   
   // Coordinates captured automatically from the selected location suggestion
   const [mapPosition, setMapPosition] = useState(null);
+  const [comingSoonOpen, setComingSoonOpen] = useState(false);
+  const isWaitlist = !isLiveCountry(formData.country);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -67,12 +73,17 @@ export default function CreateEvent() {
 
   const createEventMutation = useMutation({
     mutationFn: (data) => base44.entities.EventListing.create(data),
-    onSuccess: () => {
+    onSuccess: (_created, variables) => {
       queryClient.invalidateQueries({ queryKey: ['events'] });
+      if (!isLiveCountry(variables?.country)) {
+        setIsLoading(false);
+        setComingSoonOpen(true);
+        return;
+      }
       toast.success("Event submitted for approval! It will appear once approved.");
       navigate(createPageUrl("PublicEvents"));
     },
-    onError: () => toast.error("Failed to publish event")
+    onError: () => { setIsLoading(false); toast.error("Failed to publish event"); }
   });
 
   const handleImageUpload = async (e) => {
@@ -228,14 +239,29 @@ export default function CreateEvent() {
             </div>
 
 
+            {/* Country */}
+            <div className="space-y-2">
+                <Label>Country *</Label>
+                <CountrySelect
+                    value={formData.country}
+                    onChange={(country) => {
+                        setFormData(prev => ({ ...prev, country, ...(country !== prev.country ? { location_address: "" } : {}) }));
+                        if (country !== formData.country) setMapPosition(null);
+                    }}
+                    noun="event"
+                    className="md:max-w-[340px]"
+                />
+            </div>
+
             {/* Location */}
             <div className="space-y-2">
                 <Label>Location Address *</Label>
                 <LocationAutocomplete
+                    countryCode={formData.country}
                     value={formData.location_address}
                     onChange={(location_address) => setFormData(prev => ({ ...prev, location_address }))}
                     onSelect={(suggestion) => setMapPosition({ lat: parseFloat(suggestion.lat), lng: parseFloat(suggestion.lon) })}
-                    placeholder="e.g., National Theatre, Accra, Ghana"
+                    placeholder={formData.country === "GH" ? "e.g., National Theatre, Accra, Ghana" : "Start typing the venue or address"}
                     required
                 />
             </div>
@@ -255,14 +281,14 @@ export default function CreateEvent() {
                     <div className="w-full md:w-1/3">
                         <Label>Price</Label>
                         <div className="relative mt-1">
-                            <span className="absolute left-3 top-2 text-sm text-slate-400">GH₵</span>
+                            {!isWaitlist && <span className="absolute left-3 top-2 text-sm text-slate-400">GH₵</span>}
                             <Input 
                                 type="number"
                                 min="0"
                                 step="0.01"
                                 value={formData.price}
                                 onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
-                                className="pl-12"
+                                className={isWaitlist ? "" : "pl-12"}
                                 placeholder="0.00"
                             />
                         </div>
@@ -355,6 +381,14 @@ export default function CreateEvent() {
           </form>
         </Card>
       </div>
+
+      <ComingSoonCountryDialog
+        open={comingSoonOpen}
+        onOpenChange={setComingSoonOpen}
+        countryCode={formData.country}
+        kind="event"
+        onDone={() => navigate(createPageUrl("PublicEvents"))}
+      />
     </div>
   );
 }
