@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 import { secrets } from 'base44:runtime';
 import { postSocialPublicationToSlack } from '../../shared/socialSlack.js';
+import { findInstagramCrops, prepareInstagramImages } from '../../shared/instagramImages.js';
 
 const FACEBOOK_API = 'https://graph.facebook.com/v25.0';
 const INSTAGRAM_API = 'https://graph.instagram.com/v25.0';
@@ -166,8 +167,11 @@ async function waitForInstagramContainer(containerId, accessToken) {
   throw new Error('Instagram is still processing this media. Please try publishing again shortly.');
 }
 
-async function publishInstagram(base44, copy, imageUrls) {
-  if (!imageUrls.length) throw new Error('Instagram requires at least one selected image');
+async function publishInstagram(base44, copy, selectedUrls) {
+  if (!selectedUrls.length) throw new Error('Instagram requires at least one selected image');
+  // Crop pictures Instagram would reject (it only takes 4:5 to 1.91:1); max 10 in a carousel
+  const imageUrls = (await prepareInstagramImages(base44, selectedUrls.slice(0, 10)));
+  if (!imageUrls.length) throw new Error('None of the selected pictures could be prepared for Instagram. Try selecting different pictures.');
   const { accessToken } = await base44.asServiceRole.connectors.getConnection('instagram');
   const profileResponse = await fetch(`${INSTAGRAM_API}/me?fields=id,username&access_token=${encodeURIComponent(accessToken)}`, { signal: AbortSignal.timeout(10000) });
   const profile = await readResponse(profileResponse, 'Unable to load Instagram Business account');
@@ -234,10 +238,10 @@ export default async function(req) {
 
     if (payload.action === 'generate_draft') {
       const images = getVendorImages(vendor);
-      const copy = await writeDraft(base44, vendor);
+      const [copy, instagramCrops] = await Promise.all([writeDraft(base44, vendor), findInstagramCrops(images)]);
       const announcement = await base44.asServiceRole.entities.SocialAnnouncement.create({ vendor_id: vendor.id, copy, image_urls: images, facebook_status: 'pending', instagram_status: 'pending', status: 'draft' });
       const pages = await getFacebookPages(base44);
-      return Response.json({ announcementId: announcement.id, copy: announcement.copy, imageUrls: images, facebookPages: pages.map((page) => ({ id: page.id, name: page.name })) });
+      return Response.json({ announcementId: announcement.id, copy: announcement.copy, imageUrls: images, instagramCrops, facebookPages: pages.map((page) => ({ id: page.id, name: page.name })) });
     }
 
     if (payload.action === 'publish') {
