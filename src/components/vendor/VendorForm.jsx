@@ -14,6 +14,8 @@ import StepMedia from "./steps/StepMedia";
 import StepContact from "./steps/StepContact";
 import StepVerification from "./steps/StepVerification";
 import { getVendorLocations } from "@/components/utils/vendorLocations";
+import ComingSoonCountryDialog from "@/components/shared/ComingSoonCountryDialog";
+import { isLiveCountry, getCountryName, countryFlag } from "@/lib/countries";
 
 const DRAFT_STORAGE_KEY = 'vendor_form_draft';
 const DRAFT_STEP_KEY = 'vendor_form_step';
@@ -21,6 +23,7 @@ const DRAFT_STEP_KEY = 'vendor_form_step';
 const DEFAULT_FORM_DATA = {
   business_name: "",
   slogan: "",
+  country: "GH",
   event_type: [],
   category: [],
   description: "",
@@ -86,6 +89,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
   const [ghanaCardPendingDialogOpen, setGhanaCardPendingDialogOpen] = useState(false);
   const [submittedVendorId, setSubmittedVendorId] = useState(null);
+  const [comingSoonOpen, setComingSoonOpen] = useState(false);
   const navigate = useNavigate();
 
   // Save draft to localStorage whenever formData or step changes (new listings only)
@@ -149,6 +153,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
     }
   }, [initialData]);
 
+  const isWaitlist = !isLiveCountry(formData.country);
   const hasGhanaCard = formData.ghana_card_number && formData.ghana_card_image_url && formData.ghana_card_back_image_url && formData.ghana_card_selfie_url;
 
   const handleSubmit = () => {
@@ -177,6 +182,10 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
       } catch {}
     }
     const result = await onSubmit(formData);
+    if (result?.waitlist) {
+      setComingSoonOpen(true);
+      return;
+    }
     // If no Ghana Card and we got a vendorId back, show pending dialog
     if (!hasGhanaCard && result?.vendorId) {
       setSubmittedVendorId(result.vendorId);
@@ -250,12 +259,19 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
           </DialogHeader>
           <div className="bg-cream dark:bg-[#211B16] border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] rounded-none p-4 space-y-2 text-[13.5px] font-light text-ink dark:text-[#F1E8E0]">
             <p><strong>Business:</strong> {formData.business_name}</p>
+            <p><strong>Country:</strong> {countryFlag(formData.country || "GH")} {getCountryName(formData.country || "GH")}</p>
             {formData.event_type.length > 0 && <p><strong>Event Types:</strong> {formData.event_type.join(", ")}</p>}
             {formData.category.length > 0 && <p><strong>Categories:</strong> {formData.category.length} selected</p>}
             {getVendorLocations(formData).length > 0 && <p><strong>{getVendorLocations(formData).length > 1 ? "Locations" : "Location"}:</strong> {getVendorLocations(formData).join(" · ")}</p>}
-            <p><strong>Plan:</strong> {formData.subscription_type?.charAt(0).toUpperCase() + formData.subscription_type?.slice(1)}</p>
+            {!isWaitlist && <p><strong>Plan:</strong> {formData.subscription_type?.charAt(0).toUpperCase() + formData.subscription_type?.slice(1)}</p>}
           </div>
-          {!hasGhanaCard && (
+          {isWaitlist && (
+            <div className="flex items-start gap-2 bg-[rgba(169,126,46,0.08)] border border-[rgba(169,126,46,0.35)] rounded-none p-3">
+              <AlertTriangle className="h-4 w-4 text-gold-text dark:text-gold-dark shrink-0 mt-0.5" />
+              <p className="text-[13px] font-light text-[rgba(59,50,43,0.72)] dark:text-[rgba(241,232,224,0.72)]">Khareus isn't live in {getCountryName(formData.country)} yet. We'll save your listing and let you know as soon as we launch there.</p>
+            </div>
+          )}
+          {!isWaitlist && !hasGhanaCard && (
             <div className="flex items-start gap-2 bg-[rgba(169,126,46,0.08)] border border-[rgba(169,126,46,0.35)] rounded-none p-3">
               <AlertTriangle className="h-4 w-4 text-gold-text dark:text-gold-dark shrink-0 mt-0.5" />
               <p className="text-[13px] font-light text-[rgba(59,50,43,0.72)] dark:text-[rgba(241,232,224,0.72)]">You haven't uploaded your Ghana Card yet. Your listing will be submitted but will remain pending until verification is completed. You can add it later by editing your listing.</p>
@@ -317,6 +333,14 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ComingSoonCountryDialog
+        open={comingSoonOpen}
+        onOpenChange={setComingSoonOpen}
+        countryCode={formData.country}
+        kind="listing"
+        onDone={() => navigate('/ManageListing')}
+      />
 
       {/* Name Change Dialog */}
       <Dialog open={nameChangeDialogOpen} onOpenChange={setNameChangeDialogOpen}>

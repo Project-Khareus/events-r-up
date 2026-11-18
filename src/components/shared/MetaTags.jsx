@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const KHAREUS_DEFAULT_DESCRIPTION = "Khareus is Ghana's premier event vendor marketplace. Find and book trusted vendors for weddings, parties, conferences, and more.";
+const KHAREUS_DEFAULT_DESCRIPTION = "Khareus is Ghana's reviewed event vendor marketplace. Find and book trusted vendors for weddings, parties, conferences and funerals in Ghana, whether you're in Accra or anywhere else in the world.";
 
 function stripHtml(html) {
   if (!html) return "";

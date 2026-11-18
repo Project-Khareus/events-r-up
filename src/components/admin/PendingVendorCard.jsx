@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { formatPrice, getCurrencyByCode } from "@/components/utils/currency";
 import { getVendorUrl } from "../../utils/vendorUrl";
 import { getVendorLocations, formatVendorLocationsShort } from "@/components/utils/vendorLocations";
+import { isLiveCountry, getCountryName, countryFlag } from "@/lib/countries";
 
 const EVENT_TYPE_LABELS = {
   weddings: "Weddings",
@@ -125,6 +126,11 @@ export default function PendingVendorCard({
 
             {/* Tags */}
             <div className="flex gap-1.5 mt-2.5 flex-wrap">
+              {!isLiveCountry(vendor.country) && (
+                <span className="px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider rounded-full bg-amber-100 text-amber-800 border border-amber-300" title="Khareus isn't live in this country yet. Keep pending until launch.">
+                  {countryFlag(vendor.country)} Waitlist · {getCountryName(vendor.country)}
+                </span>
+              )}
               {eventTypes.filter(Boolean).map(et => (
                 <span key={et} className="px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider rounded-full bg-gold/10 text-gold-text border border-gold/20">
                   {EVENT_TYPE_LABELS[et] || et}

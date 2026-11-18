@@ -2,6 +2,11 @@
   "name": "Vendor",
   "type": "object",
   "properties": {
+    "country": {
+      "type": "string",
+      "default": "GH",
+      "description": "Country the vendor is based in (ISO 3166-1 alpha-2, African countries only). Listings from countries where Khareus is not live yet are a waitlist and stay pending."
+    },
     "user_id": {
       "type": "string",
       "description": "ID of the user who owns this vendor listing"

@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 import SearchBar from "../components/marketplace/SearchBar";
 import HomeMasthead from "../components/marketplace/home/HomeMasthead";
+import useVisitorAudience from "@/hooks/useVisitorAudience";
 import FilterSidebar from "../components/marketplace/FilterSidebar";
 import HomeMobileFilters from "../components/marketplace/HomeMobileFilters";
 import HomeOccasionDoors from "../components/marketplace/home/HomeOccasionDoors";
@@ -70,6 +71,7 @@ export default function VendorMarketplace() {
   const eventParam = urlParams.get("event") || "all";
   const categoryParam = urlParams.get("category") || "all";
 
+  const { audience, setAudience } = useVisitorAudience();
   const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [eventType, setEventType] = useState(eventParam);
@@ -273,7 +275,7 @@ export default function VendorMarketplace() {
       <PullToRefresh onRefresh={handleRefresh}>
         <div className="min-h-screen bg-cream dark:bg-[#211B16] pb-[82px] md:pb-0">
           <div className="max-w-[1280px] mx-auto">
-            <HomeMasthead />
+            <HomeMasthead audience={audience} onAudienceChange={setAudience} />
             <div className="px-5 md:px-10 space-y-6">
               <HomeMobileFilters {...filterProps} />
               <SearchBar
@@ -315,7 +317,7 @@ export default function VendorMarketplace() {
                 )}
               </div>
             </div>
-            <HomeTrustStrip />
+            <HomeTrustStrip audience={audience} />
           </div>
         </div>
       </PullToRefresh>

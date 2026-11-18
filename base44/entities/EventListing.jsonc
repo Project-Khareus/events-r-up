@@ -2,6 +2,11 @@
   "name": "EventListing",
   "type": "object",
   "properties": {
+    "country": {
+      "type": "string",
+      "default": "GH",
+      "description": "Country the event takes place in (ISO 3166-1 alpha-2, African countries only). Events in countries where Khareus is not live yet are a waitlist and stay pending."
+    },
     "description": {
       "type": "string",
       "description": "Full description of the event"

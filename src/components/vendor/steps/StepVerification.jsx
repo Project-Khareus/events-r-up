@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { compressImage } from "@/components/utils/imageCompress";
 import { CreditCard, Upload, Loader2, X, Check, AlertCircle, ArrowLeft, Info } from "lucide-react";
 import { PANEL, H2, SUB, LABEL, INPUT, BTN_PRIMARY, BTN_GHOST, DROP } from "./wizardStyles";
+import { isLiveCountry, getCountryName, countryFlag } from "@/lib/countries";
 
 const PLANS = [
   { key: "trial", name: "Trial", desc: "1 month free (max 3)", price: "Free", unit: "/mo", isTrial: true,
@@ -65,10 +66,26 @@ export default function StepVerification({ formData, setFormData, onBack, onSubm
   };
 
   const selectedPlan = PLANS.find((p) => p.key === formData.subscription_type);
+  const isWaitlist = !isLiveCountry(formData.country);
+  const isGhana = (formData.country || "GH") === "GH";
 
   return (
     <div className="space-y-6">
+      {isWaitlist && (
+        <div className={PANEL}>
+          <h2 className={`${H2} flex items-center gap-2.5`}>
+            <span aria-hidden="true">{countryFlag(formData.country)}</span>
+            Coming soon to {getCountryName(formData.country)}
+          </h2>
+          <p className={SUB}>
+            Khareus isn't live in {getCountryName(formData.country)} yet, so there's nothing to pay and no ID to upload today.
+            Submit your listing and we'll save your spot. We'll email you as soon as we launch there.
+          </p>
+        </div>
+      )}
+
       {/* Ghana Card Verification */}
+      {isGhana && (
       <div className={PANEL}>
         <h2 className={`${H2} flex items-center gap-2.5`}>
           <CreditCard className="h-5 w-5 text-gold-text dark:text-gold-dark" />
@@ -122,8 +139,10 @@ export default function StepVerification({ formData, setFormData, onBack, onSubm
           </span>
         </div>
       </div>
+      )}
 
       {/* Subscription Plan */}
+      {!isWaitlist && (
       <div className={PANEL}>
         <h2 className={H2}>Choose a plan</h2>
 
@@ -170,6 +189,7 @@ export default function StepVerification({ formData, setFormData, onBack, onSubm
           </div>
         )}
       </div>
+      )}
 
       <div className="flex justify-between">
         <button type="button" onClick={onBack} className={BTN_GHOST}>
