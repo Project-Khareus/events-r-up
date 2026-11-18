@@ -36,7 +36,7 @@ export default function PrivacyPolicy() {
             <div className="p-3 bg-gold/10 rounded-xl">
               <Shield className="h-8 w-8 text-gold-text" />
             </div>
-            <span className="text-sm font-semibold text-gold-text uppercase tracking-wider">Legal</span>
+            <span className="text-sm font-semibold text-gold-text">Legal</span>
           </div>
           
           <h1 className="text-4xl md:text-5xl font-serif font-bold text-slate-900 mb-6 tracking-tight">

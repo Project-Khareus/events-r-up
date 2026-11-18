@@ -47,7 +47,7 @@ export default function Blog() {
     <div className="min-h-screen bg-cream dark:bg-[#1B1714] text-ink dark:text-[#F1E8E0]">
       {/* Masthead */}
       <div className="max-w-7xl mx-auto px-6 pt-10 pb-6">
-        <p className="text-[11px] uppercase tracking-[0.22em] text-gold-text dark:text-gold-dark mb-3">Journal</p>
+        <p className="text-[13px] text-gold-text dark:text-gold-dark mb-3">Journal</p>
         <h1 className="font-serif text-5xl lg:text-6xl leading-[1.05]">The Khareus Journal</h1>
         <p className="mt-3 text-lg text-ink/70 dark:text-[#F1E8E0]/70 max-w-2xl">
           Stories, trends and planning notes from Ghana's event world.
@@ -58,7 +58,7 @@ export default function Blog() {
       {/* Categories Nav */}
       <div className={`border-y ${HAIRLINE} sticky top-0 bg-cream/95 dark:bg-[#1B1714]/95 backdrop-blur-md z-10`}>
         <div className="max-w-7xl mx-auto px-6 overflow-x-auto no-scrollbar">
-          <div className="flex items-center gap-8 h-14 text-[11px] uppercase tracking-[0.16em] text-ink/60 dark:text-[#F1E8E0]/60 whitespace-nowrap">
+          <div className="flex items-center gap-8 h-14 text-[13px] text-ink/60 dark:text-[#F1E8E0]/60 whitespace-nowrap">
             {categories.map(cat => (
               <button key={cat} className="hover:text-gold-text dark:hover:text-gold-dark transition-colors">
                 {cat}
@@ -82,8 +82,8 @@ export default function Blog() {
                 />
               </div>
               <div className="space-y-5">
-                <span className="text-[11px] uppercase tracking-[0.2em] text-gold-text dark:text-gold-dark">{featuredPost.category}</span>
-                <h2 className="font-serif text-4xl lg:text-5xl leading-tight group-hover:text-gold-text dark:group-hover:text-gold-dark transition-colors">
+                <span className="text-[13px] text-gold-text dark:text-gold-dark">{featuredPost.category}</span>
+                <h2 className="font-medium text-4xl lg:text-5xl leading-tight group-hover:text-gold-text dark:group-hover:text-gold-dark transition-colors">
                   {featuredPost.title}
                 </h2>
                 <p className="text-lg text-ink/70 dark:text-[#F1E8E0]/70 line-clamp-3 leading-relaxed">
@@ -96,7 +96,7 @@ export default function Blog() {
                   </Avatar>
                   <div className="text-sm">
                     <p>{featuredPost.author_name}</p>
-                    <p className="text-[11px] uppercase tracking-[0.12em] text-ink/50 dark:text-[#F1E8E0]/50">
+                    <p className="text-[13px] text-ink/50 dark:text-[#F1E8E0]/50">
                       {format(new Date(featuredPost.created_date), 'MMM d')} • {featuredPost.read_time}
                     </p>
                   </div>
@@ -108,7 +108,7 @@ export default function Blog() {
 
         {/* Recent Posts Grid */}
         <div>
-          <h3 className="font-serif text-3xl mb-8">Latest Stories</h3>
+          <h3 className="font-medium text-3xl mb-8">Latest Stories</h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
             {otherPosts.map(post => (
               <Link key={post.id} to={createPageUrl("BlogPostDetail") + `?id=${post.id}`} className="group flex flex-col h-full">
@@ -120,10 +120,10 @@ export default function Blog() {
                   />
                 </div>
                 <div className="flex-1 flex flex-col">
-                   <span className="text-[11px] uppercase tracking-[0.2em] text-gold-text dark:text-gold-dark mb-3">
+                   <span className="text-[13px] text-gold-text dark:text-gold-dark mb-3">
                       {post.category}
                    </span>
-                   <h3 className="font-serif text-2xl mb-3 line-clamp-2 group-hover:text-gold-text dark:group-hover:text-gold-dark transition-colors">
+                   <h3 className="font-medium text-2xl mb-3 line-clamp-2 group-hover:text-gold-text dark:group-hover:text-gold-dark transition-colors">
                      {post.title}
                    </h3>
                    <p className="text-ink/70 dark:text-[#F1E8E0]/70 line-clamp-2 mb-4 text-sm flex-1">
@@ -134,7 +134,7 @@ export default function Blog() {
                         <AvatarImage src={post.author_avatar_url} />
                         <AvatarFallback className="bg-transparent border border-gold text-gold-text text-[10px]">{post.author_name?.[0]}</AvatarFallback>
                       </Avatar>
-                      <div className="text-[11px] uppercase tracking-[0.1em] text-ink/50 dark:text-[#F1E8E0]/50">
+                      <div className="text-[13px] text-ink/50 dark:text-[#F1E8E0]/50">
                         <span>{post.author_name}</span>
                         <span className="mx-1">•</span>
                         <span>{format(new Date(post.created_date), 'MMM d')}</span>

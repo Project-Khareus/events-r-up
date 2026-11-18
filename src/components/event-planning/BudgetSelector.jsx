@@ -21,7 +21,7 @@ export default function BudgetSelector({ value, onChange, onNext, onBack }) {
 
       <div className="max-w-md mx-auto space-y-8">
         <div>
-          <label className="text-[10px] font-medium tracking-[0.16em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">
+          <label className="text-[12px] font-medium text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">
             Enter custom amount
           </label>
           <div className="relative mt-2">
@@ -40,7 +40,7 @@ export default function BudgetSelector({ value, onChange, onNext, onBack }) {
         </div>
 
         <div>
-          <p className="text-[10px] font-medium tracking-[0.16em] uppercase text-center text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)] mb-3">
+          <p className="text-[12px] font-medium text-center text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)] mb-3">
             or pick a range
           </p>
           <div className="grid gap-2">
@@ -58,7 +58,7 @@ export default function BudgetSelector({ value, onChange, onNext, onBack }) {
                   }`}
                 >
                   <span className="font-light">{preset.label}</span>
-                  <span className={`text-[10px] font-medium tracking-[0.14em] uppercase ${isSelected ? "text-gold-text dark:text-gold-dark" : "text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]"}`}>
+                  <span className={`text-[12px] font-medium ${isSelected ? "text-gold-text dark:text-gold-dark" : "text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]"}`}>
                     {preset.tag}
                   </span>
                 </button>

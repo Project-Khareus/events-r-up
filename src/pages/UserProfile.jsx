@@ -124,7 +124,7 @@ export default function UserProfile() {
     if (profileError) console.error("Profile fetch error:", profileError);
     return (
       <div className="min-h-screen bg-cream dark:bg-[#211B16] flex flex-col items-center justify-center px-5 text-center">
-          <h2 className="font-serif text-[28px] text-ink dark:text-[#F1E8E0]">
+          <h2 className="font-medium text-[28px] text-ink dark:text-[#F1E8E0]">
             {profileError ? "We couldn't load this profile" : "Profile not found"}
           </h2>
           <p className={`mt-2 text-[14px] font-light ${MUTED}`}>
@@ -132,7 +132,7 @@ export default function UserProfile() {
           </p>
           <Link
             to={createPageUrl("PublicEvents")}
-            className="mt-6 inline-flex items-center min-h-[48px] px-6 rounded-none bg-ink dark:bg-[#F1E8E0] text-cream dark:text-[#211B16] text-[11.5px] font-medium tracking-[0.1em] uppercase hover:bg-ink-deep transition-colors"
+            className="mt-6 inline-flex items-center min-h-[48px] px-6 rounded-none bg-ink dark:bg-[#F1E8E0] text-cream dark:text-[#211B16] text-[13px] font-medium hover:bg-ink-deep transition-colors"
           >
             Back to events
           </Link>
@@ -155,7 +155,7 @@ export default function UserProfile() {
                 <div className="flex flex-col md:flex-row md:items-end gap-5 -mt-16 md:-mt-20 pb-5">
                     <Avatar className="w-28 h-28 md:w-36 md:h-36 border-2 border-cream dark:border-[#2A231D]">
                         <AvatarImage src={profile.avatar_url} />
-                        <AvatarFallback className="font-serif text-4xl md:text-5xl bg-[rgba(169,126,46,0.12)] text-gold-text dark:text-gold-dark">
+                        <AvatarFallback className="font-medium text-4xl md:text-5xl bg-[rgba(169,126,46,0.12)] text-gold-text dark:text-gold-dark">
                             {profile.display_name?.[0]}
                         </AvatarFallback>
                     </Avatar>
@@ -186,7 +186,7 @@ export default function UserProfile() {
                         {isOwnProfile ? (
                             <Link
                                 to={createPageUrl("Settings")}
-                                className="inline-flex items-center gap-2 min-h-[44px] px-5 rounded-none bg-ink dark:bg-[#F1E8E0] text-cream dark:text-[#211B16] text-[10.5px] font-medium tracking-[0.1em] uppercase hover:bg-ink-deep transition-colors"
+                                className="inline-flex items-center gap-2 min-h-[44px] px-5 rounded-none bg-ink dark:bg-[#F1E8E0] text-cream dark:text-[#211B16] text-[12px] font-medium hover:bg-ink-deep transition-colors"
                             >
                                 <Edit className="h-4 w-4" />
                                 Edit profile
@@ -205,7 +205,7 @@ export default function UserProfile() {
                 {/* Intro */}
                 <div className="md:col-span-2">
                     <section className={`${PANEL} p-5 md:p-6`}>
-                        <h3 className="font-serif text-[22px] text-ink dark:text-[#F1E8E0]">Intro</h3>
+                        <h3 className="font-medium text-[22px] text-ink dark:text-[#F1E8E0]">Intro</h3>
                         <div className="mt-4 space-y-3 text-[13.5px] font-light">
                             {profile.location && (
                                 <div className={`flex items-center gap-3 ${MUTED}`}>
@@ -254,8 +254,8 @@ export default function UserProfile() {
                     {events.length > 0 && (
                         <section className={`${PANEL} p-5 md:p-6`}>
                             <div className="flex items-center justify-between border-b border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] pb-3">
-                                <h3 className="font-serif text-[22px] text-ink dark:text-[#F1E8E0]">Events</h3>
-                                <span className="text-[10px] font-medium tracking-[0.16em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">{events.length} total</span>
+                                <h3 className="font-medium text-[22px] text-ink dark:text-[#F1E8E0]">Events</h3>
+                                <span className="text-[12px] font-medium text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">{events.length} total</span>
                             </div>
                             <div className="mt-5 grid sm:grid-cols-2 gap-4">
                                 {events.slice(0, 4).map(event => (
@@ -268,8 +268,8 @@ export default function UserProfile() {
                     {posts.length > 0 && (
                         <section className={`${PANEL} p-5 md:p-6`}>
                             <div className="flex items-center justify-between border-b border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] pb-3">
-                                <h3 className="font-serif text-[22px] text-ink dark:text-[#F1E8E0]">Journal</h3>
-                                <span className="text-[10px] font-medium tracking-[0.16em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">{posts.length} posts</span>
+                                <h3 className="font-medium text-[22px] text-ink dark:text-[#F1E8E0]">Journal</h3>
+                                <span className="text-[12px] font-medium text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">{posts.length} posts</span>
                             </div>
                             <div className="mt-2 divide-y divide-[rgba(59,50,43,0.14)] dark:divide-[rgba(241,232,224,0.16)]">
                                 {posts.slice(0, 3).map(post => (
@@ -278,11 +278,11 @@ export default function UserProfile() {
                                             <img src={post.cover_image_url} alt="" className="w-full h-full object-cover" />
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <h4 className="font-serif text-[19px] leading-[1.25] text-ink dark:text-[#F1E8E0] group-hover:text-gold-text dark:group-hover:text-gold-dark line-clamp-2">
+                                            <h4 className="font-medium text-[19px] leading-[1.25] text-ink dark:text-[#F1E8E0] group-hover:text-gold-text dark:group-hover:text-gold-dark line-clamp-2">
                                                 {post.title}
                                             </h4>
                                             <p className={`mt-1 text-[13px] font-light line-clamp-2 ${MUTED}`}>{post.excerpt}</p>
-                                            <p className="mt-2 text-[10px] font-medium tracking-[0.16em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">
+                                            <p className="mt-2 text-[12px] font-medium text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">
                                                 {format(new Date(post.created_date), 'MMM d, yyyy')} · {post.read_time || '5 min read'}
                                             </p>
                                         </div>
@@ -295,7 +295,7 @@ export default function UserProfile() {
                     {events.length === 0 && posts.length === 0 && (
                         <section className={`${PANEL} p-10 md:p-12 text-center`}>
                             <FileText className="h-8 w-8 mx-auto text-gold-text dark:text-gold-dark" />
-                            <h3 className="mt-4 font-serif text-[24px] text-ink dark:text-[#F1E8E0]">Nothing published yet</h3>
+                            <h3 className="mt-4 font-medium text-[24px] text-ink dark:text-[#F1E8E0]">Nothing published yet</h3>
                             <p className={`mt-2 text-[14px] font-light ${MUTED}`}>
                                 When {isOwnProfile ? "you share" : `${profile.display_name} shares`} events or journal posts, they'll appear here.
                             </p>

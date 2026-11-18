@@ -36,7 +36,7 @@ export default function CookiePolicy() {
             <div className="p-3 bg-amber-50 rounded-xl">
               <Cookie className="h-8 w-8 text-amber-600" />
             </div>
-            <span className="text-sm font-semibold text-amber-600 uppercase tracking-wider">Legal</span>
+            <span className="text-sm font-semibold text-amber-600">Legal</span>
           </div>
           
           <h1 className="text-4xl md:text-5xl font-serif font-bold text-slate-900 mb-6 tracking-tight">

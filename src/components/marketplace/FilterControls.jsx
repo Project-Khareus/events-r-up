@@ -136,7 +136,7 @@ export default function FilterControls({
     if (onSortChange) onSortChange("relevance");
   };
 
-  const vLabel = "block text-[9.5px] font-medium tracking-[0.15em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]";
+  const vLabel = "block text-[12px] font-medium text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]";
   const vSubLabel = "text-[11px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)] flex items-center gap-1.5";
   const vTrigger = "w-full h-10 text-[14px] rounded-none bg-cream dark:bg-[#211B16] border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] text-ink dark:text-[#F1E8E0] shadow-none focus:ring-1 focus:ring-[#A97E2E]";
 
@@ -252,7 +252,7 @@ export default function FilterControls({
         </div>
 
         {hasFilters && (
-          <Button variant="outline" size="sm" className="w-full rounded-none gap-1.5 text-[11px] font-medium tracking-[0.1em] uppercase h-10 bg-transparent border-[#A97E2E] text-gold-text dark:text-gold-dark hover:bg-[rgba(169,126,46,0.08)]" onClick={handleClearAll}>
+          <Button variant="outline" size="sm" className="w-full rounded-none gap-1.5 text-[13px] font-medium h-10 bg-transparent border-[#A97E2E] text-gold-text dark:text-gold-dark hover:bg-[rgba(169,126,46,0.08)]" onClick={handleClearAll}>
             <X className="h-3.5 w-3.5" /> Clear All Filters
           </Button>
         )}

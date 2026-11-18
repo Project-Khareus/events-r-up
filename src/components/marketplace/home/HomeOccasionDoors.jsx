@@ -83,7 +83,7 @@ export default function HomeOccasionDoors({ vendorsByEvent = [] }) {
                   style={{ background: "linear-gradient(to top, rgba(42,35,29,0.92), rgba(42,35,29,0.35))" }}
                 />
                 <div className="absolute inset-x-0 bottom-0 p-3 md:p-4">
-                  <p className="font-serif font-medium text-[16px] md:text-[21px] tracking-[0.05em] uppercase text-[#F8F1EB]">
+                  <p className=" font-medium text-[16px] md:text-[21px] text-[#F8F1EB]">
                     {occasion.label}
                   </p>
                   <p className="mt-0.5 text-[11.5px] font-light text-[#F8F1EB]">

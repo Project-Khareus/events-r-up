@@ -17,7 +17,7 @@ const EVENT_TYPES = [
   { value: "funeral", label: "Funeral" },
 ];
 
-const labelClass = "block text-[9.5px] font-medium tracking-[0.15em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)] mb-1";
+const labelClass = "block text-[12px] font-medium text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)] mb-1";
 const cellClass = "px-4 py-3 flex-1 min-w-0";
 
 export default function HomeSearchSpine({
@@ -88,7 +88,7 @@ export default function HomeSearchSpine({
         <button
           type="button"
           onClick={() => onSearch((searchInput || "").trim())}
-          className="shrink-0 px-7 bg-[#8A6522] hover:bg-[#75551C] text-cream text-[11.5px] font-medium tracking-[0.1em] uppercase transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#A97E2E]"
+          className="shrink-0 px-7 bg-[#8A6522] hover:bg-[#75551C] text-cream text-[13px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#A97E2E]"
         >
           Search
         </button>
@@ -102,7 +102,7 @@ export default function HomeSearchSpine({
           aria-expanded={showSemantic}
           className="text-[12px] font-light text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)] hover:text-ink dark:hover:text-[#F1E8E0] transition-colors"
         >
-          Or describe it plainly — 'affordable caterer in Kumasi for 300 guests'
+          Or just describe it: 'affordable caterer in Kumasi for 300 guests'
         </button>
         <span className="mx-2 text-[rgba(59,50,43,0.25)]">·</span>
         <Link
@@ -143,7 +143,7 @@ export default function HomeSearchSpine({
           />
         </div>
         <Link to={createPageUrl("EventPlanning")} className="block">
-          <button className="w-full h-12 rounded-none bg-[#8A6522] hover:bg-[#75551C] text-cream text-[11.5px] font-medium tracking-[0.1em] uppercase transition-colors">
+          <button className="w-full h-12 rounded-none bg-[#8A6522] hover:bg-[#75551C] text-cream text-[13px] font-medium transition-colors">
             Plan an event
           </button>
         </Link>

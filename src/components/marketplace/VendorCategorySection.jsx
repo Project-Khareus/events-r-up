@@ -32,7 +32,7 @@ export default function VendorCategorySection({ title, eventType, category, vend
       <div className="flex items-center gap-4 mb-4 px-1">
         <Link 
           to={targetUrl}
-          className="text-[14px] font-medium tracking-[0.1em] uppercase text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)] hover:text-ink dark:hover:text-[#F1E8E0] transition-colors whitespace-nowrap"
+          className="text-[14px] font-medium text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)] hover:text-ink dark:hover:text-[#F1E8E0] transition-colors whitespace-nowrap"
         >
           {title}
         </Link>

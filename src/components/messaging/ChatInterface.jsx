@@ -128,13 +128,13 @@ export default function ChatInterface({ conversationId, onBack }) {
             </Button>
           )}
           <div className="h-10 w-10 rounded-full border border-[rgba(169,126,46,0.35)] flex items-center justify-center shrink-0">
-            <span className="font-serif text-base text-[#8A6522] dark:text-[#C9A055]">
+            <span className="font-medium text-base text-[#8A6522] dark:text-[#C9A055]">
               {displayName?.[0]?.toUpperCase()}
             </span>
           </div>
           <div>
-            <h3 className="font-serif text-xl leading-tight text-ink dark:text-[#F1E8E0]">{displayName}</h3>
-            <p className="text-[11px] uppercase tracking-[0.14em] text-[rgba(59,50,43,0.55)] dark:text-[rgba(241,232,224,0.55)]">
+            <h3 className="font-medium text-xl leading-tight text-ink dark:text-[#F1E8E0]">{displayName}</h3>
+            <p className="text-[13px] text-[rgba(59,50,43,0.55)] dark:text-[rgba(241,232,224,0.55)]">
               {isVendorSide ? "Customer" : "Event Vendor"}
             </p>
           </div>

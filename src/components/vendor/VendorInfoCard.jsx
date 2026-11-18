@@ -59,9 +59,11 @@ export default function VendorInfoCard({ vendor, averageRating, reviewCount, cat
       <div className="my-3 border-t border-[#e8dfd4] dark:border-[#655649]" />
       <div className="flex items-baseline gap-1.5"><span className="text-2xl font-bold tracking-tight text-ink dark:text-[#FCF8F4]">{vendor.starting_price ? formatPrice(vendor.starting_price, getCurrencyByCode(vendor.price_currency)) : "Price varies"}</span>{vendor.starting_price && <span className="text-xs text-slate-500 dark:text-[#C5B9AC]">starting price</span>}</div>
 
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        <TrustChip icon={<Shield className="h-3.5 w-3.5" />} title="Verified Vendor Identity" detail="Background checked & approved" />
-        <TrustChip icon={<Award className="h-3.5 w-3.5" />} title="Experienced Pro" detail={vendor.years_in_business ? `${vendor.years_in_business}+ years in business` : "Established professional"} />
+      <div className={`mt-3 grid gap-2 ${vendor.years_in_business ? "grid-cols-2" : "grid-cols-1"}`}>
+        {vendor.ghana_card_status === "verified"
+          ? <TrustChip icon={<Shield className="h-3.5 w-3.5" />} title="Ghana Card verified" detail="Identity confirmed by Khareus" />
+          : <TrustChip icon={<Shield className="h-3.5 w-3.5" />} title="Listing reviewed" detail="Approved by the Khareus team" />}
+        {vendor.years_in_business ? <TrustChip icon={<Award className="h-3.5 w-3.5" />} title={`${vendor.years_in_business} ${Number(vendor.years_in_business) === 1 ? "year" : "years"} in business`} detail="As stated by the vendor" /> : null}
       </div>
 
       {socials.length > 0 && <><div className="my-3 border-t border-[#e8dfd4] dark:border-[#655649]" /><div className="flex flex-wrap items-center gap-1.5"><span className="mr-1 text-xs font-semibold text-ink dark:text-[#FCF8F4]">Connect with us</span>{socials.map(([Icon, href, label]) => <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#e8dfd4] text-slate-600 transition-colors hover:bg-[#f7edd9] dark:border-[#655649] dark:text-[#E8DDD2] dark:hover:bg-[#53473C]"><Icon className="h-3.5 w-3.5" /></a>)}</div></>}

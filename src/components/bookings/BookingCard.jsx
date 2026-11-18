@@ -158,7 +158,7 @@ export default function BookingCard({ booking, isVendor, currentUserId }) {
           <Badge variant="outline" className={statusConfig.className}>
             {statusConfig.label}
           </Badge>
-          {isQuote && <span className="text-[11px] uppercase tracking-[0.14em] text-gold-text">Quote request</span>}
+          {isQuote && <span className="text-[13px] text-gold-text">Quote request</span>}
         </div>
       </div>
 
@@ -221,8 +221,8 @@ export default function BookingCard({ booking, isVendor, currentUserId }) {
 
       {booking.quote_amount > 0 && (
         <div className="border border-gold/30 bg-gold/5 p-4 mb-4">
-          <p className="text-[11px] uppercase tracking-[0.16em] text-gold-text mb-1">{isVendor ? "Your quote" : `Quote from ${booking.vendor_name}`}</p>
-          <p className="font-serif text-3xl text-ink lining-nums">{cedis(booking.quote_amount, booking.quote_currency)}</p>
+          <p className="text-[13px] text-gold-text mb-1">{isVendor ? "Your quote" : `Quote from ${booking.vendor_name}`}</p>
+          <p className="font-medium text-3xl text-ink lining-nums">{cedis(booking.quote_amount, booking.quote_currency)}</p>
           {booking.vendor_note && <p className="mt-2 text-sm text-slate-700 leading-relaxed">{booking.vendor_note}</p>}
         </div>
       )}

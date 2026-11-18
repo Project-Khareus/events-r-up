@@ -166,7 +166,7 @@ export default function ManageListing() {
                       }`}>
                         {expired ? <AlertTriangle className="h-3.5 w-3.5" /> : <Clock className="h-3.5 w-3.5" />}
                         {expired 
-                          ? 'Trial expired — upgrade to stay listed'
+                          ? 'Trial expired. Upgrade to stay listed'
                           : daysLeft === 0 
                             ? `Trial ends in ${hoursLeft}h`
                             : `Trial: ${daysLeft} day${daysLeft !== 1 ? 's' : ''} left`

@@ -10,7 +10,7 @@ export default function ConversationsList({ conversations, selectedId, onSelect,
         <div className="inline-flex items-center justify-center w-14 h-14 rounded-full border border-[rgba(169,126,46,0.4)] mb-4">
           <MessageSquare className="h-6 w-6 text-[#A97E2E]" />
         </div>
-        <h3 className="font-serif text-xl text-ink dark:text-[#F1E8E0] mb-2">No conversations yet</h3>
+        <h3 className="font-medium text-xl text-ink dark:text-[#F1E8E0] mb-2">No conversations yet</h3>
         <p className="text-sm text-[rgba(59,50,43,0.65)] dark:text-[rgba(241,232,224,0.6)]">
           Start chatting with vendors to see your messages here
         </p>
@@ -39,13 +39,13 @@ export default function ConversationsList({ conversations, selectedId, onSelect,
           >
             <div className="flex items-start gap-3">
               <div className="h-11 w-11 rounded-full border border-[rgba(169,126,46,0.35)] flex items-center justify-center shrink-0">
-                <span className="font-serif text-lg text-[#8A6522] dark:text-[#C9A055]">
+                <span className="font-medium text-lg text-[#8A6522] dark:text-[#C9A055]">
                   {displayName?.[0]?.toUpperCase()}
                 </span>
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2 mb-1">
-                  <h4 className="font-serif text-lg leading-tight text-ink dark:text-[#F1E8E0] truncate">
+                  <h4 className="font-medium text-lg leading-tight text-ink dark:text-[#F1E8E0] truncate">
                     {displayName}
                   </h4>
                   {conversation.unread_count > 0 && (
@@ -58,7 +58,7 @@ export default function ConversationsList({ conversations, selectedId, onSelect,
                   {conversation.last_message || "No messages yet"}
                 </p>
                 {conversation.last_message_date && (
-                  <p className="text-[11px] uppercase tracking-[0.12em] text-[rgba(59,50,43,0.5)] dark:text-[rgba(241,232,224,0.45)]">
+                  <p className="text-[13px] text-[rgba(59,50,43,0.5)] dark:text-[rgba(241,232,224,0.45)]">
                     {format(new Date(conversation.last_message_date), "MMM d, h:mm a")}
                   </p>
                 )}

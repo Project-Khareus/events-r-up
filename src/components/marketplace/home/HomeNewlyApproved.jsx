@@ -53,7 +53,7 @@ export default function HomeNewlyApproved({ vendors = [], allReviews = [], locat
       {displayGroups.map((group) => (
         <div key={group.key}>
           <div className="flex items-baseline justify-between gap-4 mb-4 md:mb-5">
-            <h2 className="font-serif text-[22px] md:text-[27px] text-ink dark:text-[#F1E8E0]">
+            <h2 className="font-medium text-[22px] md:text-[27px] text-ink dark:text-[#F1E8E0]">
               {group.label}
               {location ? ` in ${location}` : ""}
             </h2>

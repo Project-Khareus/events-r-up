@@ -57,9 +57,9 @@ export default function HomeVendorOfTheWeek({ vendor }) {
           )}
 
           {vendor.starting_price && currency && (
-            <p className="mt-5 font-serif text-[30px] text-ink dark:text-[#F1E8E0]">
+            <p className="mt-5 font-medium text-[30px] text-ink dark:text-[#F1E8E0]">
               {formatPrice(vendor.starting_price, currency)}
-              <span className="ml-2 font-sans text-[11.5px] font-light tracking-[0.1em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">
+              <span className="ml-2 font-sans text-[13px] font-light text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">
                 starting
               </span>
             </p>
@@ -68,12 +68,12 @@ export default function HomeVendorOfTheWeek({ vendor }) {
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <Link
               to={getVendorUrl(vendor)}
-              className="px-5 py-3 min-h-[44px] flex items-center bg-ink dark:bg-[#F1E8E0] text-cream dark:text-[#211B16] text-[11.5px] font-medium tracking-[0.1em] uppercase hover:bg-ink-deep transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#A97E2E]"
+              className="px-5 py-3 min-h-[44px] flex items-center bg-ink dark:bg-[#F1E8E0] text-cream dark:text-[#211B16] text-[13px] font-medium hover:bg-ink-deep transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#A97E2E]"
             >
               View profile
             </Link>
             <div className="flex items-center gap-2 border border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] pl-4 pr-1 min-h-[44px]">
-              <span className="text-[11.5px] font-medium tracking-[0.1em] uppercase text-ink dark:text-[#F1E8E0]">
+              <span className="text-[13px] font-medium text-ink dark:text-[#F1E8E0]">
                 Save to my picks
               </span>
               <VendorFavoriteButton vendorId={vendor.id} size="icon" className="rounded-none border-0 bg-transparent h-9 w-9" />

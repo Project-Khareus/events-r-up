@@ -109,10 +109,10 @@ export default function MyFavorites() {
       <div className="min-h-screen flex items-center justify-center bg-cream dark:bg-[#1B1714] px-6">
         <div className="text-center max-w-sm">
           <Heart className="h-8 w-8 text-gold mx-auto mb-4" />
-          <h2 className="font-serif text-3xl text-ink dark:text-[#F1E8E0] mb-2">Log in to see your picks</h2>
+          <h2 className="font-medium text-3xl text-ink dark:text-[#F1E8E0] mb-2">Log in to see your picks</h2>
           <p className="text-[rgba(59,50,43,0.7)] dark:text-[rgba(241,232,224,0.65)] mb-6">Save vendors and events while you browse, then compare them here.</p>
           <Link to={createPageUrl("Join")}>
-            <Button className="rounded-none bg-gold hover:bg-gold-text text-cream uppercase tracking-[0.12em] text-xs h-11 px-6">Log in</Button>
+            <Button className="rounded-none bg-gold hover:bg-gold-text text-cream text-xs h-11 px-6">Log in</Button>
           </Link>
         </div>
       </div>
@@ -133,7 +133,7 @@ export default function MyFavorites() {
     <PullToRefresh onRefresh={handleRefresh}><div className="min-h-screen bg-cream dark:bg-[#1B1714] py-12 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-10">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-gold-text dark:text-gold-dark mb-3">Saved</p>
+          <p className="text-[13px] text-gold-text dark:text-gold-dark mb-3">Saved</p>
           <h1 className="font-serif text-4xl md:text-5xl text-ink dark:text-[#F1E8E0]">My Picks</h1>
           <p className="mt-2 text-[rgba(59,50,43,0.7)] dark:text-[rgba(241,232,224,0.65)]">Vendors and events you've saved to compare.</p>
           <div className="mt-6 h-px w-16 bg-gold" />
@@ -154,7 +154,7 @@ export default function MyFavorites() {
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-full border border-gold/40 mb-4">
               <Heart className="h-6 w-6 text-gold" />
             </div>
-            <h3 className="font-serif text-2xl text-ink dark:text-[#F1E8E0] mb-2">Nothing saved yet</h3>
+            <h3 className="font-medium text-2xl text-ink dark:text-[#F1E8E0] mb-2">Nothing saved yet</h3>
             <p className="text-[rgba(59,50,43,0.7)] dark:text-[rgba(241,232,224,0.65)] mb-6 max-w-md mx-auto">
               Tap the heart on any vendor or event to save it here, then compare your favourites side by side.
             </p>
@@ -182,7 +182,7 @@ export default function MyFavorites() {
                   ? `${unavailableCount} saved ${unavailableCount === 1 ? "listing is" : "listings are"} no longer available and ${unavailableCount === 1 ? "has" : "have"} been hidden.`
                   : "Some items were saved more than once."}
               </p>
-              <button type="button" onClick={tidyUp} disabled={tidying} className="h-9 px-4 border border-gold text-gold-text dark:text-gold-dark text-xs uppercase tracking-[0.12em] hover:bg-gold/10 disabled:opacity-50">
+              <button type="button" onClick={tidyUp} disabled={tidying} className="h-9 px-4 border border-gold text-gold-text dark:text-gold-dark text-xs hover:bg-gold/10 disabled:opacity-50">
                 {tidying ? "Tidying..." : "Tidy up"}
               </button>
             </div>

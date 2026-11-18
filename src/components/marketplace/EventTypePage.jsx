@@ -50,7 +50,7 @@ export default function EventTypePage({ eventType, title, description, categorie
   }, [vendors, eventType, searchQuery, selectedCategory]);
 
   const pill = (active) =>
-    `px-4 py-2 min-h-[44px] rounded-none text-[13px] tracking-[0.06em] uppercase transition-colors ${
+    `px-4 py-2 min-h-[44px] rounded-none text-[13px] transition-colors ${
       active
         ? "bg-ink text-cream dark:bg-cream dark:text-ink"
         : `bg-transparent text-ink/70 dark:text-cream/70 hover:text-gold-text dark:hover:text-gold-dark ${HAIRLINE}`
@@ -62,7 +62,7 @@ export default function EventTypePage({ eventType, title, description, categorie
       <div className="max-w-7xl mx-auto px-6 pt-10 pb-8 lg:pt-14">
         <Link
           to={createPageUrl("VendorMarketplace")}
-          className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-gold-text dark:text-gold-dark hover:text-ink dark:hover:text-cream transition-colors mb-6"
+          className="inline-flex items-center gap-2 text-[13px] text-gold-text dark:text-gold-dark hover:text-ink dark:hover:text-cream transition-colors mb-6"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           Back to Marketplace
@@ -109,7 +109,7 @@ export default function EventTypePage({ eventType, title, description, categorie
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <p className="text-[11px] uppercase tracking-[0.18em] text-ink/60 dark:text-[#F1E8E0]/60 mb-8">
+        <p className="text-[13px] text-ink/60 dark:text-[#F1E8E0]/60 mb-8">
           {filteredVendors.length} vendors found
         </p>
 
@@ -126,7 +126,7 @@ export default function EventTypePage({ eventType, title, description, categorie
         ) : filteredVendors.length === 0 ? (
           <div className={`text-center py-16 ${HAIRLINE} bg-linen dark:bg-[#221D19]`}>
             <Sparkles className="h-7 w-7 text-gold mx-auto mb-4" />
-            <h3 className="font-serif text-2xl mb-2">No vendors found</h3>
+            <h3 className="font-medium text-2xl mb-2">No vendors found</h3>
             <p className="text-ink/60 dark:text-[#F1E8E0]/60">Try adjusting your search or category filter</p>
           </div>
         ) : (

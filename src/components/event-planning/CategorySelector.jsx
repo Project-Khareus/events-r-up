@@ -102,7 +102,7 @@ export default function CategorySelector({ eventType, budget, selectedCategories
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-serif text-[16px] leading-snug text-ink dark:text-[#F1E8E0]">
+                  <h3 className="font-medium text-[16px] leading-snug text-ink dark:text-[#F1E8E0]">
                     {category.label}
                   </h3>
                   <p className="mt-0.5 text-[12px] font-light leading-relaxed text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">

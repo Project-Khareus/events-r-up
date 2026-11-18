@@ -29,7 +29,7 @@ export default function MultiLocationInput({ value = [], onChange, className, co
             <li key={loc} className="inline-flex items-center gap-1.5 pl-2.5 pr-1 py-1 border border-gold/40 bg-gold/10 text-[13px] text-ink dark:text-[#F1E8E0]">
               <MapPin className="h-3.5 w-3.5 text-gold" aria-hidden="true" />
               <span>{formatVendorLocation(loc)}</span>
-              {i === 0 && locations.length > 1 && <span className="text-[10.5px] uppercase tracking-[0.12em] text-gold-text dark:text-gold-dark ml-0.5">Main</span>}
+              {i === 0 && locations.length > 1 && <span className="text-[12px] text-gold-text dark:text-gold-dark ml-0.5">Main</span>}
               <button
                 type="button"
                 onClick={() => remove(i)}

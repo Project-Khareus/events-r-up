@@ -104,7 +104,7 @@ export default function StepBusiness({ formData, setFormData, onNext, initialDat
   return (
     <div className={PANEL}>
       <h2 className={H2}>Tell us about your business</h2>
-      <p className={SUB}>Start with the basics — your name and what you do.</p>
+      <p className={SUB}>Start with the basics: your name and what you do.</p>
 
       <div className="mt-6 space-y-6">
         <div className="grid md:grid-cols-2 gap-4">
@@ -188,7 +188,7 @@ export default function StepBusiness({ formData, setFormData, onNext, initialDat
                 const categories = CATEGORIES_BY_EVENT[type.value] || [];
                 return (
                   <div key={type.value}>
-                    <p className="mb-2 text-[12px] font-medium tracking-[0.1em] uppercase text-gold-text dark:text-gold-dark">
+                    <p className="mb-2 text-[13px] font-medium text-gold-text dark:text-gold-dark">
                       {type.label}
                     </p>
                     <div className="flex flex-wrap gap-2.5">

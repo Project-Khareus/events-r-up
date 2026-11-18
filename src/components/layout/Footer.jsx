@@ -171,7 +171,7 @@ export default function Footer() {
       <div className="max-w-[1280px] mx-auto px-5 md:px-10 py-12">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           <div className="col-span-2 md:col-span-1">
-            <Link to={createPageUrl("VendorMarketplace")} className="font-serif font-medium text-[20px] tracking-[0.36em] uppercase text-cream">
+            <Link to={createPageUrl("VendorMarketplace")} className="font-serif font-medium text-[20px] text-cream">
               Khareus
             </Link>
             <p className="mt-4 text-[12.5px] font-light leading-relaxed text-[rgba(248,241,235,0.6)] max-w-[220px]">
@@ -180,7 +180,7 @@ export default function Footer() {
           </div>
           {Object.entries(sections).map(([key, section]) => (
             <div key={key}>
-              <h4 className="text-[10px] font-medium tracking-[0.15em] uppercase text-[rgba(248,241,235,0.5)] mb-4">{section.title}</h4>
+              <h4 className="text-[12px] font-medium text-[rgba(248,241,235,0.5)] mb-4">{section.title}</h4>
               <ul className="space-y-2.5">
                 {section.items.map((item, idx) => (
                   <li key={idx}>{renderLink(item)}</li>

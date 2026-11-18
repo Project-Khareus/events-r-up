@@ -46,7 +46,7 @@ export default function LegalPage() {
   const displayContent = page?.content || defaultContent[slug]?.content || "Content coming soon.";
 
   return (
-    <div className="min-h-screen bg-white font-serif">
+    <div className="min-h-screen bg-white font-medium">
       <div className="max-w-3xl mx-auto px-6 py-12">
         <div className="mb-12">
             <Link 
@@ -82,11 +82,11 @@ export default function LegalPage() {
             )}
             
             <div className="prose prose-lg prose-slate max-w-none 
-              prose-headings:font-serif prose-headings:font-medium 
+              prose-headings: prose-headings:font-medium 
               prose-h1:text-5xl prose-h1:mb-8
               prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-h2:tracking-tight
               prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4
-              prose-p:font-serif prose-p:text-slate-800 prose-p:leading-relaxed prose-p:mb-6
+              prose-p:font-medium prose-p:text-slate-800 prose-p:leading-relaxed prose-p:mb-6
               prose-a:text-slate-900 prose-a:underline prose-a:underline-offset-2 prose-a:decoration-1
               prose-blockquote:border-l-4 prose-blockquote:border-slate-900 prose-blockquote:pl-6 prose-blockquote:italic
               prose-ul:list-disc prose-ul:pl-6 prose-ul:my-6

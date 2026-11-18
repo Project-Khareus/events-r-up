@@ -160,7 +160,7 @@ export default function Navbar() {
 
           {/* Wordmark */}
           <Link to={createPageUrl("VendorMarketplace")} className="flex items-center">
-            <span className="font-serif font-medium text-[20px] text-ink dark:text-[#F1E8E0] tracking-[0.36em] uppercase">
+            <span className="font-serif font-medium text-[20px] text-ink dark:text-[#F1E8E0]">
               Khareus
             </span>
           </Link>
@@ -220,7 +220,7 @@ export default function Navbar() {
                     <DropdownMenuContent align="end" className="w-96 p-0 rounded-none border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] bg-linen dark:bg-[#2A231D]">
                       <div className="flex items-center justify-between px-4 py-3 border-b border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]">
                         <div className="flex items-center gap-2">
-                          <h4 className="font-serif text-[17px] text-ink dark:text-[#F1E8E0]">Notifications</h4>
+                          <h4 className="font-medium text-[17px] text-ink dark:text-[#F1E8E0]">Notifications</h4>
                           {unreadCount > 0 && (
                             <span className="text-[11px] text-cream bg-[#8A6522] px-1.5 py-0.5">
                               {unreadCount}
@@ -369,7 +369,7 @@ export default function Navbar() {
                 </Link>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="bg-[#8A6522] hover:bg-[#75551C] text-cream text-[11.5px] font-medium tracking-[0.1em] uppercase px-[18px] py-[10px] rounded-none transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#A97E2E]">
+                    <button className="bg-[#8A6522] hover:bg-[#75551C] text-cream text-[13px] font-medium px-[18px] py-[10px] rounded-none transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#A97E2E]">
                       List your business
                     </button>
                   </DropdownMenuTrigger>
@@ -395,7 +395,7 @@ export default function Navbar() {
                 <div className="flex flex-col h-full bg-cream dark:bg-[#211B16]">
                   {/* Header */}
                   <div className="p-6 border-b border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]">
-                    <span className="font-serif font-medium text-[18px] text-ink dark:text-[#F1E8E0] tracking-[0.3em] uppercase">
+                    <span className="font-serif font-medium text-[18px] text-ink dark:text-[#F1E8E0]">
                       Khareus
                     </span>
                   </div>
@@ -481,7 +481,7 @@ export default function Navbar() {
                     {user ? (
                       <button
                         onClick={() => { setMobileMenuOpen(false); handleLogout(); }}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-3 min-h-[44px] rounded-none border border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] text-ink dark:text-[#F1E8E0] hover:bg-[rgba(169,126,46,0.1)] transition-colors text-[11.5px] font-medium tracking-[0.1em] uppercase"
+                        className="w-full flex items-center justify-center gap-2 px-4 py-3 min-h-[44px] rounded-none border border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] text-ink dark:text-[#F1E8E0] hover:bg-[rgba(169,126,46,0.1)] transition-colors text-[13px] font-medium"
                       >
                         <LogOut className="h-4 w-4" />
                         <span>Log out</span>
@@ -489,12 +489,12 @@ export default function Navbar() {
                     ) : (
                       <div className="space-y-2">
                         <Link to={createPageUrl("Join")} onClick={() => setMobileMenuOpen(false)} className="block">
-                          <button className="w-full px-4 py-3 min-h-[44px] rounded-none bg-[#8A6522] hover:bg-[#75551C] text-cream text-[11.5px] font-medium tracking-[0.1em] uppercase transition-colors">
+                          <button className="w-full px-4 py-3 min-h-[44px] rounded-none bg-[#8A6522] hover:bg-[#75551C] text-cream text-[13px] font-medium transition-colors">
                             Sign up / Log in
                           </button>
                         </Link>
                         <Link to={createPageUrl("VendorSignup")} onClick={() => setMobileMenuOpen(false)} className="block">
-                          <button className="w-full px-4 py-3 min-h-[44px] rounded-none border border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] text-ink dark:text-[#F1E8E0] hover:bg-[rgba(169,126,46,0.1)] transition-colors text-[11.5px] font-medium tracking-[0.1em] uppercase">
+                          <button className="w-full px-4 py-3 min-h-[44px] rounded-none border border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] text-ink dark:text-[#F1E8E0] hover:bg-[rgba(169,126,46,0.1)] transition-colors text-[13px] font-medium">
                             List your business
                           </button>
                         </Link>

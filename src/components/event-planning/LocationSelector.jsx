@@ -8,7 +8,7 @@ const inputClass =
   "w-full h-14 rounded-none bg-transparent border border-[rgba(59,50,43,0.22)] dark:border-[rgba(241,232,224,0.16)] text-[15px] text-ink dark:text-[#F1E8E0] placeholder:text-[rgba(59,50,43,0.4)] focus:outline-none focus:border-[#A97E2E]";
 
 const labelClass =
-  "text-[10px] font-medium tracking-[0.16em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]";
+  "text-[12px] font-medium text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]";
 
 export default function LocationSelector({ value, onChange, onNext, onBack }) {
   const [searchQuery, setSearchQuery] = useState(value?.name || "");
@@ -98,7 +98,7 @@ export default function LocationSelector({ value, onChange, onNext, onBack }) {
             <div className="flex items-start gap-3">
               <MapPin className="h-4 w-4 text-gold mt-0.5 shrink-0" />
               <div>
-                <p className="font-serif text-[17px] text-ink dark:text-[#F1E8E0]">{selectedLocation.name}</p>
+                <p className="font-medium text-[17px] text-ink dark:text-[#F1E8E0]">{selectedLocation.name}</p>
                 <p className="text-[12.5px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">We'll use this area to find nearby vendors.</p>
               </div>
             </div>

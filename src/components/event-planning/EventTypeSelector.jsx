@@ -30,7 +30,7 @@ export default function EventTypeSelector({ value, onChange, onNext }) {
               }`}
             >
               <Icon className={`h-5 w-5 ${isSelected ? "text-[#A97E2E]" : "text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]"}`} />
-              <h3 className="mt-3 font-serif text-[21px] text-ink dark:text-[#F1E8E0]">{type.label}</h3>
+              <h3 className="mt-3 font-medium text-[21px] text-ink dark:text-[#F1E8E0]">{type.label}</h3>
               <p className="mt-1 text-[13px] font-light leading-relaxed text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">
                 {type.description}
               </p>

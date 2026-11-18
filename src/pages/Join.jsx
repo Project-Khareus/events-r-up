@@ -77,12 +77,12 @@ export default function Join() {
     <div className="grid grid-cols-1 md:grid-cols-2 min-h-[720px] bg-cream dark:bg-[#211B16] pb-[82px] md:pb-0">
       {/* Left / header panel */}
       <div className="bg-ink dark:bg-[#2A231D] px-6 md:px-12 py-8 md:py-12 flex flex-col justify-between min-h-[190px]">
-        <Link to={createPageUrl("VendorMarketplace")} className="font-serif font-medium text-[20px] tracking-[0.36em] uppercase text-cream">
+        <Link to={createPageUrl("VendorMarketplace")} className="font-serif font-medium text-[20px] text-cream">
           Khareus
         </Link>
 
         <div className="md:my-10">
-          <h2 className="mt-6 md:mt-0 font-serif text-[27px] md:text-[42px] leading-[1.15] text-cream max-w-[440px]">
+          <h2 className="mt-6 md:mt-0 font-medium text-[27px] md:text-[42px] leading-[1.15] text-cream max-w-[440px]">
             Two ways in, and we ask which one first
           </h2>
           <p className="mt-4 text-[14.5px] font-light leading-[1.7] text-[rgba(248,241,235,0.72)] max-w-[420px] hidden md:block">
@@ -120,7 +120,7 @@ export default function Join() {
           </p>
 
           {/* Role selector */}
-          <p className="mt-8 text-[10px] font-medium tracking-[0.16em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">
+          <p className="mt-8 text-[12px] font-medium text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">
             I am here to
           </p>
           <div role="radiogroup" aria-label="I am here to" className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -140,7 +140,7 @@ export default function Join() {
                   }`}
                 >
                   <option.icon className={`h-5 w-5 ${selected ? "text-[#A97E2E]" : "text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]"}`} />
-                  <span className="mt-2.5 block font-serif text-[19px] text-ink dark:text-[#F1E8E0]">{option.title}</span>
+                  <span className="mt-2.5 block font-medium text-[19px] text-ink dark:text-[#F1E8E0]">{option.title}</span>
                   <span className="mt-0.5 block text-[12px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">{option.body}</span>
                 </button>
               );
@@ -151,7 +151,7 @@ export default function Join() {
           <button
             type="button"
             onClick={handleAuth}
-            className="mt-7 w-full min-h-[48px] flex items-center justify-center gap-3 rounded-none bg-ink dark:bg-[#F1E8E0] text-cream dark:text-[#211B16] text-[11.5px] font-medium tracking-[0.1em] uppercase hover:bg-ink-deep transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#A97E2E]"
+            className="mt-7 w-full min-h-[48px] flex items-center justify-center gap-3 rounded-none bg-ink dark:bg-[#F1E8E0] text-cream dark:text-[#211B16] text-[13px] font-medium hover:bg-ink-deep transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#A97E2E]"
           >
             <GoogleIcon />
             Continue with Google
@@ -160,14 +160,14 @@ export default function Join() {
           <button
             type="button"
             onClick={handleAuth}
-            className="mt-3 w-full min-h-[48px] flex items-center justify-center gap-3 rounded-none border border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] text-ink dark:text-[#F1E8E0] text-[11.5px] font-medium tracking-[0.1em] uppercase hover:bg-[rgba(169,126,46,0.08)] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#A97E2E]"
+            className="mt-3 w-full min-h-[48px] flex items-center justify-center gap-3 rounded-none border border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] text-ink dark:text-[#F1E8E0] text-[13px] font-medium hover:bg-[rgba(169,126,46,0.08)] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#A97E2E]"
           >
             <Mail className="h-5 w-5" />
             Continue with email
           </button>
 
           {/* Face ID — promoted above the social row on mobile */}
-          <div className="mt-3 md:hidden [&_button]:rounded-none [&_button]:min-h-[48px] [&_button]:border-[rgba(59,50,43,0.28)] [&_button]:text-[11.5px] [&_button]:font-medium [&_button]:tracking-[0.1em] [&_button]:uppercase">
+          <div className="mt-3 md:hidden [&_button]:rounded-none [&_button]:min-h-[48px] [&_button]:border-[rgba(59,50,43,0.28)] [&_button]:text-[13px] [&_button]:font-medium">
             <BiometricLogin email={email} onSuccess={() => navigate(resolveDestination())} />
           </div>
 
@@ -177,7 +177,7 @@ export default function Join() {
               <span className="w-full border-t border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]" />
             </div>
             <div className="relative flex justify-center">
-              <span className="bg-cream dark:bg-[#211B16] px-3 text-[10px] font-medium tracking-[0.16em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">
+              <span className="bg-cream dark:bg-[#211B16] px-3 text-[12px] font-medium text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">
                 More ways
               </span>
             </div>
@@ -188,7 +188,7 @@ export default function Join() {
               type="button"
               onClick={handleAuth}
               aria-label="Continue with Facebook"
-              className="min-h-[48px] flex items-center justify-center gap-2 rounded-none border border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] text-ink dark:text-[#F1E8E0] text-[11px] font-medium tracking-[0.08em] uppercase hover:bg-[rgba(169,126,46,0.08)] transition-colors"
+              className="min-h-[48px] flex items-center justify-center gap-2 rounded-none border border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] text-ink dark:text-[#F1E8E0] text-[13px] font-medium hover:bg-[rgba(169,126,46,0.08)] transition-colors"
             >
               <Facebook className="h-4 w-4" />
               Facebook
@@ -197,12 +197,12 @@ export default function Join() {
               type="button"
               onClick={handleAuth}
               aria-label="Continue with Instagram"
-              className="min-h-[48px] flex items-center justify-center gap-2 rounded-none border border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] text-ink dark:text-[#F1E8E0] text-[11px] font-medium tracking-[0.08em] uppercase hover:bg-[rgba(169,126,46,0.08)] transition-colors"
+              className="min-h-[48px] flex items-center justify-center gap-2 rounded-none border border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] text-ink dark:text-[#F1E8E0] text-[13px] font-medium hover:bg-[rgba(169,126,46,0.08)] transition-colors"
             >
               <Instagram className="h-4 w-4" />
               Instagram
             </button>
-            <div className="hidden md:block [&_button]:rounded-none [&_button]:min-h-[48px] [&_button]:w-full [&_button]:border-[rgba(59,50,43,0.28)] [&_button]:text-[11px] [&_button]:font-medium [&_button]:tracking-[0.08em] [&_button]:uppercase [&_p]:hidden">
+            <div className="hidden md:block [&_button]:rounded-none [&_button]:min-h-[48px] [&_button]:w-full [&_button]:border-[rgba(59,50,43,0.28)] [&_button]:text-[13px] [&_button]:font-medium [&_p]:hidden">
               <BiometricLogin email={email} onSuccess={() => navigate(resolveDestination())} />
             </div>
           </div>

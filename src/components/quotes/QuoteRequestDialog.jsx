@@ -20,7 +20,7 @@ const EVENT_TYPES = [
 const MAX_EXTRA_VENDORS = 3;
 
 const field = "w-full h-11 px-3 text-[14.5px] rounded-none border border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] bg-linen dark:bg-[#2A231D] text-ink dark:text-[#F1E8E0] placeholder:text-[rgba(59,50,43,0.45)] focus:outline-none focus:ring-1 focus:ring-gold focus:border-gold";
-const label = "block text-[11px] uppercase tracking-[0.16em] text-[rgba(59,50,43,0.7)] dark:text-[rgba(241,232,224,0.65)] mb-1.5";
+const label = "block text-[13px] text-[rgba(59,50,43,0.7)] dark:text-[rgba(241,232,224,0.65)] mb-1.5";
 
 function similarVendors(all, vendor) {
   const cats = new Set(vendor.category || []);
@@ -148,14 +148,14 @@ export default function QuoteRequestDialog({ vendor, trigger }) {
             <DialogDescription className="mt-2 text-[rgba(59,50,43,0.7)] dark:text-[rgba(241,232,224,0.65)]">
               {sentCount === 1 ? `${vendor.business_name} will reply with a price.` : `${sentCount} vendors will reply with their prices.`} We'll email you when a quote arrives, and you can compare them in My Bookings.
             </DialogDescription>
-            <Link to={createPageUrl("Bookings")} onClick={() => reset(false)} className="mt-6 inline-flex items-center h-11 px-6 bg-gold hover:bg-gold-text text-cream text-xs uppercase tracking-[0.12em] transition-colors">
+            <Link to={createPageUrl("Bookings")} onClick={() => reset(false)} className="mt-6 inline-flex items-center h-11 px-6 bg-gold hover:bg-gold-text text-cream text-xs transition-colors">
               View my requests
             </Link>
           </div>
         ) : (
           <>
             <DialogHeader>
-              <p className="text-[11px] uppercase tracking-[0.28em] text-gold-text dark:text-gold-dark">Free, no obligation</p>
+              <p className="text-[13px] text-gold-text dark:text-gold-dark">Free, no obligation</p>
               <DialogTitle className="font-serif text-3xl text-ink dark:text-[#F1E8E0] font-normal">Request a quote</DialogTitle>
               <DialogDescription className="text-[rgba(59,50,43,0.7)] dark:text-[rgba(241,232,224,0.65)]">
                 Tell {vendor.business_name} about your event and get a price back.
@@ -165,7 +165,7 @@ export default function QuoteRequestDialog({ vendor, trigger }) {
             {user === null ? (
               <div className="py-6 text-center">
                 <p className="text-ink dark:text-[#F1E8E0] mb-4">Log in to request quotes and track the replies.</p>
-                <Link to={createPageUrl("Join")} className="inline-flex items-center h-11 px-6 bg-gold hover:bg-gold-text text-cream text-xs uppercase tracking-[0.12em]">Log in or sign up</Link>
+                <Link to={createPageUrl("Join")} className="inline-flex items-center h-11 px-6 bg-gold hover:bg-gold-text text-cream text-xs">Log in or sign up</Link>
               </div>
             ) : (
               <form onSubmit={submit} className="space-y-4 mt-2">
@@ -232,7 +232,7 @@ export default function QuoteRequestDialog({ vendor, trigger }) {
 
                 {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
 
-                <button type="submit" disabled={sending || !user} className="w-full h-12 inline-flex items-center justify-center gap-2 bg-gold hover:bg-gold-text disabled:opacity-60 text-cream text-xs uppercase tracking-[0.14em] transition-colors">
+                <button type="submit" disabled={sending || !user} className="w-full h-12 inline-flex items-center justify-center gap-2 bg-gold hover:bg-gold-text disabled:opacity-60 text-cream text-xs transition-colors">
                   {sending ? <><Loader2 className="h-4 w-4 animate-spin" />Sending...</> : <><FileText className="h-4 w-4" />{extraIds.length ? `Send to ${extraIds.length + 1} vendors` : "Send request"}</>}
                 </button>
               </form>

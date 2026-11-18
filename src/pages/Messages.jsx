@@ -85,7 +85,7 @@ export default function Messages() {
     <div className="min-h-screen bg-cream dark:bg-[#241E19]">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="mb-10">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-[#8A6522] dark:text-[#C9A055] mb-3">Inbox</p>
+          <p className="text-[13px] text-[#8A6522] dark:text-[#C9A055] mb-3">Inbox</p>
           <h1 className="font-serif text-4xl md:text-5xl text-ink dark:text-[#F1E8E0]">Messages</h1>
           <p className="mt-2 text-[rgba(59,50,43,0.7)] dark:text-[rgba(241,232,224,0.65)]">
             Your conversations with vendors and planners.

@@ -279,7 +279,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
           )}
           <DialogFooter>
             <Button variant="outline" onClick={() => setReviewDialogOpen(false)}>Go Back</Button>
-            <Button onClick={confirmSubmit} className="rounded-none bg-ink hover:bg-ink-deep text-cream text-[11px] font-medium tracking-[0.1em] uppercase min-h-[44px]">Confirm & Submit</Button>
+            <Button onClick={confirmSubmit} className="rounded-none bg-ink hover:bg-ink-deep text-cream text-[13px] font-medium min-h-[44px]">Confirm & Submit</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -300,7 +300,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
             <div className="flex items-start gap-2">
               <AlertTriangle className="h-5 w-5 text-gold-text dark:text-gold-dark shrink-0 mt-0.5" />
               <div>
-                <p className="text-[10px] font-medium tracking-[0.16em] uppercase text-gold-text dark:text-gold-dark">Ghana Card verification pending</p>
+                <p className="text-[12px] font-medium text-gold-text dark:text-gold-dark">Ghana Card verification pending</p>
                 <p className="text-[13px] font-light text-[rgba(59,50,43,0.72)] dark:text-[rgba(241,232,224,0.72)] mt-1.5">
                   Your listing will remain pending until you upload your Ghana Card for identity verification. You can add it by editing your listing.
                 </p>
@@ -326,7 +326,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
                 setGhanaCardPendingDialogOpen(false);
                 navigate('/ManageListing');
               }}
-              className="rounded-none bg-ink hover:bg-ink-deep text-cream text-[11px] font-medium tracking-[0.1em] uppercase min-h-[44px]"
+              className="rounded-none bg-ink hover:bg-ink-deep text-cream text-[13px] font-medium min-h-[44px]"
             >
               Go to Dashboard
             </Button>
@@ -372,7 +372,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => { setNameChangeDialogOpen(false); setNameChangeReasons([]); }}>Cancel</Button>
-            <Button onClick={confirmNameChange} className="rounded-none bg-ink hover:bg-ink-deep text-cream text-[11px] font-medium tracking-[0.1em] uppercase min-h-[44px]">Confirm & Submit for Approval</Button>
+            <Button onClick={confirmNameChange} className="rounded-none bg-ink hover:bg-ink-deep text-cream text-[13px] font-medium min-h-[44px]">Confirm & Submit for Approval</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

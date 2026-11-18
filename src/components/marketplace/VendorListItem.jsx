@@ -67,7 +67,7 @@ export default function VendorListItem({ vendor, reviews = [], variant = "row" }
             {/* Overlay content */}
             <div className="absolute bottom-0 left-0 right-0 p-3">
               {categories.length > 0 && (
-                <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-gold-dark bg-ink-deep/50 px-2 py-0.5 rounded-full mb-1.5">
+                <span className="inline-block text-[12px] font-bold text-gold-dark bg-ink-deep/50 px-2 py-0.5 rounded-full mb-1.5">
                   {CATEGORY_LABELS[categories[0]] || categories[0]}
                 </span>
               )}
@@ -128,7 +128,7 @@ export default function VendorListItem({ vendor, reviews = [], variant = "row" }
           </div>
           <div className="p-2">
             {categories.length > 0 && (
-              <span className="text-[10px] font-semibold uppercase tracking-wide text-gold-text dark:text-gold-dark">
+              <span className="text-[12px] font-semibold text-gold-text dark:text-gold-dark">
                 {CATEGORY_LABELS[categories[0]] || categories[0]}
               </span>
             )}
@@ -191,7 +191,7 @@ export default function VendorListItem({ vendor, reviews = [], variant = "row" }
           <div>
             <div className="flex items-center gap-1.5 mb-0.5">
               {categories.length > 0 && (
-                <span className="text-[10px] font-semibold uppercase tracking-wide text-gold-text dark:text-gold-dark">
+                <span className="text-[12px] font-semibold text-gold-text dark:text-gold-dark">
                   {CATEGORY_LABELS[categories[0]] || categories[0]}
                 </span>
               )}
