@@ -6,7 +6,7 @@ const COPY = {
     switchTo: "abroad",
   },
   abroad: {
-    title: "Planning a wedding or funeral in Ghana from the UK or US?",
+    title: "Planning an event in Ghana from the UK or US?",
     body: "Find vendors we've reviewed, see their work and prices in cedis, and message them on WhatsApp from wherever you are.",
     switchPrompt: "Based in Ghana?",
     switchTo: "local",
