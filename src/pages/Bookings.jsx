@@ -68,7 +68,7 @@ export default function Bookings() {
       <div className="max-w-6xl mx-auto px-6 py-12">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.28em] text-gold-text dark:text-gold-dark mb-3">{isVendor ? "Requests" : "Bookings"}</p>
+            <p className="text-[13px] text-gold-text dark:text-gold-dark mb-3">{isVendor ? "Requests" : "Bookings"}</p>
             <h1 className="font-serif text-4xl md:text-5xl text-ink dark:text-[#F1E8E0]">
               {isVendor ? "Booking Requests" : "My Bookings"}
             </h1>
@@ -114,10 +114,10 @@ export default function Bookings() {
                 { label: "Completed", value: stats.completed, dot: "bg-ink/40" },
               ].map(({ label, value, dot }) => (
                 <div key={label} className="bg-linen dark:bg-[#221D19] p-4">
-                  <p className="flex items-center gap-2 text-[11px] uppercase tracking-[0.16em] text-[rgba(59,50,43,0.7)] dark:text-[rgba(241,232,224,0.65)] mb-1.5">
+                  <p className="flex items-center gap-2 text-[13px] text-[rgba(59,50,43,0.7)] dark:text-[rgba(241,232,224,0.65)] mb-1.5">
                     <span className={`w-1.5 h-1.5 rounded-full ${dot}`} aria-hidden="true" />{label}
                   </p>
-                  <p className="font-serif text-3xl text-ink dark:text-[#F1E8E0] tabular-nums lining-nums">{value}</p>
+                  <p className="font-medium text-3xl text-ink dark:text-[#F1E8E0] tabular-nums lining-nums">{value}</p>
                 </div>
               ))}
             </div>
@@ -152,7 +152,7 @@ export default function Bookings() {
                 <div className="inline-flex items-center justify-center w-14 h-14 rounded-full border border-gold/40 mb-4">
                   <Calendar className="h-6 w-6 text-gold" />
                 </div>
-                <h3 className="font-serif text-2xl text-ink dark:text-[#F1E8E0] mb-2">
+                <h3 className="font-medium text-2xl text-ink dark:text-[#F1E8E0] mb-2">
                   {statusFilter !== "all" ? `No ${statusFilter} bookings` : isVendor ? "No requests yet" : "No bookings yet"}
                 </h3>
                 <p className="text-[rgba(59,50,43,0.7)] dark:text-[rgba(241,232,224,0.65)] max-w-md mx-auto">
@@ -163,7 +163,7 @@ export default function Bookings() {
                       : "Find a vendor you love and send a booking request. You can track every request here."}
                 </p>
                 {statusFilter === "all" && !isVendor && (
-                  <Link to={createPageUrl("VendorMarketplace")} className="mt-6 inline-flex items-center h-11 px-6 bg-gold hover:bg-gold-text text-cream text-xs uppercase tracking-[0.12em] transition-colors">
+                  <Link to={createPageUrl("VendorMarketplace")} className="mt-6 inline-flex items-center h-11 px-6 bg-gold hover:bg-gold-text text-cream text-xs transition-colors">
                     Find a vendor
                   </Link>
                 )}

@@ -317,7 +317,7 @@ export default function VendorMarketplace() {
                 )}
               </div>
             </div>
-            <HomeTrustStrip audience={audience} />
+            <HomeTrustStrip audience={audience} vendors={vendors} capped={rawVendors.length >= 400} />
           </div>
         </div>
       </PullToRefresh>

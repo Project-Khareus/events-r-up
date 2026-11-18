@@ -295,7 +295,7 @@ export default function VendorDetail() {
              
              {/* Description */}
              <section className="vendor-section">
-                              <h2 className="text-2xl font-serif font-bold text-slate-900 dark:text-slate-100 mb-3">Description</h2>
+                              <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-3">Description</h2>
                  <style>{`
                    .vendor-description,
                    .vendor-description * {
@@ -316,7 +316,7 @@ export default function VendorDetail() {
              {/* Services */}
              {vendor.services && vendor.services.length > 0 && (
                <section className="vendor-section">
-                                  <h3 className="text-xl font-serif font-bold text-slate-900 dark:text-slate-100 mb-3">Services Included</h3>
+                                  <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">Services Included</h3>
                   <div className="grid sm:grid-cols-2 gap-3">
                     {vendor.services.map((service, index) => (
                       <div key={index} className="vendor-service flex items-center gap-3 p-3 border border-slate-100 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 shadow-sm">
@@ -331,7 +331,7 @@ export default function VendorDetail() {
              {/* Reviews */}
              <section id="reviews" className="vendor-section pt-6 border-t border-slate-200 dark:border-slate-700">
                 <div className="flex items-center justify-between mb-6">
-                   <h2 className="text-2xl font-serif font-bold text-slate-900 dark:text-slate-100">Reviews ({reviews.length})</h2>
+                   <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Reviews ({reviews.length})</h2>
                 </div>
                 
                 <div className="space-y-6">
@@ -345,7 +345,7 @@ export default function VendorDetail() {
           <div className="vendor-aside lg:col-span-5 space-y-6">
              <div className="sticky top-24">
                 <div className="vendor-related">
-                                    <h3 className="font-serif font-bold text-slate-900 dark:text-slate-100 mb-4 text-xl">You might also like</h3>
+                                    <h3 className=" font-bold text-slate-900 dark:text-slate-100 mb-4 text-xl">You might also like</h3>
                    <RelatedVendors 
                       currentVendorId={vendor.id} 
                       category={vendor.category} 

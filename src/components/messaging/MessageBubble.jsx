@@ -7,14 +7,14 @@ export default function MessageBubble({ message, isOwnMessage }) {
     <div className={cn("flex gap-3 mb-4", isOwnMessage ? "justify-end" : "justify-start")}>
       {!isOwnMessage && (
         <div className="h-8 w-8 rounded-full border border-[rgba(169,126,46,0.35)] bg-[#F3E9DD] dark:bg-[rgba(169,126,46,0.18)] flex items-center justify-center shrink-0 mt-1">
-          <span className="font-serif text-sm text-[#8A6522] dark:text-[#C9A055]">
+          <span className="font-medium text-sm text-[#8A6522] dark:text-[#C9A055]">
             {message.sender_name?.[0]?.toUpperCase()}
           </span>
         </div>
       )}
       <div className={cn("max-w-[70%]", isOwnMessage && "flex flex-col items-end")}>
         {!isOwnMessage && (
-          <p className="text-[11px] uppercase tracking-[0.14em] text-[rgba(59,50,43,0.55)] dark:text-[rgba(241,232,224,0.55)] mb-1">
+          <p className="text-[13px] text-[rgba(59,50,43,0.55)] dark:text-[rgba(241,232,224,0.55)] mb-1">
             {message.sender_name}
           </p>
         )}

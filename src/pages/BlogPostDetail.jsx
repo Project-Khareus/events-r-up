@@ -73,7 +73,7 @@ export default function BlogPostDetail() {
         </Link>
 
         <div className="space-y-6 text-center max-w-3xl mx-auto mb-12">
-          <span className="text-gold-text dark:text-gold-dark font-semibold tracking-wide text-sm uppercase">{post.category}</span>
+          <span className="text-gold-text dark:text-gold-dark font-semibold text-sm">{post.category}</span>
           <h1 className="text-3xl md:text-5xl font-serif font-bold text-slate-900 dark:text-white leading-tight">
             {post.title}
           </h1>
@@ -116,12 +116,12 @@ export default function BlogPostDetail() {
           />
         </div>
 
-        <div className="prose prose-lg prose-slate dark:prose-invert mx-auto prose-headings:font-serif prose-a:text-gold-text hover:prose-a:text-gold-text dark:prose-a:text-gold-dark dark:hover:prose-a:text-gold-dark prose-img:rounded-xl">
+        <div className="prose prose-lg prose-slate dark:prose-invert mx-auto prose-headings:font-medium prose-a:text-gold-text hover:prose-a:text-gold-text dark:prose-a:text-gold-dark dark:hover:prose-a:text-gold-dark prose-img:rounded-xl">
           <ReactMarkdown>{post.content}</ReactMarkdown>
         </div>
 
         <div className="max-w-3xl mx-auto mt-16 pt-8 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
-          <p className="font-serif font-bold text-slate-900 dark:text-white text-xl">Share this article</p>
+          <p className=" font-bold text-slate-900 dark:text-white text-xl">Share this article</p>
           <ShareButton 
             url={window.location.href}
             title={post.title}

@@ -6,8 +6,8 @@ const COPY = {
     switchTo: "abroad",
   },
   abroad: {
-    title: "Book Ghana's best event vendors from anywhere",
-    body: "Planning a wedding, funeral or celebration back home? Every vendor is reviewed before listing, and you can compare and contact them from wherever you are.",
+    title: "Planning a wedding or funeral in Ghana from the UK or US?",
+    body: "Find vendors we've reviewed, see their work and prices in cedis, and message them on WhatsApp from wherever you are.",
     switchPrompt: "Based in Ghana?",
     switchTo: "local",
   },

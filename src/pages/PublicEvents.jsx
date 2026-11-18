@@ -241,10 +241,10 @@ export default function PublicEvents() {
           
           {/* Location Picker Header Row */}
           <div className="flex items-center gap-2 mb-4">
-            <span className="text-[11px] uppercase tracking-[0.18em] text-ink/50 dark:text-[#F1E8E0]/50">Browsing events in</span>
+            <span className="text-[13px] text-ink/50 dark:text-[#F1E8E0]/50">Browsing events in</span>
             <DropdownMenu open={locationDropdownOpen} onOpenChange={setLocationDropdownOpen}>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-2 font-serif text-xl text-gold-text dark:text-gold-dark px-2 py-1.5 rounded-none transition-colors outline-none hover:text-ink dark:hover:text-cream">
+                <button className="flex items-center gap-2 font-medium text-xl text-gold-text dark:text-gold-dark px-2 py-1.5 rounded-none transition-colors outline-none hover:text-ink dark:hover:text-cream">
                   {locationState.label}
                   <ChevronDown className="h-4 w-4" />
                 </button>
@@ -333,7 +333,7 @@ export default function PublicEvents() {
              {/* Right Side Actions */}
              <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
                 <Link to={createPageUrl("CreateEvent")}>
-                   <Button className="rounded-none h-12 px-6 bg-ink hover:bg-ink-deep text-cream text-[11px] uppercase tracking-[0.16em]">
+                   <Button className="rounded-none h-12 px-6 bg-ink hover:bg-ink-deep text-cream text-[13px]">
                      <Plus className="h-4 w-4 mr-2" />
                      Create Event
                    </Button>
@@ -347,7 +347,7 @@ export default function PublicEvents() {
               <button
                 key={theme}
                 onClick={() => setSelectedTheme(theme)}
-                className={`px-4 py-2 min-h-[44px] rounded-none text-[11px] uppercase tracking-[0.14em] whitespace-nowrap transition-colors border ${
+                className={`px-4 py-2 min-h-[44px] rounded-none text-[13px] whitespace-nowrap transition-colors border ${
                   selectedTheme === theme 
                     ? 'bg-ink text-cream border-ink dark:bg-cream dark:text-ink dark:border-cream' 
                     : 'bg-transparent text-ink/70 dark:text-[#F1E8E0]/70 border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] hover:text-gold-text dark:hover:text-gold-dark'
@@ -363,7 +363,7 @@ export default function PublicEvents() {
       <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-8">
         {/* Title Section */}
         <div className="mb-8">
-            <h6 className={`${locationState.label === 'Choose a location' ? 'text-3xl md:text-4xl' : 'text-4xl md:text-5xl'} font-serif leading-tight`}>
+            <h6 className={`${locationState.label === 'Choose a location' ? 'text-3xl md:text-4xl' : 'text-4xl md:text-5xl'} font-medium leading-tight`}>
               {selectedTheme === "All" ? "Events in " : `${selectedTheme} events in `}
               <span className="text-gold-text dark:text-gold-dark">
                 {locationState.label === 'Choose a location' ? 'All Locations' : locationState.label}
@@ -401,7 +401,7 @@ export default function PublicEvents() {
                 <Button 
                   onClick={() => setPage(p => p + 1)} 
                   disabled={isFetching}
-                  className="rounded-none h-12 px-8 bg-ink hover:bg-ink-deep text-cream text-[11px] uppercase tracking-[0.16em]"
+                  className="rounded-none h-12 px-8 bg-ink hover:bg-ink-deep text-cream text-[13px]"
                 >
                   {isFetching ? (
                     <>

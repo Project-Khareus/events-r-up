@@ -30,7 +30,7 @@ export default function StepContact({ formData, setFormData, onNext, onBack }) {
         </div>
 
         <div className="pt-2 border-t border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]">
-          <h3 className="mt-5 font-serif text-[20px] text-ink dark:text-[#F1E8E0]">Social media</h3>
+          <h3 className="mt-5 font-medium text-[20px] text-ink dark:text-[#F1E8E0]">Social media</h3>
           <div className="mt-4 grid md:grid-cols-2 gap-4">
             <div>
               <p className={`${LABEL} flex items-center gap-2`}><Instagram className={ICON} /> Instagram</p>

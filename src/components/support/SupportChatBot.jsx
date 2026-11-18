@@ -129,7 +129,7 @@ export default function SupportChatBot() {
               <X className="h-4 w-4" />
             </button>
             <p className="text-sm text-ink dark:text-[#F1E8E0] pr-4">
-              <span className="font-serif text-base">How can we help?</span> Chat with us now
+              <span className="font-medium text-base">How can we help?</span> Chat with us now
             </p>
             {/* Tail */}
             <div className="absolute -bottom-2 right-6 w-4 h-4 bg-linen dark:bg-[#221D19] border-r border-b border-[rgba(59,50,43,0.16)] dark:border-[rgba(241,232,224,0.18)] rotate-45" />
@@ -155,8 +155,8 @@ export default function SupportChatBot() {
               <Bot className="h-5 w-5 text-gold-dark" />
             </div>
             <div>
-              <p className="font-serif text-base leading-none mb-1">Kharis</p>
-              <p className="text-[10px] uppercase tracking-[0.14em] text-cream/60">AI Assistant • Always here to help</p>
+              <p className="font-medium text-base leading-none mb-1">Kharis</p>
+              <p className="text-[12px] text-cream/60">AI Assistant • Always here to help</p>
             </div>
           </div>
 
@@ -212,7 +212,7 @@ export default function SupportChatBot() {
               <button
                 onClick={handleEscalate}
                 disabled={loading || escalated}
-                className="text-[11px] uppercase tracking-[0.14em] text-gold-text dark:text-gold-dark hover:text-ink dark:hover:text-[#F1E8E0] whitespace-nowrap"
+                className="text-[13px] text-gold-text dark:text-gold-dark hover:text-ink dark:hover:text-[#F1E8E0] whitespace-nowrap"
               >
                 Notify Admin
               </button>

@@ -41,7 +41,7 @@ export default function EventGalleryUpload({ value = [], onChange }) {
     <div className="space-y-2">
       <Label>Event Photos</Label>
       <p className="text-xs text-slate-500">
-        Add extra photos alongside the cover image — click a thumbnail to remove it.
+        Add extra photos alongside the cover image. Click a thumbnail to remove it.
       </p>
       {uploading && (
         <div className="flex items-center gap-2 text-sm text-slate-600">

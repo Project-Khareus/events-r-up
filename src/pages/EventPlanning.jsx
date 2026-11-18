@@ -37,14 +37,14 @@ export default function EventPlanning() {
     <div className="min-h-screen bg-cream dark:bg-[#211B16]">
       {/* Masthead */}
       <div className="bg-ink dark:bg-[#2A231D] px-6 py-12 sm:py-16 text-center">
-        <p className="text-[10px] font-medium tracking-[0.22em] uppercase text-[#C9A055]">
+        <p className="text-[12px] font-medium text-[#C9A055]">
           Plan an event
         </p>
         <h1 className="mt-4 font-serif text-[30px] sm:text-[42px] leading-[1.15] text-cream max-w-2xl mx-auto">
           Tell us the occasion, we'll shortlist the vendors
         </h1>
         <p className="mt-4 text-[14.5px] font-light leading-[1.7] text-[rgba(248,241,235,0.72)] max-w-xl mx-auto">
-          Five short steps — occasion, city, budget, the services you need — and we match you to approved listings.
+          Tell us the occasion, city, budget and services you need, and we'll match you to approved listings. Five short steps.
         </p>
       </div>
 
@@ -60,7 +60,7 @@ export default function EventPlanning() {
                   className={`flex flex-col items-center gap-2 ${canNavigateToStep(s.number) ? "cursor-pointer" : "cursor-not-allowed"}`}
                 >
                   <span
-                    className={`w-10 h-10 rounded-full flex items-center justify-center font-serif text-[15px] border transition-colors ${
+                    className={`w-10 h-10 rounded-full flex items-center justify-center font-medium text-[15px] border transition-colors ${
                       step === s.number
                         ? "bg-gold text-cream border-gold"
                         : step > s.number
@@ -71,7 +71,7 @@ export default function EventPlanning() {
                     {step > s.number ? <Check className="h-4 w-4" /> : s.number}
                   </span>
                   <span
-                    className={`text-[10px] font-medium tracking-[0.12em] uppercase hidden sm:block ${
+                    className={`text-[12px] font-medium hidden sm:block ${
                       step >= s.number
                         ? "text-ink dark:text-[#F1E8E0]"
                         : "text-[rgba(59,50,43,0.42)] dark:text-[rgba(241,232,224,0.42)]"

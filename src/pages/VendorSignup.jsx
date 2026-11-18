@@ -249,7 +249,7 @@ export default function VendorSignup() {
           </p>
           <button
             onClick={() => navigate(createPageUrl("ManageListing"))}
-            className="mt-6 w-full min-h-[48px] rounded-none bg-ink dark:bg-[#F1E8E0] text-cream dark:text-[#211B16] text-[11.5px] font-medium tracking-[0.1em] uppercase hover:bg-ink-deep transition-colors">
+            className="mt-6 w-full min-h-[48px] rounded-none bg-ink dark:bg-[#F1E8E0] text-cream dark:text-[#211B16] text-[13px] font-medium hover:bg-ink-deep transition-colors">
             Go to dashboard
           </button>
         </div>

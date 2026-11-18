@@ -1,7 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.52';
 import { secrets } from 'base44:runtime';
 
-const APP_CONTEXT = `You are a helpful support assistant for Khareus, an event vendor marketplace platform based in Ghana. Help only with using Khareus: finding vendors, vendor listings, bookings, messages, reviews, favorites, events, blog, notifications, settings, and vendor administration. Be concise, friendly, and helpful. If you cannot resolve an issue, say: "I'm unable to fully resolve this — would you like me to notify an admin to join this chat?" Do not make up features.`;
+const APP_CONTEXT = `You are a helpful support assistant for Khareus, an event vendor marketplace platform based in Ghana. Help only with using Khareus: finding vendors, vendor listings, bookings, messages, reviews, favorites, events, blog, notifications, settings, and vendor administration. Be concise, friendly, and helpful. If you cannot resolve an issue, say: "I can't fully sort this out myself. Would you like me to ask an admin to join this chat?" Do not make up features.`;
 
 const escapeHtml = (value) => String(value || '').replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
 

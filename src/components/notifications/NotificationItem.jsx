@@ -45,7 +45,7 @@ export default function NotificationItem({ notification, onRead, compact = false
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline justify-between gap-2">
-            <h4 className={cn("font-serif text-[15px] truncate", INK)}>
+            <h4 className={cn("font-medium text-[15px] truncate", INK)}>
               {notification.title}
             </h4>
             <span className={cn("text-[11px] shrink-0 whitespace-nowrap", MUTED)}>
@@ -87,7 +87,7 @@ export default function NotificationItem({ notification, onRead, compact = false
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-start gap-2">
-          <h4 className={cn("font-serif text-[17px] truncate", INK)}>
+          <h4 className={cn("font-medium text-[17px] truncate", INK)}>
             {notification.title}
           </h4>
           <span className={cn("text-[11.5px] shrink-0 whitespace-nowrap mt-0.5", MUTED)}>
@@ -105,7 +105,7 @@ export default function NotificationItem({ notification, onRead, compact = false
         {notification.changes_summary && notification.changes_summary.length > 0 && (
           <div className="mt-2 flex flex-wrap gap-1">
             {notification.changes_summary.slice(0, 3).map((field, idx) => (
-              <span key={idx} className={cn("text-[11px] uppercase tracking-[0.08em] px-2 py-0.5 rounded-none border", HAIRLINE, MUTED)}>
+              <span key={idx} className={cn("text-[13px] px-2 py-0.5 rounded-none border", HAIRLINE, MUTED)}>
                 {field.replace(/_/g, ' ')}
               </span>
             ))}

@@ -99,7 +99,7 @@ export default function VendorResults({ eventType, location, budget, selectedCat
       {/* Priority Toggle */}
       <div className="flex flex-wrap items-center justify-center gap-3 py-4 border-y border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]">
         <SlidersHorizontal className="h-4 w-4 text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]" />
-        <span className="text-[10px] font-medium tracking-[0.16em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">Prioritize</span>
+        <span className="text-[12px] font-medium text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">Prioritize</span>
         {[
           { key: "budget", label: "Budget" },
           { key: "proximity", label: "Proximity" },
@@ -108,7 +108,7 @@ export default function VendorResults({ eventType, location, budget, selectedCat
             key={option.key}
             type="button"
             onClick={() => setPrioritize(option.key)}
-            className={`min-h-[40px] px-5 rounded-none border text-[11px] font-medium tracking-[0.1em] uppercase transition-colors ${
+            className={`min-h-[40px] px-5 rounded-none border text-[13px] font-medium transition-colors ${
               prioritize === option.key
                 ? "border-[#A97E2E] bg-[rgba(169,126,46,0.08)] text-gold-text dark:text-gold-dark"
                 : "border-[rgba(59,50,43,0.22)] dark:border-[rgba(241,232,224,0.16)] text-ink dark:text-[#F1E8E0] hover:border-[#A97E2E]"
@@ -128,7 +128,7 @@ export default function VendorResults({ eventType, location, budget, selectedCat
         </div>
       ) : filteredAndSortedVendors.length === 0 ? (
         <div className="text-center py-14">
-          <p className="font-serif text-[22px] text-ink dark:text-[#F1E8E0]">
+          <p className="font-medium text-[22px] text-ink dark:text-[#F1E8E0]">
             No vendors match these criteria yet
           </p>
           <p className="mt-2 text-[13.5px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">
@@ -139,9 +139,9 @@ export default function VendorResults({ eventType, location, budget, selectedCat
         <div className="space-y-10 mt-8">
           {Object.entries(vendorsByCategory).map(([category, categoryVendors]) => (
             <div key={category}>
-              <h3 className="font-serif text-[22px] text-ink dark:text-[#F1E8E0] pb-3 mb-5 border-b border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]">
+              <h3 className="font-medium text-[22px] text-ink dark:text-[#F1E8E0] pb-3 mb-5 border-b border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]">
                 {categoryLabels[category] || category}
-                <span className="ml-2 text-[10px] font-sans font-medium tracking-[0.14em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">
+                <span className="ml-2 text-[12px] font-sans font-medium text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">
                   {categoryVendors.length} options
                 </span>
               </h3>
@@ -151,12 +151,12 @@ export default function VendorResults({ eventType, location, budget, selectedCat
                     <VendorCard vendor={vendor} />
                     <div className="absolute top-3 left-3 flex flex-col items-start gap-1">
                       {vendor.starting_price && (
-                        <span className="px-2 py-1 bg-gold text-cream text-[10px] font-medium tracking-[0.12em] uppercase">
+                        <span className="px-2 py-1 bg-gold text-cream text-[12px] font-medium">
                           From GH₵ {vendor.starting_price.toLocaleString()}
                         </span>
                       )}
                       {vendor.city && (
-                        <span className="px-2 py-1 bg-ink text-cream text-[10px] font-medium tracking-[0.12em] uppercase">
+                        <span className="px-2 py-1 bg-ink text-cream text-[12px] font-medium">
                           {vendor.city}
                         </span>
                       )}

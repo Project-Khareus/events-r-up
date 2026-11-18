@@ -30,7 +30,7 @@ export default function PromoAdBanner({ vendor }) {
       <Link to={createPageUrl(`VendorDetail?id=${vendor.id}`)}>
         <div className="bg-slate-900 flex flex-col md:flex-row group cursor-pointer hover:bg-slate-800 transition-colors">
           <div className="flex-shrink-0 p-6 md:p-10 md:w-[320px] flex flex-col justify-center">
-            <div className="text-xs font-medium tracking-widest uppercase text-slate-400 mb-2">Featured Vendor</div>
+            <div className="text-xs font-medium text-slate-400 mb-2">Featured Vendor</div>
             <h3 className="text-xl md:text-2xl font-bold text-white mb-2 leading-tight">
               {vendor.business_name}
             </h3>

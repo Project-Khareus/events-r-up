@@ -150,7 +150,7 @@ export default function StepMedia({ formData, setFormData, onNext, onBack }) {
                 </label>
               </div>
               <div className="flex flex-col gap-3 mt-4">
-                <div className="relative"><div className="absolute inset-0 flex items-center"><span className="w-full border-t border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]" /></div><div className="relative flex justify-center"><span className="bg-cream dark:bg-[#211B16] px-2 text-[9.5px] font-medium tracking-[0.16em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">Or import from</span></div></div>
+                <div className="relative"><div className="absolute inset-0 flex items-center"><span className="w-full border-t border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]" /></div><div className="relative flex justify-center"><span className="bg-cream dark:bg-[#211B16] px-2 text-[12px] font-medium text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">Or import from</span></div></div>
                 <button type="button" onClick={handleFacebookImport} className={`${BTN_GHOST} w-full`} disabled={galleryUploading}>
                   <Facebook className="h-4 w-4" /> Facebook
                 </button>

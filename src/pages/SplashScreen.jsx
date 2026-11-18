@@ -96,7 +96,7 @@ export default function SplashScreen() {
               fontWeight: 600,
               color: "#ffffff",
               letterSpacing: "0.18em",
-              textTransform: "uppercase",
+              textTransform: "",
               lineHeight: 1,
               marginBottom: 12,
             }}

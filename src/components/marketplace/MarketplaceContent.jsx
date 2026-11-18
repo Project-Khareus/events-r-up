@@ -33,7 +33,7 @@ function EmptyState() {
       <div className="inline-flex items-center justify-center w-14 h-14 bg-linen dark:bg-[#2A231D] border border-[rgba(59,50,43,0.14)] mb-4">
         <Sparkles className="h-6 w-6 text-[#A97E2E]" />
       </div>
-      <h3 className="font-serif text-[24px] text-ink dark:text-[#F1E8E0] mb-2">No vendors found</h3>
+      <h3 className="font-medium text-[24px] text-ink dark:text-[#F1E8E0] mb-2">No vendors found</h3>
       <p className="text-[14.5px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">Try adjusting your filters or search terms</p>
     </div>
   );
@@ -77,7 +77,7 @@ function FilteredView({ featuredVendors, regularVendors, allReviews, vendorsPerP
         <div>
           <div className="flex items-center gap-2 mb-4 sm:mb-6">
             <TrendingUp className="h-4 w-4 text-[#A97E2E]" />
-            <h2 className="font-serif text-[27px] text-ink dark:text-[#F1E8E0]">Featured Vendors</h2>
+            <h2 className="font-medium text-[27px] text-ink dark:text-[#F1E8E0]">Featured Vendors</h2>
           </div>
           <VendorGrid vendors={featuredVendors} allReviews={allReviews} />
         </div>
@@ -85,7 +85,7 @@ function FilteredView({ featuredVendors, regularVendors, allReviews, vendorsPerP
       {regularVendors.length > 0 ? (
         <div>
           {featuredVendors.length > 0 ? (
-            <h2 className="font-serif text-[27px] text-ink dark:text-[#F1E8E0] mb-4 sm:mb-6">All Vendors</h2>
+            <h2 className="font-medium text-[27px] text-ink dark:text-[#F1E8E0] mb-4 sm:mb-6">All Vendors</h2>
           ) : null}
           <VendorGrid vendors={regularVendors} allReviews={allReviews} />
         </div>
@@ -96,7 +96,7 @@ function FilteredView({ featuredVendors, regularVendors, allReviews, vendorsPerP
             onClick={onLoadMore}
             disabled={isFetching}
             size="lg"
-            className="rounded-none bg-ink hover:bg-ink-deep text-cream text-[11.5px] font-medium tracking-[0.1em] uppercase"
+            className="rounded-none bg-ink hover:bg-ink-deep text-cream text-[13px] font-medium"
           >
             {isFetching ? (
               <>
@@ -140,7 +140,7 @@ export default function MarketplaceContent({
       {searchQuery && (
         <div className="mb-6 sm:mb-8 px-2">
           <p className="text-[14.5px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">
-            <span className="font-serif text-[19px] text-ink dark:text-[#F1E8E0]">{filteredVendors.length}</span> vendors found
+            <span className="font-medium text-[19px] text-ink dark:text-[#F1E8E0]">{filteredVendors.length}</span> vendors found
           </p>
         </div>
       )}

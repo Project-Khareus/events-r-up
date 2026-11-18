@@ -90,7 +90,7 @@ export default function StepVerification({ formData, setFormData, onBack, onSubm
         <h2 className={`${H2} flex items-center gap-2.5`}>
           <CreditCard className="h-5 w-5 text-gold-text dark:text-gold-dark" />
           Ghana Card verification
-          <span className="text-[10px] font-sans font-medium tracking-[0.16em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">Optional</span>
+          <span className="text-[12px] font-sans font-medium text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">Optional</span>
         </h2>
         <p className={SUB}>Upload your Ghana Card to speed up verification. You can also add it later by editing your listing.</p>
 
@@ -161,16 +161,16 @@ export default function StepVerification({ formData, setFormData, onBack, onSubm
                 }`}
               >
                 {plan.badge && (
-                  <span className="absolute -top-2.5 right-3 bg-[#A97E2E] text-cream text-[9px] font-medium tracking-[0.14em] uppercase px-2 py-1">
+                  <span className="absolute -top-2.5 right-3 bg-[#A97E2E] text-cream text-[12px] font-medium px-2 py-1">
                     {plan.badge}
                   </span>
                 )}
                 <div className="flex items-start justify-between gap-2">
-                  <h3 className="font-serif text-[20px] text-ink dark:text-[#F1E8E0]">{plan.name}</h3>
+                  <h3 className="font-medium text-[20px] text-ink dark:text-[#F1E8E0]">{plan.name}</h3>
                   {isSelected && <Check className="h-4 w-4 text-gold-text dark:text-gold-dark shrink-0 mt-1" />}
                 </div>
                 <p className="mt-0.5 text-[12px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">{plan.desc}</p>
-                <p className="mt-3 font-serif text-[22px] text-ink dark:text-[#F1E8E0]">
+                <p className="mt-3 font-medium text-[22px] text-ink dark:text-[#F1E8E0]">
                   {plan.price}
                   <span className="text-[11px] font-sans font-light text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">{plan.unit}</span>
                 </p>
@@ -183,7 +183,7 @@ export default function StepVerification({ formData, setFormData, onBack, onSubm
           <div className="mt-5 flex items-start gap-2.5 p-3 border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] bg-cream dark:bg-[#211B16]">
             <Info className="h-4 w-4 text-gold-text dark:text-gold-dark shrink-0 mt-0.5" />
             <div>
-              <p className="text-[10px] font-medium tracking-[0.16em] uppercase text-gold-text dark:text-gold-dark">{selectedPlan.name} plan</p>
+              <p className="text-[12px] font-medium text-gold-text dark:text-gold-dark">{selectedPlan.name} plan</p>
               <p className="mt-1 text-[12.5px] font-light leading-[1.6] text-[rgba(59,50,43,0.72)] dark:text-[rgba(241,232,224,0.72)]">{selectedPlan.info}</p>
             </div>
           </div>

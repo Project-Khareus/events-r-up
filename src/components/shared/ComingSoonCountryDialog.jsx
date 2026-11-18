@@ -28,7 +28,7 @@ export default function ComingSoonCountryDialog({ open, onOpenChange, countryCod
         <DialogFooter>
           <Button
             onClick={() => handleOpenChange(false)}
-            className="rounded-none bg-ink hover:bg-ink-deep text-cream text-[11px] font-medium tracking-[0.1em] uppercase min-h-[44px]"
+            className="rounded-none bg-ink hover:bg-ink-deep text-cream text-[13px] font-medium min-h-[44px]"
           >
             Got it
           </Button>

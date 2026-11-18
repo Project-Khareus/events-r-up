@@ -34,7 +34,7 @@ export default function VendorWizardProgress({ currentStep }) {
                 </div>
                 <span
                   className={cn(
-                    "text-[10px] font-medium tracking-[0.14em] uppercase",
+                    "text-[12px] font-medium",
                     isCurrent
                       ? "text-gold-text dark:text-gold-dark"
                       : isComplete
@@ -61,7 +61,7 @@ export default function VendorWizardProgress({ currentStep }) {
       {/* Mobile */}
       <div className="sm:hidden">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[10px] font-medium tracking-[0.16em] uppercase text-gold-text dark:text-gold-dark">
+          <span className="text-[12px] font-medium text-gold-text dark:text-gold-dark">
             Step {currentStep + 1} of {STEPS.length}
           </span>
           <span className="text-[12.5px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">

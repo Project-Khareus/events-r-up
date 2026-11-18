@@ -172,7 +172,7 @@ export default function EventDetail() {
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-12">
                 <section>
-                    <h2 className="text-2xl font-serif font-bold text-ink dark:text-[#F1E8E0] mb-4">About this Event</h2>
+                    <h2 className="text-2xl font-bold text-ink dark:text-[#F1E8E0] mb-4">About this Event</h2>
                     <div className="prose prose-lg text-ink/70 dark:text-[#F1E8E0]/70 leading-relaxed">
                         {event.description ? (
                             <p className="whitespace-pre-wrap">{event.description}</p>
@@ -185,7 +185,7 @@ export default function EventDetail() {
                 {/* Nearby Events — kept close to the main event content */}
                 {nearbyEvents.length > 0 && (
                     <section>
-                        <h2 className="text-2xl font-serif font-bold text-ink dark:text-[#F1E8E0] mb-4">Nearby Events</h2>
+                        <h2 className="text-2xl font-bold text-ink dark:text-[#F1E8E0] mb-4">Nearby Events</h2>
                         <div className="grid sm:grid-cols-2 gap-6">
                             {nearbyEvents.map(e => <EventCard key={e.id} event={e} />)}
                         </div>
@@ -197,7 +197,7 @@ export default function EventDetail() {
             {/* Sidebar / Actions */}
             <div className="lg:col-span-1 space-y-8">
                 <div className="bg-linen dark:bg-[#221B15] p-6 rounded-none border border-ink/10 dark:border-[#F1E8E0]/10 sticky top-24">
-                    <h3 className="font-serif font-bold text-ink dark:text-[#F1E8E0] mb-4">Event Details</h3>
+                    <h3 className=" font-bold text-ink dark:text-[#F1E8E0] mb-4">Event Details</h3>
                     
                     <div className="space-y-4 mb-8">
                         <div className="flex items-start gap-3">
@@ -275,7 +275,7 @@ export default function EventDetail() {
                              <User className="h-5 w-5" />
                         </div>
                         <div>
-                            <p className="text-xs text-ink/50 dark:text-[#F1E8E0]/50 uppercase tracking-wider font-semibold">Organizer</p>
+                            <p className="text-xs text-ink/50 dark:text-[#F1E8E0]/50 font-semibold">Organizer</p>
                             <p className="font-medium text-ink dark:text-[#F1E8E0] line-clamp-1">
                                 {event.organizer_name || (event.user_id ? "Event Organizer" : "Unknown")}
                             </p>
@@ -329,7 +329,7 @@ export default function EventDetail() {
             {similarEvents.length > 0 && (
                 <section>
                      <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-2xl font-serif font-bold text-ink dark:text-[#F1E8E0]">Similar Themes</h2>
+                        <h2 className="text-2xl font-bold text-ink dark:text-[#F1E8E0]">Similar Themes</h2>
                         <Link to={createPageUrl("PublicEvents")} className="text-gold-text hover:text-gold-text font-medium">View all</Link>
                     </div>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">

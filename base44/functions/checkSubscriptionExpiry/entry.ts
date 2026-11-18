@@ -105,7 +105,7 @@ Deno.serve(async (req) => {
 
         await base44.asServiceRole.integrations.Core.SendEmail({
           to: vendorEmail,
-          subject: `⚠️ Your Khareus trial has ended — subscribe to stay listed`,
+          subject: `⚠️ Your Khareus trial has ended. Subscribe to stay listed`,
           body: emailTemplate('Your Trial Has Ended', '#DC2626', content)
         });
 

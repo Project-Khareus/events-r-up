@@ -12,7 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 const PANEL =
   "bg-linen dark:bg-[#2A231D] border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] rounded-none";
 const EYEBROW =
-  "text-[10px] font-medium tracking-[0.16em] uppercase text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]";
+  "text-[12px] font-medium text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]";
 const FIELD =
   "flex items-center gap-2 min-h-[44px] px-3 bg-cream dark:bg-[#211B16] border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] rounded-none text-[14px] text-ink dark:text-[#F1E8E0]";
 
@@ -102,7 +102,7 @@ export default function MyProfile() {
           </p>
           <button
             onClick={() => base44.auth.redirectToLogin(window.location.pathname)}
-            className="mt-6 w-full min-h-[48px] rounded-none bg-ink dark:bg-[#F1E8E0] text-cream dark:text-[#211B16] text-[11.5px] font-medium tracking-[0.1em] uppercase hover:bg-ink-deep transition-colors"
+            className="mt-6 w-full min-h-[48px] rounded-none bg-ink dark:bg-[#F1E8E0] text-cream dark:text-[#211B16] text-[13px] font-medium hover:bg-ink-deep transition-colors"
           >
             Sign in again
           </button>
@@ -122,7 +122,7 @@ export default function MyProfile() {
             )}
             <label className="absolute inset-0 flex items-center justify-center cursor-pointer">
               <input type="file" accept="image/*" className="hidden" onChange={handleCoverUpload} disabled={uploadingCover} />
-              <span className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 text-cream text-[10px] font-medium tracking-[0.16em] uppercase bg-[rgba(42,35,29,0.72)] px-4 py-2">
+              <span className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 text-cream text-[12px] font-medium bg-[rgba(42,35,29,0.72)] px-4 py-2">
                 {uploadingCover ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Camera className="h-3.5 w-3.5" />}
                 {uploadingCover ? "Uploading" : "Change cover"}
               </span>
@@ -132,7 +132,7 @@ export default function MyProfile() {
             <div className="flex flex-col sm:flex-row sm:items-end gap-4">
               <Avatar className="h-20 w-20 md:h-24 md:w-24 border-2 border-cream dark:border-[#2A231D]">
                 <AvatarImage src={user?.avatar_url} />
-                <AvatarFallback className="bg-[rgba(169,126,46,0.12)] text-gold-text dark:text-gold-dark font-serif text-3xl">
+                <AvatarFallback className="bg-[rgba(169,126,46,0.12)] text-gold-text dark:text-gold-dark font-medium text-3xl">
                   {user?.full_name?.[0] || 'U'}
                 </AvatarFallback>
               </Avatar>
@@ -143,13 +143,13 @@ export default function MyProfile() {
               <div className="flex gap-3 shrink-0">
                 <button
                   onClick={() => navigate(createPageUrl("UserProfile") + `?userId=${user?.id}`)}
-                  className="min-h-[44px] px-4 rounded-none border border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] text-ink dark:text-[#F1E8E0] text-[10.5px] font-medium tracking-[0.1em] uppercase hover:bg-[rgba(169,126,46,0.08)] transition-colors"
+                  className="min-h-[44px] px-4 rounded-none border border-[rgba(59,50,43,0.28)] dark:border-[rgba(241,232,224,0.16)] text-ink dark:text-[#F1E8E0] text-[12px] font-medium hover:bg-[rgba(169,126,46,0.08)] transition-colors"
                 >
                   Public profile
                 </button>
                 <button
                   onClick={() => navigate(createPageUrl("Settings"))}
-                  className="min-h-[44px] px-4 rounded-none bg-ink dark:bg-[#F1E8E0] text-cream dark:text-[#211B16] text-[10.5px] font-medium tracking-[0.1em] uppercase hover:bg-ink-deep transition-colors"
+                  className="min-h-[44px] px-4 rounded-none bg-ink dark:bg-[#F1E8E0] text-cream dark:text-[#211B16] text-[12px] font-medium hover:bg-ink-deep transition-colors"
                 >
                   Edit profile
                 </button>
@@ -161,7 +161,7 @@ export default function MyProfile() {
         <div className="space-y-6">
           {/* Account Details */}
           <section className={`${PANEL} p-5 md:p-7`}>
-            <h2 className="font-serif text-[22px] text-ink dark:text-[#F1E8E0]">Account details</h2>
+            <h2 className="font-medium text-[22px] text-ink dark:text-[#F1E8E0]">Account details</h2>
             <p className="mt-1 text-[13.5px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">
               Your basic account information
             </p>
@@ -193,7 +193,7 @@ export default function MyProfile() {
 
           {/* Biometric */}
           <section className={`${PANEL} p-5 md:p-7`}>
-            <h2 className="font-serif text-[22px] text-ink dark:text-[#F1E8E0] flex items-center gap-2.5">
+            <h2 className="font-medium text-[22px] text-ink dark:text-[#F1E8E0] flex items-center gap-2.5">
               <Smartphone className="h-5 w-5 text-gold-text dark:text-gold-dark" />
               Biometric authentication
             </h2>
@@ -220,7 +220,7 @@ export default function MyProfile() {
                 <p className="text-[13.5px] font-light leading-[1.7] text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">
                   Secure your account with biometric authentication. Once enabled, you can use Face ID or Touch ID to log in instantly.
                 </p>
-                <div className="[&_button]:rounded-none [&_button]:min-h-[48px] [&_button]:w-full [&_button]:border-[rgba(59,50,43,0.28)] [&_button]:text-[11.5px] [&_button]:font-medium [&_button]:tracking-[0.1em] [&_button]:uppercase">
+                <div className="[&_button]:rounded-none [&_button]:min-h-[48px] [&_button]:w-full [&_button]:border-[rgba(59,50,43,0.28)] [&_button]:text-[13px] [&_button]:font-medium">
                   <BiometricLogin />
                 </div>
               </div>
@@ -229,7 +229,7 @@ export default function MyProfile() {
 
           {/* Trusted Devices */}
           <section className={`${PANEL} p-5 md:p-7`}>
-            <h2 className="font-serif text-[22px] text-ink dark:text-[#F1E8E0]">Trusted devices</h2>
+            <h2 className="font-medium text-[22px] text-ink dark:text-[#F1E8E0]">Trusted devices</h2>
             <p className="mt-1 text-[13.5px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">
               Devices you've used to access your account
             </p>

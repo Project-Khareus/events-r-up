@@ -16,7 +16,7 @@ export default async function (req: Request): Promise<Response> {
     }
 
     const ghanaCardNote = needsGhanaCardUpload
-      ? '<li style="color: #D97706; font-weight: 600;">Ghana Card verification is still pending — please edit your listing to upload it</li>'
+      ? '<li style="color: #D97706; font-weight: 600;">Ghana Card verification is still pending. Please edit your listing to upload it</li>'
       : '<li>Your Ghana Card details have been received for verification</li>';
 
     const content = `
@@ -43,7 +43,7 @@ export default async function (req: Request): Promise<Response> {
     await base44.asServiceRole.integrations.Core.SendEmail({
       to: user.email,
       from_name: 'Khareus',
-      subject: needsGhanaCardUpload ? 'Listing Submitted — Ghana Card Verification Needed' : 'Your Vendor Listing Has Been Submitted!',
+      subject: needsGhanaCardUpload ? 'Listing submitted: Ghana Card verification needed' : 'Your Vendor Listing Has Been Submitted!',
       body: emailTemplate('Listing Submitted Successfully!', '#4F46E5', content)
     });
 
