@@ -68,7 +68,10 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
     if (!isEditMode) {
       try {
         const saved = localStorage.getItem(DRAFT_STORAGE_KEY);
-        if (saved) return { ...DEFAULT_FORM_DATA, ...JSON.parse(saved) };
+        if (saved) {
+          const { ghana_card_number, ghana_card_image_url, ghana_card_back_image_url, ghana_card_selfie_url, ...draft } = JSON.parse(saved);
+          return { ...DEFAULT_FORM_DATA, ...draft };
+        }
       } catch {}
     }
     return DEFAULT_FORM_DATA;
@@ -96,7 +99,8 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
   useEffect(() => {
     if (isEditMode) return;
     try {
-      localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(formData));
+      const { ghana_card_number, ghana_card_image_url, ghana_card_back_image_url, ghana_card_selfie_url, ...draft } = formData;
+      localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draft));
       localStorage.setItem(DRAFT_STEP_KEY, String(step));
     } catch {}
   }, [formData, step, isEditMode]);

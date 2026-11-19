@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { Loader2, Flag, ExternalLink, MessageSquare, AlertTriangle, CheckCircle, Clock, XCircle, Eye, Shield, ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "../utils";
+import PrivateEvidence from "@/components/reports/PrivateEvidence";
 
 const REPORT_OUTCOMES = [
   { value: "warning_issued", label: "Warning Issued", description: "A formal warning has been sent to the vendor.", color: "bg-amber-100 text-amber-800" },
@@ -228,9 +229,7 @@ export default function AdminReports() {
           {report.attachments && report.attachments.length > 0 && (
             <div className="flex gap-2 flex-wrap">
               {report.attachments.map((url, i) => (
-                <a key={i} href={url} target="_blank" rel="noreferrer">
-                  <img src={url} alt={`Evidence ${i+1}`} className="h-16 w-16 object-cover rounded-lg border hover:opacity-80 transition-opacity" />
-                </a>
+                <PrivateEvidence key={`${url}-${i}`} fileUri={url} label={`Evidence ${i + 1}`} />
               ))}
             </div>
           )}

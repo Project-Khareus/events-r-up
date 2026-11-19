@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Flag, Upload, X, Loader2, AlertTriangle, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import PrivateEvidence from "@/components/reports/PrivateEvidence";
 
 const REPORT_REASONS = [
   "Fraudulent or scam activity",
@@ -77,14 +78,18 @@ export default function ReportDialog({ targetType, targetId, targetName, trigger
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
     setUploading(true);
-    const uploaded = [];
-    for (const file of files) {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      uploaded.push(file_url);
+    try {
+      const uploaded = await Promise.all(files.map(async (file) => {
+        const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file });
+        return file_uri;
+      }));
+      setAttachments(prev => [...prev, ...uploaded]);
+    } catch {
+      toast.error("Upload failed. Please try again.");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
     }
-    setAttachments(prev => [...prev, ...uploaded]);
-    setUploading(false);
-    e.target.value = "";
   };
 
   const removeAttachment = (index) => {
@@ -170,7 +175,7 @@ export default function ReportDialog({ targetType, targetId, targetName, trigger
               <div className="flex flex-wrap gap-2 mb-3">
                 {attachments.map((url, i) => (
                   <div key={i} className="relative group">
-                    <img src={url} alt={`Attachment ${i + 1}`} className="h-16 w-16 object-cover rounded-lg border border-slate-200" />
+                    <PrivateEvidence fileUri={url} label={`Attachment ${i + 1}`} />
                     <button onClick={() => removeAttachment(i)} className="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                       <X className="h-3 w-3" />
                     </button>
@@ -185,7 +190,7 @@ export default function ReportDialog({ targetType, targetId, targetName, trigger
             </label>
           </div>
 
-          <Button onClick={handleSubmit} disabled={selectedReasons.length === 0 || submitMutation.isPending} className="w-full bg-red-600 hover:bg-red-700 text-white">
+          <Button onClick={handleSubmit} disabled={selectedReasons.length === 0 || submitMutation.isPending || uploading} className="w-full bg-red-600 hover:bg-red-700 text-white">
             {submitMutation.isPending ? (<><Loader2 className="h-4 w-4 animate-spin mr-2" />Submitting...</>) : (<><Flag className="h-4 w-4 mr-2" />Submit Report</>)}
           </Button>
           <p className="text-xs text-center text-slate-400">False reports may result in action against your account</p>
