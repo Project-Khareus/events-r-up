@@ -16,8 +16,8 @@ export default async function (req: Request): Promise<Response> {
     }
 
     const ghanaCardNote = needsGhanaCardUpload
-      ? '<li style="color: #D97706; font-weight: 600;">Ghana Card verification is still pending. Please edit your listing to upload it</li>'
-      : '<li>Your Ghana Card details have been received for verification</li>';
+      ? '<li style="color: #D97706; font-weight: 600;">Ghana Card verification is still pending. Please edit your listing to verify your Ghana Card</li>'
+      : '<li>Your Ghana Card has been verified</li>';
 
     const content = `
       <p style="color: #334155; font-size: 15px; line-height: 1.6;">Hi ${escapeHtml(user.full_name || 'there')},</p>
@@ -25,7 +25,7 @@ export default async function (req: Request): Promise<Response> {
       ${needsGhanaCardUpload ? `
       <div style="background: #FFFBEB; padding: 16px; border-radius: 8px; margin: 20px 0; border: 1px solid #F59E0B;">
         <p style="margin: 0; color: #92400E; font-weight: 600; font-size: 14px;">Ghana Card Verification Pending</p>
-        <p style="margin: 8px 0 0; color: #92400E; font-size: 13px;">Please edit your listing to add your Ghana Card details and complete verification.</p>
+        <p style="margin: 8px 0 0; color: #92400E; font-size: 13px;">Please edit your listing and complete Ghana Card verification (card photos and a selfie).</p>
       </div>` : ''}
       <div style="background: #F8FAFC; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #E2E8F0;">
         <p style="margin: 4px 0; color: #334155;"><strong>What happens next?</strong></p>

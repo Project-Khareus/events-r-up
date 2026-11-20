@@ -50,10 +50,25 @@ export default function VendorSignup() {
 
   const createCheckoutMutation = useMutation({
     mutationFn: async (data) => {
-      // Separate Ghana Card fields from vendor data
-      const { ghana_card_number, ghana_card_image_url, ghana_card_back_image_url, ghana_card_selfie_url, ...restData } = data;
+      // Separate Ghana Card (Didit) fields from vendor data. The client-side status is only a hint:
+      // the real status is read from Didit on the server when the session is linked to the vendor.
+      const {
+        didit_session_id, ghana_card_status: _clientStatus,
+        ghana_card_number: _n, ghana_card_image_url: _f, ghana_card_back_image_url: _b, ghana_card_selfie_url: _s,
+        ...restData
+      } = data;
 
-      const hasGhanaCard = ghana_card_number && ghana_card_image_url && ghana_card_back_image_url && ghana_card_selfie_url;
+      // Links the Didit session to the vendor and returns the verified status (never blocks the flow)
+      const linkGhanaCard = async (vendorId) => {
+        if (!didit_session_id) return 'pending';
+        try {
+          const { data: linked } = await base44.functions.invoke('linkDiditVerification', { vendor_id: vendorId, session_id: didit_session_id });
+          return linked?.status || 'pending';
+        } catch (err) {
+          console.error('Ghana Card verification link failed:', err);
+          return 'pending';
+        }
+      };
 
       const vendorData = {
         ...restData,
@@ -86,10 +101,8 @@ export default function VendorSignup() {
       );
 
       if (existingVendor) {
-        const reusedVendor = await base44.entities.Vendor.update(existingVendor.id, {
-          ...vendorData,
-          ghana_card_status: hasGhanaCard ? 'pending' : existingVendor.ghana_card_status
-        });
+        const reusedVendor = await base44.entities.Vendor.update(existingVendor.id, vendorData);
+        await linkGhanaCard(reusedVendor.id);
         return { reused: true, vendorId: reusedVendor.id };
       }
 
@@ -116,41 +129,23 @@ export default function VendorSignup() {
             subscription_start_date: new Date().toISOString().split('T')[0],
             subscription_end_date: trialEndDate.toISOString().split('T')[0],
             status: 'pending',
-            ghana_card_status: hasGhanaCard ? 'pending' : undefined
+            ghana_card_status: 'pending'
           });
         } catch (err) {
           console.error('Vendor creation failed:', err);
           throw new Error("We couldn't create your listing. Please check that all required fields are filled in correctly and try again.");
         }
 
-        // Create verification record if Ghana Card data was provided (non-blocking)
-        let ghanaCardSaved = false;
-        if (hasGhanaCard) {
-          try {
-            await base44.entities.VendorVerification.create({
-              vendor_id: newVendor.id,
-              user_id: user.id,
-              ghana_card_number,
-              ghana_card_image_url,
-              ghana_card_back_image_url,
-              ghana_card_selfie_url,
-              ghana_card_status: 'pending'
-            });
-            ghanaCardSaved = true;
-          } catch (err) {
-            console.error('Ghana Card verification save failed:', err);
-            // Vendor was created successfully — don't block the flow
-            toast.info("Your listing was created but Ghana Card details couldn't be saved. You can add them later by editing your listing.");
-          }
-        }
+        const ghanaCardStatus = await linkGhanaCard(newVendor.id);
 
-        return { trial: true, vendorId: newVendor.id, businessName: vendorData.business_name, hasGhanaCard: hasGhanaCard && ghanaCardSaved, ghanaCardProvided: hasGhanaCard };
+        return { trial: true, vendorId: newVendor.id, businessName: vendorData.business_name, ghanaCardVerified: ghanaCardStatus === 'verified' };
       }
 
       // For paid plans, use checkout
       const response = await base44.functions.invoke('createVendorCheckout', {
         subscription_type: data.subscription_type,
-        vendorData
+        // The Stripe webhook links the Didit session once the vendor is created
+        vendorData: didit_session_id ? { ...vendorData, didit_session_id } : vendorData
       });
 
       return response.data;
@@ -177,9 +172,9 @@ export default function VendorSignup() {
       }
 
       if (data.trial) {
-        const needsGhanaCardUpload = !data.hasGhanaCard && !data.ghanaCardProvided;
+        const needsGhanaCardUpload = !data.ghanaCardVerified;
 
-        // Only show upload-related feedback if Ghana Card details were not provided
+        // Only show the success toast if the Ghana Card is verified (otherwise the pending dialog shows)
         if (!needsGhanaCardUpload) {
           toast.success("Trial listing created! We'll review it shortly.");
         }
@@ -205,7 +200,7 @@ export default function VendorSignup() {
           console.error('Failed to notify admin:', e);
         }
 
-        // Only show the pending dialog when Ghana Card details were not provided
+        // The pending dialog is shown instead when the Ghana Card isn't verified
         if (!needsGhanaCardUpload) {
           setTimeout(() => {
             navigate(createPageUrl("ManageListing"));
