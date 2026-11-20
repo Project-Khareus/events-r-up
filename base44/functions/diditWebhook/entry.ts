@@ -5,6 +5,12 @@ import { getDiditDecision, linkDecisionToVendor } from '../../shared/didit.js';
 // Receives Didit status.updated webhooks so sessions that finish later
 // (e.g. "In Review" -> "Approved") update the vendor's Ghana Card status.
 // The payload is only used to find the session; the decision is re-fetched from Didit.
+//
+// DIDIT_WEBHOOK_SECRET is optional. When it is set, the X-Signature-V2 signature is checked.
+// When it isn't, the endpoint is still safe: a request can only name a session id, the
+// session must already be linked to a vendor, and the status written always comes from
+// Didit's API (with our key), never from the request body. A forged call can at most
+// trigger a re-check of a result that is already true.
 
 function shortenFloats(data) {
   if (Array.isArray(data)) return data.map(shortenFloats);
@@ -39,20 +45,26 @@ function safeEqual(a, b) {
 export default async function(req) {
   const webhookSecret = secrets.get('DIDIT_WEBHOOK_SECRET');
   const apiKey = secrets.get('DIDIT_API_KEY');
-  if (!webhookSecret || !apiKey) return Response.json({ error: 'Not configured' }, { status: 503 });
+  if (!apiKey) return Response.json({ error: 'Not configured' }, { status: 503 });
 
   const body = await req.json().catch(() => null);
   if (!body) return Response.json({ error: 'Invalid body' }, { status: 400 });
 
-  const timestamp = req.headers.get('x-timestamp');
-  const signature = req.headers.get('x-signature-v2');
-  if (!timestamp || Math.abs(Math.floor(Date.now() / 1000) - parseInt(timestamp, 10)) > 300) {
-    return Response.json({ error: 'Stale request' }, { status: 401 });
+  if (webhookSecret) {
+    const timestamp = req.headers.get('x-timestamp');
+    const signature = req.headers.get('x-signature-v2');
+    if (!timestamp || Math.abs(Math.floor(Date.now() / 1000) - parseInt(timestamp, 10)) > 300) {
+      return Response.json({ error: 'Stale request' }, { status: 401 });
+    }
+    const expected = await hmacHex(webhookSecret, JSON.stringify(sortKeys(shortenFloats(body))));
+    if (!safeEqual(expected, signature)) return Response.json({ error: 'Invalid signature' }, { status: 401 });
   }
-  const expected = await hmacHex(webhookSecret, JSON.stringify(sortKeys(shortenFloats(body))));
-  if (!safeEqual(expected, signature)) return Response.json({ error: 'Invalid signature' }, { status: 401 });
 
-  if (body.webhook_type !== 'status.updated' || !body.session_id) return Response.json({ received: true });
+  if (body.webhook_type !== 'status.updated') return Response.json({ received: true });
+  // Only well-formed session ids go any further (no lookups for junk input)
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(body.session_id || ''))) {
+    return Response.json({ received: true });
+  }
 
   try {
     const base44 = createClientFromRequest(req);
