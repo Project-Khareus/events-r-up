@@ -33,6 +33,11 @@
         "verified",
         "failed"
       ],
+      "enumColors": [
+        "yellow",
+        "green",
+        "red"
+      ],
       "default": "pending",
       "description": "Ghana Card verification status"
     },
@@ -60,7 +65,9 @@
   ],
   "rls": {
     "create": {
-      "data.user_id": "{{user.id}}"
+      "user_condition": {
+        "role": "admin"
+      }
     },
     "read": {
       "$or": [
@@ -75,16 +82,9 @@
       ]
     },
     "update": {
-      "$or": [
-        {
-          "data.user_id": "{{user.id}}"
-        },
-        {
-          "user_condition": {
-            "role": "admin"
-          }
-        }
-      ]
+      "user_condition": {
+        "role": "admin"
+      }
     },
     "delete": {
       "user_condition": {

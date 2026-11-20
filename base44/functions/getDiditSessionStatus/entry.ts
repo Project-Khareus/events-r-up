@@ -20,9 +20,11 @@ export default async function(req) {
 
     return Response.json({
       session_id: decision.session_id,
-      status: mapDiditStatus(decision.status),
+      status: mapDiditStatus(decision.status, decision),
       didit_status: decision.status,
-      message: statusMessage(decision.status)
+      message: decision.status === 'Approved' && mapDiditStatus(decision.status, decision) !== 'verified'
+        ? 'The required Ghana Card, selfie and face match could not be confirmed.'
+        : statusMessage(decision.status)
     });
   } catch (error) {
     return Response.json({ error: error.message || 'Could not check verification' }, { status: 502 });

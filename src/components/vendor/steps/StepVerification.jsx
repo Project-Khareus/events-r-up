@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { CreditCard, Loader2, Check, AlertCircle, ArrowLeft, Info, ShieldCheck, Clock, XCircle, RotateCcw } from "lucide-react";
 import { PANEL, H2, SUB, BTN_PRIMARY, BTN_GHOST } from "./wizardStyles";
-import DiditVerificationDialog from "../DiditVerificationDialog";
 import { isLiveCountry, getCountryName, countryFlag } from "@/lib/countries";
 
 const PLANS = [
@@ -25,9 +24,8 @@ const GHANA_STATUS = {
     text: "We couldn't verify your Ghana Card. Try again, or submit with verification pending." },
 };
 
-export default function StepVerification({ formData, setFormData, onBack, onSubmit, isSubmitting, submitLabel, submitIcon, autoOpenVerification = false }) {
-  const [diditOpen, setDiditOpen] = useState(false);
-  const autoOpenedRef = useRef(false);
+export default function StepVerification({ formData, setFormData, onBack, onSubmit, isSubmitting, submitLabel, submitIcon }) {
+  const verificationWindow = useRef(null);
 
   const selectedPlan = PLANS.find((p) => p.key === formData.subscription_type);
   const isWaitlist = !isLiveCountry(formData.country);
@@ -35,12 +33,19 @@ export default function StepVerification({ formData, setFormData, onBack, onSubm
   const ghanaStatus = formData.didit_session_id ? GHANA_STATUS[formData.ghana_card_status] || GHANA_STATUS.pending : null;
   const isVerified = formData.ghana_card_status === "verified" && !!formData.didit_session_id;
 
-  // Open Didit as soon as a new vendor reaches the Ghana Card step
   useEffect(() => {
-    if (!autoOpenVerification || autoOpenedRef.current || !isGhana || isWaitlist || formData.didit_session_id) return;
-    autoOpenedRef.current = true;
-    setDiditOpen(true);
-  }, [autoOpenVerification, isGhana, isWaitlist, formData.didit_session_id]);
+    const receiveResult = async (event) => {
+      if (event.origin !== window.location.origin || event.source !== verificationWindow.current || event.data?.type !== 'khareus:didit-result') return;
+      try {
+        const { data } = await base44.functions.invoke('getDiditSessionStatus', { session_id: event.data.session_id });
+        setFormData((prev) => ({ ...prev, didit_session_id: data.session_id, ghana_card_status: data.status }));
+      } catch {
+        setFormData((prev) => ({ ...prev, didit_session_id: event.data.session_id, ghana_card_status: 'pending' }));
+      }
+    };
+    window.addEventListener('message', receiveResult);
+    return () => window.removeEventListener('message', receiveResult);
+  }, [setFormData]);
 
   // Refresh a saved session's result (e.g. after a reload, or an "In Review" that has since finished)
   useEffect(() => {
@@ -54,9 +59,10 @@ export default function StepVerification({ formData, setFormData, onBack, onSubm
     return () => { cancelled = true; };
   }, [isGhana, formData.didit_session_id]);
 
-  const handleDiditResult = useCallback(({ session_id, status }) => {
-    setFormData((prev) => ({ ...prev, didit_session_id: session_id, ghana_card_status: status }));
-  }, [setFormData]);
+  const openVerification = () => {
+    verificationWindow.current = window.open('/ghana-card-verification', '_blank');
+    if (!verificationWindow.current) window.alert('Please allow pop-ups to start Ghana Card verification.');
+  };
 
   return (
     <div className="space-y-6">
@@ -93,7 +99,7 @@ export default function StepVerification({ formData, setFormData, onBack, onSubm
             </div>
           )}
           {!isVerified && (
-            <button type="button" onClick={() => setDiditOpen(true)} className={BTN_PRIMARY}>
+            <button type="button" onClick={openVerification} className={BTN_PRIMARY}>
               {formData.didit_session_id ? <RotateCcw className="h-4 w-4" /> : <ShieldCheck className="h-4 w-4" />}
               {formData.didit_session_id ? "Verify again" : "Verify Ghana Card"}
             </button>
@@ -109,12 +115,6 @@ export default function StepVerification({ formData, setFormData, onBack, onSubm
       </div>
       )}
 
-      <DiditVerificationDialog
-        open={diditOpen}
-        onOpenChange={setDiditOpen}
-        onResult={handleDiditResult}
-        onSubmitPending={onSubmit}
-      />
 
       {/* Subscription Plan */}
       {!isWaitlist && (

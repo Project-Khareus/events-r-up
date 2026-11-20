@@ -247,7 +247,6 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
           isSubmitting={isSubmitting}
           submitLabel={submitLabel}
           submitIcon={submitIcon}
-          autoOpenVerification={!isEditMode}
         />
       )}
 
@@ -308,7 +307,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
               <div>
                 <p className="text-[12px] font-medium text-gold-text dark:text-gold-dark">Ghana Card verification pending</p>
                 <p className="text-[13px] font-light text-[rgba(59,50,43,0.72)] dark:text-[rgba(241,232,224,0.72)] mt-1.5">
-                  Your listing will remain pending until your Ghana Card is verified. If you've just finished the check it will update automatically; otherwise you can complete it by editing your listing.
+                  Your listing will remain pending until your Ghana Card is verified. You can check the result or complete verification by editing your listing.
                 </p>
               </div>
             </div>

@@ -128,8 +128,7 @@ export default function VendorSignup() {
             is_trial: true,
             subscription_start_date: new Date().toISOString().split('T')[0],
             subscription_end_date: trialEndDate.toISOString().split('T')[0],
-            status: 'pending',
-            ghana_card_status: 'pending'
+            status: 'pending'
           });
         } catch (err) {
           console.error('Vendor creation failed:', err);

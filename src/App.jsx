@@ -15,6 +15,7 @@ import OAuthConsent from './pages/OAuthConsent';
 import AdminReleaseNotes from './pages/AdminReleaseNotes';
 import AdminBugs from './pages/AdminBugs';
 import AdminBugReviewer from './pages/AdminBugReviewer';
+import GhanaCardVerification from './pages/GhanaCardVerification';
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
 const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
@@ -62,6 +63,7 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       <Route path="/oauth/consent/*" element={<OAuthConsent />} />
+      <Route path="/ghana-card-verification" element={<GhanaCardVerification />} />
       <Route path="/AdminReleaseNotes" element={<LayoutWrapper currentPageName="AdminReleaseNotes"><AdminReleaseNotes /></LayoutWrapper>} />
       <Route path="/AdminBugs" element={<LayoutWrapper currentPageName="AdminBugs"><AdminBugs /></LayoutWrapper>} />
       <Route path="/AdminBugReviewer" element={<LayoutWrapper currentPageName="AdminBugReviewer"><AdminBugReviewer /></LayoutWrapper>} />

@@ -193,6 +193,12 @@
         "rejected",
         "suspended"
       ],
+      "enumColors": [
+        "yellow",
+        "green",
+        "red",
+        "gray"
+      ],
       "default": "pending",
       "description": "Listing approval status"
     },
@@ -217,6 +223,12 @@
         "explorer",
         "monthly",
         "annual"
+      ],
+      "enumColors": [
+        "gray",
+        "blue",
+        "purple",
+        "green"
       ]
     },
     "subscription_start_date": {
@@ -240,8 +252,25 @@
         "verified",
         "failed"
       ],
+      "enumColors": [
+        "yellow",
+        "green",
+        "red"
+      ],
       "default": "pending",
-      "description": "Ghana Card verification status (synced from VendorVerification)"
+      "description": "Ghana Card verification status (synced from VendorVerification)",
+      "rls": {
+        "create": {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        "update": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
     }
   },
   "required": [

@@ -2,12 +2,19 @@
 // The browser only ever sees a session URL and our mapped status; every decision
 // is re-read from Didit's API with the server-side key before it is trusted.
 
+import { secrets } from 'base44:runtime';
+
 const DIDIT_API = 'https://verification.didit.me/v3';
 
 // Didit session status -> our ghana_card_status
-export function mapDiditStatus(diditStatus) {
+export function mapDiditStatus(diditStatus, decision) {
   const status = String(diditStatus || '').toLowerCase();
-  if (status === 'approved') return 'verified';
+  const card = (decision?.id_verifications || []).find((check) =>
+    check.status === 'Approved' && ['GH', 'GHA'].includes(String(check.issuing_state || '').toUpperCase()) && /^(identity card|id card|national id card)$/i.test(String(check.document_type || ''))
+  );
+  const liveness = (decision?.liveness_checks || []).some((check) => check.status === 'Approved');
+  const faceMatch = (decision?.face_matches || []).some((check) => check.status === 'Approved');
+  if (status === 'approved' && card && liveness && faceMatch) return 'verified';
   if (status === 'declined') return 'failed';
   return 'pending'; // Not Started, In Progress, In Review, Abandoned, Expired, Resubmitted...
 }
@@ -47,6 +54,7 @@ export async function getDiditDecision({ apiKey, sessionId }) {
   });
   const body = await response.json().catch(() => null);
   if (!response.ok || !body) throw new Error('Could not read the Didit verification result');
+  if (!secrets.get('DIDIT_WORKFLOW_ID') || body.workflow_id !== secrets.get('DIDIT_WORKFLOW_ID')) throw new Error('Unexpected Didit verification workflow');
   return body;
 }
 
@@ -62,12 +70,14 @@ export async function linkDecisionToVendor(db, { vendorId, userId, decision }) {
   if (String(decision.vendor_data) !== String(userId)) {
     throw new Error('This verification session belongs to a different account');
   }
-  const status = mapDiditStatus(decision.status);
+  const status = mapDiditStatus(decision.status, decision);
   const fields = {
     didit_session_id: decision.session_id,
     didit_status: decision.status,
     ghana_card_status: status,
-    ghana_card_verification_message: statusMessage(decision.status),
+    ghana_card_verification_message: decision.status === 'Approved' && status !== 'verified'
+      ? 'The required Ghana Card, selfie and face match could not be confirmed.'
+      : statusMessage(decision.status),
     ...(status === 'pending' ? {} : { ghana_card_verified_at: new Date().toISOString() })
   };
   const number = documentNumber(decision);

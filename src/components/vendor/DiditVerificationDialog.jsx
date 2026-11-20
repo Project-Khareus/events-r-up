@@ -109,7 +109,7 @@ export default function DiditVerificationDialog({ open, onOpenChange, onResult, 
     pending: {
       icon: <Clock className="h-10 w-10 text-gold-text dark:text-gold-dark" />,
       title: "Verification pending",
-      body: `${result.message} You can submit your listing now with Ghana Card verification pending. It will update automatically once the check is complete.`,
+      body: `${result.message} You can submit your listing now with Ghana Card verification pending. Check its status again by editing your listing.`, 
     },
     failed: {
       icon: <XCircle className="h-10 w-10 text-red-600" />,
@@ -139,12 +139,15 @@ export default function DiditVerificationDialog({ open, onOpenChange, onResult, 
         )}
 
         {phase === "verifying" && session && (
-          <iframe
-            title="Didit identity verification"
-            src={session.url}
-            className="w-full h-[70vh] max-h-[680px] border-0 block"
-            allow="camera; microphone; geolocation; clipboard-write; fullscreen; autoplay; encrypted-media; digital-credentials-get"
-          />
+          <div>
+            <iframe
+              title="Didit identity verification"
+              src={session.url}
+              className="w-full h-[65vh] max-h-[630px] border-0 block"
+              allow="camera; microphone; geolocation; clipboard-write; fullscreen; autoplay; encrypted-media; digital-credentials-get"
+            />
+            <div className="p-3 text-center"><button type="button" className={BTN_PRIMARY} onClick={() => checkResult(session.session_id)}>I’ve finished verification</button></div>
+          </div>
         )}
 
         {phase === "checking" && (
