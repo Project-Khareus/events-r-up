@@ -109,7 +109,7 @@ export default function DiditVerificationDialog({ open, onOpenChange, onResult, 
     pending: {
       icon: <Clock className="h-10 w-10 text-gold-text dark:text-gold-dark" />,
       title: "Verification pending",
-      body: `${result.message} You can submit your listing now with Ghana Card verification pending. Check its status again by editing your listing.`, 
+      body: `${result.message} You can submit your listing now with Ghana Card verification pending. It will update automatically once the check is complete, or you can check again by editing your listing.`,
     },
     failed: {
       icon: <XCircle className="h-10 w-10 text-red-600" />,
