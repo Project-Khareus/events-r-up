@@ -1,6 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.57';
-import { secrets } from 'base44:runtime';
-import { getDiditDecision, linkDecisionToVendor } from '../../shared/didit.js';
+import { readSecret, getDiditDecision, linkDecisionToVendor } from '../../shared/didit.js';
 
 // Receives Didit status.updated webhooks so sessions that finish later
 // (e.g. "In Review" -> "Approved") update the vendor's Ghana Card status.
@@ -43,8 +42,8 @@ function safeEqual(a, b) {
 }
 
 export default async function(req) {
-  const webhookSecret = secrets.get('DIDIT_WEBHOOK_SECRET');
-  const apiKey = secrets.get('DIDIT_API_KEY');
+  const webhookSecret = readSecret('DIDIT_WEBHOOK_SECRET');
+  const apiKey = readSecret('DIDIT_API_KEY');
   if (!apiKey) return Response.json({ error: 'Not configured' }, { status: 503 });
 
   const body = await req.json().catch(() => null);
