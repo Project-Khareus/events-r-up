@@ -45,10 +45,9 @@ const DEFAULT_FORM_DATA = {
   years_in_business: "",
   price_currency: "GHS",
   subscription_type: "trial",
-  ghana_card_number: "",
-  ghana_card_image_url: "",
-  ghana_card_back_image_url: "",
-  ghana_card_selfie_url: "",
+  // Didit Ghana Card verification (status shown in the form; the server re-checks it with Didit)
+  didit_session_id: "",
+  ghana_card_status: "",
 };
 
 const NAME_CHANGE_REASONS = [
@@ -69,7 +68,8 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
       try {
         const saved = localStorage.getItem(DRAFT_STORAGE_KEY);
         if (saved) {
-          const { ghana_card_number, ghana_card_image_url, ghana_card_back_image_url, ghana_card_selfie_url, ...draft } = JSON.parse(saved);
+          // Drop legacy Ghana Card fields and the status (re-read from Didit)
+          const { ghana_card_number: _n, ghana_card_image_url: _f, ghana_card_back_image_url: _b, ghana_card_selfie_url: _s, ghana_card_status: _st, ...draft } = JSON.parse(saved);
           return { ...DEFAULT_FORM_DATA, ...draft };
         }
       } catch {}
@@ -99,7 +99,9 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
   useEffect(() => {
     if (isEditMode) return;
     try {
-      const { ghana_card_number, ghana_card_image_url, ghana_card_back_image_url, ghana_card_selfie_url, ...draft } = formData;
+      // The Didit session id is kept so a reload doesn't lose a finished verification;
+      // its status is re-read from Didit on submit, so it isn't stored here.
+      const { ghana_card_status: _status, ...draft } = formData;
       localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draft));
       localStorage.setItem(DRAFT_STEP_KEY, String(step));
     } catch {}
@@ -114,10 +116,8 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
             const v = verifications[0];
             setFormData((prev) => ({
               ...prev,
-              ghana_card_number: v.ghana_card_number || "",
-              ghana_card_image_url: v.ghana_card_image_url || "",
-              ghana_card_back_image_url: v.ghana_card_back_image_url || "",
-              ghana_card_selfie_url: v.ghana_card_selfie_url || "",
+              didit_session_id: v.didit_session_id || "",
+              ghana_card_status: v.didit_session_id ? v.ghana_card_status || "pending" : "",
             }));
           }
         })
@@ -158,7 +158,8 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
   }, [initialData]);
 
   const isWaitlist = !isLiveCountry(formData.country);
-  const hasGhanaCard = formData.ghana_card_number && formData.ghana_card_image_url && formData.ghana_card_back_image_url && formData.ghana_card_selfie_url;
+  const isGhana = (formData.country || "GH") === "GH";
+  const hasGhanaCard = !isGhana || (!!formData.didit_session_id && formData.ghana_card_status === "verified");
 
   const handleSubmit = () => {
     if (!formData.business_name || formData.event_type.length === 0 || formData.category.length === 0) {
@@ -246,6 +247,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
           isSubmitting={isSubmitting}
           submitLabel={submitLabel}
           submitIcon={submitIcon}
+          autoOpenVerification={!isEditMode}
         />
       )}
 
@@ -278,7 +280,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
           {!isWaitlist && !hasGhanaCard && (
             <div className="flex items-start gap-2 bg-[rgba(169,126,46,0.08)] border border-[rgba(169,126,46,0.35)] rounded-none p-3">
               <AlertTriangle className="h-4 w-4 text-gold-text dark:text-gold-dark shrink-0 mt-0.5" />
-              <p className="text-[13px] font-light text-[rgba(59,50,43,0.72)] dark:text-[rgba(241,232,224,0.72)]">You haven't uploaded your Ghana Card yet. Your listing will be submitted but will remain pending until verification is completed. You can add it later by editing your listing.</p>
+              <p className="text-[13px] font-light text-[rgba(59,50,43,0.72)] dark:text-[rgba(241,232,224,0.72)]">Your Ghana Card isn't verified yet. Your listing will be submitted with Ghana Card verification pending and will stay pending until verification is completed. You can finish it later by editing your listing.</p>
             </div>
           )}
           <DialogFooter>
@@ -306,7 +308,7 @@ export default function VendorForm({ initialData, onSubmit, isSubmitting, submit
               <div>
                 <p className="text-[12px] font-medium text-gold-text dark:text-gold-dark">Ghana Card verification pending</p>
                 <p className="text-[13px] font-light text-[rgba(59,50,43,0.72)] dark:text-[rgba(241,232,224,0.72)] mt-1.5">
-                  Your listing will remain pending until you upload your Ghana Card for identity verification. You can add it by editing your listing.
+                  Your listing will remain pending until your Ghana Card is verified. If you've just finished the check it will update automatically; otherwise you can complete it by editing your listing.
                 </p>
               </div>
             </div>

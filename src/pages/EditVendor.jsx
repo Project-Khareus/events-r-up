@@ -68,8 +68,12 @@ export default function EditVendor() {
 
   const updateVendorMutation = useMutation({
     mutationFn: async (data) => {
-      // Separate Ghana Card fields from vendor data
-      const { ghana_card_number, ghana_card_image_url, ghana_card_back_image_url, ghana_card_selfie_url, ...restData } = data;
+      // Separate Ghana Card (Didit) fields from vendor data; the status is set server-side from Didit
+      const {
+        didit_session_id, ghana_card_status: _clientStatus,
+        ghana_card_number: _n, ghana_card_image_url: _f, ghana_card_back_image_url: _b, ghana_card_selfie_url: _s,
+        ...restData
+      } = data;
 
       // Track changes
       const changes = [];
@@ -91,27 +95,19 @@ export default function EditVendor() {
       const nameChanged = vendor.business_name !== restData.business_name;
       const nameChangeReasons = restData.name_change_reasons || [];
 
-      // Update Ghana Card data in VendorVerification entity
-      if (ghana_card_number || ghana_card_image_url || ghana_card_back_image_url || ghana_card_selfie_url) {
-        const verifications = await base44.entities.VendorVerification.filter({ vendor_id: vendor.id });
-        const verificationData = {
-          ghana_card_number,
-          ghana_card_image_url,
-          ghana_card_back_image_url,
-          ghana_card_selfie_url,
-        };
-        if (verifications.length > 0) {
-          await base44.entities.VendorVerification.update(verifications[0].id, verificationData);
-        } else {
-          await base44.entities.VendorVerification.create({
-            ...verificationData,
-            vendor_id: vendor.id,
-            user_id: vendor.user_id,
-            ghana_card_status: 'pending'
-          });
+      // Link a new Didit Ghana Card verification to this listing (non-blocking)
+      if (didit_session_id) {
+        const verifications = await base44.entities.VendorVerification.filter({ vendor_id: vendor.id }).catch(() => []);
+        if (verifications[0]?.didit_session_id !== didit_session_id || verifications[0]?.ghana_card_status !== 'verified') {
+          try {
+            await base44.functions.invoke('linkDiditVerification', { vendor_id: vendor.id, session_id: didit_session_id });
+          } catch (err) {
+            console.error('Ghana Card verification link failed:', err);
+            toast.info("Your changes were saved but Ghana Card verification couldn't be attached. Please try again.");
+          }
         }
       }
-      
+
       // Include name change reasons inside pending_changes so admin can see them
       if (nameChanged && nameChangeReasons.length > 0) {
         pendingChanges.name_change_reasons = nameChangeReasons;

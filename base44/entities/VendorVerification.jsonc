@@ -40,6 +40,14 @@
       "type": "string",
       "description": "Response message from the Ghana Card verification API"
     },
+    "didit_session_id": {
+      "type": "string",
+      "description": "Didit verification session ID (Ghana Card + selfie)"
+    },
+    "didit_status": {
+      "type": "string",
+      "description": "Raw Didit session status (Approved, Declined, In Review, ...)"
+    },
     "ghana_card_verified_at": {
       "type": "string",
       "format": "date-time",
@@ -48,8 +56,7 @@
   },
   "required": [
     "vendor_id",
-    "user_id",
-    "ghana_card_number"
+    "user_id"
   ],
   "rls": {
     "create": {

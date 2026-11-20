@@ -1,0 +1,85 @@
+// Didit identity verification helpers shared by the vendor Ghana Card functions.
+// The browser only ever sees a session URL and our mapped status; every decision
+// is re-read from Didit's API with the server-side key before it is trusted.
+
+const DIDIT_API = 'https://verification.didit.me/v3';
+
+// Didit session status -> our ghana_card_status
+export function mapDiditStatus(diditStatus) {
+  const status = String(diditStatus || '').toLowerCase();
+  if (status === 'approved') return 'verified';
+  if (status === 'declined') return 'failed';
+  return 'pending'; // Not Started, In Progress, In Review, Abandoned, Expired, Resubmitted...
+}
+
+export function statusMessage(diditStatus) {
+  switch (String(diditStatus || '').toLowerCase()) {
+    case 'approved': return 'Ghana Card and selfie verified by Didit.';
+    case 'declined': return 'Didit could not verify this Ghana Card and selfie.';
+    case 'in review': return 'Didit is reviewing this Ghana Card. This usually takes a short while.';
+    case 'abandoned': return 'Ghana Card verification was started but not finished.';
+    case 'expired': return 'The Ghana Card verification session expired before it was finished.';
+    case 'not started': return 'Ghana Card verification has not been started yet.';
+    default: return 'Ghana Card verification is in progress.';
+  }
+}
+
+export async function createDiditSession({ apiKey, workflowId, vendorData, metadata }) {
+  const response = await fetch(`${DIDIT_API}/session/`, {
+    method: 'POST',
+    headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ workflow_id: workflowId, vendor_data: vendorData, metadata }),
+    signal: AbortSignal.timeout(15000)
+  });
+  const body = await response.json().catch(() => null);
+  if (!response.ok || !body?.url) {
+    const detail = body?.detail || body?.message || body?.error;
+    throw new Error(detail ? `Didit could not start verification: ${detail}` : 'Didit could not start verification');
+  }
+  return body;
+}
+
+export async function getDiditDecision({ apiKey, sessionId }) {
+  if (!/^[0-9a-f-]{36}$/i.test(String(sessionId || ''))) throw new Error('Invalid verification session');
+  const response = await fetch(`${DIDIT_API}/session/${sessionId}/decision/`, {
+    headers: { 'x-api-key': apiKey },
+    signal: AbortSignal.timeout(15000)
+  });
+  const body = await response.json().catch(() => null);
+  if (!response.ok || !body) throw new Error('Could not read the Didit verification result');
+  return body;
+}
+
+function documentNumber(decision) {
+  const idCheck = (decision.id_verifications || [])[0] || decision.id_verification;
+  return idCheck?.document_number || idCheck?.personal_number || undefined;
+}
+
+// Writes the Didit decision onto the vendor's VendorVerification record and the
+// Vendor.ghana_card_status mirror. `db` must be a service-role client.
+// Callers must already have checked that the vendor belongs to `userId`.
+export async function linkDecisionToVendor(db, { vendorId, userId, decision }) {
+  if (String(decision.vendor_data) !== String(userId)) {
+    throw new Error('This verification session belongs to a different account');
+  }
+  const status = mapDiditStatus(decision.status);
+  const fields = {
+    didit_session_id: decision.session_id,
+    didit_status: decision.status,
+    ghana_card_status: status,
+    ghana_card_verification_message: statusMessage(decision.status),
+    ...(status === 'pending' ? {} : { ghana_card_verified_at: new Date().toISOString() })
+  };
+  const number = documentNumber(decision);
+  if (number) fields.ghana_card_number = number;
+
+  const existing = await db.entities.VendorVerification.filter({ vendor_id: vendorId }, { limit: 1 });
+  const record = existing.items?.[0] || existing[0];
+  if (record) {
+    await db.entities.VendorVerification.update(record.id, fields);
+  } else {
+    await db.entities.VendorVerification.create({ vendor_id: vendorId, user_id: userId, ...fields });
+  }
+  await db.entities.Vendor.update(vendorId, { ghana_card_status: status });
+  return { status, didit_status: decision.status, message: fields.ghana_card_verification_message };
+}

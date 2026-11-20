@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
-import { compressImage } from "@/components/utils/imageCompress";
-import { CreditCard, Upload, Loader2, X, Check, AlertCircle, ArrowLeft, Info } from "lucide-react";
-import { PANEL, H2, SUB, LABEL, INPUT, BTN_PRIMARY, BTN_GHOST, DROP } from "./wizardStyles";
+import { CreditCard, Loader2, Check, AlertCircle, ArrowLeft, Info, ShieldCheck, Clock, XCircle, RotateCcw } from "lucide-react";
+import { PANEL, H2, SUB, BTN_PRIMARY, BTN_GHOST } from "./wizardStyles";
+import DiditVerificationDialog from "../DiditVerificationDialog";
 import { isLiveCountry, getCountryName, countryFlag } from "@/lib/countries";
 
 const PLANS = [
@@ -18,56 +16,47 @@ const PLANS = [
     info: "Pay once for the whole year and save over 15% compared to monthly. Best for established vendors." },
 ];
 
-function ImageUploadBox({ label, fieldValue, onUpload, onClear, uploading, hint }) {
-  return (
-    <div>
-      <p className={`${LABEL} mb-2`}>{label}</p>
-      <div className={`${DROP} text-center`}>
-        {fieldValue ? (
-          <div className="relative">
-            <img src={fieldValue} alt={label} className="w-full h-32 object-cover" />
-            <button type="button" onClick={onClear} className="absolute top-2 right-2 p-1.5 bg-ink text-cream hover:bg-ink-deep"><X className="h-3.5 w-3.5" /></button>
-          </div>
-        ) : (
-          <label className="cursor-pointer block py-5">
-            <input type="file" accept="image/*" onChange={onUpload} className="hidden" disabled={uploading} />
-            {uploading ? <Loader2 className="h-7 w-7 mx-auto text-gold-text dark:text-gold-dark animate-spin" /> : (
-              <>
-                <Upload className="h-7 w-7 mx-auto text-gold-text dark:text-gold-dark mb-2" />
-                <p className="text-[12.5px] font-light text-[rgba(59,50,43,0.62)] dark:text-[rgba(241,232,224,0.66)]">{hint}</p>
-              </>
-            )}
-          </label>
-        )}
-      </div>
-    </div>
-  );
-}
+const GHANA_STATUS = {
+  verified: { label: "Verified", icon: ShieldCheck, cls: "border-green-600/40 bg-green-600/10 text-green-700 dark:text-green-400",
+    text: "Your Ghana Card and selfie have been verified." },
+  pending: { label: "Pending", icon: Clock, cls: "border-[rgba(169,126,46,0.35)] bg-[rgba(169,126,46,0.08)] text-gold-text dark:text-gold-dark",
+    text: "Your verification isn't complete yet. You can still submit; your listing stays pending until it's done." },
+  failed: { label: "Not verified", icon: XCircle, cls: "border-red-600/40 bg-red-600/10 text-red-700 dark:text-red-400",
+    text: "We couldn't verify your Ghana Card. Try again, or submit with verification pending." },
+};
 
-export default function StepVerification({ formData, setFormData, onBack, onSubmit, isSubmitting, submitLabel, submitIcon }) {
-  const [ghanaCardUploading, setGhanaCardUploading] = useState(false);
-  const [ghanaCardBackUploading, setGhanaCardBackUploading] = useState(false);
-  const [selfieUploading, setSelfieUploading] = useState(false);
-
-  const makeUploadHandler = (field, setUploading) => async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-    try {
-      const compressed = await compressImage(file, 800, 0.7);
-      const { file_url } = await base44.integrations.Core.UploadFile({ file: compressed });
-      setFormData((prev) => ({ ...prev, [field]: file_url }));
-      toast.success("Uploaded!");
-    } catch {
-      toast.error("Upload failed");
-    } finally {
-      setUploading(false);
-    }
-  };
+export default function StepVerification({ formData, setFormData, onBack, onSubmit, isSubmitting, submitLabel, submitIcon, autoOpenVerification = false }) {
+  const [diditOpen, setDiditOpen] = useState(false);
+  const autoOpenedRef = useRef(false);
 
   const selectedPlan = PLANS.find((p) => p.key === formData.subscription_type);
   const isWaitlist = !isLiveCountry(formData.country);
   const isGhana = (formData.country || "GH") === "GH";
+  const ghanaStatus = formData.didit_session_id ? GHANA_STATUS[formData.ghana_card_status] || GHANA_STATUS.pending : null;
+  const isVerified = formData.ghana_card_status === "verified" && !!formData.didit_session_id;
+
+  // Open Didit as soon as a new vendor reaches the Ghana Card step
+  useEffect(() => {
+    if (!autoOpenVerification || autoOpenedRef.current || !isGhana || isWaitlist || formData.didit_session_id) return;
+    autoOpenedRef.current = true;
+    setDiditOpen(true);
+  }, [autoOpenVerification, isGhana, isWaitlist, formData.didit_session_id]);
+
+  // Refresh a saved session's result (e.g. after a reload, or an "In Review" that has since finished)
+  useEffect(() => {
+    if (!isGhana || !formData.didit_session_id || formData.ghana_card_status === "verified") return;
+    let cancelled = false;
+    base44.functions.invoke("getDiditSessionStatus", { session_id: formData.didit_session_id })
+      .then(({ data }) => {
+        if (!cancelled && data?.status) setFormData((prev) => ({ ...prev, ghana_card_status: data.status }));
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [isGhana, formData.didit_session_id]);
+
+  const handleDiditResult = useCallback(({ session_id, status }) => {
+    setFormData((prev) => ({ ...prev, didit_session_id: session_id, ghana_card_status: status }));
+  }, [setFormData]);
 
   return (
     <div className="space-y-6">
@@ -90,46 +79,25 @@ export default function StepVerification({ formData, setFormData, onBack, onSubm
         <h2 className={`${H2} flex items-center gap-2.5`}>
           <CreditCard className="h-5 w-5 text-gold-text dark:text-gold-dark" />
           Ghana Card verification
-          <span className="text-[12px] font-sans font-medium text-[rgba(59,50,43,0.45)] dark:text-[rgba(241,232,224,0.5)]">Optional</span>
         </h2>
-        <p className={SUB}>Upload your Ghana Card to speed up verification. You can also add it later by editing your listing.</p>
+        <p className={SUB}>Verify your identity with your Ghana Card and a quick selfie. It takes about 2 minutes and is handled securely by Didit.</p>
 
-        <div className="mt-6 space-y-5">
-          <div>
-            <p className={LABEL}>Ghana Card number *</p>
-            <Input
-              value={formData.ghana_card_number}
-              onChange={(e) => setFormData({ ...formData, ghana_card_number: e.target.value })}
-              placeholder="e.g. GHA-XXXXXXXXX-X"
-              className={INPUT}
-            />
-          </div>
-          <div className="grid md:grid-cols-3 gap-4">
-            <ImageUploadBox
-              label="Card front"
-              fieldValue={formData.ghana_card_image_url}
-              onUpload={makeUploadHandler("ghana_card_image_url", setGhanaCardUploading)}
-              onClear={() => setFormData((p) => ({ ...p, ghana_card_image_url: "" }))}
-              uploading={ghanaCardUploading}
-              hint="Front side"
-            />
-            <ImageUploadBox
-              label="Card back"
-              fieldValue={formData.ghana_card_back_image_url}
-              onUpload={makeUploadHandler("ghana_card_back_image_url", setGhanaCardBackUploading)}
-              onClear={() => setFormData((p) => ({ ...p, ghana_card_back_image_url: "" }))}
-              uploading={ghanaCardBackUploading}
-              hint="Back side"
-            />
-            <ImageUploadBox
-              label="Your selfie"
-              fieldValue={formData.ghana_card_selfie_url}
-              onUpload={makeUploadHandler("ghana_card_selfie_url", setSelfieUploading)}
-              onClear={() => setFormData((p) => ({ ...p, ghana_card_selfie_url: "" }))}
-              uploading={selfieUploading}
-              hint="Clear face photo"
-            />
-          </div>
+        <div className="mt-6 space-y-4">
+          {ghanaStatus && (
+            <div className={`flex items-start gap-2.5 p-3 border ${ghanaStatus.cls}`}>
+              <ghanaStatus.icon className="h-4 w-4 shrink-0 mt-0.5" />
+              <div>
+                <p className="text-[12.5px] font-medium">Ghana Card: {ghanaStatus.label}</p>
+                <p className="mt-0.5 text-[12.5px] font-light text-[rgba(59,50,43,0.72)] dark:text-[rgba(241,232,224,0.72)]">{ghanaStatus.text}</p>
+              </div>
+            </div>
+          )}
+          {!isVerified && (
+            <button type="button" onClick={() => setDiditOpen(true)} className={BTN_PRIMARY}>
+              {formData.didit_session_id ? <RotateCcw className="h-4 w-4" /> : <ShieldCheck className="h-4 w-4" />}
+              {formData.didit_session_id ? "Verify again" : "Verify Ghana Card"}
+            </button>
+          )}
         </div>
 
         <div className="mt-5 flex items-start gap-2.5 p-3 border border-[rgba(169,126,46,0.35)] bg-[rgba(169,126,46,0.08)]">
@@ -140,6 +108,13 @@ export default function StepVerification({ formData, setFormData, onBack, onSubm
         </div>
       </div>
       )}
+
+      <DiditVerificationDialog
+        open={diditOpen}
+        onOpenChange={setDiditOpen}
+        onResult={handleDiditResult}
+        onSubmitPending={onSubmit}
+      />
 
       {/* Subscription Plan */}
       {!isWaitlist && (

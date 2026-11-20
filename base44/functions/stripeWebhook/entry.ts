@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 import Stripe from 'npm:stripe@17.5.0';
+import { getDiditDecision, linkDecisionToVendor } from '../../shared/didit.js';
 
 const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY"));
 const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
@@ -24,7 +25,7 @@ Deno.serve(async (req) => {
       const metadata = session.metadata;
 
       // Parse vendor data from metadata
-      const vendorData = JSON.parse(metadata.vendor_data);
+      const { didit_session_id: diditSessionId, ghana_card_status: _ignored, ...vendorData } = JSON.parse(metadata.vendor_data);
       const userId = metadata.user_id;
       const subscriptionType = metadata.subscription_type;
 
@@ -48,6 +49,7 @@ Deno.serve(async (req) => {
         status: 'pending',
         stripe_customer_id: session.customer,
         stripe_subscription_id: session.subscription,
+        ghana_card_status: 'pending',
       };
 
       // Clean up empty fields
@@ -56,6 +58,17 @@ Deno.serve(async (req) => {
       });
 
       const newVendor = await base44.asServiceRole.entities.Vendor.create(finalVendorData);
+
+      // Attach the Ghana Card (Didit) verification the vendor did during sign-up
+      const diditApiKey = Deno.env.get("DIDIT_API_KEY");
+      if (diditSessionId && diditApiKey) {
+        try {
+          const decision = await getDiditDecision({ apiKey: diditApiKey, sessionId: diditSessionId });
+          await linkDecisionToVendor(base44.asServiceRole, { vendorId: newVendor.id, userId, decision });
+        } catch (err) {
+          console.error("Failed to link Didit verification", err);
+        }
+      }
 
       // Notify admin about new vendor submission
       try {
