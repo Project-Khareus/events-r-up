@@ -80,25 +80,7 @@ Deno.serve(async (req) => {
           link: 'MyProfile'
         });
 
-        // Send email notification
-        await base44.asServiceRole.integrations.Core.SendEmail({
-          to: user.email,
-          subject: 'New Device Login Detected',
-          body: `
-            Hello ${user.full_name},
-            
-            We detected a login to your Khareus account from a new device:
-            
-            Device: ${deviceName}
-            IP Address: ${ipAddress}
-            Time: ${new Date().toLocaleString()}
-            
-            If this was you, you can safely ignore this email. If you don't recognize this login, please secure your account immediately by changing your password.
-            
-            Best regards,
-            The Khareus Team
-          `
-        });
+        // No email is sent for new-device logins; the in-app notification above is enough.
       }
 
       return Response.json({ 
