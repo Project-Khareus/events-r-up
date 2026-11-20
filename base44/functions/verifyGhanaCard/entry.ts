@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.57';
-import { secrets } from 'base44:runtime';
+import { readSecret } from '../../shared/didit.js';
 
 const STORAGE_HOSTS = new Set(['qtrypzzcjebvfcihiynt.supabase.co', 'base44.app']);
 
@@ -49,7 +49,7 @@ export default async function(req) {
       return Response.json({ error: 'Verification images must be uploaded through Khareus storage' }, { status: 400 });
     }
 
-    const diditApiKey = secrets.get('DIDIT_API_KEY');
+    const diditApiKey = readSecret('DIDIT_API_KEY');
     if (!diditApiKey) return Response.json({ error: 'Didit is not configured' }, { status: 503 });
 
     const [frontResponse, backResponse] = await Promise.all([

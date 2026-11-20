@@ -1,6 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.57';
-import { secrets } from 'base44:runtime';
-import { getDiditDecision, linkDecisionToVendor } from '../../shared/didit.js';
+import { readSecret, getDiditDecision, linkDecisionToVendor } from '../../shared/didit.js';
 
 // Attaches a finished (or still pending) Didit session to one of the user's vendor listings.
 // The status written comes from Didit's API, never from the browser.
@@ -13,7 +12,7 @@ export default async function(req) {
     const { vendor_id: vendorId, session_id: sessionId } = await req.json().catch(() => ({}));
     if (!vendorId || !sessionId) return Response.json({ error: 'vendor_id and session_id are required' }, { status: 400 });
 
-    const apiKey = secrets.get('DIDIT_API_KEY');
+    const apiKey = readSecret('DIDIT_API_KEY');
     if (!apiKey) return Response.json({ error: 'Ghana Card verification is not configured yet' }, { status: 503 });
 
     const db = base44.asServiceRole;

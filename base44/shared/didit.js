@@ -6,6 +6,18 @@ import { secrets } from 'base44:runtime';
 
 const DIDIT_API = 'https://verification.didit.me/v3';
 
+// Reads a secret, preferring the environment variable (where the Base44 secrets API
+// stores values, as the Stripe webhook reads them) over the runtime lookup, and trims
+// stray whitespace from pasted values.
+export function readSecret(name) {
+  let value = null;
+  try { value = Deno.env.get(name); } catch { /* env access unavailable */ }
+  if (!value) {
+    try { value = secrets.get(name); } catch { /* not set */ }
+  }
+  return value ? String(value).trim() : null;
+}
+
 // Didit session status -> our ghana_card_status
 export function mapDiditStatus(diditStatus, decision) {
   const status = String(diditStatus || '').toLowerCase();
@@ -40,6 +52,8 @@ export async function createDiditSession({ apiKey, workflowId, vendorData, metad
   });
   const body = await response.json().catch(() => null);
   if (!response.ok || !body?.url) {
+    // Safe diagnostics: status plus the non-secret key prefix and length, never the key itself
+    console.error('Didit session create failed', response.status, String(apiKey).slice(0, 10), String(apiKey).length);
     const detail = body?.detail || body?.message || body?.error;
     throw new Error(detail ? `Didit could not start verification: ${detail}` : 'Didit could not start verification');
   }
@@ -54,7 +68,7 @@ export async function getDiditDecision({ apiKey, sessionId }) {
   });
   const body = await response.json().catch(() => null);
   if (!response.ok || !body) throw new Error('Could not read the Didit verification result');
-  if (!secrets.get('DIDIT_WORKFLOW_ID') || body.workflow_id !== secrets.get('DIDIT_WORKFLOW_ID')) throw new Error('Unexpected Didit verification workflow');
+  if (!readSecret('DIDIT_WORKFLOW_ID') || body.workflow_id !== readSecret('DIDIT_WORKFLOW_ID')) throw new Error('Unexpected Didit verification workflow');
   return body;
 }
 

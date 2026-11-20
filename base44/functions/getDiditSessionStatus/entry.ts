@@ -1,6 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.57';
-import { secrets } from 'base44:runtime';
-import { getDiditDecision, mapDiditStatus, statusMessage } from '../../shared/didit.js';
+import { readSecret, getDiditDecision, mapDiditStatus, statusMessage } from '../../shared/didit.js';
 
 // Returns the current result of the signed-in user's own Didit session.
 export default async function(req) {
@@ -12,7 +11,7 @@ export default async function(req) {
     const { session_id: sessionId } = await req.json().catch(() => ({}));
     if (!sessionId) return Response.json({ error: 'session_id is required' }, { status: 400 });
 
-    const apiKey = secrets.get('DIDIT_API_KEY');
+    const apiKey = readSecret('DIDIT_API_KEY');
     if (!apiKey) return Response.json({ error: 'Ghana Card verification is not configured yet' }, { status: 503 });
 
     const decision = await getDiditDecision({ apiKey, sessionId });
