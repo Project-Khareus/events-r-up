@@ -43,8 +43,8 @@ export default function EditEvent() {
   const { data: event, isLoading } = useQuery({
     queryKey: ['event', eventId],
     queryFn: async () => {
-      const events = await base44.entities.EventListing.list();
-      return events.find(e => e.id === eventId);
+      const found = await base44.entities.EventListing.filter({ id: eventId }, undefined, 1);
+      return found?.[0] || null;
     },
     enabled: !!eventId
   });

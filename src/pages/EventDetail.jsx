@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { createPageUrl } from "../utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -40,6 +40,7 @@ export default function EventDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   const eventId = urlParams.get("id");
   const { slug: slugParam } = useParams();
+  const navigate = useNavigate();
   const [showMap, setShowMap] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
 
@@ -47,12 +48,32 @@ export default function EventDetail() {
     base44.auth.me().then(setCurrentUser).catch(() => setCurrentUser(null));
   }, []);
 
-  const { data: events = [], isLoading } = useQuery({
-    queryKey: ['events'],
-    queryFn: () => base44.entities.EventListing.list(),
+  // Load the requested event directly. Listing every event and searching the result
+  // missed newer events once there were more than one page of them.
+  const { data: event, isLoading } = useQuery({
+    queryKey: ['events', 'detail', slugParam || eventId],
+    queryFn: async () => {
+      const query = slugParam ? { slug: slugParam } : { id: eventId };
+      const found = await base44.entities.EventListing.filter(query, undefined, 1);
+      return found?.[0] || null;
+    },
+    enabled: !!(slugParam || eventId),
   });
 
-  const event = useMemo(() => events.find(e => slugParam ? e.slug === slugParam : e.id === eventId), [events, eventId, slugParam]);
+  // Old ?id= links move to the event's name-based address
+  useEffect(() => {
+    if (!slugParam && event?.slug) {
+      navigate(`/event/${encodeURIComponent(event.slug)}`, { replace: true });
+    }
+  }, [slugParam, event?.slug, navigate]);
+
+  // Candidates for "Nearby" and "Similar": approved events, latest dates first, so
+  // upcoming ones are always included.
+  const { data: events = [] } = useQuery({
+    queryKey: ['events', 'approved-recent'],
+    queryFn: () => base44.entities.EventListing.filter({ status: 'approved' }, '-event_date', 200),
+    enabled: !!event,
+  });
 
   const nearbyEvents = useMemo(() => {
     if (!event || !events.length) return [];

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { createPageUrl } from "../../utils";
+import { eventPageUrl } from "../../utils";
 import { Calendar, MapPin } from "lucide-react";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +12,7 @@ export default function EventCard({ event }) {
   
   return (
     <div className="h-full relative group bg-white dark:bg-slate-800">
-      <Link to={createPageUrl("EventDetail") + `?id=${event.id}`} className="block h-full">
+      <Link to={eventPageUrl(event)} className="block h-full">
         <div className="flex flex-col h-full hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors rounded-lg overflow-hidden">
           {/* Image Container */}
           <div className="relative aspect-[2/1] overflow-hidden">
