@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { createPageUrl, REAL_EVENTS } from "../utils";
+import { createPageUrl, REAL_EVENTS, dropDuplicateEvents } from "../utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -75,9 +75,16 @@ export default function EventDetail() {
     enabled: !!event,
   });
 
+  // Suggestions without repeats, and without other listings of this same event
+  const candidates = useMemo(() => {
+    if (!event) return [];
+    const isSameEvent = (e) => dropDuplicateEvents([event, e]).length === 1;
+    return dropDuplicateEvents(events.filter(e => e.id !== event.id)).filter(e => !isSameEvent(e));
+  }, [event, events]);
+
   const nearbyEvents = useMemo(() => {
-    if (!event || !events.length) return [];
-    return events
+    if (!event || !candidates.length) return [];
+    return candidates
       .filter(e => e.id !== event.id && e.status === 'approved' && new Date(e.event_date) >= new Date())
       .map(e => ({
           ...e,
@@ -85,14 +92,14 @@ export default function EventDetail() {
       }))
       .sort((a, b) => a.distance - b.distance)
       .slice(0, 4);
-  }, [event, events]);
+  }, [event, candidates]);
 
   const similarEvents = useMemo(() => {
-    if (!event || !events.length) return [];
-    return events
+    if (!event || !candidates.length) return [];
+    return candidates
       .filter(e => e.id !== event.id && e.status === 'approved' && e.theme === event.theme && new Date(e.event_date) >= new Date())
       .slice(0, 4);
-  }, [event, events]);
+  }, [event, candidates]);
 
   // Scroll to top when a different event (e.g. a Nearby Event) is opened
   useEffect(() => {
