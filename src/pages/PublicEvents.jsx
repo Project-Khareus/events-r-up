@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import PullToRefresh from "../components/shared/PullToRefresh";
 import { Link } from "react-router-dom";
-import { createPageUrl, REAL_EVENTS } from "../utils";
+import { createPageUrl, REAL_EVENTS, dropDuplicateEvents } from "../utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { 
@@ -161,7 +161,7 @@ export default function PublicEvents() {
 
   // Filter approved events or pending events owned by the current user, and exclude past events
   const approvedEvents = useMemo(() => {
-    return events.filter(e => {
+    return dropDuplicateEvents(events).filter(e => {
       // Only show approved events publicly, or pending/no-status events owned by the current user
       const isApproved = e.status === 'approved' || 
         (!e.status && user && e.created_by === user.email) ||
@@ -238,8 +238,8 @@ export default function PublicEvents() {
       return matchesSearch && matchesTheme && matchesLocation;
   }, [searchQuery, selectedTheme, locationState]);
 
-  const filteredPastEvents = useMemo(() => pastEvents.filter(matchesFilters), [pastEvents, matchesFilters]);
-  const monthEventsByDay = useMemo(() => groupEventsByDay(monthEvents.filter(matchesFilters)), [monthEvents, matchesFilters]);
+  const filteredPastEvents = useMemo(() => dropDuplicateEvents(pastEvents).filter(matchesFilters), [pastEvents, matchesFilters]);
+  const monthEventsByDay = useMemo(() => groupEventsByDay(dropDuplicateEvents(monthEvents).filter(matchesFilters)), [monthEvents, matchesFilters]);
   const selectedDayEvents = selectedDay ? monthEventsByDay.get(dayKey(selectedDay)) || [] : [];
 
   const filteredEvents = useMemo(() => {
@@ -567,7 +567,7 @@ export default function PublicEvents() {
                     ))}
                   </div>
 
-                  {displayEvents.length >= eventsPerPage * page && (
+                  {events.length >= eventsPerPage * page && (
                     <div className="flex justify-center mt-10">
                       <Button
                         onClick={() => setPage(p => p + 1)}
