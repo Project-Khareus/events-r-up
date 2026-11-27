@@ -18,14 +18,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import EventCard from "../components/events/EventCard";
-import EventsCalendar from "../components/events/EventsCalendar";
+import EventsCalendar, { dayKey, groupEventsByDay } from "../components/events/EventsCalendar";
 import { addMonths, format, startOfMonth, startOfToday } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 
 const VIEWS = [
   { key: "upcoming", label: "Upcoming" },
-  { key: "calendar", label: "Calendar" },
   { key: "past", label: "Past events" },
 ];
 
@@ -65,6 +64,7 @@ export default function PublicEvents() {
   const [view, setView] = useState(initialView);
   const [calendarMonth, setCalendarMonth] = useState(() => startOfMonth(new Date()));
   const [selectedDay, setSelectedDay] = useState(null);
+  const [showCalendar, setShowCalendar] = useState(false);
   // event_date is stored as a local "yyyy-MM-ddTHH:mm" string; anything from today on counts as upcoming
   const today = format(startOfToday(), "yyyy-MM-dd");
 
@@ -145,7 +145,7 @@ export default function PublicEvents() {
     keepPreviousData: true,
   });
 
-  // Calendar: approved events in the month on screen
+  // Calendar beside the upcoming list: approved events in the month on screen
   const monthStart = format(calendarMonth, "yyyy-MM-dd");
   const { data: monthEvents = [], isLoading: monthLoading } = useQuery({
     queryKey: ['events', 'month', monthStart],
@@ -154,7 +154,7 @@ export default function PublicEvents() {
       'event_date',
       500
     ),
-    enabled: view === 'calendar',
+    enabled: view === 'upcoming',
     staleTime: 600000,
     refetchOnWindowFocus: false,
   });
@@ -239,7 +239,8 @@ export default function PublicEvents() {
   }, [searchQuery, selectedTheme, locationState]);
 
   const filteredPastEvents = useMemo(() => pastEvents.filter(matchesFilters), [pastEvents, matchesFilters]);
-  const filteredMonthEvents = useMemo(() => monthEvents.filter(matchesFilters), [monthEvents, matchesFilters]);
+  const monthEventsByDay = useMemo(() => groupEventsByDay(monthEvents.filter(matchesFilters)), [monthEvents, matchesFilters]);
+  const selectedDayEvents = selectedDay ? monthEventsByDay.get(dayKey(selectedDay)) || [] : [];
 
   const filteredEvents = useMemo(() => {
     const filtered = approvedEvents.filter(matchesFilters);
@@ -431,7 +432,7 @@ export default function PublicEvents() {
             </h6>
         </div>
 
-        {/* Upcoming / Calendar / Past */}
+        {/* Upcoming / Past */}
         <div role="tablist" aria-label="Event views" className="mb-8 inline-flex border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)]">
           {VIEWS.map(({ key, label }) => (
             <button
@@ -445,22 +446,10 @@ export default function PublicEvents() {
                   : 'text-ink/70 dark:text-[#F1E8E0]/70 hover:text-gold-text dark:hover:text-gold-dark'
               }`}
             >
-              {key === 'calendar' && <CalendarIcon className="inline h-4 w-4 mr-1.5 -mt-0.5" />}
               {label}
             </button>
           ))}
         </div>
-
-        {view === 'calendar' && (
-          <EventsCalendar
-            month={calendarMonth}
-            onMonthChange={setCalendarMonth}
-            events={filteredMonthEvents}
-            isLoading={monthLoading}
-            selectedDay={selectedDay}
-            onSelectDay={setSelectedDay}
-          />
-        )}
 
         {view === 'past' && (
           pastLoading ? (
@@ -502,52 +491,104 @@ export default function PublicEvents() {
         )}
 
         {view === 'upcoming' && (
-          <>
-        {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-              <div key={i} className="space-y-4">
-                <Skeleton className="aspect-[3/2] w-full rounded-none" />
-                <Skeleton className="h-6 w-3/4 rounded-none" />
-                <Skeleton className="h-4 w-1/2 rounded-none" />
-                <Skeleton className="h-4 w-1/4 rounded-none" />
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] items-start">
+            {/* Calendar: beside the cards on large screens, behind a button on phones */}
+            <aside className="lg:col-start-2 lg:row-start-1">
+              <button
+                onClick={() => setShowCalendar(s => !s)}
+                aria-expanded={showCalendar}
+                className="lg:hidden inline-flex items-center gap-2 min-h-[44px] px-4 border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] text-[13px] text-ink/80 dark:text-[#F1E8E0]/80 hover:text-gold-text dark:hover:text-gold-dark"
+              >
+                <CalendarIcon className="h-4 w-4" />
+                {showCalendar ? 'Hide calendar' : 'Calendar'}
+                <ChevronDown className={`h-4 w-4 transition-transform ${showCalendar ? 'rotate-180' : ''}`} />
+              </button>
+              <div className={`${showCalendar ? 'block mt-4' : 'hidden'} lg:block lg:mt-0`}>
+                <EventsCalendar
+                  month={calendarMonth}
+                  onMonthChange={setCalendarMonth}
+                  eventsByDay={monthEventsByDay}
+                  isLoading={monthLoading}
+                  selectedDay={selectedDay}
+                  onSelectDay={(day) => {
+                    setSelectedDay(day);
+                    // On phones the calendar sits above the list: close it so the day's events show
+                    if (day && window.matchMedia('(max-width: 1023px)').matches) setShowCalendar(false);
+                  }}
+                />
               </div>
-            ))}
-          </div>
-        ) : (
-          <>
-            {usingFallback && (
-              <div className="mb-6 rounded-none border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] bg-linen dark:bg-[#221D19] px-4 py-3 text-sm text-ink/70 dark:text-[#F1E8E0]/70">
-                No events near {locationState.label === 'Choose a location' ? 'your area' : locationState.label}. Showing upcoming events instead.
-              </div>
-            )}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
-              {displayEvents.map(event => (
-                <EventCard key={event.id} event={event} />
-              ))}
-            </div>
+            </aside>
 
-            {displayEvents.length >= eventsPerPage * page && (
-              <div className="flex justify-center mt-10">
-                <Button 
-                  onClick={() => setPage(p => p + 1)} 
-                  disabled={isFetching}
-                  className="rounded-none h-12 px-8 bg-ink hover:bg-ink-deep text-cream text-[13px]"
-                >
-                  {isFetching ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Loading...
-                    </>
+            <div className="min-w-0 lg:col-start-1 lg:row-start-1">
+              {selectedDay ? (
+                <>
+                  <div className="mb-6 flex flex-wrap items-baseline justify-between gap-2">
+                    <h2 className="text-2xl font-medium">Events on {format(selectedDay, "EEEE, MMMM d")}</h2>
+                    <button
+                      onClick={() => setSelectedDay(null)}
+                      className="text-sm text-gold-text dark:text-gold-dark hover:text-ink dark:hover:text-cream"
+                    >
+                      Show all upcoming events
+                    </button>
+                  </div>
+                  {selectedDayEvents.length === 0 ? (
+                    <p className="border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] bg-linen dark:bg-[#221D19] px-4 py-6 text-sm text-ink/70 dark:text-[#F1E8E0]/70">
+                      No events on this day.
+                    </p>
                   ) : (
-                    'Load More Events'
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-10">
+                      {selectedDayEvents.map(event => (
+                        <EventCard key={event.id} event={event} />
+                      ))}
+                    </div>
                   )}
-                </Button>
-              </div>
-            )}
-          </>
-        )}
-          </>
+                </>
+              ) : isLoading ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-10">
+                  {[1, 2, 3, 4, 5, 6].map(i => (
+                    <div key={i} className="space-y-4">
+                      <Skeleton className="aspect-[3/2] w-full rounded-none" />
+                      <Skeleton className="h-6 w-3/4 rounded-none" />
+                      <Skeleton className="h-4 w-1/2 rounded-none" />
+                      <Skeleton className="h-4 w-1/4 rounded-none" />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <>
+                  {usingFallback && (
+                    <div className="mb-6 rounded-none border border-[rgba(59,50,43,0.14)] dark:border-[rgba(241,232,224,0.16)] bg-linen dark:bg-[#221D19] px-4 py-3 text-sm text-ink/70 dark:text-[#F1E8E0]/70">
+                      No events near {locationState.label === 'Choose a location' ? 'your area' : locationState.label}. Showing upcoming events instead.
+                    </div>
+                  )}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-10">
+                    {displayEvents.map(event => (
+                      <EventCard key={event.id} event={event} />
+                    ))}
+                  </div>
+
+                  {displayEvents.length >= eventsPerPage * page && (
+                    <div className="flex justify-center mt-10">
+                      <Button
+                        onClick={() => setPage(p => p + 1)}
+                        disabled={isFetching}
+                        className="rounded-none h-12 px-8 bg-ink hover:bg-ink-deep text-cream text-[13px]"
+                      >
+                        {isFetching ? (
+                          <>
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            Loading...
+                          </>
+                        ) : (
+                          'Load More Events'
+                        )}
+                      </Button>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
         )}
       </div>
     {debugMode && (
