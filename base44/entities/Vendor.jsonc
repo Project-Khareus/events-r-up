@@ -203,10 +203,28 @@
       "description": "Listing approval status"
     },
     "suspension_reason": {
-      "type": "string"
+      "type": "string",
+      "rls": {
+        "read": {
+          "$or": [
+            { "created_by_id": "{{user.id}}" },
+            { "data.user_id": "{{user.id}}" },
+            { "user_condition": { "role": "admin" } }
+          ]
+        }
+      }
     },
     "pending_changes": {
-      "type": "object"
+      "type": "object",
+      "rls": {
+        "read": {
+          "$or": [
+            { "created_by_id": "{{user.id}}" },
+            { "data.user_id": "{{user.id}}" },
+            { "user_condition": { "role": "admin" } }
+          ]
+        }
+      }
     },
     "has_pending_changes": {
       "type": "boolean",
@@ -240,10 +258,32 @@
       "format": "date"
     },
     "stripe_customer_id": {
-      "type": "string"
+      "type": "string",
+      "rls": {
+        "read": {
+          "$or": [
+            { "created_by_id": "{{user.id}}" },
+            { "data.user_id": "{{user.id}}" },
+            { "user_condition": { "role": "admin" } }
+          ]
+        },
+        "create": { "user_condition": { "role": "admin" } },
+        "update": { "user_condition": { "role": "admin" } }
+      }
     },
     "stripe_subscription_id": {
-      "type": "string"
+      "type": "string",
+      "rls": {
+        "read": {
+          "$or": [
+            { "created_by_id": "{{user.id}}" },
+            { "data.user_id": "{{user.id}}" },
+            { "user_condition": { "role": "admin" } }
+          ]
+        },
+        "create": { "user_condition": { "role": "admin" } },
+        "update": { "user_condition": { "role": "admin" } }
+      }
     },
     "ghana_card_status": {
       "type": "string",
