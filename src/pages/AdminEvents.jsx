@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { toast } from "sonner";
 import { Loader2, CheckCircle, XCircle, ExternalLink, Calendar, MapPin, Search, Sparkles, Trash2, CheckCheck, Filter, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { createPageUrl } from "../utils";
+import { eventPageUrl } from "../utils";
 import { format } from "date-fns";
 
 export default function AdminEvents() {
@@ -364,7 +364,7 @@ export default function AdminEvents() {
                           </Badge>
                         </div>
                       </div>
-                      <Link to={`${createPageUrl("EventDetail")}?id=${event.id}`} target="_blank">
+                      <Link to={eventPageUrl(event)} target="_blank">
                         <Button variant="ghost" size="sm" className="gap-2">
                           View Details <ExternalLink className="h-4 w-4" />
                         </Button>
