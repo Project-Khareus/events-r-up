@@ -324,6 +324,7 @@ export default function EventDetail() {
                         <ShareButton 
                           url={eventUrl}
                           socialUrl={sharePreviewUrl}
+                          previewEverywhere
                           title={event.title}
                           description={event.description || `Join us at ${event.title}`}
                           variant="outline"
