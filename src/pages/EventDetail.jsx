@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { createPageUrl } from "../utils";
+import { createPageUrl, REAL_EVENTS } from "../utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -71,7 +71,7 @@ export default function EventDetail() {
   // upcoming ones are always included.
   const { data: events = [] } = useQuery({
     queryKey: ['events', 'approved-recent'],
-    queryFn: () => base44.entities.EventListing.filter({ status: 'approved' }, '-event_date', 200),
+    queryFn: () => base44.entities.EventListing.filter({ ...REAL_EVENTS, status: 'approved' }, '-event_date', 200),
     enabled: !!event,
   });
 
