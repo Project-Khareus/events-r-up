@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import PullToRefresh from "../components/shared/PullToRefresh";
 import { Link } from "react-router-dom";
-import { createPageUrl } from "../utils";
+import { createPageUrl, REAL_EVENTS } from "../utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { 
@@ -33,10 +33,6 @@ const initialView = () => {
   const v = new URLSearchParams(window.location.search).get("view");
   return VIEWS.some((x) => x.key === v) ? v : "upcoming";
 };
-
-// Placeholder events bulk-imported in April 2026 were saved as created by "anonymous".
-// They stay out of the past events list and the calendar.
-const REAL_EVENTS = { created_by: { $ne: "anonymous" } };
 
 const THEMES = ["All", "Music", "Food & Drink", "Business", "Arts & Culture", "Sports", "Community", "Party", "Other"];
 
@@ -128,7 +124,7 @@ export default function PublicEvents() {
   const { data: events = [], isLoading, isFetching } = useQuery({
     queryKey: ['events', 'upcoming', today, page],
     queryFn: async () => {
-      return await base44.entities.EventListing.filter({ event_date: { $gte: today } }, 'event_date', eventsPerPage * page);
+      return await base44.entities.EventListing.filter({ ...REAL_EVENTS, event_date: { $gte: today } }, 'event_date', eventsPerPage * page);
     },
     staleTime: 600000, // 10 minutes
     cacheTime: 1800000, // 30 minutes
