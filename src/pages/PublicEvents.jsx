@@ -34,6 +34,10 @@ const initialView = () => {
   return VIEWS.some((x) => x.key === v) ? v : "upcoming";
 };
 
+// Placeholder events bulk-imported in April 2026 were saved as created by "anonymous".
+// They stay out of the past events list and the calendar.
+const REAL_EVENTS = { created_by: { $ne: "anonymous" } };
+
 const THEMES = ["All", "Music", "Food & Drink", "Business", "Arts & Culture", "Sports", "Community", "Party", "Other"];
 
 // Haversine formula to calculate distance between two points in km
@@ -138,7 +142,7 @@ export default function PublicEvents() {
   // Past: approved events before today, most recent first
   const { data: pastEvents = [], isLoading: pastLoading, isFetching: pastFetching } = useQuery({
     queryKey: ['events', 'past', today, pastPage],
-    queryFn: () => base44.entities.EventListing.filter({ status: 'approved', event_date: { $lt: today } }, '-event_date', eventsPerPage * pastPage),
+    queryFn: () => base44.entities.EventListing.filter({ ...REAL_EVENTS, status: 'approved', event_date: { $lt: today } }, '-event_date', eventsPerPage * pastPage),
     enabled: view === 'past',
     staleTime: 600000,
     refetchOnWindowFocus: false,
@@ -150,7 +154,7 @@ export default function PublicEvents() {
   const { data: monthEvents = [], isLoading: monthLoading } = useQuery({
     queryKey: ['events', 'month', monthStart],
     queryFn: () => base44.entities.EventListing.filter(
-      { status: 'approved', event_date: { $gte: monthStart, $lt: format(addMonths(calendarMonth, 1), "yyyy-MM-dd") } },
+      { ...REAL_EVENTS, status: 'approved', event_date: { $gte: monthStart, $lt: format(addMonths(calendarMonth, 1), "yyyy-MM-dd") } },
       'event_date',
       500
     ),
