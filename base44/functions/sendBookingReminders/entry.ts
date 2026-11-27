@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
+import { escapeHtml } from '../../shared/emailLayout.js';
 
 const BRAND = 'Khareus';
 const SITE_URL = 'https://khareus.com';
@@ -28,11 +29,11 @@ function button(text, url, color = '#4F46E5') {
 function infoCard(items, borderColor = '#4F46E5') {
     return `
     <div style="background: #F8FAFC; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid ${borderColor};">
-        ${items.map(([label, value]) => value ? `<p style="margin: 6px 0; color: #334155; font-size: 14px;"><strong>${label}:</strong> ${value}</p>` : '').join('')}
+        ${items.map(([label, value]) => value ? `<p style="margin: 6px 0; color: #334155; font-size: 14px;"><strong>${label}:</strong> ${escapeHtml(value)}</p>` : '').join('')}
     </div>`;
 }
 
-Deno.serve(async (req) => {
+export default async function(req) {
     try {
         const base44 = createClientFromRequest(req);
         const user = await base44.auth.me();
@@ -68,7 +69,7 @@ Deno.serve(async (req) => {
                 // Customer email
                 if (booking.user_email) {
                     const subject = daysUntilEvent === 1 
-                        ? `🎉 Your Event with ${vendor.business_name} is Tomorrow!`
+                        ? `🎉 Your Event with ${String(vendor.business_name || '').replace(/[\u0000-\u001f\u007f]/g, ' ')} is Tomorrow!`
                         : `📅 Event Reminder: ${daysUntilEvent} Days to Go`;
 
                     const tips = daysUntilEvent === 7 ? `
@@ -85,9 +86,9 @@ Deno.serve(async (req) => {
                     `;
 
                     const content = `
-                        <p style="color: #334155; font-size: 15px; line-height: 1.6;">Hi ${booking.user_name},</p>
+                        <p style="color: #334155; font-size: 15px; line-height: 1.6;">Hi ${escapeHtml(booking.user_name)},</p>
                         <p style="color: #334155; font-size: 15px; line-height: 1.6;">
-                            Your event with <strong>${vendor.business_name}</strong> is coming up ${daysUntilEvent === 1 ? 'tomorrow' : `in ${daysUntilEvent} days`}!
+                            Your event with <strong>${escapeHtml(vendor.business_name)}</strong> is coming up ${daysUntilEvent === 1 ? 'tomorrow' : `in ${daysUntilEvent} days`}!
                         </p>
                         ${infoCard([
                             ['Vendor', vendor.business_name],
@@ -117,7 +118,7 @@ Deno.serve(async (req) => {
 
                 if (vendorEmail) {
                     const vendorContent = `
-                        <p style="color: #334155; font-size: 15px; line-height: 1.6;">Hi ${vendor.business_name},</p>
+                        <p style="color: #334155; font-size: 15px; line-height: 1.6;">Hi ${escapeHtml(vendor.business_name)},</p>
                         <p style="color: #334155; font-size: 15px; line-height: 1.6;">
                             You have an event ${daysUntilEvent === 1 ? 'tomorrow' : `in ${daysUntilEvent} days`}.
                         </p>
@@ -135,7 +136,7 @@ Deno.serve(async (req) => {
 
                     await base44.asServiceRole.integrations.Core.SendEmail({
                         to: vendorEmail,
-                        subject: `📅 Event Reminder: ${booking.user_name} - ${eventDate}`,
+                        subject: `📅 Event Reminder: ${String(booking.user_name || '').replace(/[\u0000-\u001f\u007f]/g, ' ')} - ${String(eventDate).replace(/[\u0000-\u001f\u007f]/g, ' ')}`,
                         body: emailTemplate('Upcoming Event Reminder', '#4F46E5', vendorContent)
                     });
                     remindersSent++;
@@ -152,4 +153,4 @@ Deno.serve(async (req) => {
         console.error('Error sending booking reminders:', error);
         return Response.json({ error: error.message }, { status: 500 });
     }
-});
+}

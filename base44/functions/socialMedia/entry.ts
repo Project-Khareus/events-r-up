@@ -215,6 +215,11 @@ export default async function(req) {
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
     const payload = await req.json().catch(() => ({}));
 
+    if (['get_auth_url', 'fetch_photos'].includes(payload.action)) {
+      const allowedRedirects = ['https://khareus.base44.app/SocialCallback', 'https://eventsrup.com/SocialCallback'];
+      if (!allowedRedirects.includes(payload.redirectUri)) return Response.json({ error: 'Invalid Facebook redirect' }, { status: 400 });
+    }
+
     if (payload.action === 'get_auth_url') {
       const clientId = secrets.get('FACEBOOK_CLIENT_ID');
       if (!clientId || !payload.redirectUri) return Response.json({ error: 'Facebook setup is incomplete' }, { status: 400 });
@@ -224,7 +229,9 @@ export default async function(req) {
     if (payload.action === 'fetch_photos') {
       const clientId = secrets.get('FACEBOOK_CLIENT_ID');
       const clientSecret = secrets.get('FACEBOOK_CLIENT_SECRET');
-      const tokenResponse = await fetch(`https://graph.facebook.com/v18.0/oauth/access_token?client_id=${clientId}&redirect_uri=${encodeURIComponent(payload.redirectUri)}&client_secret=${clientSecret}&code=${payload.code}`, { signal: AbortSignal.timeout(10000) });
+      if (!clientId || !clientSecret || typeof payload.code !== 'string' || !payload.code || payload.code.length > 4096) return Response.json({ error: 'Facebook authentication is incomplete' }, { status: 400 });
+      const tokenParams = new URLSearchParams({ client_id: clientId, redirect_uri: payload.redirectUri, client_secret: clientSecret, code: payload.code });
+      const tokenResponse = await fetch(`https://graph.facebook.com/v18.0/oauth/access_token?${tokenParams}`, { signal: AbortSignal.timeout(10000) });
       const token = await readResponse(tokenResponse, 'Facebook authentication failed');
       const photosResponse = await fetch(`https://graph.facebook.com/v18.0/me/photos?type=uploaded&fields=images,source&access_token=${encodeURIComponent(token.access_token)}&limit=18`, { signal: AbortSignal.timeout(10000) });
       const photos = await readResponse(photosResponse, 'Unable to load photos');

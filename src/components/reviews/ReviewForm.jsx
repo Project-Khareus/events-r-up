@@ -94,7 +94,7 @@ export default function ReviewForm({ vendorId, vendorName }) {
       
       // Update vendor rating
       try {
-        await base44.functions.invoke('updateVendorRating', { vendorId });
+        await base44.functions.invoke('updateVendorRating', { vendorId, reviewId: review.id });
       } catch (error) {
         console.error('Failed to update vendor rating:', error);
       }
