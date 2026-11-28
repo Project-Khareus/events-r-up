@@ -91,6 +91,20 @@ function toLocalDateTime(value) {
   return Number.isFinite(check.getTime()) && check.toISOString().slice(0, 16) === localDateTime ? localDateTime : null;
 }
 
+const normalize = (text) => String(text || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
+
+// An event already listed from another flyer or post: same start time and either the
+// same title or the same specific venue (the same flyer can be read with a different
+// title). Vague venues like "Ghana" or "Accra, Ghana" don't count as a match.
+async function findTwin(base44, { title, eventDate, venue }) {
+  const sameTime = await base44.asServiceRole.entities.EventListing.filter({ event_date: eventDate });
+  const venueKey = normalize(venue);
+  return (sameTime.items || sameTime).find((e) =>
+    normalize(e.title) === normalize(title) ||
+    (venueKey.length >= 12 && normalize(e.location_address) === venueKey)
+  ) || null;
+}
+
 async function processFlyer(base44, token, user, file, ts) {
   if (!/^image\/(jpeg|png|webp|gif|heic)$/.test(file.mimetype || '')) return { skipped: `${file.name || 'File'} is not an image` };
   if (file.size > MAX_BYTES) return { skipped: `${file.name || 'Image'} is larger than 15 MB` };
@@ -117,8 +131,7 @@ async function processFlyer(base44, token, user, file, ts) {
   const missing = [!title && 'event name', !eventDate && 'date', !venue && 'venue'].filter(Boolean);
   if (missing.length) return { skipped: `I couldn't read the ${missing.join(', ')} on ${file.name || 'the flyer'}` };
 
-  const sameEvent = await base44.asServiceRole.entities.EventListing.filter({ title, event_date: eventDate });
-  const twin = (sameEvent.items || sameEvent)[0];
+  const twin = await findTwin(base44, { title, eventDate, venue });
   if (twin) return { event: twin, duplicate: true };
 
   const price = info.is_paid && Number(info.price) > 0 ? Math.round(Number(info.price) * 100) / 100 : 0;
